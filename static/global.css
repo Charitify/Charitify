@@ -1,9 +1,17 @@
 /* calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))) */
+
 :root {
     /* ---------------------===================( Variables )===================--------------------- */
-    --color-light: #eee;
-    --color-dark: #333;
+    --color-light: #dededd;
+    --color-dark: #282828;
+    --color-light-font: #ddd;
+    --color-dark-font: #333;
+    --color-success: 76, 177, 82; /* #4CB152 */
+    --color-warning: 230, 164, 0; /* Modified - e6a400, Origin - #FDB400 */
+    --color-danger: 245, 67, 60; /* #F5433C */
+    --color-info: 158, 158, 158; /* #9e9e9e */
 
+    --font-weight: 400;
     --font-size-min: 14;
     --font-size-max: 16;
 
@@ -17,24 +25,48 @@
     /* ---------------------===================( Formulas )===================--------------------- */
     --font-size: calc(var(--font-size-min) * 1px + (var(--font-size-max) - var(--font-size-min)) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
     --font-line-height: calc((var(--font-size-min) * var(--font-line-height-min)) * 1px + ((var(--font-size-max) * var(--font-line-height-max)) - (var(--font-size-min) * var(--font-line-height-min))) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
-    --font-weight: 400;
 
-    /* The most readable online fonts: 1. Verdana, 2. Arial, 3. Courier (https://www.awai.com/2011/10/the-best-fonts-to-use-in-print-online-and-email/) */
-    /* Fonts support (https://www.cssfontstack.com/) */
+    /* The most readable online fonts: "1. Verdana, 2. Arial, 3. Courier" -> (https://www.awai.com/2011/10/the-best-fonts-to-use-in-print-online-and-email/) */
+    /* Fonts supporting (https://www.cssfontstack.com/) */
     --font-family: Verdana, Arial, Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 /* ---------------------===================( Settings )===================--------------------- */
+
 body {
-    font-size: var(--font-size);
-    font-family: var(--font-family);
-    line-height: var(--font-line-height);
-    color: var(--color-dark);
+    text-align: left;
     min-height: 100vh;
+    overflow-x: hidden;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
-    overflow-x: hidden;
-    text-align: left;
+    font-size: var(--font-size);
+    color: var(--color-dark-font);
+    font-family: var(--font-family);
+    line-height: var(--font-line-height);
+    background-color: var(--color-light-font);
+}
+
+/* ---------------------===================( Global Themes )===================--------------------- */
+
+/* Background patterns: https://leaverou.github.io/css3patterns/ */
+body.theme-light, body.theme-light .theme-bg {
+    color: var(--color-dark-font);
+    background: radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 0 0,
+    radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255, 255, 255, .1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255, 255, 255, .1) 15%, transparent 20%) 8px 9px;
+    background-color: var(--color-light);
+    background-size: 16px 16px;
+}
+
+body.theme-dark, body.theme-dark .theme-bg {
+    color: var(--color-light-font);
+    background: radial-gradient(rgba(0, 0, 0, .2) 15%, transparent 16%) 0 0,
+    radial-gradient(rgba(0, 0, 0, .2) 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255, 255, 255, .03) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255, 255, 255, .03) 15%, transparent 20%) 8px 9px;
+    background-color: var(--color-dark);
+    background-size: 16px 16px;
 }
 
 /* ---------------------===================( Reset/Normalize )===================--------------------- */
@@ -45,80 +77,170 @@ html {
     -webkit-text-size-adjust: 100%
 }
 
-/* Box sizing rules */
+/* Box sizing rules. Padding inside elements */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
-/* Remove list styles on ul, padding */
-ul,
-ol {
-    padding: 0;
-    list-style: none;
-}
-
-/* Correct the inability to style clickable types in iOS and Safari. */
-button {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    appearance: none;
-}
-
+/* Make elements as blocks */
 main {
     display: block;
 }
 
-/* Remove default margin */
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-ul,
-ol,
-li,
-figure,
-figcaption,
-blockquote {
-    margin: 0;
+/* Remove default color styles and change style of underline */
+/* (1) "text-decoration-skip-ink: auto" -> (https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-skip-ink) */
+a {
+    outline: none;
+    color: inherit;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    /*text-decoration-skip-ink: auto; !* (1) *!*/
 }
 
-/* A elements that don't have a class get default styles */
-a {
-    text-decoration-skip-ink: auto;
-    color: inherit;
+/* Make labels intuitive clickable */
+label {
+    cursor: pointer;
 }
 
 /* Make images easier to work with */
 img {
-    max-width: 100%;
     display: block;
+    max-width: 100%;
 }
 
-/* Inherit fonts for inputs and buttons */
-input,
-button,
-textarea,
-select {
+li {
+    display: inline-block;
+}
+
+/* Remove list styles on ul, padding, margin */
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Reset default button styles */
+button {
+    padding: 0;
+    border: none;
+    outline: none;
     font: inherit;
+    color: inherit;
+    cursor: pointer;
+    -webkit-appearance: button;
+    background-color: transparent;
 }
 
+/* Inherit fonts for inputs and buttons, remove controls */
+input,
+select,
+textarea {
+    padding: 0 6px;
+    border: none;
+    cursor: text;
+    font: inherit;
+    outline: none;
+    appearance: none;
+}
+
+/* Remove default margins */
+p,
+li,
+body,
+figure,
+figcaption,
+blockquote,
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+/* Remove all animations and transitions for people that prefer not to see them (https://css-tricks.com/introduction-reduced-motion-media-query/) */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+/* ---------------------===================( Focus styles )===================--------------------- */
+
+a:focus,
+button:not([class]):focus {
+    text-decoration: underline solid rgb(var(--color-warning));
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button[class]:focus {
+    box-shadow: inset 0 0 0 3px rgb(var(--color-warning));
+}
+
+::selection {
+    background-color: rgb(var(--color-warning), .5);
+}
+
+/* ---------------------===================( Utils/Helpers )===================--------------------- */
+
+
+/* Hide elements by "hidden" attribute */
 [hidden] {
     display: none !important; /* One of the good use cases of !important */
 }
 
-/* Remove all animations and transitions for people that prefer not to see them (https://css-tricks.com/introduction-reduced-motion-media-query/)*/
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+/* ----------=========( Text color )=========----------- */
+.text-success {
+    color: rgb(var(--color-success));
+}
+
+.text-warning {
+    color: rgb(var(--color-warning));
+}
+
+.text-danger {
+    color: rgb(var(--color-danger));
+}
+
+.text-info {
+    color: rgb(var(--color-info));
+}
+
+/* ----------=========( Background color )=========----------- */
+.bg-success {
+    background-color: rgb(var(--color-success));
+}
+
+.bg-warning {
+    background-color: rgb(var(--color-warning));
+}
+
+.bg-danger {
+    background-color: rgb(var(--color-danger));
+}
+
+.bg-info {
+    background-color: rgb(var(--color-info));
+}
+
+/* ----------=========( Border color )=========----------- */
+.border-success {
+    border-color: rgb(var(--color-success));
+}
+
+.border-warning {
+    border-color: rgb(var(--color-warning));
+}
+
+.border-danger {
+    border-color: rgb(var(--color-danger));
+}
+
+.border-info {
+    border-color: rgb(var(--color-info));
 }
