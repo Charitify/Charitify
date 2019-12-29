@@ -33,6 +33,10 @@
 
 <h1>Great success!</h1>
 
+<button type="button">
+  Button example
+</button>
+
 <p>Few paragraphs to text fonts</p>
 <p>Декілька параграфів для тесту тексту</p>
 <p>Несколько параграфов для теста текста</p>

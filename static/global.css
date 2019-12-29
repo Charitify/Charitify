@@ -1,61 +1,74 @@
 /* calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))) */
 :root {
-	/* ---------------------===================( Variables )===================--------------------- */
-	--color-light: #eee;
-	--color-dark: #333;
+    /* ---------------------===================( Variables )===================--------------------- */
+    --color-light: #eee;
+    --color-dark: #333;
 
-	--font-size-min: 14;
-	--font-size-max: 16;
+    --font-size-min: 14;
+    --font-size-max: 16;
 
-	/* (1.6 (22.4px) for 14px/300px -> 2 (32px) for 16px/1600px) = https://grtcalculator.com */
-	--font-line-height-min: 1.6;
-	--font-line-height-max: 2;
+    /* (1.6 (22.4px) for 14px/300px -> 2 (32px) for 16px/1600px) = https://grtcalculator.com */
+    --font-line-height-min: 1.6;
+    --font-line-height-max: 2;
 
-	--content-width-min: 320;
-	--content-width-max: 1600;
+    --content-width-min: 320;
+    --content-width-max: 1600;
 
-	/* ---------------------===================( Formulas )===================--------------------- */
-	--font-size: calc(var(--font-size-min) * 1px + (var(--font-size-max) - var(--font-size-min)) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
-	--font-line-height: calc((var(--font-size-min) * var(--font-line-height-min)) * 1px + ((var(--font-size-max) * var(--font-line-height-max)) - (var(--font-size-min) * var(--font-line-height-min))) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
-	--font-weight: 400;
+    /* ---------------------===================( Formulas )===================--------------------- */
+    --font-size: calc(var(--font-size-min) * 1px + (var(--font-size-max) - var(--font-size-min)) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
+    --font-line-height: calc((var(--font-size-min) * var(--font-line-height-min)) * 1px + ((var(--font-size-max) * var(--font-line-height-max)) - (var(--font-size-min) * var(--font-line-height-min))) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
+    --font-weight: 400;
 
-	/* The most readable online fonts: 1. Verdana, 2. Arial, 3. Courier (https://www.awai.com/2011/10/the-best-fonts-to-use-in-print-online-and-email/) */
-	/* Fonts support (https://www.cssfontstack.com/) */
-	--font-family: Verdana, Arial, Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    /* The most readable online fonts: 1. Verdana, 2. Arial, 3. Courier (https://www.awai.com/2011/10/the-best-fonts-to-use-in-print-online-and-email/) */
+    /* Fonts support (https://www.cssfontstack.com/) */
+    --font-family: Verdana, Arial, Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 /* ---------------------===================( Settings )===================--------------------- */
 body {
-	font-size: var(--font-size);
-	font-family: var(--font-family);
-	line-height: var(--font-line-height);
-	color: var(--color-dark);
-	min-height: 100vh;
-	scroll-behavior: smooth;
-	text-rendering: optimizeSpeed;
-	overflow-x: hidden
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+    line-height: var(--font-line-height);
+    color: var(--color-dark);
+    min-height: 100vh;
+    scroll-behavior: smooth;
+    text-rendering: optimizeSpeed;
+    overflow-x: hidden;
+    text-align: left;
 }
 
-/* ---------------------===================( Reset )===================--------------------- */
-/* All styles (https://dev.to/hankchizljaw/a-modern-css-reset-6p3/)
+/* ---------------------===================( Reset/Normalize )===================--------------------- */
+/* All styles (https://dev.to/hankchizljaw/a-modern-css-reset-6p3/) */
+
+/* Prevent adjustments of font size after orientation changes in iOS. */
+html {
+    -webkit-text-size-adjust: 100%
+}
 
 /* Box sizing rules */
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-/* Remove default padding */
+/* Remove list styles on ul, padding */
 ul,
 ol {
-	padding: 0;
+    padding: 0;
+    list-style: none;
 }
 
-/* Remove list styles on ul, ol elements with a class attribute */
-ul,
-ol {
-	list-style: none;
+/* Correct the inability to style clickable types in iOS and Safari. */
+button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    appearance: none;
+}
+
+main {
+    display: block;
 }
 
 /* Remove default margin */
@@ -72,22 +85,20 @@ ol,
 li,
 figure,
 figcaption,
-blockquote,
-dl,
-dd {
-	margin: 0;
+blockquote {
+    margin: 0;
 }
 
 /* A elements that don't have a class get default styles */
 a {
-	text-decoration-skip-ink: auto;
-	color: inherit;
+    text-decoration-skip-ink: auto;
+    color: inherit;
 }
 
 /* Make images easier to work with */
 img {
-	max-width: 100%;
-	display: block;
+    max-width: 100%;
+    display: block;
 }
 
 /* Inherit fonts for inputs and buttons */
@@ -95,15 +106,19 @@ input,
 button,
 textarea,
 select {
-	font: inherit;
+    font: inherit;
+}
+
+[hidden] {
+    display: none !important; /* One of the good use cases of !important */
 }
 
 /* Remove all animations and transitions for people that prefer not to see them (https://css-tricks.com/introduction-reduced-motion-media-query/)*/
 @media (prefers-reduced-motion: reduce) {
-	* {
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
-		scroll-behavior: auto !important;
-	}
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
