@@ -1,3 +1,7 @@
+<script>
+  import { Button } from '../components'
+</script>
+
 <style>
   h1,
   figure,
@@ -45,6 +49,25 @@
   <a href="." class="text-warning">Some link</a>
 
   <button type="button" class="text-info">Button example</button>
+</section>
+
+<section style="text-align: center">
+  <br>
+  <Button is="success" on:click="{e => console.log(e)}">50грн</Button>
+  <br>
+  <br>
+  <Button is="success" on:click="{e => console.log(e)}">100грн</Button>
+  <br>
+  <br>
+  <Button is="success" on:click="{e => console.log(e)}">200грн</Button>
+  <br>
+  <br>
+  <Button is="warning" on:click="{e => console.log(e)}">Some example of Button</Button>
+  <br>
+  <br>
+  <Button is="danger" on:click="{e => console.log(e)}">Some example of Button</Button>
+  <br>
+  <br>
 </section>
 
 <figure>

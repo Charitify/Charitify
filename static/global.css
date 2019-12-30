@@ -2,14 +2,26 @@
 
 :root {
     /* ---------------------===================( Variables )===================--------------------- */
+
+    /* -----------========( Colors )=========----------- */
     --color-light: #dededd;
     --color-dark: #282828;
+
     --color-light-font: #ddd;
     --color-dark-font: #333;
+
     --color-success: 76, 177, 82; /* #4CB152 */
-    --color-warning: 230, 164, 0; /* Modified - e6a400, Origin - #FDB400 */
+    --color-success-dark: 46, 107, 50; /* #2e6b32 */
+
+    --color-warning: 230, 164, 0; /* Modified - #e6a400, Origin - #FDB400 */
+    --color-warning-dark: 128, 91, 0; /* Modified - #805b00 */
+
     --color-danger: 245, 67, 60; /* #F5433C */
+    --color-danger-dark: 194, 16, 10; /* #c2100a */
+
     --color-info: 158, 158, 158; /* #9e9e9e */
+
+    /* -----------========( END: Colors )=========----------- */
 
     --font-weight: 400;
     --font-size-min: 14;
@@ -179,7 +191,7 @@ input:focus,
 select:focus,
 textarea:focus,
 button[class]:focus {
-    box-shadow: inset 0 0 0 3px rgb(var(--color-warning));
+    box-shadow: inset 0 0 0 2px rgb(var(--color-warning)), 0 0 0 1px rgb(var(--color-warning));
 }
 
 ::selection {
@@ -190,7 +202,7 @@ button[class]:focus {
 
 
 /* Hide elements by "hidden" attribute */
-[hidden] {
+[hidden], .hidden {
     display: none !important; /* One of the good use cases of !important */
 }
 

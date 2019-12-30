@@ -2,6 +2,7 @@
   "name": "charitify",
   "description": "Charity app for helping those in need.",
   "version": "0.1.0",
+  "private": true,
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build --legacy",
@@ -12,6 +13,7 @@
     "test": "run-p --race dev cy:run"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "compression": "^1.7.1",
     "polka": "next",
     "sirv": "^0.4.0"
@@ -32,5 +34,10 @@
     "rollup-plugin-babel": "^4.0.2",
     "rollup-plugin-svelte": "^5.0.1",
     "rollup-plugin-terser": "^4.0.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Bublikus/Charitify.git"
+  },
+  "license": "SEE LICENSE IN README.md"
 }
