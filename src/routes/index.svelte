@@ -35,26 +35,31 @@
 
 <h1>Great <span class="text-success">success</span>!</h1>
 
+<br>
+<br>
+
+<h2 class="text-success">Typography</h2>
+
+<br>
+<br>
 
 <p>Few paragraphs to text fonts</p>
 <p>Декілька параграфів для тесту тексту</p>
 <p>Несколько параграфов для теста текста</p>
 
-<section>
-  <h2 class="text-danger">Interactive elements</h2>
+<br>
+<br>
 
-  <label for="input" class="text-success">label</label>
-  <input id="input" type="text" value="text">
+<h2 class="text-warning">Interactive elements</h2>
 
-  <a href="." class="text-warning">Some link</a>
-
-  <button type="button" class="text-info">Button example</button>
-</section>
+<br>
+<br>
 
 <section style="text-align: center; display: flex; justify-content: space-around">
   <div>
     <br>
     Buttons
+    <br>
     <br>
     <Button on:click="{e => console.log(e)}">0грн</Button>
     <br>
@@ -80,6 +85,7 @@
     <br>
     Links as buttons
     <br>
+    <br>
     <Button on:click="{e => console.log(e)}" href="#">0грн</Button>
     <br>
     <br>
@@ -100,6 +106,32 @@
     <br>
   </div>
 </section>
+
+<br>
+<br>
+
+<h2 class="text-danger">Input fields</h2>
+
+<br>
+<br>
+
+<section>
+  <label for="input" class="text-success">label</label>
+  <input id="input" type="text" value="text">
+
+  <br>
+  <br>
+
+  <a href="." class="text-warning">Some link</a>
+
+  <br>
+  <br>
+
+  <button type="button" class="text-info">Button example</button>
+</section>
+
+<br>
+<br>
 
 <figure>
   <img alt="Borat" src="great-success.png" />

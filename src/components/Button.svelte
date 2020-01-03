@@ -5,6 +5,7 @@
     const dispatch = createEventDispatcher()
 
     export let is = undefined
+    export let id = undefined
     export let href = undefined
     export let type = 'button'
     export let disabled = false
@@ -12,9 +13,11 @@
 
     $: options = href
             ? {
+                id,
                 'aria-label': ariaLabel,
                 class: classnames('btn', is, $$props.class, { disabled }),
             } : {
+                id,
                 type,
                 disabled,
                 'aria-label': ariaLabel,
