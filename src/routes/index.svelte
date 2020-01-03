@@ -1,10 +1,9 @@
 <script>
-  import { Button } from '../components'
+  import { Button, Picture } from '../components'
 </script>
 
 <style>
   h1,
-  figure,
   p {
     text-align: center;
     margin: 0 auto;
@@ -13,19 +12,6 @@
   h1 {
     text-transform: uppercase;
     margin: 0 0 0.5em 0;
-  }
-
-  figure {
-    margin: 0 0 1em 0;
-  }
-
-  img {
-    position: sticky;
-    top: 70px;
-    display: inline-block;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 0 1em 0;
   }
 </style>
 
@@ -133,10 +119,21 @@
 <br>
 <br>
 
-<figure>
-  <img alt="Borat" src="great-success.png" />
-  <figcaption>HIGH FIVE!</figcaption>
-</figure>
+<h2 class="text-info">Images</h2>
+
+<Picture alt="Borat" src="great-success.png" class="picture">
+  HIGH FIVE!
+</Picture>
+
+<br>
+<br>
+
+<Picture src="https://placeimg.com/1000/1000/any" alt="sample"/>
+
+<br>
+<br>
+
+<h2 class="text-success">Other</h2>
 
 <p>
   <strong>

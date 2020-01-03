@@ -123,11 +123,12 @@ label {
 
 /* Make images easier to work with */
 img {
-    display: block;
     max-width: 100%;
+    display: inline-block;
 }
 
-li {
+li,
+figure {
     display: inline-block;
 }
 
