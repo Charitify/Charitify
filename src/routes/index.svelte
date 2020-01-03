@@ -51,23 +51,54 @@
   <button type="button" class="text-info">Button example</button>
 </section>
 
-<section style="text-align: center">
-  <br>
-  <Button is="success" on:click="{e => console.log(e)}">50грн</Button>
-  <br>
-  <br>
-  <Button is="success" on:click="{e => console.log(e)}">100грн</Button>
-  <br>
-  <br>
-  <Button is="success" on:click="{e => console.log(e)}">200грн</Button>
-  <br>
-  <br>
-  <Button is="warning" on:click="{e => console.log(e)}">Some example of Button</Button>
-  <br>
-  <br>
-  <Button is="danger" on:click="{e => console.log(e)}">Some example of Button</Button>
-  <br>
-  <br>
+<section style="text-align: center; display: flex; justify-content: space-around">
+  <div>
+    <br>
+    Buttons
+    <br>
+    <Button on:click="{e => console.log(e)}">0грн</Button>
+    <br>
+    <br>
+    <Button is="success" on:click="{e => console.log(e)}">50грн</Button>
+    <br>
+    <br>
+    <Button is="success" on:click="{e => console.log(e)}" ariaLabel="text">100грн</Button>
+    <br>
+    <br>
+    With text <Button is="success" on:click="{e => console.log(e)}">200грн</Button> and behind.
+    <br>
+    <br>
+    <Button is="warning" on:click="{e => console.log(e)}">Some example of Button</Button>
+    <br>
+    <br>
+    <Button is="danger" on:click="{e => console.log(e)}">Some example of Button</Button>
+    <br>
+    <br>
+  </div>
+
+  <div>
+    <br>
+    Links as buttons
+    <br>
+    <Button on:click="{e => console.log(e)}" href="#">0грн</Button>
+    <br>
+    <br>
+    <Button is="success" on:click="{e => console.log(e)}" href="#">50грн</Button>
+    <br>
+    <br>
+    <Button is="success" on:click="{e => console.log(e)}" href="#">100грн</Button>
+    <br>
+    <br>
+    With text <Button is="success" on:click="{e => console.log(e)}" href="#">200грн</Button> and behind.
+    <br>
+    <br>
+    <Button is="warning" on:click="{e => console.log(e)}" href="#">Some example of Button</Button>
+    <br>
+    <br>
+    <Button is="danger" on:click="{e => console.log(e)}" href="#">Some example of Button</Button>
+    <br>
+    <br>
+  </div>
 </section>
 
 <figure>

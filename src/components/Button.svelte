@@ -4,96 +4,129 @@
 
     const dispatch = createEventDispatcher()
 
-    export let is = ''
+    export let is = undefined
+    export let href = undefined
     export let type = 'button'
     export let disabled = false
+    export let ariaLabel = undefined
 
-    $: options = {
-        type,
-        disabled,
-        class: classnames(is, $$props.class),
-    }
+    $: options = href
+            ? {
+                'aria-label': ariaLabel,
+                class: classnames('btn', is, $$props.class, { disabled }),
+            } : {
+                type,
+                disabled,
+                'aria-label': ariaLabel,
+                class: classnames('btn', is, $$props.class, { disabled }),
+            }
 </script>
 
-<button {...options} on:click='{e => !disabled && dispatch("click", e)}'>
-    <slot></slot>
-</button>
+{#if href}
+    <a {...options} href={href} on:click='{e => !disabled && dispatch("click", e)}'>
+        <slot></slot>
+    </a>
+{:else}
+    <button {...options} on:click='{e => !disabled && dispatch("click", e)}'>
+        <slot></slot>
+    </button>
+{/if}
 
 <style>
-    button {
+    .btn {
         flex: none;
-        min-width: 48px;
+        color: inherit;
         max-width: 100%;
-        min-height: 48px;
         user-select: none;
-        padding: 3px 15px;
+        padding: 5px 15px;
+        font-weight: bold;
         text-align: center;
-        border-radius: 4px;
-        color: var(--color-light-font);
-        text-shadow: 0 0 2px rgba(0,0,0,.1)
+        align-items: center;
+        display: inline-flex;
+        border-radius: var(--border-radius);
+        min-width: var(--min-interactive-size);
+        min-height: var(--min-interactive-size);
+        text-shadow: 0 0 2px rgba(0, 0, 0, .2);
+    }
+
+    .btn:focus {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+        box-shadow: 0 2px rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 1px rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.1);
     }
 
     /* Success */
 
-    button.success {
+    .btn.success {
+        color: var(--color-light-font);
         background-color: rgb(var(--color-success));
-        box-shadow: 0 3px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 3px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button.success:focus {
+    .btn.success:focus {
         background-color: rgb(var(--color-success), .85);
     }
 
-    button.success:hover {
+    .btn.success:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 2px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button.success:active {
+    .btn.success:active {
         transform: translateY(2px);
-        box-shadow: 0 1px rgb(var(--color-success-dark)), 0 10px 15px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 1px rgb(var(--color-success-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);
     }
 
     /* Warning */
 
-    button.warning {
+    .btn.warning {
+        color: var(--color-light-font);
         background-color: rgb(var(--color-warning));
-        box-shadow: 0 3px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 3px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button.warning:focus {
+    .btn.warning:focus {
         background-color: rgb(var(--color-warning), .85);
     }
 
-    button.warning:hover {
+    .btn.warning:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 2px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button.warning:active {
+    .btn.warning:active {
         transform: translateY(2px);
-        box-shadow: 0 1px rgb(var(--color-warning-dark)), 0 10px 15px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 1px rgb(var(--color-warning-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);
     }
 
     /* Danger */
 
-    button.danger {
+    .btn.danger {
+        color: var(--color-light-font);
         background-color: rgb(var(--color-danger));
-        box-shadow: 0 3px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 3px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button.danger:focus {
+    .btn.danger:focus {
         background-color: rgb(var(--color-danger), .85);
     }
 
-    button.danger:hover {
+    .btn.danger:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 2px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button.danger:active {
+    .btn.danger:active {
         transform: translateY(2px);
-        box-shadow: 0 1px rgb(var(--color-danger-dark)), 0 10px 15px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 1px rgb(var(--color-danger-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);
     }
-
 </style>

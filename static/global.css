@@ -10,18 +10,22 @@
     --color-light-font: #ddd;
     --color-dark-font: #333;
 
-    --color-success: 76, 177, 82; /* #4CB152 */
-    --color-success-dark: 46, 107, 50; /* #2e6b32 */
+    --color-success: 69, 161, 75; /* #45a14b */
+    --color-success-dark: 38, 89, 42; /* #26592a */
 
-    --color-warning: 230, 164, 0; /* Modified - #e6a400, Origin - #FDB400 */
-    --color-warning-dark: 128, 91, 0; /* Modified - #805b00 */
+    --color-warning: 218, 160, 11; /* #daa00b */
+    --color-warning-dark: 121, 89, 6; /* #795906 */
 
-    --color-danger: 245, 67, 60; /* #F5433C */
-    --color-danger-dark: 194, 16, 10; /* #c2100a */
+    --color-danger: 217, 83, 79; /* #d8544f */
+    --color-danger-dark: 159, 39, 35; /* #9f2723 */
 
     --color-info: 158, 158, 158; /* #9e9e9e */
 
     /* -----------========( END: Colors )=========----------- */
+
+    --min-interactive-size: 50px;
+
+    --border-radius: 4px;
 
     --font-weight: 400;
     --font-size-min: 14;
@@ -182,7 +186,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ---------------------===================( Focus styles )===================--------------------- */
 
-a:focus,
+a:not([class]):focus,
 button:not([class]):focus {
     text-decoration: underline solid rgb(var(--color-warning));
 }
@@ -190,7 +194,7 @@ button:not([class]):focus {
 input:focus,
 select:focus,
 textarea:focus,
-button[class]:focus {
+button:not([class]):focus {
     box-shadow: inset 0 0 0 2px rgb(var(--color-warning)), 0 0 0 1px rgb(var(--color-warning));
 }
 
