@@ -49,7 +49,7 @@
         border-radius: var(--border-radius);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
-        text-shadow: 0 0 2px rgba(0, 0, 0, .2);
+        text-shadow: 1px 1px rgba(0, 0, 0, .3);
     }
 
     .btn:focus {
