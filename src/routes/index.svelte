@@ -1,5 +1,5 @@
 <script>
-  import { Button, Picture } from '../components'
+  import { Button, Picture, Input } from '../components'
 </script>
 
 <style>
@@ -102,6 +102,24 @@
 <br>
 
 <section>
+  <Input rows={2} name="tex" list="lis"/>
+
+  <br>
+  <br>
+
+  <Input name="tex1" list="lis" placeholder="Some placeholder text"/>
+
+  <br>
+  <br>
+
+  <Input type="number" name="tex1" list="lis"/>
+
+  <datalist id="lis">
+    <option value="1">
+    <option value="2">
+    <option value="3">
+  </datalist>
+
   <label for="input" class="text-success">label</label>
   <input id="input" type="text" value="text">
 

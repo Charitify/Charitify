@@ -8,17 +8,20 @@
     export let id = undefined
     export let href = undefined
     export let type = 'button'
+    export let title = undefined
     export let disabled = false
     export let ariaLabel = undefined
 
     $: options = href
             ? {
                 id,
+                title,
                 'aria-label': ariaLabel,
                 class: classnames('btn', is, $$props.class, { disabled }),
             } : {
                 id,
                 type,
+                title,
                 disabled,
                 'aria-label': ariaLabel,
                 class: classnames('btn', is, $$props.class, { disabled }),
