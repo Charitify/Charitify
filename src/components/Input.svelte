@@ -67,7 +67,7 @@
      *
      * @description Get certain rules for not standard cases of input view. (Mobile/desktop)
      *
-     * @param {string} type - Native type of input (number|text|url\tel\email)
+     * @param {string} type - Native type of input (number|text|url|tel|email|date|search...)
      * @return {*|{type: *}}
      */
     function getType(type) {

@@ -159,7 +159,20 @@ button {
     color: inherit;
     cursor: pointer;
     -webkit-appearance: button;
+    -moz-appearance: none;
+    appearance: none;
     background-color: transparent;
+}
+
+/* Remove default margins */
+p,
+li,
+body,
+figure,
+figcaption,
+blockquote,
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
 }
 
 /* Inherit fonts for inputs and buttons, remove controls */
@@ -176,17 +189,23 @@ textarea {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
 }
 
-/* Remove default margins */
-p,
-li,
-body,
-figure,
-figcaption,
-blockquote,
-h1, h2, h3, h4, h5, h6 {
-    margin: 0;
+/* Remove control arrows from input fields */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+/* Remove dropdown arrows from input fields */
+[list]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 /* Remove all animations and transitions for people that prefer not to see them (https://css-tricks.com/introduction-reduced-motion-media-query/) */

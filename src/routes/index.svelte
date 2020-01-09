@@ -1,5 +1,5 @@
 <script>
-    import { Button, Picture, Input } from '../components'
+    import { Button, Picture, Input, Progress } from '../components'
 </script>
 
 <style>
@@ -28,6 +28,7 @@
     }
 
     .options {
+        flex: 0;
         display: flex;
         flex-direction: column;
         margin: -7px 0;
@@ -41,33 +42,32 @@
 </style>
 
 <svelte:head>
-    <title>Charitify</title>
+    <title>Test Title</title>
 </svelte:head>
 
 
 <section class="top-wrap">
     <section class="top">
         <div class="top-pic">
-            <Picture src="https://placeimg.com/1000/1000/any" alt="sample"/>
+            <Picture src="https://placeimg.com/1000/1000/people" alt="sample"/>
         </div>
 
         <ul class="options">
             <li>
-                <Button is="success" on:click="{e => console.log(e)}">50грн</Button>
+                <Button is="success" on:click="{e => console.log(e)}">test1</Button>
             </li>
             <li>
-                <Button is="success" on:click="{e => console.log(e)}">100грн</Button>
+                <Button is="success" on:click="{e => console.log(e)}">test12</Button>
             </li>
             <li>
-                <Button is="success" on:click="{e => console.log(e)}">200грн</Button>
+                <Button is="success" on:click="{e => console.log(e)}">test123</Button>
             </li>
             <li>
                 <Input
                         type="number"
-                        name="sum"
+                        name="num"
                         list="sum-suggestions"
-                        placeholder="Sum"
-                        autofocus
+                        placeholder="Num"
                         autoselect
                         align="right"
                 />
@@ -82,12 +82,53 @@
     </section>
 
     <section style="padding: 20px 5px 20px 0">
-        <progress value="65" max="100" style="background: 0; width: 100%"></progress>
+        <Progress value="65" max="100" style="background: 0; width: 100%"></Progress>
     </section>
 </section>
 
-<br>
-<br>
+
+<section>
+
+    <br>
+    <br>
+
+    <Input type="number" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input type="text" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input type="email" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input type="url" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input type="search" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input type="date" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input type="password" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input type="tel" list="sum-suggestions"/>
+</section>
 
 <h1>Great <span class="text-success">success</span>!</h1>
 
@@ -117,17 +158,17 @@
         Buttons
         <br>
         <br>
-        <Button on:click="{e => console.log(e)}">0грн</Button>
+        <Button on:click="{e => console.log(e)}">test</Button>
         <br>
         <br>
-        <Button is="success" on:click="{e => console.log(e)}">50грн</Button>
+        <Button is="success" on:click="{e => console.log(e)}">test</Button>
         <br>
         <br>
-        <Button is="success" on:click="{e => console.log(e)}" ariaLabel="text">100грн</Button>
+        <Button is="success" on:click="{e => console.log(e)}" ariaLabel="text">test</Button>
         <br>
         <br>
         With text
-        <Button is="success" on:click="{e => console.log(e)}">200грн</Button>
+        <Button is="success" on:click="{e => console.log(e)}">test</Button>
         and behind.
         <br>
         <br>
@@ -144,17 +185,17 @@
         Links as buttons
         <br>
         <br>
-        <Button on:click="{e => console.log(e)}" href="#">0грн</Button>
+        <Button on:click="{e => console.log(e)}" href="#">test</Button>
         <br>
         <br>
-        <Button is="success" on:click="{e => console.log(e)}" href="#">50грн</Button>
+        <Button is="success" on:click="{e => console.log(e)}" href="#">test</Button>
         <br>
         <br>
-        <Button is="success" on:click="{e => console.log(e)}" href="#">100грн</Button>
+        <Button is="success" on:click="{e => console.log(e)}" href="#">test</Button>
         <br>
         <br>
         With text
-        <Button is="success" on:click="{e => console.log(e)}" href="#">200грн</Button>
+        <Button is="success" on:click="{e => console.log(e)}" href="#">test</Button>
         and behind.
         <br>
         <br>
