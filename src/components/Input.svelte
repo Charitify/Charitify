@@ -1,13 +1,15 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { classnames } from '../utils'
+    import { classnames, toCSSString } from '../utils'
 
     const dispatch = createEventDispatcher()
 
     export let name
     export let value = ''
+    export let style = {}
     export let type = 'text'
     export let id = undefined
+    export let align = undefined
     export let maxlength = 1000
     export let rows = undefined
     export let disabled = false
@@ -21,7 +23,9 @@
     export let readonly = undefined // undefined|readonly
     export let required = undefined // undefined|required
     export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)
-    export let autofocus = undefined // undefined|autofocus
+    export let autofocus = false
+    export let autoselect = false
+    export let ariaLabel = undefined
     export let placeholder = undefined
 
     $: options = {
@@ -33,16 +37,24 @@
         list,
         form,
         type,
+        align,
         title,
         pattern,
         readonly,
         disabled,
         required,
         maxlength,
-        autofocus,
         placeholder,
         autocomplete,
+        'aria-label': ariaLabel || placeholder,
+        style: toCSSString({ ...style, textAlign: align }),
+        autofocus: autofocus ? 'autofocus' : undefined,
         class: classnames('inp', 'theme-bg-color', $$props.class, { disabled, readonly, required, invalid }),
+    }
+
+    function onClick(e) {
+        !disabled && dispatch("click", e)
+        !disabled && autoselect && e.target.select()
     }
 </script>
 
@@ -52,6 +64,7 @@
             bind:value
             on:blur='{e => !disabled && dispatch("blur", e)}'
             on:focus='{e => !disabled && dispatch("focus", e)}'
+            on:click='{onClick}'
     ></textarea>
 {:else}
     <input
@@ -59,13 +72,14 @@
             bind:value
             on:blur='{e => !disabled && dispatch("blur", e)}'
             on:focus='{e => !disabled && dispatch("focus", e)}'
+            on:click='{onClick}'
     />
 {/if}
 
 <style>
     .inp {
-        flex: none;
         width: 100%;
+        flex: 1 1 0;
         color: inherit;
         border-radius: var(--border-radius);
         min-width: var(--min-interactive-size);

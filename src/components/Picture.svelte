@@ -46,10 +46,17 @@
 
 <style>
     .picture {
-        background-color: #888;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: stretch;
     }
 
     .picture .pic {
+        flex-grow: 1;
+        align-self: stretch;
+        object-fit: cover;
+        object-position: center;
         transition: opacity .3s ease-in;
     }
 

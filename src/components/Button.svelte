@@ -41,6 +41,7 @@
 <style>
     .btn {
         flex: none;
+        width: 100%;
         color: inherit;
         max-width: 100%;
         user-select: none;
@@ -49,6 +50,7 @@
         text-align: center;
         align-items: center;
         display: inline-flex;
+        justify-content: center;
         border-radius: var(--border-radius);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
