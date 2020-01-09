@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build --legacy",
-    "export": "sapper export --basepath Charitify --legacy",
+    "export": "sapper export --legacy --basepath Charitify",
     "start": "node __sapper__/build",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
-    "deploy": "npm run export && node ./scripts/gh-pages.js"
+    "deploy": "npm run export && gh-pages -d __sapper__/export/Charitify",
+    "deployPush": "git add __sapper__/export/Charitify && git commit -m 'deploy' && git subtree push --prefix __sapper__/export/Charitify origin gh-pages"
   },
   "dependencies": {
     "classnames": "^2.2.6",
