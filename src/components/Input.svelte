@@ -36,7 +36,6 @@
         name,
         list,
         form,
-        type,
         align,
         title,
         pattern,
@@ -50,11 +49,34 @@
         style: toCSSString({ ...style, textAlign: align }),
         autofocus: autofocus ? 'autofocus' : undefined,
         class: classnames('inp', 'theme-bg-color', $$props.class, { disabled, readonly, required, invalid }),
+        ...getType(type),
     }
 
+    /**
+     *
+     * @description Emit click and select content when "autoselect" is enabled.
+     *
+     * @param {MouseEvent} e - Native mouse event.
+     */
     function onClick(e) {
         !disabled && dispatch("click", e)
         !disabled && autoselect && e.target.select()
+    }
+
+    /**
+     *
+     * @description Get certain rules for not standard cases of input view. (Mobile/desktop)
+     *
+     * @param {string} type - Native type of input (number|text|url\tel\email)
+     * @return {*|{type: *}}
+     */
+    function getType(type) {
+        return ({
+          'number': {
+              type: 'text',
+              pattern: `[0-9]*`,
+          }
+        })[type] || { type }
     }
 </script>
 

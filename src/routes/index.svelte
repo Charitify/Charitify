@@ -31,7 +31,7 @@
         display: flex;
         flex-direction: column;
         margin: -7px 0;
-        padding: 0 5px 0 10px;
+        padding: 0 10px;
     }
 
     .options li {
@@ -62,7 +62,15 @@
                 <Button is="success" on:click="{e => console.log(e)}">200грн</Button>
             </li>
             <li>
-                <Input name="sum" list="sum-suggestions" placeholder="Sum" autofocus autoselect align="right"/>
+                <Input
+                        type="number"
+                        name="sum"
+                        list="sum-suggestions"
+                        placeholder="Sum"
+                        autofocus
+                        autoselect
+                        align="right"
+                />
 
                 <datalist id="sum-suggestions">
                     <option value="20">
