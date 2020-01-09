@@ -3,7 +3,7 @@
 	"theme_color": "#333333",
 	"name": "Charitify",
 	"short_name": "charitify",
-	"display": "minimal-ui",
+	"display": "fullscreen",
 	"start_url": "/Charitify",
 	"icons": [
 		{
