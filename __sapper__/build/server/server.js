@@ -4000,6 +4000,7 @@ const dev = NODE_ENV === 'development';
 
 polka() // You can also use Express
 	.use(
+		'Charitify',
 		compression({ threshold: 0 }),
 		sirv('static', { dev }),
 		middleware()
