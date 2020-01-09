@@ -15,7 +15,4 @@
 <progress value="65" max="100" style="background: 0; width: 100%"></progress>
 
 <style>
-    .progress {
-        width: 100%
-    }
 </style>
