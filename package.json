@@ -11,8 +11,8 @@
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
-    "deploy": "npm run export && gh-pages -d __sapper__/export/Charitify",
-    "deployPush": "git add __sapper__/export/Charitify && git commit -m 'deploy' && git subtree push --prefix __sapper__/export/Charitify origin gh-pages"
+    "predeploy": "npm run export && gh-pages -d __sapper__/export/Charitify",
+    "deploy": "git add __sapper__/export/Charitify && git commit -m 'deploy' && git subtree push --prefix __sapper__/export/Charitify origin gh-pages"
   },
   "dependencies": {
     "classnames": "^2.2.6",
