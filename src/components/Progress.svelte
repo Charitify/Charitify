@@ -5,14 +5,26 @@
     const dispatch = createEventDispatcher()
 
     export let id = undefined
+    export let value = 0 // 0 - 100
+    export let title = undefined
+    export let ariaLabel = undefined
 
-    $: options = {
-        id,
-        class: classnames('progress', $$props.class),
-    }
+    $: titleProp = title || `Progress - ${value}%`
+    $: ariaLabelProp = ariaLabel || `Progress - ${value}%`
+    $: classProp = classnames('progress', $$props.class)
 </script>
 
-<progress value="65" max="100" style="background: 0; width: 100%"></progress>
+
+<div
+        {id}
+        class={classProp}
+        title={titleProp}
+        aria-label={ariaLabelProp}
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={value}
+></div>
 
 <style>
 </style>

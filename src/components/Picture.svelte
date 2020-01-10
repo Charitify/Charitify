@@ -13,16 +13,7 @@
     let loading = true
     let isError = false
 
-    $: options = {
-        id,
-        width,
-        height,
-        class: 'pic',
-    }
-
-    $: wrapOptions = {
-        class: classnames('picture', $$props.class, { loading, isError }),
-    }
+    $: wrapClassProp = classnames('picture', $$props.class, { loading, isError })
 
     function onLoad(e) {
         loading = false
@@ -36,8 +27,17 @@
     }
 </script>
 
-<figure {...wrapOptions}>
-    <img {...options} src={src} alt={alt} on:load={onLoad} on:error={onError} />
+<figure class={wrapClassProp}>
+    <img
+            {id}
+            {alt}
+            {src}
+            {width}
+            {height}
+            class="pic"
+            on:load={onLoad}
+            on:error={onError}
+    />
 
     <figcaption>
         <slot></slot>

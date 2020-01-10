@@ -111,46 +111,46 @@
 </section>
 
 
-<Form on:submit="{(e) => console.log(e)}">
+<Form on:submit="{(e) => console.log(e)}" name="main-form">
     <br>
     <br>
 
-    <Input type="number" list="sum-suggestions"/>
-
-    <br>
-    <br>
-
-    <Input type="text" list="sum-suggestions"/>
+    <Input name="test1" type="number" list="sum-suggestions"/>
 
     <br>
     <br>
 
-    <Input type="email" list="sum-suggestions"/>
+    <Input name="test2" type="text" list="sum-suggestions"/>
 
     <br>
     <br>
 
-    <Input type="url" list="sum-suggestions"/>
+    <Input name="test3" type="email" list="sum-suggestions"/>
 
     <br>
     <br>
 
-    <Input type="search" list="sum-suggestions"/>
+    <Input name="test4" type="url" list="sum-suggestions"/>
 
     <br>
     <br>
 
-    <Input type="date" list="sum-suggestions"/>
+    <Input name="test5" type="search" list="sum-suggestions"/>
 
     <br>
     <br>
 
-    <Input type="password" list="sum-suggestions"/>
+    <Input name="test6" type="date" list="sum-suggestions"/>
 
     <br>
     <br>
 
-    <Input type="tel" list="sum-suggestions"/>
+    <Input name="test7" type="password" list="sum-suggestions"/>
+
+    <br>
+    <br>
+
+    <Input name="test8" type="tel" list="sum-suggestions"/>
 
     <br>
     <br>
@@ -255,7 +255,7 @@
     <br>
     <br>
 
-    <Input type="number" name="tex1" list="lis"/>
+    <Input type="number" name="tex2" list="lis"/>
 
     <datalist id="lis">
         <option value="1">

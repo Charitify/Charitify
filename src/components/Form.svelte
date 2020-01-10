@@ -1,25 +1,20 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { classnames, toCSSString } from '../utils'
+    import { classnames } from '../utils'
 
     const dispatch = createEventDispatcher()
 
     export let name
     export let id = undefined
     export let title = undefined
-    export let style = undefined
     export let ariaLabel = undefined
-    export let autocomplete = false
+    export let autocomplete = true
 
-    $: options = {
-        id,
-        name,
-        title,
-        'aria-label': ariaLabel,
-        style: toCSSString(style),
-        class: classnames('ico', $$props.class),
-        autocomplete: autocomplete ? 'on' : 'off',
-    }
+    let titleProp = title || ariaLabel
+    let ariaLabelProp = ariaLabel || title
+    let autocompleteProp = autocomplete ? 'on' : 'off'
+
+    $: classProp = classnames('form', $$props.class)
 
     function onSubmit(e) {
         e.preventDefault()
@@ -27,7 +22,15 @@
     }
 </script>
 
-<form on:submit={onSubmit}>
+<form
+        {id}
+        {name}
+        title={titleProp}
+        class={classProp}
+        aria-label={ariaLabelProp}
+        autocomplete={autocompleteProp}
+        on:submit={onSubmit}
+>
     <slot></slot>
 </form>
 

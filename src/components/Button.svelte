@@ -12,28 +12,33 @@
     export let disabled = false
     export let ariaLabel = undefined
 
-    $: options = href
-            ? {
-                id,
-                title,
-                'aria-label': ariaLabel,
-                class: classnames('btn', is, $$props.class, { disabled }),
-            } : {
-                id,
-                type,
-                title,
-                disabled,
-                'aria-label': ariaLabel,
-                class: classnames('btn', is, $$props.class, { disabled }),
-            }
+    let titleProp = title || ariaLabel
+    let ariaLabelProp = ariaLabel || title
+
+    $: classProp = classnames('btn', is, $$props.class, { disabled })
 </script>
 
 {#if href}
-    <a {...options} href={href} on:click='{e => !disabled && dispatch("click", e)}'>
+    <a
+            {id}
+            {href}
+            title={titleProp}
+            class={classProp}
+            aria-label={ariaLabelProp}
+            on:click='{e => !disabled && dispatch("click", e)}'
+    >
         <slot></slot>
     </a>
 {:else}
-    <button {...options} on:click='{e => !disabled && dispatch("click", e)}'>
+    <button
+            {id}
+            {type}
+            {disabled}
+            title={titleProp}
+            class={classProp}
+            aria-label={ariaLabelProp}
+            on:click='{e => !disabled && dispatch("click", e)}'
+    >
         <slot></slot>
     </button>
 {/if}

@@ -10,16 +10,20 @@
     export let title = undefined
     export let ariaLabel = undefined
 
-    $: options = {
-        id,
-        title,
-        'aria-label': ariaLabel,
-        class: classnames('ico', is, size, $$props.class),
-        style: toCSSString({ transform: !!rotate ? `rotateZ(${rotate}deg)` : null, ...style }),
-    }
+    let titleProp = title || ariaLabel
+    let ariaLabelProp = ariaLabel || title
+    let styleProp = toCSSString({ transform: !!rotate ? `rotateZ(${rotate}deg)` : null, ...style })
+
+    $:  classProp = classnames('ico', is, size, $$props.class)
 </script>
 
-<svg {...options}>
+<svg
+        {id}
+        title={titleProp}
+        class={classProp}
+        style={styleProp}
+        aria-label={ariaLabelProp}
+>
     <use xlink:href={`#ico-${type}`} class="ico_use"/>
 </svg>
 
