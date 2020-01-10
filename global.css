@@ -11,17 +11,46 @@
     --color-dark-font: #333;
 
     --color-success: 69, 161, 75; /* #45a14b */
-    --color-success-dark: 38, 89, 42; /* #26592a */
+    --color-success-dark: 54, 125, 60; /* #367d3c */
 
     --color-warning: 218, 160, 11; /* #daa00b */
-    --color-warning-dark: 121, 89, 6; /* #795906 */
+    --color-warning-dark: 146, 107, 7; /* #926b07 */
 
     --color-danger: 217, 83, 79; /* #d8544f */
-    --color-danger-dark: 159, 39, 35; /* #9f2723 */
+    --color-danger-dark: 188, 46, 41; /* #bc2e29 */
 
     --color-info: 158, 158, 158; /* #9e9e9e */
 
     /* -----------========( END: Colors )=========----------- */
+
+    /* -----------========( Breakpoints )=========----------- */
+
+    --screen-mobile-start: 320px;
+    --screen-mobile-end: 425px;
+
+    --screen-tablet-start: 426px;
+    --screen-tablet-end: 768px;
+
+    --screen-laptop-start: 769px;
+    --screen-laptop-end: 1440px;
+
+    --screen-desktop-start: 1441px;
+    --screen-desktop-end: 1920px;
+
+    /* -----------========( END: Breakpoints )=========----------- */
+
+    /* -----------========( Shadows )=========----------- */
+
+    --primary-shadow: -1px 2px 1px rgba(0, 0, 0, .2);
+    --secondary-shadow: 0 2px 4px 0 rgba(0, 0, 0, .3);
+
+    /* -----------========( END: Shadows )=========----------- */
+
+    /* -----------========( Padding )=========----------- */
+
+    --screen-padding: 7px;
+
+    /* -----------========( END: Padding )=========----------- */
 
     --min-interactive-size: 50px;
 
@@ -109,6 +138,14 @@ body.theme-dark .theme-bg {
 
 body.theme-dark .theme-bg-color {
     background-color: var(--color-dark);
+}
+
+.main-shadow {
+    box-shadow: -1px 2px 0 rgba(0, 0, 0, .2);
+}
+
+.main-shadow-inset {
+    box-shadow: inset -1px 2px 0 rgba(0, 0, 0, .2);
 }
 
 /* ---------------------===================( Reset/Normalize )===================--------------------- */
@@ -255,6 +292,10 @@ button:not([class]):focus {
 
 /* ---------------------===================( Utils/Helpers )===================--------------------- */
 
+.container {
+    padding-left: var(--screen-padding);
+    padding-right: var(--screen-padding);
+}
 
 /* Hide elements by "hidden" attribute */
 [hidden], .hidden {
