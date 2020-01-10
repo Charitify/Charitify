@@ -2,7 +2,7 @@
   "bundler": "rollup",
   "shimport": "1.0.1",
   "assets": {
-    "main": "client.6ab7c728.js"
+    "main": "client.dbaaefae.js"
   },
   "css": {
     "main": "main.3597529547.css",
