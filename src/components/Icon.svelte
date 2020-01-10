@@ -2,8 +2,8 @@
     import { classnames, toCSSString } from '../utils'
 
     export let type
-    export let is = 'primary'
-    export let size = 'medium'
+    export let is = 'primary' // primary|warning|danger
+    export let size = 'medium' // small|medium|big
     export let rotate = 0
     export let style = undefined
     export let id = undefined
@@ -28,15 +28,33 @@
         display: inherit;
     }
 
+    /* ------------=========( Size )=========------------ */
+    .small {
+        width: 15px;
+        height: 15px;
+    }
+
+    .medium {
+        width: 25px;
+        height: 25px;
+    }
+
+    .big {
+        width: 35px;
+        height: 35px;
+    }
+
+    /* ------------=========( Color )=========------------ */
     .primary * {
         fill: rgb(var(--color-success));
         stroke: rgb(var(--color-success));
-
     }
-    .warning *{
+
+    .warning * {
         fill: rgb(var(--color-warning));
         stroke: rgb(var(--color-warning));
     }
+
     .danger * {
         fill: rgb(var(--color-danger));
         stroke: rgb(var(--color-danger));

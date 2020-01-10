@@ -47,13 +47,6 @@
 
 
 <section class="top-wrap">
-
-    <span>
-        <Icon type="heart-filled"/>
-        <Icon type="heart-filled" is="warning"/>
-        <Icon type="heart-filled" is="danger"/>
-    </span>
-
     <section class="top">
         <div class="top-pic">
             <Picture src="https://placeimg.com/1000/1000/people" alt="sample"/>
@@ -87,6 +80,30 @@
             </li>
         </ul>
     </section>
+
+    <ul>
+        <li>
+        <span>
+            <Icon size="small" type="heart-filled"/>
+            <Icon size="small" type="heart-filled" is="warning"/>
+            <Icon size="small" type="heart-filled" is="danger"/>
+        </span>
+        </li>
+        <li>
+        <span>
+            <Icon type="heart-filled"/>
+            <Icon type="heart-filled" is="warning"/>
+            <Icon type="heart-filled" is="danger"/>
+        </span>
+        </li>
+        <li>
+        <span>
+            <Icon size="big" type="heart-filled"/>
+            <Icon size="big" type="heart-filled" is="warning"/>
+            <Icon size="big" type="heart-filled" is="danger"/>
+        </span>
+        </li>
+    </ul>
 
     <section style="padding: 20px 5px 20px 0">
         <Progress value="65" max="100" style="background: 0; width: 100%"></Progress>
