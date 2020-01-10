@@ -53,6 +53,7 @@ body {
     text-align: left;
     min-height: 100vh;
     overflow-x: hidden;
+    position: relative;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     font-size: var(--font-size);
@@ -64,8 +65,21 @@ body {
 
 /* ---------------------===================( Global Themes )===================--------------------- */
 
+body:before {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
 /* Background patterns: https://leaverou.github.io/css3patterns/ */
-body.theme-light, body.theme-light .theme-bg {
+body.theme-light,
+body.theme-light:before,
+body.theme-light .theme-bg {
     color: var(--color-dark-font);
     background: radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 0 0,
     radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 8px 8px,
@@ -80,7 +94,9 @@ body.theme-light .theme-bg-color {
     background-color: var(--color-light);
 }
 
-body.theme-dark, body.theme-dark .theme-bg {
+body.theme-dark,
+body.theme-dark:before,
+body.theme-dark .theme-bg {
     color: var(--color-light-font);
     background: radial-gradient(rgba(0, 0, 0, .15) 15%, transparent 16%) 0 0,
     radial-gradient(rgba(0, 0, 0, .15) 15%, transparent 16%) 8px 8px,
@@ -243,6 +259,11 @@ button:not([class]):focus {
 /* Hide elements by "hidden" attribute */
 [hidden], .hidden {
     display: none !important; /* One of the good use cases of !important */
+}
+
+/* ----------=========( Text align )=========----------- */
+.text-center {
+    text-align: center;
 }
 
 /* ----------=========( Text color )=========----------- */
