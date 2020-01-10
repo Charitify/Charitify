@@ -1,5 +1,5 @@
 <script>
-    import { Button, Picture, Input, Progress, Icon } from '../components'
+    import { Button, Picture, Input, Progress, Icon, Form } from '../components'
 </script>
 
 <style>
@@ -94,8 +94,7 @@
 </section>
 
 
-<section>
-
+<Form on:submit="{(e) => console.log(e)}">
     <br>
     <br>
 
@@ -135,7 +134,12 @@
     <br>
 
     <Input type="tel" list="sum-suggestions"/>
-</section>
+
+    <br>
+    <br>
+
+    <Button is="success" type="submit">Submit</Button>
+</Form>
 
 <h1>Great <span class="text-success">success</span>!</h1>
 
