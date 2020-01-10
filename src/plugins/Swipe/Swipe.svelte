@@ -182,6 +182,8 @@
         width: var(--sv-swipe-panel-width, inherit);
     }
     .swipe-item-wrapper{
+        display: flex;
+        align-self: stretch;
         overflow: hidden;
         position: relative;
         height: inherit;
@@ -191,9 +193,10 @@
 
     .swipeable-items,
     .swipeable-slot-wrapper {
+        display: flex;
+        align-self: stretch;
         position: relative;
-        width: inherit;
-        height: inherit;
+        width: 100%;
     }
 
     .swipe-handler {

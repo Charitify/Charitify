@@ -4,6 +4,8 @@
 
 <style>
     .swipeable-item {
+        display: flex;
+        align-self: stretch;
         position: absolute;
         top: 0;
         bottom: 0;

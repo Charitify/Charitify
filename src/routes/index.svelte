@@ -18,7 +18,6 @@
     }
 
     .top-pic {
-        height: 330px;
         flex-grow: 1;
     }
 
@@ -35,9 +34,6 @@
         margin: 7px 0;
     }
 
-    .top-wrap :global(.swipe-item) {
-        display: flex;
-    }
 </style>
 
 <svelte:head>
@@ -50,19 +46,19 @@
     <section class="top">
         <div class="top-pic">
             <Swipe>
-                <SwipeItem classes="swipe-item">
+                <SwipeItem>
                     <Picture src="https://placeimg.com/300/300/people" alt="sample"/>
                 </SwipeItem>
-                <SwipeItem classes="swipe-item">
+                <SwipeItem>
                     <Picture src="https://placeimg.com/300/300/any" alt="sample"/>
                 </SwipeItem>
-                <SwipeItem classes="swipe-item">
+                <SwipeItem>
                     <Picture src="https://placeimg.com/300/300/arch" alt="sample"/>
                 </SwipeItem>
-                <SwipeItem classes="swipe-item">
+                <SwipeItem>
                     <Picture src="https://placeimg.com/300/300/nature" alt="sample"/>
                 </SwipeItem>
-                <SwipeItem classes="swipe-item">
+                <SwipeItem>
                     <Picture src="https://placeimg.com/300/300/tech" alt="sample"/>
                 </SwipeItem>
             </Swipe>
