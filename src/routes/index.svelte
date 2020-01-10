@@ -1,5 +1,5 @@
 <script>
-    import { Swipe, SwipeItem } from "svelte-swipe";
+    import { Swipe, SwipeItem } from "svelte-swipe/src/index";
     import { Button, Picture, Input, Progress, Icon, Form } from '../components'
 </script>
 
