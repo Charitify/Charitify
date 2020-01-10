@@ -42,7 +42,7 @@
 </style>
 
 <svelte:head>
-    <title>Test Title</title>
+    <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
 
@@ -158,7 +158,7 @@
     <Button is="success" type="submit">Submit</Button>
 </Form>
 
-<h1>Great <span class="text-success">success</span>!</h1>
+<h1>Charitify - is the application for helping those in need.</h1>
 
 <br>
 <br>

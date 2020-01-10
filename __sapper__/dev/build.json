@@ -2,21 +2,21 @@
   "bundler": "rollup",
   "shimport": "1.0.1",
   "assets": {
-    "main": "client.b2768d3f.js"
+    "main": "client.048c21d9.js"
   },
   "css": {
     "main": "main.1213229804.css",
     "chunks": {
       "index.svelte": [
-        "index.d30c9844.css",
-        "index.94789346.css"
+        "index.f0cefbe2.css",
+        "index.5cc5a470.css"
       ],
       "about.svelte": [],
       "blog/index.svelte": [
-        "index.59c2ec23.css"
+        "index.97ed9234.css"
       ],
       "blog/[slug].svelte": [
-        "[slug].da699840.css"
+        "[slug].ac6429b8.css"
       ]
     }
   }
