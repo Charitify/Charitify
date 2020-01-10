@@ -1,6 +1,6 @@
 {
-	"background_color": "#ffffff",
-	"theme_color": "#333333",
+	"background_color": "#e6e6e6",
+	"theme_color": "#282828",
 	"name": "Charitify",
 	"short_name": "Charitify",
 	"display": "fullscreen",
