@@ -1,0 +1,3 @@
+Sitemap: https://bublikus.github.io/Charitify/sitemap.xml
+User-agent: *
+Disallow:
