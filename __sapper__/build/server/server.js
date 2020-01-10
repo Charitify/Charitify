@@ -643,7 +643,7 @@ const Nav = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const css$5 = {
 	code: "h1.svelte-1kmv00v.svelte-1kmv00v,p.svelte-1kmv00v.svelte-1kmv00v{text-align:center;margin:0 auto}h1.svelte-1kmv00v.svelte-1kmv00v{text-transform:uppercase;margin:0 0 0.5em 0}.top-wrap.svelte-1kmv00v.svelte-1kmv00v{padding-left:5px}.top.svelte-1kmv00v.svelte-1kmv00v{display:flex}.top-pic.svelte-1kmv00v.svelte-1kmv00v{display:flex;flex-grow:1}.options.svelte-1kmv00v.svelte-1kmv00v{flex:0;display:flex;flex-direction:column;margin:-7px 0;padding:0 10px}.options.svelte-1kmv00v li.svelte-1kmv00v{flex:none;margin:7px 0}",
-	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Button, Picture, Input, Progress, Icon, Form } from '../components'\\n</script>\\n\\n<style>\\n    h1,\\n    p {\\n        text-align: center;\\n        margin: 0 auto;\\n    }\\n\\n    h1 {\\n        text-transform: uppercase;\\n        margin: 0 0 0.5em 0;\\n    }\\n\\n    .top-wrap {\\n        padding-left: 5px;\\n    }\\n\\n    .top {\\n        display: flex;\\n    }\\n\\n    .top-pic {\\n        display: flex;\\n        flex-grow: 1;\\n    }\\n\\n    .options {\\n        flex: 0;\\n        display: flex;\\n        flex-direction: column;\\n        margin: -7px 0;\\n        padding: 0 10px;\\n    }\\n\\n    .options li {\\n        flex: none;\\n        margin: 7px 0;\\n    }\\n</style>\\n\\n<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n\\n<section class=\\\"top-wrap\\\">\\n    <section class=\\\"top\\\">\\n        <div class=\\\"top-pic\\\">\\n            <Picture src=\\\"https://placeimg.com/1000/1000/people\\\" alt=\\\"sample\\\"/>\\n        </div>\\n\\n        <ul class=\\\"options\\\">\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test1</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test12</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test123</Button>\\n            </li>\\n            <li>\\n                <Input\\n                        type=\\\"number\\\"\\n                        name=\\\"num\\\"\\n                        list=\\\"sum-suggestions\\\"\\n                        placeholder=\\\"Num\\\"\\n                        autoselect\\n                        align=\\\"right\\\"\\n                />\\n\\n                <datalist id=\\\"sum-suggestions\\\">\\n                    <option value=\\\"20\\\">\\n                    <option value=\\\"500\\\">\\n                    <option value=\\\"1000\\\">\\n                </datalist>\\n            </li>\\n        </ul>\\n    </section>\\n\\n    <ul>\\n        <li>\\n        <span>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon type=\\\"heart-filled\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n    </ul>\\n\\n    <section style=\\\"padding: 20px 5px 20px 0\\\">\\n        <Progress value=\\\"65\\\" max=\\\"100\\\" style=\\\"background: 0; width: 100%\\\"></Progress>\\n    </section>\\n</section>\\n\\n\\n<Form on:submit=\\\"{(e) => console.log(e)}\\\">\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"number\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"text\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"email\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"url\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"search\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"date\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"password\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"tel\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Button is=\\\"success\\\" type=\\\"submit\\\">Submit</Button>\\n</Form>\\n\\n<h1>Charitify - is the application for helping those in need.</h1>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Typography</h2>\\n\\n<br>\\n<br>\\n\\n<p>Few paragraphs to text fonts</p>\\n<p>Декілька параграфів для тесту тексту</p>\\n<p>Несколько параграфов для теста текста</p>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-warning\\\">Interactive elements</h2>\\n\\n<br>\\n<br>\\n\\n<section style=\\\"text-align: center; display: flex; justify-content: space-around\\\">\\n    <div>\\n        <br>\\n        Buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" ariaLabel=\\\"text\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n\\n    <div>\\n        <br>\\n        Links as buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-danger\\\">Input fields</h2>\\n\\n<br>\\n<br>\\n\\n<section>\\n    <Input rows={2} name=\\\"tex\\\" list=\\\"lis\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"tex1\\\" list=\\\"lis\\\" placeholder=\\\"Some placeholder text\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"number\\\" name=\\\"tex1\\\" list=\\\"lis\\\"/>\\n\\n    <datalist id=\\\"lis\\\">\\n        <option value=\\\"1\\\">\\n        <option value=\\\"2\\\">\\n        <option value=\\\"3\\\">\\n    </datalist>\\n\\n    <label for=\\\"input\\\" class=\\\"text-success\\\">label</label>\\n    <input id=\\\"input\\\" type=\\\"text\\\" value=\\\"text\\\">\\n\\n    <br>\\n    <br>\\n\\n    <a href=\\\".\\\" class=\\\"text-warning\\\">Some link</a>\\n\\n    <br>\\n    <br>\\n\\n    <button type=\\\"button\\\" class=\\\"text-info\\\">Button example</button>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-info\\\">Images</h2>\\n\\n<Picture alt=\\\"Borat\\\" src=\\\"great-success.png\\\" class=\\\"picture\\\">\\n    HIGH FIVE!\\n</Picture>\\n\\n<br>\\n<br>\\n\\n<Picture src=\\\"https://placeimg.com/1000/1000/any\\\" alt=\\\"sample\\\"/>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Other</h2>\\n\\n<p>\\n    <strong>\\n        Try editing this file (src/routes/index.svelte) to test live reloading.\\n    </strong>\\n</p>\\n\\n<p style=\\\"text-align: justify\\\">\\n    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus id laborum minima. Adipisci aperiam atque\\n    autem commodi consequuntur debitis distinctio dolorem eum expedita ipsam iure labore laudantium maiores mollitia\\n    nesciunt\\n    nostrum optio perferendis porro, possimus quas quasi quisquam sint sunt totam unde. A atque blanditiis consequatur,\\n    dolore\\n    ducimus et id ipsam iusto labore, laudantium libero minus nam nostrum, numquam praesentium quisquam sint?\\n    Consectetur dolorum\\n    enim ex ipsum nam necessitatibus nisi nostrum odio omnis, quia recusandae temporibus totam. A aliquam, assumenda aut\\n    autem\\n    commodi consectetur dignissimos ducimus eius eos error ipsa ipsam molestias mollitia numquam praesentium quod rem\\n    sapiente\\n    sed sint totam! Ab aspernatur at culpa debitis dolores ea eius, excepturi ipsa laborum, minus numquam, optio\\n    reiciendis\\n    repudiandae similique temporibus! Blanditiis consequatur, dignissimos dolores eaque excepturi hic inventore ipsa\\n    iste\\n    nemo obcaecati provident quia, quibusdam ratione reiciendis saepe sequi vel veritatis vitae voluptate voluptatem.\\n    Debitis\\n    illum quaerat velit voluptatibus. A accusamus ad adipisci animi, aperiam architecto aspernatur aut beatae corporis\\n    culpa\\n    debitis dicta distinctio dolorem ducimus ea eligendi eos eveniet excepturi harum ipsum magnam maxime nesciunt\\n    numquam obcaecati\\n    perferendis, provident quaerat qui ratione reiciendis repellendus reprehenderit saepe sequi vel voluptas voluptate\\n    voluptates\\n    voluptatibus? Amet aperiam corporis deleniti deserunt, dolorem est exercitationem fuga hic impedit inventore itaque\\n    laboriosam\\n    laudantium, magnam necessitatibus nemo odio officiis perferendis perspiciatis quae qui quibusdam quis quod saepe sit\\n    suscipit\\n    tenetur ut vel veritatis voluptate voluptatibus. Aliquid cum cumque eum iure laboriosam natus rem. Accusantium alias\\n    amet\\n    corporis eaque enim explicabo fuga harum illo inventore itaque laudantium modi nemo nihil nulla possimus quae quas\\n    quia quidem\\n    quisquam recusandae repellendus sapiente sequi sit tempora, totam unde velit. Accusantium corporis cum dolor dolorum\\n    iusto\\n    laboriosam minus necessitatibus, nulla, omnis pariatur quae ullam voluptatem. Accusantium architecto, assumenda\\n    commodi cumque\\n    dignissimos doloribus eius et eum in iusto libero magnam, magni mollitia necessitatibus neque nesciunt perspiciatis\\n    quidem\\n    voluptas voluptatem voluptatibus? Aspernatur assumenda at consequatur deleniti eum expedita fuga in neque officia\\n    pariatur,\\n    provident quasi saepe sed sequi tempora tempore voluptates? Aliquam aperiam autem cum doloribus ducimus enim eum ex\\n    expedita\\n    explicabo id illo iste iure maiores modi nemo neque nisi nostrum officia officiis omnis perferendis perspiciatis\\n    possimus\\n    quae quas quibusdam quidem quis saepe sed sint sunt velit, vero vitae voluptatum? Amet debitis, dolore dolores eum\\n    in ipsum\\n    magnam mollitia nostrum quas quisquam quod rem sed sequi tenetur, voluptatibus. Ad adipisci aliquam animi aut autem\\n    commodi\\n    distinctio dolor eveniet impedit in iusto magni neque, odit optio pariatur placeat quaerat quo rem rerum sequi\\n    suscipit\\n    veniam vero voluptate voluptatem, voluptatum. Accusantium dicta dolores ea est libero rerum sapiente sit!\\n    Accusantium cupiditate\\n    eum ex molestiae praesentium provident saepe? Eveniet labore, rem. Aperiam, architecto at consectetur culpa cumque\\n    debitis\\n    dolorum eius eveniet fuga illo, in ipsum libero molestias necessitatibus nemo neque omnis perferendis perspiciatis\\n    praesentium\\n    quasi qui quia quod rerum saepe sed similique sunt suscipit tenetur totam ullam veritatis vitae voluptate\\n    voluptatem. Assumenda\\n    consequatur corporis dolorem doloremque ea inventore iusto sequi sit ut vitae! Adipisci alias aliquid aperiam\\n    architecto asperiores\\n    delectus dolore eaque eius eligendi fugiat incidunt ipsam iusto laborum magni maxime nam, necessitatibus nesciunt\\n    omnis placeat\\n    quaerat quibusdam rem, suscipit unde vel, veritatis vero voluptatum. Animi aut fuga impedit nostrum odit officia\\n    quisquam,\\n    repudiandae saepe suscipit voluptates! Ab autem beatae distinctio, dolorum eligendi est excepturi facere facilis\\n    illo inventore\\n    iure minus nemo nesciunt quaerat quibusdam repellendus sequi sint sit ullam voluptatem. Debitis ducimus excepturi\\n    impedit\\n    laudantium magnam nisi possimus, quae quod repellat sed sit tempora unde. Delectus eius laudantium quas quidem\\n    similique sit\\n    unde voluptas voluptate? Accusamus aut distinctio dolorum earum enim illo illum incidunt iure magni natus nulla\\n    officiis\\n    pariatur perspiciatis possimus quasi recusandae sint voluptas, voluptatibus. Ad aliquam amet, deleniti dignissimos,\\n    eius enim\\n    error excepturi hic magni quae qui quisquam repellendus rerum saepe similique suscipit temporibus vel voluptate. A\\n    asperiores\\n    at, dolores eligendi eum facere fuga impedit incidunt ipsam labore laborum magnam omnis placeat, quam quidem quos\\n    similique\\n    tenetur totam, vero voluptatibus. Ab asperiores autem cum delectus dicta dolor dolorum eos ex impedit libero nam\\n    natus, necessitatibus\\n    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus id laborum minima. Adipisci aperiam atque\\n    autem commodi consequuntur debitis distinctio dolorem eum expedita ipsam iure labore laudantium maiores mollitia\\n    nesciunt\\n    nostrum optio perferendis porro, possimus quas quasi quisquam sint sunt totam unde. A atque blanditiis consequatur,\\n    dolore\\n    ducimus et id ipsam iusto labore, laudantium libero minus nam nostrum, numquam praesentium quisquam sint?\\n    Consectetur dolorum\\n    enim ex ipsum nam necessitatibus nisi nostrum odio omnis, quia recusandae temporibus totam. A aliquam, assumenda aut\\n    autem\\n    commodi consectetur dignissimos ducimus eius eos error ipsa ipsam molestias mollitia numquam praesentium quod rem\\n    sapiente\\n    sed sint totam! Ab aspernatur at culpa debitis dolores ea eius, excepturi ipsa laborum, minus numquam, optio\\n    reiciendis\\n    repudiandae similique temporibus! Blanditiis consequatur, dignissimos dolores eaque excepturi hic inventore ipsa\\n    iste\\n    nemo obcaecati provident quia, quibusdam ratione reiciendis saepe sequi vel veritatis vitae voluptate voluptatem.\\n    Debitis\\n    illum quaerat velit voluptatibus. A accusamus ad adipisci animi, aperiam architecto aspernatur aut beatae corporis\\n    culpa\\n    debitis dicta distinctio dolorem ducimus ea eligendi eos eveniet excepturi harum ipsum magnam maxime nesciunt\\n    numquam obcaecati\\n    perferendis, provident quaerat qui ratione reiciendis repellendus reprehenderit saepe sequi vel voluptas voluptate\\n    voluptates\\n    voluptatibus? Amet aperiam corporis deleniti deserunt, dolorem est exercitationem fuga hic impedit inventore itaque\\n    laboriosam\\n    laudantium, magnam necessitatibus nemo odio officiis perferendis perspiciatis quae qui quibusdam quis quod saepe sit\\n    suscipit\\n    tenetur ut vel veritatis voluptate voluptatibus. Aliquid cum cumque eum iure laboriosam natus rem. Accusantium alias\\n    amet\\n    corporis eaque enim explicabo fuga harum illo inventore itaque laudantium modi nemo nihil nulla possimus quae quas\\n    quia quidem\\n    quisquam recusandae repellendus sapiente sequi sit tempora, totam unde velit. Accusantium corporis cum dolor dolorum\\n    iusto\\n    laboriosam minus necessitatibus, nulla, omnis pariatur quae ullam voluptatem. Accusantium architecto, assumenda\\n    commodi cumque\\n    dignissimos doloribus eius et eum in iusto libero magnam, magni mollitia necessitatibus neque nesciunt perspiciatis\\n    quidem\\n    voluptas voluptatem voluptatibus? Aspernatur assumenda at consequatur deleniti eum expedita fuga in neque officia\\n    pariatur,\\n    provident quasi saepe sed sequi tempora tempore voluptates? Aliquam aperiam autem cum doloribus ducimus enim eum ex\\n    expedita\\n    explicabo id illo iste iure maiores modi nemo neque nisi nostrum officia officiis omnis perferendis perspiciatis\\n    possimus\\n    quae quas quibusdam quidem quis saepe sed sint sunt velit, vero vitae voluptatum? Amet debitis, dolore dolores eum\\n    in ipsum\\n    magnam mollitia nostrum quas quisquam quod rem sed sequi tenetur, voluptatibus. Ad adipisci aliquam animi aut autem\\n    commodi\\n    distinctio dolor eveniet impedit in iusto magni neque, odit optio pariatur placeat quaerat quo rem rerum sequi\\n    suscipit\\n    veniam vero voluptate voluptatem, voluptatum. Accusantium dicta dolores ea est libero rerum sapiente sit!\\n    Accusantium cupiditate\\n    eum ex molestiae praesentium provident saepe? Eveniet labore, rem. Aperiam, architecto at consectetur culpa cumque\\n    debitis\\n    dolorum eius eveniet fuga illo, in ipsum libero molestias necessitatibus nemo neque omnis perferendis perspiciatis\\n    praesentium\\n    quasi qui quia quod rerum saepe sed similique sunt suscipit tenetur totam ullam veritatis vitae voluptate\\n    voluptatem. Assumenda\\n    consequatur corporis dolorem doloremque ea inventore iusto sequi sit ut vitae! Adipisci alias aliquid aperiam\\n    architecto asperiores\\n    delectus dolore eaque eius eligendi fugiat incidunt ipsam iusto laborum magni maxime nam, necessitatibus nesciunt\\n    omnis placeat\\n    quaerat quibusdam rem, suscipit unde vel, veritatis vero voluptatum. Animi aut fuga impedit nostrum odit officia\\n    quisquam,\\n    repudiandae saepe suscipit voluptates! Ab autem beatae distinctio, dolorum eligendi est excepturi facere facilis\\n    illo inventore\\n    iure minus nemo nesciunt quaerat quibusdam repellendus sequi sint sit ullam voluptatem. Debitis ducimus excepturi\\n    impedit\\n    laudantium magnam nisi possimus, quae quod repellat sed sit tempora unde. Delectus eius laudantium quas quidem\\n    similique sit\\n    unde voluptas voluptate? Accusamus aut distinctio dolorum earum enim illo illum incidunt iure magni natus nulla\\n    officiis\\n    pariatur perspiciatis possimus quasi recusandae sint voluptas, voluptatibus. Ad aliquam amet, deleniti dignissimos,\\n    eius enim\\n    error excepturi hic magni quae qui quisquam repellendus rerum saepe similique suscipit temporibus vel voluptate. A\\n    asperiores\\n    at, dolores eligendi eum facere fuga impedit incidunt ipsam labore laborum magnam omnis placeat, quam quidem quos\\n    similique\\n    tenetur totam, vero voluptatibus. Ab asperiores autem cum delectus dicta dolor dolorum eos ex impedit libero nam\\n    natus, necessitatibus\\n    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus id laborum minima. Adipisci aperiam atque\\n    autem commodi consequuntur debitis distinctio dolorem eum expedita ipsam iure labore laudantium maiores mollitia\\n    nesciunt\\n    nostrum optio perferendis porro, possimus quas quasi quisquam sint sunt totam unde. A atque blanditiis consequatur,\\n    dolore\\n    ducimus et id ipsam iusto labore, laudantium libero minus nam nostrum, numquam praesentium quisquam sint?\\n    Consectetur dolorum\\n    enim ex ipsum nam necessitatibus nisi nostrum odio omnis, quia recusandae temporibus totam. A aliquam, assumenda aut\\n    autem\\n    commodi consectetur dignissimos ducimus eius eos error ipsa ipsam molestias mollitia numquam praesentium quod rem\\n    sapiente\\n    sed sint totam! Ab aspernatur at culpa debitis dolores ea eius, excepturi ipsa laborum, minus numquam, optio\\n    reiciendis\\n    repudiandae similique temporibus! Blanditiis consequatur, dignissimos dolores eaque excepturi hic inventore ipsa\\n    iste\\n    nemo obcaecati provident quia, quibusdam ratione reiciendis saepe sequi vel veritatis vitae voluptate voluptatem.\\n    Debitis\\n    illum quaerat velit voluptatibus. A accusamus ad adipisci animi, aperiam architecto aspernatur aut beatae corporis\\n    culpa\\n    debitis dicta distinctio dolorem ducimus ea eligendi eos eveniet excepturi harum ipsum magnam maxime nesciunt\\n    numquam obcaecati\\n    perferendis, provident quaerat qui ratione reiciendis repellendus reprehenderit saepe sequi vel voluptas voluptate\\n    voluptates\\n    voluptatibus? Amet aperiam corporis deleniti deserunt, dolorem est exercitationem fuga hic impedit inventore itaque\\n    laboriosam\\n    laudantium, magnam necessitatibus nemo odio officiis perferendis perspiciatis quae qui quibusdam quis quod saepe sit\\n    suscipit\\n    tenetur ut vel veritatis voluptate voluptatibus. Aliquid cum cumque eum iure laboriosam natus rem. Accusantium alias\\n    amet\\n    corporis eaque enim explicabo fuga harum illo inventore itaque laudantium modi nemo nihil nulla possimus quae quas\\n    quia quidem\\n    quisquam recusandae repellendus sapiente sequi sit tempora, totam unde velit. Accusantium corporis cum dolor dolorum\\n    iusto\\n    laboriosam minus necessitatibus, nulla, omnis pariatur quae ullam voluptatem. Accusantium architecto, assumenda\\n    commodi cumque\\n    dignissimos doloribus eius et eum in iusto libero magnam, magni mollitia necessitatibus neque nesciunt perspiciatis\\n    quidem\\n    voluptas voluptatem voluptatibus? Aspernatur assumenda at consequatur deleniti eum expedita fuga in neque officia\\n    pariatur,\\n    provident quasi saepe sed sequi tempora tempore voluptates? Aliquam aperiam autem cum doloribus ducimus enim eum ex\\n    expedita\\n    explicabo id illo iste iure maiores modi nemo neque nisi nostrum officia officiis omnis perferendis perspiciatis\\n    possimus\\n    quae quas quibusdam quidem quis saepe sed sint sunt velit, vero vitae voluptatum? Amet debitis, dolore dolores eum\\n    in ipsum\\n    magnam mollitia nostrum quas quisquam quod rem sed sequi tenetur, voluptatibus. Ad adipisci aliquam animi aut autem\\n    commodi\\n    distinctio dolor eveniet impedit in iusto magni neque, odit optio pariatur placeat quaerat quo rem rerum sequi\\n    suscipit\\n    veniam vero voluptate voluptatem, voluptatum. Accusantium dicta dolores ea est libero rerum sapiente sit!\\n    Accusantium cupiditate\\n    eum ex molestiae praesentium provident saepe? Eveniet labore, rem. Aperiam, architecto at consectetur culpa cumque\\n    debitis\\n    dolorum eius eveniet fuga illo, in ipsum libero molestias necessitatibus nemo neque omnis perferendis perspiciatis\\n    praesentium\\n    quasi qui quia quod rerum saepe sed similique sunt suscipit tenetur totam ullam veritatis vitae voluptate\\n    voluptatem. Assumenda\\n    consequatur corporis dolorem doloremque ea inventore iusto sequi sit ut vitae! Adipisci alias aliquid aperiam\\n    architecto asperiores\\n    delectus dolore eaque eius eligendi fugiat incidunt ipsam iusto laborum magni maxime nam, necessitatibus nesciunt\\n    omnis placeat\\n    quaerat quibusdam rem, suscipit unde vel, veritatis vero voluptatum. Animi aut fuga impedit nostrum odit officia\\n    quisquam,\\n    repudiandae saepe suscipit voluptates! Ab autem beatae distinctio, dolorum eligendi est excepturi facere facilis\\n    illo inventore\\n    iure minus nemo nesciunt quaerat quibusdam repellendus sequi sint sit ullam voluptatem. Debitis ducimus excepturi\\n    impedit\\n    laudantium magnam nisi possimus, quae quod repellat sed sit tempora unde. Delectus eius laudantium quas quidem\\n    similique sit\\n    unde voluptas voluptate? Accusamus aut distinctio dolorum earum enim illo illum incidunt iure magni natus nulla\\n    officiis\\n    pariatur perspiciatis possimus quasi recusandae sint voluptas, voluptatibus. Ad aliquam amet, deleniti dignissimos,\\n    eius enim\\n    error excepturi hic magni quae qui quisquam repellendus rerum saepe similique suscipit temporibus vel voluptate. A\\n    asperiores\\n    at, dolores eligendi eum facere fuga impedit incidunt ipsam labore laborum magnam omnis placeat, quam quidem quos\\n    similique\\n    tenetur totam, vero voluptatibus. Ab asperiores autem cum delectus dicta dolor dolorum eos ex impedit libero nam\\n    natus, necessitatibus\\n</p>\\n\"],\"names\":[],\"mappings\":\"AAKI,gCAAE,CACF,CAAC,8BAAC,CAAC,AACC,UAAU,CAAE,MAAM,CAClB,MAAM,CAAE,CAAC,CAAC,IAAI,AAClB,CAAC,AAED,EAAE,8BAAC,CAAC,AACA,cAAc,CAAE,SAAS,CACzB,MAAM,CAAE,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CAAC,AACvB,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,YAAY,CAAE,GAAG,AACrB,CAAC,AAED,IAAI,8BAAC,CAAC,AACF,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,CAAC,AAChB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,IAAI,CAAE,CAAC,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,MAAM,CAAE,IAAI,CAAC,CAAC,CACd,OAAO,CAAE,CAAC,CAAC,IAAI,AACnB,CAAC,AAED,uBAAQ,CAAC,EAAE,eAAC,CAAC,AACT,IAAI,CAAE,IAAI,CACV,MAAM,CAAE,GAAG,CAAC,CAAC,AACjB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Button, Picture, Input, Progress, Icon, Form } from '../components'\\n</script>\\n\\n<style>\\n    h1,\\n    p {\\n        text-align: center;\\n        margin: 0 auto;\\n    }\\n\\n    h1 {\\n        text-transform: uppercase;\\n        margin: 0 0 0.5em 0;\\n    }\\n\\n    .top-wrap {\\n        padding-left: 5px;\\n    }\\n\\n    .top {\\n        display: flex;\\n    }\\n\\n    .top-pic {\\n        display: flex;\\n        flex-grow: 1;\\n    }\\n\\n    .options {\\n        flex: 0;\\n        display: flex;\\n        flex-direction: column;\\n        margin: -7px 0;\\n        padding: 0 10px;\\n    }\\n\\n    .options li {\\n        flex: none;\\n        margin: 7px 0;\\n    }\\n</style>\\n\\n<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n\\n<section class=\\\"top-wrap\\\">\\n    <section class=\\\"top\\\">\\n        <div class=\\\"top-pic\\\">\\n            <Picture src=\\\"https://placeimg.com/1000/1000/people\\\" alt=\\\"sample\\\"/>\\n        </div>\\n\\n        <ul class=\\\"options\\\">\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test1</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test12</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test123</Button>\\n            </li>\\n            <li>\\n                <Input\\n                        type=\\\"number\\\"\\n                        name=\\\"num\\\"\\n                        list=\\\"sum-suggestions\\\"\\n                        placeholder=\\\"Num\\\"\\n                        autoselect\\n                        align=\\\"right\\\"\\n                />\\n\\n                <datalist id=\\\"sum-suggestions\\\">\\n                    <option value=\\\"20\\\">\\n                    <option value=\\\"500\\\">\\n                    <option value=\\\"1000\\\">\\n                </datalist>\\n            </li>\\n        </ul>\\n    </section>\\n\\n    <ul>\\n        <li>\\n        <span>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon type=\\\"heart-filled\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n    </ul>\\n\\n    <section style=\\\"padding: 20px 5px 20px 0\\\">\\n        <Progress value=\\\"65\\\" max=\\\"100\\\" style=\\\"background: 0; width: 100%\\\"></Progress>\\n    </section>\\n</section>\\n\\n\\n<Form on:submit=\\\"{(e) => console.log(e)}\\\">\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"number\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"text\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"email\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"url\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"search\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"date\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"password\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"tel\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Button is=\\\"success\\\" type=\\\"submit\\\">Submit</Button>\\n</Form>\\n\\n<h1>Charitify - is the application for helping those in need.</h1>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Typography</h2>\\n\\n<br>\\n<br>\\n\\n<p>Few paragraphs to text fonts</p>\\n<p>Декілька параграфів для тесту тексту</p>\\n<p>Несколько параграфов для теста текста</p>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-warning\\\">Interactive elements</h2>\\n\\n<br>\\n<br>\\n\\n<section style=\\\"text-align: center; display: flex; justify-content: space-around\\\">\\n    <div>\\n        <br>\\n        Buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" ariaLabel=\\\"text\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n\\n    <div>\\n        <br>\\n        Links as buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-danger\\\">Input fields</h2>\\n\\n<br>\\n<br>\\n\\n<section>\\n    <Input rows={2} name=\\\"tex\\\" list=\\\"lis\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"tex1\\\" list=\\\"lis\\\" placeholder=\\\"Some placeholder text\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"number\\\" name=\\\"tex1\\\" list=\\\"lis\\\"/>\\n\\n    <datalist id=\\\"lis\\\">\\n        <option value=\\\"1\\\">\\n        <option value=\\\"2\\\">\\n        <option value=\\\"3\\\">\\n    </datalist>\\n\\n    <label for=\\\"input\\\" class=\\\"text-success\\\">label</label>\\n    <input id=\\\"input\\\" type=\\\"text\\\" value=\\\"text\\\">\\n\\n    <br>\\n    <br>\\n\\n    <a href=\\\".\\\" class=\\\"text-warning\\\">Some link</a>\\n\\n    <br>\\n    <br>\\n\\n    <button type=\\\"button\\\" class=\\\"text-info\\\">Button example</button>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-info\\\">Images</h2>\\n\\n<Picture alt=\\\"Borat\\\" src=\\\"great-success.png\\\" class=\\\"picture\\\">\\n    HIGH FIVE!\\n</Picture>\\n\\n<br>\\n<br>\\n\\n<Picture src=\\\"https://placeimg.com/1000/1000/any\\\" alt=\\\"sample\\\"/>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Other</h2>\\n\\n<p>\\n    <strong>\\n        Try editing this file (src/routes/index.svelte) to test live reloading.\\n    </strong>\\n</p>\\n\\n<p style=\\\"text-align: justify\\\">\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n</p>\\n\"],\"names\":[],\"mappings\":\"AAKI,gCAAE,CACF,CAAC,8BAAC,CAAC,AACC,UAAU,CAAE,MAAM,CAClB,MAAM,CAAE,CAAC,CAAC,IAAI,AAClB,CAAC,AAED,EAAE,8BAAC,CAAC,AACA,cAAc,CAAE,SAAS,CACzB,MAAM,CAAE,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CAAC,AACvB,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,YAAY,CAAE,GAAG,AACrB,CAAC,AAED,IAAI,8BAAC,CAAC,AACF,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,CAAC,AAChB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,IAAI,CAAE,CAAC,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,MAAM,CAAE,IAAI,CAAC,CAAC,CACd,OAAO,CAAE,CAAC,CAAC,IAAI,AACnB,CAAC,AAED,uBAAQ,CAAC,EAAE,eAAC,CAAC,AACT,IAAI,CAAE,IAAI,CACV,MAAM,CAAE,GAAG,CAAC,CAAC,AACjB,CAAC\"}"
 };
 
 const Routes = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1014,243 +1014,35 @@ ${validate_component(Picture, "Picture").$$render(
 </p>
 
 <p style="${"text-align: justify"}" class="${"svelte-1kmv00v"}">
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus id laborum minima. Adipisci aperiam atque
-    autem commodi consequuntur debitis distinctio dolorem eum expedita ipsam iure labore laudantium maiores mollitia
-    nesciunt
-    nostrum optio perferendis porro, possimus quas quasi quisquam sint sunt totam unde. A atque blanditiis consequatur,
-    dolore
-    ducimus et id ipsam iusto labore, laudantium libero minus nam nostrum, numquam praesentium quisquam sint?
-    Consectetur dolorum
-    enim ex ipsum nam necessitatibus nisi nostrum odio omnis, quia recusandae temporibus totam. A aliquam, assumenda aut
-    autem
-    commodi consectetur dignissimos ducimus eius eos error ipsa ipsam molestias mollitia numquam praesentium quod rem
-    sapiente
-    sed sint totam! Ab aspernatur at culpa debitis dolores ea eius, excepturi ipsa laborum, minus numquam, optio
-    reiciendis
-    repudiandae similique temporibus! Blanditiis consequatur, dignissimos dolores eaque excepturi hic inventore ipsa
-    iste
-    nemo obcaecati provident quia, quibusdam ratione reiciendis saepe sequi vel veritatis vitae voluptate voluptatem.
-    Debitis
-    illum quaerat velit voluptatibus. A accusamus ad adipisci animi, aperiam architecto aspernatur aut beatae corporis
-    culpa
-    debitis dicta distinctio dolorem ducimus ea eligendi eos eveniet excepturi harum ipsum magnam maxime nesciunt
-    numquam obcaecati
-    perferendis, provident quaerat qui ratione reiciendis repellendus reprehenderit saepe sequi vel voluptas voluptate
-    voluptates
-    voluptatibus? Amet aperiam corporis deleniti deserunt, dolorem est exercitationem fuga hic impedit inventore itaque
-    laboriosam
-    laudantium, magnam necessitatibus nemo odio officiis perferendis perspiciatis quae qui quibusdam quis quod saepe sit
-    suscipit
-    tenetur ut vel veritatis voluptate voluptatibus. Aliquid cum cumque eum iure laboriosam natus rem. Accusantium alias
-    amet
-    corporis eaque enim explicabo fuga harum illo inventore itaque laudantium modi nemo nihil nulla possimus quae quas
-    quia quidem
-    quisquam recusandae repellendus sapiente sequi sit tempora, totam unde velit. Accusantium corporis cum dolor dolorum
-    iusto
-    laboriosam minus necessitatibus, nulla, omnis pariatur quae ullam voluptatem. Accusantium architecto, assumenda
-    commodi cumque
-    dignissimos doloribus eius et eum in iusto libero magnam, magni mollitia necessitatibus neque nesciunt perspiciatis
-    quidem
-    voluptas voluptatem voluptatibus? Aspernatur assumenda at consequatur deleniti eum expedita fuga in neque officia
-    pariatur,
-    provident quasi saepe sed sequi tempora tempore voluptates? Aliquam aperiam autem cum doloribus ducimus enim eum ex
-    expedita
-    explicabo id illo iste iure maiores modi nemo neque nisi nostrum officia officiis omnis perferendis perspiciatis
-    possimus
-    quae quas quibusdam quidem quis saepe sed sint sunt velit, vero vitae voluptatum? Amet debitis, dolore dolores eum
-    in ipsum
-    magnam mollitia nostrum quas quisquam quod rem sed sequi tenetur, voluptatibus. Ad adipisci aliquam animi aut autem
-    commodi
-    distinctio dolor eveniet impedit in iusto magni neque, odit optio pariatur placeat quaerat quo rem rerum sequi
-    suscipit
-    veniam vero voluptate voluptatem, voluptatum. Accusantium dicta dolores ea est libero rerum sapiente sit!
-    Accusantium cupiditate
-    eum ex molestiae praesentium provident saepe? Eveniet labore, rem. Aperiam, architecto at consectetur culpa cumque
-    debitis
-    dolorum eius eveniet fuga illo, in ipsum libero molestias necessitatibus nemo neque omnis perferendis perspiciatis
-    praesentium
-    quasi qui quia quod rerum saepe sed similique sunt suscipit tenetur totam ullam veritatis vitae voluptate
-    voluptatem. Assumenda
-    consequatur corporis dolorem doloremque ea inventore iusto sequi sit ut vitae! Adipisci alias aliquid aperiam
-    architecto asperiores
-    delectus dolore eaque eius eligendi fugiat incidunt ipsam iusto laborum magni maxime nam, necessitatibus nesciunt
-    omnis placeat
-    quaerat quibusdam rem, suscipit unde vel, veritatis vero voluptatum. Animi aut fuga impedit nostrum odit officia
-    quisquam,
-    repudiandae saepe suscipit voluptates! Ab autem beatae distinctio, dolorum eligendi est excepturi facere facilis
-    illo inventore
-    iure minus nemo nesciunt quaerat quibusdam repellendus sequi sint sit ullam voluptatem. Debitis ducimus excepturi
-    impedit
-    laudantium magnam nisi possimus, quae quod repellat sed sit tempora unde. Delectus eius laudantium quas quidem
-    similique sit
-    unde voluptas voluptate? Accusamus aut distinctio dolorum earum enim illo illum incidunt iure magni natus nulla
-    officiis
-    pariatur perspiciatis possimus quasi recusandae sint voluptas, voluptatibus. Ad aliquam amet, deleniti dignissimos,
-    eius enim
-    error excepturi hic magni quae qui quisquam repellendus rerum saepe similique suscipit temporibus vel voluptate. A
-    asperiores
-    at, dolores eligendi eum facere fuga impedit incidunt ipsam labore laborum magnam omnis placeat, quam quidem quos
-    similique
-    tenetur totam, vero voluptatibus. Ab asperiores autem cum delectus dicta dolor dolorum eos ex impedit libero nam
-    natus, necessitatibus
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus id laborum minima. Adipisci aperiam atque
-    autem commodi consequuntur debitis distinctio dolorem eum expedita ipsam iure labore laudantium maiores mollitia
-    nesciunt
-    nostrum optio perferendis porro, possimus quas quasi quisquam sint sunt totam unde. A atque blanditiis consequatur,
-    dolore
-    ducimus et id ipsam iusto labore, laudantium libero minus nam nostrum, numquam praesentium quisquam sint?
-    Consectetur dolorum
-    enim ex ipsum nam necessitatibus nisi nostrum odio omnis, quia recusandae temporibus totam. A aliquam, assumenda aut
-    autem
-    commodi consectetur dignissimos ducimus eius eos error ipsa ipsam molestias mollitia numquam praesentium quod rem
-    sapiente
-    sed sint totam! Ab aspernatur at culpa debitis dolores ea eius, excepturi ipsa laborum, minus numquam, optio
-    reiciendis
-    repudiandae similique temporibus! Blanditiis consequatur, dignissimos dolores eaque excepturi hic inventore ipsa
-    iste
-    nemo obcaecati provident quia, quibusdam ratione reiciendis saepe sequi vel veritatis vitae voluptate voluptatem.
-    Debitis
-    illum quaerat velit voluptatibus. A accusamus ad adipisci animi, aperiam architecto aspernatur aut beatae corporis
-    culpa
-    debitis dicta distinctio dolorem ducimus ea eligendi eos eveniet excepturi harum ipsum magnam maxime nesciunt
-    numquam obcaecati
-    perferendis, provident quaerat qui ratione reiciendis repellendus reprehenderit saepe sequi vel voluptas voluptate
-    voluptates
-    voluptatibus? Amet aperiam corporis deleniti deserunt, dolorem est exercitationem fuga hic impedit inventore itaque
-    laboriosam
-    laudantium, magnam necessitatibus nemo odio officiis perferendis perspiciatis quae qui quibusdam quis quod saepe sit
-    suscipit
-    tenetur ut vel veritatis voluptate voluptatibus. Aliquid cum cumque eum iure laboriosam natus rem. Accusantium alias
-    amet
-    corporis eaque enim explicabo fuga harum illo inventore itaque laudantium modi nemo nihil nulla possimus quae quas
-    quia quidem
-    quisquam recusandae repellendus sapiente sequi sit tempora, totam unde velit. Accusantium corporis cum dolor dolorum
-    iusto
-    laboriosam minus necessitatibus, nulla, omnis pariatur quae ullam voluptatem. Accusantium architecto, assumenda
-    commodi cumque
-    dignissimos doloribus eius et eum in iusto libero magnam, magni mollitia necessitatibus neque nesciunt perspiciatis
-    quidem
-    voluptas voluptatem voluptatibus? Aspernatur assumenda at consequatur deleniti eum expedita fuga in neque officia
-    pariatur,
-    provident quasi saepe sed sequi tempora tempore voluptates? Aliquam aperiam autem cum doloribus ducimus enim eum ex
-    expedita
-    explicabo id illo iste iure maiores modi nemo neque nisi nostrum officia officiis omnis perferendis perspiciatis
-    possimus
-    quae quas quibusdam quidem quis saepe sed sint sunt velit, vero vitae voluptatum? Amet debitis, dolore dolores eum
-    in ipsum
-    magnam mollitia nostrum quas quisquam quod rem sed sequi tenetur, voluptatibus. Ad adipisci aliquam animi aut autem
-    commodi
-    distinctio dolor eveniet impedit in iusto magni neque, odit optio pariatur placeat quaerat quo rem rerum sequi
-    suscipit
-    veniam vero voluptate voluptatem, voluptatum. Accusantium dicta dolores ea est libero rerum sapiente sit!
-    Accusantium cupiditate
-    eum ex molestiae praesentium provident saepe? Eveniet labore, rem. Aperiam, architecto at consectetur culpa cumque
-    debitis
-    dolorum eius eveniet fuga illo, in ipsum libero molestias necessitatibus nemo neque omnis perferendis perspiciatis
-    praesentium
-    quasi qui quia quod rerum saepe sed similique sunt suscipit tenetur totam ullam veritatis vitae voluptate
-    voluptatem. Assumenda
-    consequatur corporis dolorem doloremque ea inventore iusto sequi sit ut vitae! Adipisci alias aliquid aperiam
-    architecto asperiores
-    delectus dolore eaque eius eligendi fugiat incidunt ipsam iusto laborum magni maxime nam, necessitatibus nesciunt
-    omnis placeat
-    quaerat quibusdam rem, suscipit unde vel, veritatis vero voluptatum. Animi aut fuga impedit nostrum odit officia
-    quisquam,
-    repudiandae saepe suscipit voluptates! Ab autem beatae distinctio, dolorum eligendi est excepturi facere facilis
-    illo inventore
-    iure minus nemo nesciunt quaerat quibusdam repellendus sequi sint sit ullam voluptatem. Debitis ducimus excepturi
-    impedit
-    laudantium magnam nisi possimus, quae quod repellat sed sit tempora unde. Delectus eius laudantium quas quidem
-    similique sit
-    unde voluptas voluptate? Accusamus aut distinctio dolorum earum enim illo illum incidunt iure magni natus nulla
-    officiis
-    pariatur perspiciatis possimus quasi recusandae sint voluptas, voluptatibus. Ad aliquam amet, deleniti dignissimos,
-    eius enim
-    error excepturi hic magni quae qui quisquam repellendus rerum saepe similique suscipit temporibus vel voluptate. A
-    asperiores
-    at, dolores eligendi eum facere fuga impedit incidunt ipsam labore laborum magnam omnis placeat, quam quidem quos
-    similique
-    tenetur totam, vero voluptatibus. Ab asperiores autem cum delectus dicta dolor dolorum eos ex impedit libero nam
-    natus, necessitatibus
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem doloribus id laborum minima. Adipisci aperiam atque
-    autem commodi consequuntur debitis distinctio dolorem eum expedita ipsam iure labore laudantium maiores mollitia
-    nesciunt
-    nostrum optio perferendis porro, possimus quas quasi quisquam sint sunt totam unde. A atque blanditiis consequatur,
-    dolore
-    ducimus et id ipsam iusto labore, laudantium libero minus nam nostrum, numquam praesentium quisquam sint?
-    Consectetur dolorum
-    enim ex ipsum nam necessitatibus nisi nostrum odio omnis, quia recusandae temporibus totam. A aliquam, assumenda aut
-    autem
-    commodi consectetur dignissimos ducimus eius eos error ipsa ipsam molestias mollitia numquam praesentium quod rem
-    sapiente
-    sed sint totam! Ab aspernatur at culpa debitis dolores ea eius, excepturi ipsa laborum, minus numquam, optio
-    reiciendis
-    repudiandae similique temporibus! Blanditiis consequatur, dignissimos dolores eaque excepturi hic inventore ipsa
-    iste
-    nemo obcaecati provident quia, quibusdam ratione reiciendis saepe sequi vel veritatis vitae voluptate voluptatem.
-    Debitis
-    illum quaerat velit voluptatibus. A accusamus ad adipisci animi, aperiam architecto aspernatur aut beatae corporis
-    culpa
-    debitis dicta distinctio dolorem ducimus ea eligendi eos eveniet excepturi harum ipsum magnam maxime nesciunt
-    numquam obcaecati
-    perferendis, provident quaerat qui ratione reiciendis repellendus reprehenderit saepe sequi vel voluptas voluptate
-    voluptates
-    voluptatibus? Amet aperiam corporis deleniti deserunt, dolorem est exercitationem fuga hic impedit inventore itaque
-    laboriosam
-    laudantium, magnam necessitatibus nemo odio officiis perferendis perspiciatis quae qui quibusdam quis quod saepe sit
-    suscipit
-    tenetur ut vel veritatis voluptate voluptatibus. Aliquid cum cumque eum iure laboriosam natus rem. Accusantium alias
-    amet
-    corporis eaque enim explicabo fuga harum illo inventore itaque laudantium modi nemo nihil nulla possimus quae quas
-    quia quidem
-    quisquam recusandae repellendus sapiente sequi sit tempora, totam unde velit. Accusantium corporis cum dolor dolorum
-    iusto
-    laboriosam minus necessitatibus, nulla, omnis pariatur quae ullam voluptatem. Accusantium architecto, assumenda
-    commodi cumque
-    dignissimos doloribus eius et eum in iusto libero magnam, magni mollitia necessitatibus neque nesciunt perspiciatis
-    quidem
-    voluptas voluptatem voluptatibus? Aspernatur assumenda at consequatur deleniti eum expedita fuga in neque officia
-    pariatur,
-    provident quasi saepe sed sequi tempora tempore voluptates? Aliquam aperiam autem cum doloribus ducimus enim eum ex
-    expedita
-    explicabo id illo iste iure maiores modi nemo neque nisi nostrum officia officiis omnis perferendis perspiciatis
-    possimus
-    quae quas quibusdam quidem quis saepe sed sint sunt velit, vero vitae voluptatum? Amet debitis, dolore dolores eum
-    in ipsum
-    magnam mollitia nostrum quas quisquam quod rem sed sequi tenetur, voluptatibus. Ad adipisci aliquam animi aut autem
-    commodi
-    distinctio dolor eveniet impedit in iusto magni neque, odit optio pariatur placeat quaerat quo rem rerum sequi
-    suscipit
-    veniam vero voluptate voluptatem, voluptatum. Accusantium dicta dolores ea est libero rerum sapiente sit!
-    Accusantium cupiditate
-    eum ex molestiae praesentium provident saepe? Eveniet labore, rem. Aperiam, architecto at consectetur culpa cumque
-    debitis
-    dolorum eius eveniet fuga illo, in ipsum libero molestias necessitatibus nemo neque omnis perferendis perspiciatis
-    praesentium
-    quasi qui quia quod rerum saepe sed similique sunt suscipit tenetur totam ullam veritatis vitae voluptate
-    voluptatem. Assumenda
-    consequatur corporis dolorem doloremque ea inventore iusto sequi sit ut vitae! Adipisci alias aliquid aperiam
-    architecto asperiores
-    delectus dolore eaque eius eligendi fugiat incidunt ipsam iusto laborum magni maxime nam, necessitatibus nesciunt
-    omnis placeat
-    quaerat quibusdam rem, suscipit unde vel, veritatis vero voluptatum. Animi aut fuga impedit nostrum odit officia
-    quisquam,
-    repudiandae saepe suscipit voluptates! Ab autem beatae distinctio, dolorum eligendi est excepturi facere facilis
-    illo inventore
-    iure minus nemo nesciunt quaerat quibusdam repellendus sequi sint sit ullam voluptatem. Debitis ducimus excepturi
-    impedit
-    laudantium magnam nisi possimus, quae quod repellat sed sit tempora unde. Delectus eius laudantium quas quidem
-    similique sit
-    unde voluptas voluptate? Accusamus aut distinctio dolorum earum enim illo illum incidunt iure magni natus nulla
-    officiis
-    pariatur perspiciatis possimus quasi recusandae sint voluptas, voluptatibus. Ad aliquam amet, deleniti dignissimos,
-    eius enim
-    error excepturi hic magni quae qui quisquam repellendus rerum saepe similique suscipit temporibus vel voluptate. A
-    asperiores
-    at, dolores eligendi eum facere fuga impedit incidunt ipsam labore laborum magnam omnis placeat, quam quidem quos
-    similique
-    tenetur totam, vero voluptatibus. Ab asperiores autem cum delectus dicta dolor dolorum eos ex impedit libero nam
-    natus, necessitatibus
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
+    A lot of English text. A lot of English text. A lot of English text. A lot of English text.
 </p>`;
 });
 
