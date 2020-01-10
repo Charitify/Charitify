@@ -1,5 +1,5 @@
 <script>
-    import { Button, Picture, Input, Progress } from '../components'
+    import { Button, Picture, Input, Progress, Icon } from '../components'
 </script>
 
 <style>
@@ -47,6 +47,13 @@
 
 
 <section class="top-wrap">
+
+    <span>
+        <Icon type="heart-filled"/>
+        <Icon type="heart-filled" is="warning"/>
+        <Icon type="heart-filled" is="danger"/>
+    </span>
+
     <section class="top">
         <div class="top-pic">
             <Picture src="https://placeimg.com/1000/1000/people" alt="sample"/>
