@@ -40,10 +40,11 @@
     .progress {
         flex: 0;
         width: 100%;
+        height: 30px;
+        padding: 7px;
         border-radius: 9999px;
         background-color: rgba(255, 255, 255, .2);
-        height: calc(var(--min-interactive-size) / 1.5);
-        padding: calc(var(--min-interactive-size) / 1.5 / 3.5);
+        box-shadow: inset var(--primary-shadow), 1px -1px 2px rgba(0,0,0,.1);
     }
 
     .progress-inner-frame {
@@ -58,6 +59,8 @@
         flex: none;
         align-self: stretch;
         transition: 1s ease-in-out;
+        margin-bottom: 2px;
+        box-shadow: var(--primary-shadow);
         border-radius: var(--border-radius);
         background-color: rgb(var(--color-success));
     }

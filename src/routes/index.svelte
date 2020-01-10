@@ -1,6 +1,6 @@
 <script>
     import { Swipe, SwipeItem } from "../plugins";
-    import { Button, Picture, Input, Progress, Icon, Form } from '../components'
+    import { Button, Picture, Input, Progress, Icon, Form, Rate, Avatar } from '../components'
 </script>
 
 <style>
@@ -9,42 +9,71 @@
         text-align: center;
     }
 
-    .top-wrap {
-        padding-left: 5px;
-    }
-
     .top {
         display: flex;
+        margin-bottom: calc(var(--screen-padding) * 2);
+        margin-top: var(--screen-padding);
     }
 
     .top-pic {
+        z-index: 0;
         flex-grow: 1;
+        overflow: hidden;
+        border-radius: var(--border-radius);
     }
 
     .options {
         flex: 0;
         display: flex;
         flex-direction: column;
-        margin: -7px 0;
-        padding: 0 10px;
+        margin: calc(var(--screen-padding) * -1) 0;
+        padding: 0 0 0 var(--screen-padding);
     }
 
     .options li {
         flex: none;
-        margin: 7px 0;
+        margin: var(--screen-padding) 0;
     }
 
+    .rate-section {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: calc(var(--screen-padding) * 2) 0;
+    }
+
+    .ava-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .ava-section span {
+        font-size: .7rem;
+        padding: 0 var(--screen-padding);
+    }
+
+    .ava-section span p {
+        font-size: .6rem;
+    }
+
+    .ava-section span p,
+    .ava-section span h3 {
+        max-width: 100%;
+        line-height: 1.4;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 </style>
 
 <svelte:head>
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-<br>
-
-<section class="top-wrap">
+<section class="container">
     <section class="top">
-        <div class="top-pic">
+        <div class="top-pic main-shadow">
             <Swipe>
                 <SwipeItem>
                     <Picture src="https://placeimg.com/300/300/people" alt="sample"/>
@@ -97,19 +126,21 @@
         </ul>
     </section>
 
-    <section style="padding: 20px 5px 20px 0">
-        <Progress value="65"></Progress>
+    <Progress value="65"></Progress>
+
+    <section class="rate-section">
+        <div class="ava-section">
+            <Avatar src="https://placeimg.com/300/300/people" alt="avatar"/>
+
+            <span>
+                <h3>Tina Kandelaki</h3>
+                <p>ORG charity charitify</p>
+            </span>
+        </div>
+
+        <Rate/>
     </section>
 
-    <span>
-            <Icon type="heart-filled" is="danger"/>
-            <Icon type="heart-filled" is="danger"/>
-            <Icon type="heart-filled" is="danger"/>
-            <Icon type="heart-filled" is="danger"/>
-            <Icon type="heart-filled" is="danger"/>
-    </span>
-
-    <br>
     <br>
 
     <h1>The main title</h1>

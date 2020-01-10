@@ -35,6 +35,7 @@
     border-bottom: 1px solid rgba(var(--color-danger), .1);
     padding: 0 1em;
     z-index: 1;
+    box-shadow: var(--secondary-shadow);
   }
 
   .selected {
