@@ -1,4 +1,5 @@
 <script>
+    import { Swipe, SwipeItem } from "svelte-swipe";
     import { Button, Picture, Input, Progress, Icon, Form } from '../components'
 </script>
 
@@ -17,7 +18,7 @@
     }
 
     .top-pic {
-        display: flex;
+        height: 330px;
         flex-grow: 1;
     }
 
@@ -33,6 +34,10 @@
         flex: none;
         margin: 7px 0;
     }
+
+    .top-wrap :global(.swipe-item) {
+        display: flex;
+    }
 </style>
 
 <svelte:head>
@@ -44,7 +49,17 @@
 <section class="top-wrap">
     <section class="top">
         <div class="top-pic">
-            <Picture src="https://placeimg.com/1000/1000/people" alt="sample"/>
+            <Swipe>
+                <SwipeItem classes="swipe-item">
+                    <Picture src="https://placeimg.com/1000/1000/people" alt="sample"/>
+                </SwipeItem>
+                <SwipeItem classes="swipe-item">
+                    <Picture src="https://placeimg.com/1000/1000/any" alt="sample"/>
+                </SwipeItem>
+                <SwipeItem classes="swipe-item">
+                    <Picture src="https://placeimg.com/1000/1000/place" alt="sample"/>
+                </SwipeItem>
+            </Swipe>
         </div>
 
         <ul class="options">
@@ -85,11 +100,11 @@
     </section>
 
     <span>
-            <Icon type="heart-filled"/>
-            <Icon type="heart-filled"/>
-            <Icon type="heart-filled"/>
-            <Icon type="heart-filled"/>
-            <Icon type="heart-filled"/>
+            <Icon type="heart-filled" is="danger"/>
+            <Icon type="heart-filled" is="danger"/>
+            <Icon type="heart-filled" is="danger"/>
+            <Icon type="heart-filled" is="danger"/>
+            <Icon type="heart-filled" is="danger"/>
     </span>
 
     <br>

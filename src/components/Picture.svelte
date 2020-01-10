@@ -46,6 +46,8 @@
 
 <style>
     .picture {
+        flex-grow: 1;
+        align-self: stretch;
         display: inline-flex;
         flex-direction: column;
         align-items: stretch;
