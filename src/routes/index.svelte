@@ -1,5 +1,5 @@
 <script>
-    import { Swipe, SwipeItem } from "svelte-swipe/src/index";
+    import { Swipe, SwipeItem } from "../plugins";
     import { Button, Picture, Input, Progress, Icon, Form } from '../components'
 </script>
 
@@ -51,13 +51,19 @@
         <div class="top-pic">
             <Swipe>
                 <SwipeItem classes="swipe-item">
-                    <Picture src="https://placeimg.com/1000/1000/people" alt="sample"/>
+                    <Picture src="https://placeimg.com/300/300/people" alt="sample"/>
                 </SwipeItem>
                 <SwipeItem classes="swipe-item">
-                    <Picture src="https://placeimg.com/1000/1000/any" alt="sample"/>
+                    <Picture src="https://placeimg.com/300/300/any" alt="sample"/>
                 </SwipeItem>
                 <SwipeItem classes="swipe-item">
-                    <Picture src="https://placeimg.com/1000/1000/place" alt="sample"/>
+                    <Picture src="https://placeimg.com/300/300/arch" alt="sample"/>
+                </SwipeItem>
+                <SwipeItem classes="swipe-item">
+                    <Picture src="https://placeimg.com/300/300/nature" alt="sample"/>
+                </SwipeItem>
+                <SwipeItem classes="swipe-item">
+                    <Picture src="https://placeimg.com/300/300/tech" alt="sample"/>
                 </SwipeItem>
             </Swipe>
         </div>
