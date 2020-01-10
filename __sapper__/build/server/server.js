@@ -170,6 +170,9 @@ function run_all(fns) {
 function safe_not_equal(a, b) {
     return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
 }
+function null_to_empty(value) {
+    return value == null ? '' : value;
+}
 function custom_event(type, detail) {
     const e = document.createEvent('CustomEvent');
     e.initCustomEvent(type, false, false, detail);
@@ -344,7 +347,7 @@ const toCSSString = (styles = {}) => Object.entries(styles)
 
 const css = {
 	code: "svg.svelte-3suh4w.svelte-3suh4w{display:inherit}.small.svelte-3suh4w.svelte-3suh4w{width:15px;height:15px}.medium.svelte-3suh4w.svelte-3suh4w{width:25px;height:25px}.big.svelte-3suh4w.svelte-3suh4w{width:35px;height:35px}.primary.svelte-3suh4w .svelte-3suh4w{fill:rgb(var(--color-success));stroke:rgb(var(--color-success))}.warning.svelte-3suh4w .svelte-3suh4w{fill:rgb(var(--color-warning));stroke:rgb(var(--color-warning))}.danger.svelte-3suh4w .svelte-3suh4w{fill:rgb(var(--color-danger));stroke:rgb(var(--color-danger))}",
-	map: "{\"version\":3,\"file\":\"Icon.svelte\",\"sources\":[\"Icon.svelte\"],\"sourcesContent\":[\"<script>\\n    import { classnames, toCSSString } from '../utils'\\n\\n    export let type\\n    export let is = 'primary' // primary|warning|danger\\n    export let size = 'medium' // small|medium|big\\n    export let rotate = 0\\n    export let style = undefined\\n    export let id = undefined\\n    export let title = undefined\\n    export let ariaLabel = undefined\\n\\n    $: options = {\\n        id,\\n        title,\\n        'aria-label': ariaLabel,\\n        class: classnames('ico', is, size, $$props.class),\\n        style: toCSSString({ transform: !!rotate ? `rotateZ(${rotate}deg)` : null, ...style }),\\n    }\\n</script>\\n\\n<svg {...options}>\\n    <use xlink:href={`#ico-${type}`} class=\\\"ico_use\\\"/>\\n</svg>\\n\\n<style>\\n    svg {\\n        display: inherit;\\n    }\\n\\n    /* ------------=========( Size )=========------------ */\\n    .small {\\n        width: 15px;\\n        height: 15px;\\n    }\\n\\n    .medium {\\n        width: 25px;\\n        height: 25px;\\n    }\\n\\n    .big {\\n        width: 35px;\\n        height: 35px;\\n    }\\n\\n    /* ------------=========( Color )=========------------ */\\n    .primary * {\\n        fill: rgb(var(--color-success));\\n        stroke: rgb(var(--color-success));\\n    }\\n\\n    .warning * {\\n        fill: rgb(var(--color-warning));\\n        stroke: rgb(var(--color-warning));\\n    }\\n\\n    .danger * {\\n        fill: rgb(var(--color-danger));\\n        stroke: rgb(var(--color-danger));\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AA0BI,GAAG,4BAAC,CAAC,AACD,OAAO,CAAE,OAAO,AACpB,CAAC,AAGD,MAAM,4BAAC,CAAC,AACJ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,OAAO,4BAAC,CAAC,AACL,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,IAAI,4BAAC,CAAC,AACF,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAGD,sBAAQ,CAAC,cAAE,CAAC,AACR,IAAI,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,CAC/B,MAAM,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AACrC,CAAC,AAED,sBAAQ,CAAC,cAAE,CAAC,AACR,IAAI,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,CAC/B,MAAM,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AACrC,CAAC,AAED,qBAAO,CAAC,cAAE,CAAC,AACP,IAAI,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC9B,MAAM,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,AACpC,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Icon.svelte\",\"sources\":[\"Icon.svelte\"],\"sourcesContent\":[\"<script>\\n    import { classnames, toCSSString } from '../utils'\\n\\n    export let type\\n    export let is = 'primary' // primary|warning|danger\\n    export let size = 'medium' // small|medium|big\\n    export let rotate = 0\\n    export let style = undefined\\n    export let id = undefined\\n    export let title = undefined\\n    export let ariaLabel = undefined\\n\\n    let titleProp = title || ariaLabel\\n    let ariaLabelProp = ariaLabel || title\\n    let styleProp = toCSSString({ transform: !!rotate ? `rotateZ(${rotate}deg)` : null, ...style })\\n\\n    $:  classProp = classnames('ico', is, size, $$props.class)\\n</script>\\n\\n<svg\\n        {id}\\n        title={titleProp}\\n        class={classProp}\\n        style={styleProp}\\n        aria-label={ariaLabelProp}\\n>\\n    <use xlink:href={`#ico-${type}`} class=\\\"ico_use\\\"/>\\n</svg>\\n\\n<style>\\n    svg {\\n        display: inherit;\\n    }\\n\\n    /* ------------=========( Size )=========------------ */\\n    .small {\\n        width: 15px;\\n        height: 15px;\\n    }\\n\\n    .medium {\\n        width: 25px;\\n        height: 25px;\\n    }\\n\\n    .big {\\n        width: 35px;\\n        height: 35px;\\n    }\\n\\n    /* ------------=========( Color )=========------------ */\\n    .primary * {\\n        fill: rgb(var(--color-success));\\n        stroke: rgb(var(--color-success));\\n    }\\n\\n    .warning * {\\n        fill: rgb(var(--color-warning));\\n        stroke: rgb(var(--color-warning));\\n    }\\n\\n    .danger * {\\n        fill: rgb(var(--color-danger));\\n        stroke: rgb(var(--color-danger));\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AA8BI,GAAG,4BAAC,CAAC,AACD,OAAO,CAAE,OAAO,AACpB,CAAC,AAGD,MAAM,4BAAC,CAAC,AACJ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,OAAO,4BAAC,CAAC,AACL,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,IAAI,4BAAC,CAAC,AACF,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAGD,sBAAQ,CAAC,cAAE,CAAC,AACR,IAAI,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,CAC/B,MAAM,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AACrC,CAAC,AAED,sBAAQ,CAAC,cAAE,CAAC,AACR,IAAI,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,CAC/B,MAAM,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AACrC,CAAC,AAED,qBAAO,CAAC,cAAE,CAAC,AACP,IAAI,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC9B,MAAM,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,AACpC,CAAC\"}"
 };
 
 const Icon = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -356,6 +359,14 @@ const Icon = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { id = undefined } = $$props;
 	let { title = undefined } = $$props;
 	let { ariaLabel = undefined } = $$props;
+	let titleProp = title || ariaLabel;
+	let ariaLabelProp = ariaLabel || title;
+
+	let styleProp = toCSSString({
+		transform: !!rotate ? `rotateZ(${rotate}deg)` : null,
+		...style
+	});
+
 	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
 	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
 	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
@@ -365,19 +376,9 @@ const Icon = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	$$result.css.add(css);
+	let classProp = classnames("ico", is, size, $$props.class);
 
-	let options = {
-		id,
-		title,
-		"aria-label": ariaLabel,
-		class: classnames("ico", is, size, $$props.class),
-		style: toCSSString({
-			transform: !!rotate ? `rotateZ(${rotate}deg)` : null,
-			...style
-		})
-	};
-
-	return `<svg${spread([options], "svelte-3suh4w")}>
+	return `<svg${add_attribute("id", id, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-3suh4w"}"${add_attribute("style", styleProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)}>
     <use${add_attribute("xlink:href", `#ico-${type}`, 0)} class="${"ico_use svelte-3suh4w"}"></use>
 </svg>`;
 });
@@ -389,28 +390,20 @@ const Form = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { name } = $$props;
 	let { id = undefined } = $$props;
 	let { title = undefined } = $$props;
-	let { style = undefined } = $$props;
 	let { ariaLabel = undefined } = $$props;
-	let { autocomplete = false } = $$props;
+	let { autocomplete = true } = $$props;
+	let titleProp = title || ariaLabel;
+	let ariaLabelProp = ariaLabel || title;
+	let autocompleteProp = autocomplete ? "on" : "off";
 
 	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	if ($$props.autocomplete === void 0 && $$bindings.autocomplete && autocomplete !== void 0) $$bindings.autocomplete(autocomplete);
+	let classProp = classnames("form", $$props.class);
 
-	let options = {
-		id,
-		name,
-		title,
-		"aria-label": ariaLabel,
-		style: toCSSString(style),
-		class: classnames("ico", $$props.class),
-		autocomplete: autocomplete ? "on" : "off"
-	};
-
-	return `<form>
+	return `<form${add_attribute("id", id, 0)}${add_attribute("name", name, 0)}${add_attribute("title", titleProp, 0)}${add_attribute("class", classProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)}${add_attribute("autocomplete", autocompleteProp, 0)}>
     ${$$slots.default ? $$slots.default({}) : ``}
 </form>`;
 });
@@ -419,14 +412,8 @@ const Form = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const css$1 = {
 	code: ".inp.svelte-xp6uy5{width:100%;flex:1 1 0;color:inherit;border-radius:var(--border-radius);min-width:var(--min-interactive-size);min-height:var(--min-interactive-size);border:2px solid rgb(var(--color-info))}.inp.svelte-xp6uy5:focus{border-color:rgb(var(--color-success))}.inp.svelte-xp6uy5:invalid,.inp.invalid.svelte-xp6uy5{border-color:rgb(var(--color-danger))}",
-	map: "{\"version\":3,\"file\":\"Input.svelte\",\"sources\":[\"Input.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '../utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let value = ''\\n    export let style = {}\\n    export let type = 'text'\\n    export let id = undefined\\n    export let align = undefined\\n    export let maxlength = 1000\\n    export let rows = undefined\\n    export let disabled = false\\n    export let title = undefined\\n    export let invalid = undefined\\n    export let min = undefined // Specifies a minimum value for an <input> element\\n    export let max = undefined // Specifies the maximum value for an <input> element\\n    export let list = undefined // Refers to a <datalist> element that contains pre-defined options for an <input> element\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let autocomplete = 'on' // on|off\\n    export let readonly = undefined // undefined|readonly\\n    export let required = undefined // undefined|required\\n    export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)\\n    export let autofocus = false\\n    export let autoselect = false\\n    export let ariaLabel = undefined\\n    export let placeholder = undefined\\n\\n    $: options = {\\n        id,\\n        min,\\n        max,\\n        rows,\\n        name,\\n        list,\\n        form,\\n        align,\\n        pattern,\\n        readonly,\\n        disabled,\\n        required,\\n        maxlength,\\n        placeholder,\\n        autocomplete,\\n        title: title || ariaLabel || placeholder,\\n        'aria-label': ariaLabel || title || placeholder,\\n        style: toCSSString({ ...style, textAlign: align }),\\n        autofocus: autofocus ? 'autofocus' : undefined,\\n        class: classnames('inp', 'theme-bg-color', $$props.class, { disabled, readonly, required, invalid }),\\n        ...getType(type),\\n    }\\n\\n    /**\\n     *\\n     * @description Emit click and select content when \\\"autoselect\\\" is enabled.\\n     *\\n     * @param {MouseEvent} e - Native mouse event.\\n     */\\n    function onClick(e) {\\n        !disabled && dispatch(\\\"click\\\", e)\\n        !disabled && autoselect && e.target.select()\\n    }\\n\\n    /**\\n     *\\n     * @description Get certain rules for not standard cases of input view. (Mobile/desktop)\\n     *\\n     * @param {string} type - Native type of input (number|text|url|tel|email|date|search...)\\n     * @return {*|{type: *}}\\n     */\\n    function getType(type) {\\n        return ({\\n          'number': {\\n              type: 'text',\\n              pattern: `[0-9]*`,\\n          }\\n        })[type] || { type }\\n    }\\n</script>\\n\\n{#if rows}\\n    <textarea\\n            {...options}\\n            bind:value\\n            on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n            on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            on:click='{onClick}'\\n    ></textarea>\\n{:else}\\n    <input\\n            {...options}\\n            bind:value\\n            on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n            on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            on:click='{onClick}'\\n    />\\n{/if}\\n\\n<style>\\n    .inp {\\n        width: 100%;\\n        flex: 1 1 0;\\n        color: inherit;\\n        border-radius: var(--border-radius);\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n        border: 2px solid rgb(var(--color-info));\\n    }\\n\\n    .inp:focus {\\n        border-color: rgb(var(--color-success));\\n    }\\n\\n    .inp:invalid, .inp.invalid {\\n        border-color: rgb(var(--color-danger));\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAqGI,IAAI,cAAC,CAAC,AACF,KAAK,CAAE,IAAI,CACX,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CACX,KAAK,CAAE,OAAO,CACd,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,SAAS,CAAE,IAAI,sBAAsB,CAAC,CACtC,UAAU,CAAE,IAAI,sBAAsB,CAAC,CACvC,MAAM,CAAE,GAAG,CAAC,KAAK,CAAC,IAAI,IAAI,YAAY,CAAC,CAAC,AAC5C,CAAC,AAED,kBAAI,MAAM,AAAC,CAAC,AACR,YAAY,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC3C,CAAC,AAED,kBAAI,QAAQ,CAAE,IAAI,QAAQ,cAAC,CAAC,AACxB,YAAY,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,AAC1C,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Input.svelte\",\"sources\":[\"Input.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '../utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let value = ''\\n    export let style = {}\\n    export let type = 'text'\\n    export let id = undefined\\n    export let align = undefined\\n    export let maxlength = 1000\\n    export let rows = undefined\\n    export let disabled = false\\n    export let title = undefined\\n    export let invalid = undefined\\n    export let min = undefined // Specifies a minimum value for an <input> element\\n    export let max = undefined // Specifies the maximum value for an <input> element\\n    export let list = undefined // Refers to a <datalist> element that contains pre-defined options for an <input> element\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let readonly = undefined // undefined|readonly\\n    export let required = undefined // undefined|required\\n    export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)\\n    export let autocomplete = true // on|off\\n    export let autoselect = false\\n    export let ariaLabel = undefined\\n    export let placeholder = undefined\\n\\n    let idProp = id || name\\n    let typeProp = type === 'number' ? 'text' : type\\n    let titleProp = title || ariaLabel || placeholder\\n    let ariaLabelProp = ariaLabel || title || placeholder\\n    let autocompleteProp = autocomplete ? 'on' : 'off'\\n    let styleProp = toCSSString({ ...style, textAlign: align })\\n    let patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern\\n\\n    $: classProp = classnames('inp', 'theme-bg-color', $$props.class, { disabled, readonly, required, invalid })\\n\\n    /**\\n     *\\n     * @description Emit click and select content when \\\"autoselect\\\" is enabled.\\n     *\\n     * @param {MouseEvent} e - Native mouse event.\\n     */\\n    function onClick(e) {\\n        !disabled && dispatch(\\\"click\\\", e)\\n        !disabled && autoselect && e.target.select()\\n    }\\n</script>\\n\\n{#if rows}\\n    <textarea\\n            {min}\\n            {max}\\n            {rows}\\n            {name}\\n            {form}\\n            {align}\\n            {readonly}\\n            {disabled}\\n            {required}\\n            {maxlength}\\n            {placeholder}\\n            id={idProp}\\n            class={classProp}\\n            title={titleProp}\\n            style={styleProp}\\n            pattern={patternProp}\\n            aria-label={ariaLabelProp}\\n            autocomplete={autocompleteProp}\\n            {...{ type: typeProp }}\\n            bind:value\\n            on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n            on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            on:click='{onClick}'\\n    ></textarea>\\n{:else}\\n    <input\\n            {min}\\n            {max}\\n            {name}\\n            {list}\\n            {form}\\n            {align}\\n            {readonly}\\n            {disabled}\\n            {required}\\n            {maxlength}\\n            {placeholder}\\n            id={idProp}\\n            class={classProp}\\n            title={titleProp}\\n            style={styleProp}\\n            pattern={patternProp}\\n            aria-label={ariaLabelProp}\\n            autocomplete={autocompleteProp}\\n            {...{ type: typeProp }}\\n            bind:value\\n            on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n            on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            on:click='{onClick}'\\n    />\\n{/if}\\n\\n<style>\\n    .inp {\\n        width: 100%;\\n        flex: 1 1 0;\\n        color: inherit;\\n        border-radius: var(--border-radius);\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n        border: 2px solid rgb(var(--color-info));\\n    }\\n\\n    .inp:focus {\\n        border-color: rgb(var(--color-success));\\n    }\\n\\n    .inp:invalid, .inp.invalid {\\n        border-color: rgb(var(--color-danger));\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AA0GI,IAAI,cAAC,CAAC,AACF,KAAK,CAAE,IAAI,CACX,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CACX,KAAK,CAAE,OAAO,CACd,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,SAAS,CAAE,IAAI,sBAAsB,CAAC,CACtC,UAAU,CAAE,IAAI,sBAAsB,CAAC,CACvC,MAAM,CAAE,GAAG,CAAC,KAAK,CAAC,IAAI,IAAI,YAAY,CAAC,CAAC,AAC5C,CAAC,AAED,kBAAI,MAAM,AAAC,CAAC,AACR,YAAY,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC3C,CAAC,AAED,kBAAI,QAAQ,CAAE,IAAI,QAAQ,cAAC,CAAC,AACxB,YAAY,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,AAC1C,CAAC\"}"
 };
-
-function getType(type) {
-	return ({
-		"number": { type: "text", pattern: `[0-9]*` }
-	})[type] || ({ type });
-}
 
 const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
@@ -445,14 +432,20 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { max = undefined } = $$props;
 	let { list = undefined } = $$props;
 	let { form = undefined } = $$props;
-	let { autocomplete = "on" } = $$props;
 	let { readonly = undefined } = $$props;
 	let { required = undefined } = $$props;
 	let { pattern = undefined } = $$props;
-	let { autofocus = false } = $$props;
+	let { autocomplete = true } = $$props;
 	let { autoselect = false } = $$props;
 	let { ariaLabel = undefined } = $$props;
 	let { placeholder = undefined } = $$props;
+	let idProp = id || name;
+	let typeProp = type === "number" ? "text" : type;
+	let titleProp = title || ariaLabel || placeholder;
+	let ariaLabelProp = ariaLabel || title || placeholder;
+	let autocompleteProp = autocomplete ? "on" : "off";
+	let styleProp = toCSSString({ ...style, textAlign: align });
+	let patternProp = type === "number" && !pattern ? "[0-9]*" : pattern;
 
 	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
 	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
@@ -469,50 +462,72 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.max === void 0 && $$bindings.max && max !== void 0) $$bindings.max(max);
 	if ($$props.list === void 0 && $$bindings.list && list !== void 0) $$bindings.list(list);
 	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
-	if ($$props.autocomplete === void 0 && $$bindings.autocomplete && autocomplete !== void 0) $$bindings.autocomplete(autocomplete);
 	if ($$props.readonly === void 0 && $$bindings.readonly && readonly !== void 0) $$bindings.readonly(readonly);
 	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
 	if ($$props.pattern === void 0 && $$bindings.pattern && pattern !== void 0) $$bindings.pattern(pattern);
-	if ($$props.autofocus === void 0 && $$bindings.autofocus && autofocus !== void 0) $$bindings.autofocus(autofocus);
+	if ($$props.autocomplete === void 0 && $$bindings.autocomplete && autocomplete !== void 0) $$bindings.autocomplete(autocomplete);
 	if ($$props.autoselect === void 0 && $$bindings.autoselect && autoselect !== void 0) $$bindings.autoselect(autoselect);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	if ($$props.placeholder === void 0 && $$bindings.placeholder && placeholder !== void 0) $$bindings.placeholder(placeholder);
 	$$result.css.add(css$1);
-
-	let options = {
-		id,
-		min,
-		max,
-		rows,
-		name,
-		list,
-		form,
-		align,
-		pattern,
-		readonly,
-		disabled,
-		required,
-		maxlength,
-		placeholder,
-		autocomplete,
-		title: title || ariaLabel || placeholder,
-		"aria-label": ariaLabel || title || placeholder,
-		style: toCSSString({ ...style, textAlign: align }),
-		autofocus: autofocus ? "autofocus" : undefined,
-		class: classnames("inp", "theme-bg-color", $$props.class, { disabled, readonly, required, invalid }),
-		...getType(type)
-	};
+	let classProp = classnames("inp", "theme-bg-color", $$props.class, { disabled, readonly, required, invalid });
 
 	return `${rows
-	? `<textarea${spread([options], "svelte-xp6uy5")}>${value || ""}</textarea>`
-	: `<input${spread([options], "svelte-xp6uy5")}${add_attribute("value", value, 1)}>`}`;
+	? `<textarea${spread(
+			[
+				{ min: escape(min) },
+				{ max: escape(max) },
+				{ rows: escape(rows) },
+				{ name: escape(name) },
+				{ form: escape(form) },
+				{ align: escape(align) },
+				{ readonly: readonly || null },
+				{ disabled: disabled || null },
+				{ required: required || null },
+				{ maxlength: escape(maxlength) },
+				{ placeholder: escape(placeholder) },
+				{ id: escape(idProp) },
+				{ class: escape(classProp) },
+				{ title: escape(titleProp) },
+				{ style: escape(styleProp) },
+				{ pattern: escape(patternProp) },
+				{ "aria-label": escape(ariaLabelProp) },
+				{ autocomplete: escape(autocompleteProp) },
+				{ type: typeProp }
+			],
+			"svelte-xp6uy5"
+		)}>${value || ""}</textarea>`
+	: `<input${spread(
+			[
+				{ min: escape(min) },
+				{ max: escape(max) },
+				{ name: escape(name) },
+				{ list: escape(list) },
+				{ form: escape(form) },
+				{ align: escape(align) },
+				{ readonly: readonly || null },
+				{ disabled: disabled || null },
+				{ required: required || null },
+				{ maxlength: escape(maxlength) },
+				{ placeholder: escape(placeholder) },
+				{ id: escape(idProp) },
+				{ class: escape(classProp) },
+				{ title: escape(titleProp) },
+				{ style: escape(styleProp) },
+				{ pattern: escape(patternProp) },
+				{ "aria-label": escape(ariaLabelProp) },
+				{ autocomplete: escape(autocompleteProp) },
+				{ type: typeProp }
+			],
+			"svelte-xp6uy5"
+		)}${add_attribute("value", value, 1)}>`}`;
 });
 
 /* src/components/Button.svelte generated by Svelte v3.16.7 */
 
 const css$2 = {
 	code: ".btn.svelte-18ko52n{flex:none;width:100%;color:inherit;max-width:100%;user-select:none;padding:5px 15px;font-weight:bold;text-align:center;align-items:center;display:inline-flex;justify-content:center;border-radius:var(--border-radius);min-width:var(--min-interactive-size);min-height:var(--min-interactive-size);text-shadow:1px 1px rgba(0, 0, 0, .3)}.btn.svelte-18ko52n:focus{background-color:rgba(0, 0, 0, 0.1)}.btn.svelte-18ko52n:hover{box-shadow:0 2px rgba(0, 0, 0, 0.2);background-color:rgba(0, 0, 0, 0.1)}.btn.svelte-18ko52n:active{transform:translateY(1px);box-shadow:0 1px rgba(0, 0, 0, 0.2);background-color:rgba(0, 0, 0, 0.1)}.btn.success.svelte-18ko52n{color:var(--color-light-font);background-color:rgb(var(--color-success));box-shadow:0 3px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2)}.btn.success.svelte-18ko52n:focus{background-color:rgb(var(--color-success), .85)}.btn.success.svelte-18ko52n:hover{transform:translateY(1px);box-shadow:0 2px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2)}.btn.success.svelte-18ko52n:active{transform:translateY(2px);box-shadow:0 1px rgb(var(--color-success-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2)}.btn.warning.svelte-18ko52n{color:var(--color-light-font);background-color:rgb(var(--color-warning));box-shadow:0 3px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2)}.btn.warning.svelte-18ko52n:focus{background-color:rgb(var(--color-warning), .85)}.btn.warning.svelte-18ko52n:hover{transform:translateY(1px);box-shadow:0 2px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2)}.btn.warning.svelte-18ko52n:active{transform:translateY(2px);box-shadow:0 1px rgb(var(--color-warning-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2)}.btn.danger.svelte-18ko52n{color:var(--color-light-font);background-color:rgb(var(--color-danger));box-shadow:0 3px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2)}.btn.danger.svelte-18ko52n:focus{background-color:rgb(var(--color-danger), .85)}.btn.danger.svelte-18ko52n:hover{transform:translateY(1px);box-shadow:0 2px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2)}.btn.danger.svelte-18ko52n:active{transform:translateY(2px);box-shadow:0 1px rgb(var(--color-danger-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2)}",
-	map: "{\"version\":3,\"file\":\"Button.svelte\",\"sources\":[\"Button.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '../utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let is = undefined\\n    export let id = undefined\\n    export let href = undefined\\n    export let type = 'button'\\n    export let title = undefined\\n    export let disabled = false\\n    export let ariaLabel = undefined\\n\\n    $: options = href\\n            ? {\\n                id,\\n                title,\\n                'aria-label': ariaLabel,\\n                class: classnames('btn', is, $$props.class, { disabled }),\\n            } : {\\n                id,\\n                type,\\n                title,\\n                disabled,\\n                'aria-label': ariaLabel,\\n                class: classnames('btn', is, $$props.class, { disabled }),\\n            }\\n</script>\\n\\n{#if href}\\n    <a {...options} href={href} on:click='{e => !disabled && dispatch(\\\"click\\\", e)}'>\\n        <slot></slot>\\n    </a>\\n{:else}\\n    <button {...options} on:click='{e => !disabled && dispatch(\\\"click\\\", e)}'>\\n        <slot></slot>\\n    </button>\\n{/if}\\n\\n<style>\\n    .btn {\\n        flex: none;\\n        width: 100%;\\n        color: inherit;\\n        max-width: 100%;\\n        user-select: none;\\n        padding: 5px 15px;\\n        font-weight: bold;\\n        text-align: center;\\n        align-items: center;\\n        display: inline-flex;\\n        justify-content: center;\\n        border-radius: var(--border-radius);\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n        text-shadow: 1px 1px rgba(0, 0, 0, .3);\\n    }\\n\\n    .btn:focus {\\n        background-color: rgba(0, 0, 0, 0.1);\\n    }\\n\\n    .btn:hover {\\n        box-shadow: 0 2px rgba(0, 0, 0, 0.2);\\n        background-color: rgba(0, 0, 0, 0.1);\\n    }\\n\\n    .btn:active {\\n        transform: translateY(1px);\\n        box-shadow: 0 1px rgba(0, 0, 0, 0.2);\\n        background-color: rgba(0, 0, 0, 0.1);\\n    }\\n\\n    /* Success */\\n\\n    .btn.success {\\n        color: var(--color-light-font);\\n        background-color: rgb(var(--color-success));\\n        box-shadow: 0 3px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.success:focus {\\n        background-color: rgb(var(--color-success), .85);\\n    }\\n\\n    .btn.success:hover {\\n        transform: translateY(1px);\\n        box-shadow: 0 2px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.success:active {\\n        transform: translateY(2px);\\n        box-shadow: 0 1px rgb(var(--color-success-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    /* Warning */\\n\\n    .btn.warning {\\n        color: var(--color-light-font);\\n        background-color: rgb(var(--color-warning));\\n        box-shadow: 0 3px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.warning:focus {\\n        background-color: rgb(var(--color-warning), .85);\\n    }\\n\\n    .btn.warning:hover {\\n        transform: translateY(1px);\\n        box-shadow: 0 2px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.warning:active {\\n        transform: translateY(2px);\\n        box-shadow: 0 1px rgb(var(--color-warning-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    /* Danger */\\n\\n    .btn.danger {\\n        color: var(--color-light-font);\\n        background-color: rgb(var(--color-danger));\\n        box-shadow: 0 3px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.danger:focus {\\n        background-color: rgb(var(--color-danger), .85);\\n    }\\n\\n    .btn.danger:hover {\\n        transform: translateY(1px);\\n        box-shadow: 0 2px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.danger:active {\\n        transform: translateY(2px);\\n        box-shadow: 0 1px rgb(var(--color-danger-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
+	map: "{\"version\":3,\"file\":\"Button.svelte\",\"sources\":[\"Button.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '../utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let is = undefined\\n    export let id = undefined\\n    export let href = undefined\\n    export let type = 'button'\\n    export let title = undefined\\n    export let disabled = false\\n    export let ariaLabel = undefined\\n\\n    let titleProp = title || ariaLabel\\n    let ariaLabelProp = ariaLabel || title\\n\\n    $: classProp = classnames('btn', is, $$props.class, { disabled })\\n</script>\\n\\n{#if href}\\n    <a\\n            {id}\\n            {href}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click='{e => !disabled && dispatch(\\\"click\\\", e)}'\\n    >\\n        <slot></slot>\\n    </a>\\n{:else}\\n    <button\\n            {id}\\n            {type}\\n            {disabled}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click='{e => !disabled && dispatch(\\\"click\\\", e)}'\\n    >\\n        <slot></slot>\\n    </button>\\n{/if}\\n\\n<style>\\n    .btn {\\n        flex: none;\\n        width: 100%;\\n        color: inherit;\\n        max-width: 100%;\\n        user-select: none;\\n        padding: 5px 15px;\\n        font-weight: bold;\\n        text-align: center;\\n        align-items: center;\\n        display: inline-flex;\\n        justify-content: center;\\n        border-radius: var(--border-radius);\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n        text-shadow: 1px 1px rgba(0, 0, 0, .3);\\n    }\\n\\n    .btn:focus {\\n        background-color: rgba(0, 0, 0, 0.1);\\n    }\\n\\n    .btn:hover {\\n        box-shadow: 0 2px rgba(0, 0, 0, 0.2);\\n        background-color: rgba(0, 0, 0, 0.1);\\n    }\\n\\n    .btn:active {\\n        transform: translateY(1px);\\n        box-shadow: 0 1px rgba(0, 0, 0, 0.2);\\n        background-color: rgba(0, 0, 0, 0.1);\\n    }\\n\\n    /* Success */\\n\\n    .btn.success {\\n        color: var(--color-light-font);\\n        background-color: rgb(var(--color-success));\\n        box-shadow: 0 3px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.success:focus {\\n        background-color: rgb(var(--color-success), .85);\\n    }\\n\\n    .btn.success:hover {\\n        transform: translateY(1px);\\n        box-shadow: 0 2px rgb(var(--color-success-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.success:active {\\n        transform: translateY(2px);\\n        box-shadow: 0 1px rgb(var(--color-success-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    /* Warning */\\n\\n    .btn.warning {\\n        color: var(--color-light-font);\\n        background-color: rgb(var(--color-warning));\\n        box-shadow: 0 3px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.warning:focus {\\n        background-color: rgb(var(--color-warning), .85);\\n    }\\n\\n    .btn.warning:hover {\\n        transform: translateY(1px);\\n        box-shadow: 0 2px rgb(var(--color-warning-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.warning:active {\\n        transform: translateY(2px);\\n        box-shadow: 0 1px rgb(var(--color-warning-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    /* Danger */\\n\\n    .btn.danger {\\n        color: var(--color-light-font);\\n        background-color: rgb(var(--color-danger));\\n        box-shadow: 0 3px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.danger:focus {\\n        background-color: rgb(var(--color-danger), .85);\\n    }\\n\\n    .btn.danger:hover {\\n        transform: translateY(1px);\\n        box-shadow: 0 2px rgb(var(--color-danger-dark)), 0 10px 10px 0 rgba(0, 0, 0, 0.2);\\n    }\\n\\n    .btn.danger:active {\\n        transform: translateY(2px);\\n        box-shadow: 0 1px rgb(var(--color-danger-dark)), 0 10px 15px 0 rgba(0, 0, 0, 0.2);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
 };
 
 const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -524,6 +539,8 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	let { title = undefined } = $$props;
 	let { disabled = false } = $$props;
 	let { ariaLabel = undefined } = $$props;
+	let titleProp = title || ariaLabel;
+	let ariaLabelProp = ariaLabel || title;
 	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.href === void 0 && $$bindings.href && href !== void 0) $$bindings.href(href);
@@ -532,28 +549,13 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	$$result.css.add(css$2);
-
-	let options = href
-	? {
-			id,
-			title,
-			"aria-label": ariaLabel,
-			class: classnames("btn", is, $$props.class, { disabled })
-		}
-	: {
-			id,
-			type,
-			title,
-			disabled,
-			"aria-label": ariaLabel,
-			class: classnames("btn", is, $$props.class, { disabled })
-		};
+	let classProp = classnames("btn", is, $$props.class, { disabled });
 
 	return `${href
-	? `<a${spread([options, { href: escape(href) }], "svelte-18ko52n")}>
+	? `<a${add_attribute("id", id, 0)}${add_attribute("href", href, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-18ko52n"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
         ${$$slots.default ? $$slots.default({}) : ``}
     </a>`
-	: `<button${spread([options], "svelte-18ko52n")}>
+	: `<button${add_attribute("id", id, 0)}${add_attribute("type", type, 0)} ${disabled ? "disabled" : ""}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-18ko52n"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
         ${$$slots.default ? $$slots.default({}) : ``}
     </button>`}`;
 });
@@ -562,7 +564,7 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 const css$3 = {
 	code: ".picture.svelte-v25mjj.svelte-v25mjj{display:inline-flex;flex-direction:column;align-items:stretch;justify-content:stretch}.picture.svelte-v25mjj .pic.svelte-v25mjj{flex-grow:1;align-self:stretch;object-fit:cover;object-position:center;transition:opacity .3s ease-in}.picture.loading.svelte-v25mjj .pic.svelte-v25mjj{opacity:0}",
-	map: "{\"version\":3,\"file\":\"Picture.svelte\",\"sources\":[\"Picture.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '../utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let src\\n    export let alt\\n    export let id = undefined\\n    export let width = undefined\\n    export let height = undefined\\n\\n    let loading = true\\n    let isError = false\\n\\n    $: options = {\\n        id,\\n        width,\\n        height,\\n        class: 'pic',\\n    }\\n\\n    $: wrapOptions = {\\n        class: classnames('picture', $$props.class, { loading, isError }),\\n    }\\n\\n    function onLoad(e) {\\n        loading = false\\n        dispatch('load', e)\\n    }\\n\\n    function onError(e) {\\n        loading = false\\n        isError = true\\n        dispatch('error', e)\\n    }\\n</script>\\n\\n<figure {...wrapOptions}>\\n    <img {...options} src={src} alt={alt} on:load={onLoad} on:error={onError} />\\n\\n    <figcaption>\\n        <slot></slot>\\n    </figcaption>\\n</figure>\\n\\n<style>\\n    .picture {\\n        display: inline-flex;\\n        flex-direction: column;\\n        align-items: stretch;\\n        justify-content: stretch;\\n    }\\n\\n    .picture .pic {\\n        flex-grow: 1;\\n        align-self: stretch;\\n        object-fit: cover;\\n        object-position: center;\\n        transition: opacity .3s ease-in;\\n    }\\n\\n    .picture.loading .pic {\\n        opacity: 0;\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AA+CI,QAAQ,4BAAC,CAAC,AACN,OAAO,CAAE,WAAW,CACpB,cAAc,CAAE,MAAM,CACtB,WAAW,CAAE,OAAO,CACpB,eAAe,CAAE,OAAO,AAC5B,CAAC,AAED,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACX,SAAS,CAAE,CAAC,CACZ,UAAU,CAAE,OAAO,CACnB,UAAU,CAAE,KAAK,CACjB,eAAe,CAAE,MAAM,CACvB,UAAU,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,AACnC,CAAC,AAED,QAAQ,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACnB,OAAO,CAAE,CAAC,AACd,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Picture.svelte\",\"sources\":[\"Picture.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '../utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let src\\n    export let alt\\n    export let id = undefined\\n    export let width = undefined\\n    export let height = undefined\\n\\n    let loading = true\\n    let isError = false\\n\\n    $: wrapClassProp = classnames('picture', $$props.class, { loading, isError })\\n\\n    function onLoad(e) {\\n        loading = false\\n        dispatch('load', e)\\n    }\\n\\n    function onError(e) {\\n        loading = false\\n        isError = true\\n        dispatch('error', e)\\n    }\\n</script>\\n\\n<figure class={wrapClassProp}>\\n    <img\\n            {id}\\n            {alt}\\n            {src}\\n            {width}\\n            {height}\\n            class=\\\"pic\\\"\\n            on:load={onLoad}\\n            on:error={onError}\\n    />\\n\\n    <figcaption>\\n        <slot></slot>\\n    </figcaption>\\n</figure>\\n\\n<style>\\n    .picture {\\n        display: inline-flex;\\n        flex-direction: column;\\n        align-items: stretch;\\n        justify-content: stretch;\\n    }\\n\\n    .picture .pic {\\n        flex-grow: 1;\\n        align-self: stretch;\\n        object-fit: cover;\\n        object-position: center;\\n        transition: opacity .3s ease-in;\\n    }\\n\\n    .picture.loading .pic {\\n        opacity: 0;\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AA+CI,QAAQ,4BAAC,CAAC,AACN,OAAO,CAAE,WAAW,CACpB,cAAc,CAAE,MAAM,CACtB,WAAW,CAAE,OAAO,CACpB,eAAe,CAAE,OAAO,AAC5B,CAAC,AAED,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACX,SAAS,CAAE,CAAC,CACZ,UAAU,CAAE,OAAO,CACnB,UAAU,CAAE,KAAK,CACjB,eAAe,CAAE,MAAM,CACvB,UAAU,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,AACnC,CAAC,AAED,QAAQ,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACnB,OAAO,CAAE,CAAC,AACd,CAAC\"}"
 };
 
 const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -581,14 +583,10 @@ const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
 	if ($$props.height === void 0 && $$bindings.height && height !== void 0) $$bindings.height(height);
 	$$result.css.add(css$3);
-	let options = { id, width, height, class: "pic" };
+	let wrapClassProp = classnames("picture", $$props.class, { loading, isError });
 
-	let wrapOptions = {
-		class: classnames("picture", $$props.class, { loading, isError })
-	};
-
-	return `<figure${spread([wrapOptions], "svelte-v25mjj")}>
-    <img${spread([options, { src: escape(src) }, { alt: escape(alt) }], "svelte-v25mjj")}>
+	return `<figure class="${escape(null_to_empty(wrapClassProp)) + " svelte-v25mjj"}">
+    <img${add_attribute("id", id, 0)}${add_attribute("alt", alt, 0)}${add_attribute("src", src, 0)}${add_attribute("width", width, 0)}${add_attribute("height", height, 0)} class="${"pic svelte-v25mjj"}">
 
     <figcaption>
         ${$$slots.default ? $$slots.default({}) : ``}
@@ -601,14 +599,17 @@ const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
 	let { id = undefined } = $$props;
+	let { value = 0 } = $$props;
+	let { title = undefined } = $$props;
+	let { ariaLabel = undefined } = $$props;
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-
-	let options = {
-		id,
-		class: classnames("progress", $$props.class)
-	};
-
-	return `<progress value="${"65"}" max="${"100"}" style="${"background: 0; width: 100%"}"></progress>`;
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
+	let titleProp = title || `Progress - ${value}%`;
+	let ariaLabelProp = ariaLabel || `Progress - ${value}%`;
+	let classProp = classnames("progress", $$props.class);
+	return `<div${add_attribute("id", id, 0)}${add_attribute("class", classProp, 0)}${add_attribute("title", titleProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)} role="${"progressbar"}" aria-valuemin="${"0"}" aria-valuemax="${"100"}"${add_attribute("aria-valuenow", value, 0)}></div>`;
 });
 
 /* src/components/Nav.svelte generated by Svelte v3.16.7 */
@@ -643,7 +644,7 @@ const Nav = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const css$5 = {
 	code: "h1.svelte-1kmv00v.svelte-1kmv00v,p.svelte-1kmv00v.svelte-1kmv00v{text-align:center;margin:0 auto}h1.svelte-1kmv00v.svelte-1kmv00v{text-transform:uppercase;margin:0 0 0.5em 0}.top-wrap.svelte-1kmv00v.svelte-1kmv00v{padding-left:5px}.top.svelte-1kmv00v.svelte-1kmv00v{display:flex}.top-pic.svelte-1kmv00v.svelte-1kmv00v{display:flex;flex-grow:1}.options.svelte-1kmv00v.svelte-1kmv00v{flex:0;display:flex;flex-direction:column;margin:-7px 0;padding:0 10px}.options.svelte-1kmv00v li.svelte-1kmv00v{flex:none;margin:7px 0}",
-	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Button, Picture, Input, Progress, Icon, Form } from '../components'\\n</script>\\n\\n<style>\\n    h1,\\n    p {\\n        text-align: center;\\n        margin: 0 auto;\\n    }\\n\\n    h1 {\\n        text-transform: uppercase;\\n        margin: 0 0 0.5em 0;\\n    }\\n\\n    .top-wrap {\\n        padding-left: 5px;\\n    }\\n\\n    .top {\\n        display: flex;\\n    }\\n\\n    .top-pic {\\n        display: flex;\\n        flex-grow: 1;\\n    }\\n\\n    .options {\\n        flex: 0;\\n        display: flex;\\n        flex-direction: column;\\n        margin: -7px 0;\\n        padding: 0 10px;\\n    }\\n\\n    .options li {\\n        flex: none;\\n        margin: 7px 0;\\n    }\\n</style>\\n\\n<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n\\n<section class=\\\"top-wrap\\\">\\n    <section class=\\\"top\\\">\\n        <div class=\\\"top-pic\\\">\\n            <Picture src=\\\"https://placeimg.com/1000/1000/people\\\" alt=\\\"sample\\\"/>\\n        </div>\\n\\n        <ul class=\\\"options\\\">\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test1</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test12</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test123</Button>\\n            </li>\\n            <li>\\n                <Input\\n                        type=\\\"number\\\"\\n                        name=\\\"num\\\"\\n                        list=\\\"sum-suggestions\\\"\\n                        placeholder=\\\"Num\\\"\\n                        autoselect\\n                        align=\\\"right\\\"\\n                />\\n\\n                <datalist id=\\\"sum-suggestions\\\">\\n                    <option value=\\\"20\\\">\\n                    <option value=\\\"500\\\">\\n                    <option value=\\\"1000\\\">\\n                </datalist>\\n            </li>\\n        </ul>\\n    </section>\\n\\n    <ul>\\n        <li>\\n        <span>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon type=\\\"heart-filled\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n    </ul>\\n\\n    <section style=\\\"padding: 20px 5px 20px 0\\\">\\n        <Progress value=\\\"65\\\" max=\\\"100\\\" style=\\\"background: 0; width: 100%\\\"></Progress>\\n    </section>\\n</section>\\n\\n\\n<Form on:submit=\\\"{(e) => console.log(e)}\\\">\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"number\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"text\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"email\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"url\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"search\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"date\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"password\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"tel\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Button is=\\\"success\\\" type=\\\"submit\\\">Submit</Button>\\n</Form>\\n\\n<h1>Charitify - is the application for helping those in need.</h1>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Typography</h2>\\n\\n<br>\\n<br>\\n\\n<p>Few paragraphs to text fonts</p>\\n<p>Декілька параграфів для тесту тексту</p>\\n<p>Несколько параграфов для теста текста</p>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-warning\\\">Interactive elements</h2>\\n\\n<br>\\n<br>\\n\\n<section style=\\\"text-align: center; display: flex; justify-content: space-around\\\">\\n    <div>\\n        <br>\\n        Buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" ariaLabel=\\\"text\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n\\n    <div>\\n        <br>\\n        Links as buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-danger\\\">Input fields</h2>\\n\\n<br>\\n<br>\\n\\n<section>\\n    <Input rows={2} name=\\\"tex\\\" list=\\\"lis\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"tex1\\\" list=\\\"lis\\\" placeholder=\\\"Some placeholder text\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"number\\\" name=\\\"tex1\\\" list=\\\"lis\\\"/>\\n\\n    <datalist id=\\\"lis\\\">\\n        <option value=\\\"1\\\">\\n        <option value=\\\"2\\\">\\n        <option value=\\\"3\\\">\\n    </datalist>\\n\\n    <label for=\\\"input\\\" class=\\\"text-success\\\">label</label>\\n    <input id=\\\"input\\\" type=\\\"text\\\" value=\\\"text\\\">\\n\\n    <br>\\n    <br>\\n\\n    <a href=\\\".\\\" class=\\\"text-warning\\\">Some link</a>\\n\\n    <br>\\n    <br>\\n\\n    <button type=\\\"button\\\" class=\\\"text-info\\\">Button example</button>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-info\\\">Images</h2>\\n\\n<Picture alt=\\\"Borat\\\" src=\\\"great-success.png\\\" class=\\\"picture\\\">\\n    HIGH FIVE!\\n</Picture>\\n\\n<br>\\n<br>\\n\\n<Picture src=\\\"https://placeimg.com/1000/1000/any\\\" alt=\\\"sample\\\"/>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Other</h2>\\n\\n<p>\\n    <strong>\\n        Try editing this file (src/routes/index.svelte) to test live reloading.\\n    </strong>\\n</p>\\n\\n<p style=\\\"text-align: justify\\\">\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n</p>\\n\"],\"names\":[],\"mappings\":\"AAKI,gCAAE,CACF,CAAC,8BAAC,CAAC,AACC,UAAU,CAAE,MAAM,CAClB,MAAM,CAAE,CAAC,CAAC,IAAI,AAClB,CAAC,AAED,EAAE,8BAAC,CAAC,AACA,cAAc,CAAE,SAAS,CACzB,MAAM,CAAE,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CAAC,AACvB,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,YAAY,CAAE,GAAG,AACrB,CAAC,AAED,IAAI,8BAAC,CAAC,AACF,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,CAAC,AAChB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,IAAI,CAAE,CAAC,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,MAAM,CAAE,IAAI,CAAC,CAAC,CACd,OAAO,CAAE,CAAC,CAAC,IAAI,AACnB,CAAC,AAED,uBAAQ,CAAC,EAAE,eAAC,CAAC,AACT,IAAI,CAAE,IAAI,CACV,MAAM,CAAE,GAAG,CAAC,CAAC,AACjB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Button, Picture, Input, Progress, Icon, Form } from '../components'\\n</script>\\n\\n<style>\\n    h1,\\n    p {\\n        text-align: center;\\n        margin: 0 auto;\\n    }\\n\\n    h1 {\\n        text-transform: uppercase;\\n        margin: 0 0 0.5em 0;\\n    }\\n\\n    .top-wrap {\\n        padding-left: 5px;\\n    }\\n\\n    .top {\\n        display: flex;\\n    }\\n\\n    .top-pic {\\n        display: flex;\\n        flex-grow: 1;\\n    }\\n\\n    .options {\\n        flex: 0;\\n        display: flex;\\n        flex-direction: column;\\n        margin: -7px 0;\\n        padding: 0 10px;\\n    }\\n\\n    .options li {\\n        flex: none;\\n        margin: 7px 0;\\n    }\\n</style>\\n\\n<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n\\n<section class=\\\"top-wrap\\\">\\n    <section class=\\\"top\\\">\\n        <div class=\\\"top-pic\\\">\\n            <Picture src=\\\"https://placeimg.com/1000/1000/people\\\" alt=\\\"sample\\\"/>\\n        </div>\\n\\n        <ul class=\\\"options\\\">\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test1</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test12</Button>\\n            </li>\\n            <li>\\n                <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test123</Button>\\n            </li>\\n            <li>\\n                <Input\\n                        type=\\\"number\\\"\\n                        name=\\\"num\\\"\\n                        list=\\\"sum-suggestions\\\"\\n                        placeholder=\\\"Num\\\"\\n                        autoselect\\n                        align=\\\"right\\\"\\n                />\\n\\n                <datalist id=\\\"sum-suggestions\\\">\\n                    <option value=\\\"20\\\">\\n                    <option value=\\\"500\\\">\\n                    <option value=\\\"1000\\\">\\n                </datalist>\\n            </li>\\n        </ul>\\n    </section>\\n\\n    <ul>\\n        <li>\\n        <span>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"small\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon type=\\\"heart-filled\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n        <li>\\n        <span>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"warning\\\"/>\\n            <Icon size=\\\"big\\\" type=\\\"heart-filled\\\" is=\\\"danger\\\"/>\\n        </span>\\n        </li>\\n    </ul>\\n\\n    <section style=\\\"padding: 20px 5px 20px 0\\\">\\n        <Progress value=\\\"65\\\" max=\\\"100\\\" style=\\\"background: 0; width: 100%\\\"></Progress>\\n    </section>\\n</section>\\n\\n\\n<Form on:submit=\\\"{(e) => console.log(e)}\\\" name=\\\"main-form\\\">\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test1\\\" type=\\\"number\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test2\\\" type=\\\"text\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test3\\\" type=\\\"email\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test4\\\" type=\\\"url\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test5\\\" type=\\\"search\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test6\\\" type=\\\"date\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test7\\\" type=\\\"password\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"test8\\\" type=\\\"tel\\\" list=\\\"sum-suggestions\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Button is=\\\"success\\\" type=\\\"submit\\\">Submit</Button>\\n</Form>\\n\\n<h1>Charitify - is the application for helping those in need.</h1>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Typography</h2>\\n\\n<br>\\n<br>\\n\\n<p>Few paragraphs to text fonts</p>\\n<p>Декілька параграфів для тесту тексту</p>\\n<p>Несколько параграфов для теста текста</p>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-warning\\\">Interactive elements</h2>\\n\\n<br>\\n<br>\\n\\n<section style=\\\"text-align: center; display: flex; justify-content: space-around\\\">\\n    <div>\\n        <br>\\n        Buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" ariaLabel=\\\"text\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n\\n    <div>\\n        <br>\\n        Links as buttons\\n        <br>\\n        <br>\\n        <Button on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        <br>\\n        <br>\\n        With text\\n        <Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">test</Button>\\n        and behind.\\n        <br>\\n        <br>\\n        <Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n        <Button is=\\\"danger\\\" on:click=\\\"{e => console.log(e)}\\\" href=\\\"#\\\">Some example of Button</Button>\\n        <br>\\n        <br>\\n    </div>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-danger\\\">Input fields</h2>\\n\\n<br>\\n<br>\\n\\n<section>\\n    <Input rows={2} name=\\\"tex\\\" list=\\\"lis\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input name=\\\"tex1\\\" list=\\\"lis\\\" placeholder=\\\"Some placeholder text\\\"/>\\n\\n    <br>\\n    <br>\\n\\n    <Input type=\\\"number\\\" name=\\\"tex2\\\" list=\\\"lis\\\"/>\\n\\n    <datalist id=\\\"lis\\\">\\n        <option value=\\\"1\\\">\\n        <option value=\\\"2\\\">\\n        <option value=\\\"3\\\">\\n    </datalist>\\n\\n    <label for=\\\"input\\\" class=\\\"text-success\\\">label</label>\\n    <input id=\\\"input\\\" type=\\\"text\\\" value=\\\"text\\\">\\n\\n    <br>\\n    <br>\\n\\n    <a href=\\\".\\\" class=\\\"text-warning\\\">Some link</a>\\n\\n    <br>\\n    <br>\\n\\n    <button type=\\\"button\\\" class=\\\"text-info\\\">Button example</button>\\n</section>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-info\\\">Images</h2>\\n\\n<Picture alt=\\\"Borat\\\" src=\\\"great-success.png\\\" class=\\\"picture\\\">\\n    HIGH FIVE!\\n</Picture>\\n\\n<br>\\n<br>\\n\\n<Picture src=\\\"https://placeimg.com/1000/1000/any\\\" alt=\\\"sample\\\"/>\\n\\n<br>\\n<br>\\n\\n<h2 class=\\\"text-success\\\">Other</h2>\\n\\n<p>\\n    <strong>\\n        Try editing this file (src/routes/index.svelte) to test live reloading.\\n    </strong>\\n</p>\\n\\n<p style=\\\"text-align: justify\\\">\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n    A lot of English text. A lot of English text. A lot of English text. A lot of English text.\\n</p>\\n\"],\"names\":[],\"mappings\":\"AAKI,gCAAE,CACF,CAAC,8BAAC,CAAC,AACC,UAAU,CAAE,MAAM,CAClB,MAAM,CAAE,CAAC,CAAC,IAAI,AAClB,CAAC,AAED,EAAE,8BAAC,CAAC,AACA,cAAc,CAAE,SAAS,CACzB,MAAM,CAAE,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CAAC,AACvB,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,YAAY,CAAE,GAAG,AACrB,CAAC,AAED,IAAI,8BAAC,CAAC,AACF,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,CAAC,AAChB,CAAC,AAED,QAAQ,8BAAC,CAAC,AACN,IAAI,CAAE,CAAC,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,MAAM,CAAE,IAAI,CAAC,CAAC,CACd,OAAO,CAAE,CAAC,CAAC,IAAI,AACnB,CAAC,AAED,uBAAQ,CAAC,EAAE,eAAC,CAAC,AACT,IAAI,CAAE,IAAI,CACV,MAAM,CAAE,GAAG,CAAC,CAAC,AACjB,CAAC\"}"
 };
 
 const Routes = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -775,37 +776,21 @@ const Routes = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 </section>
 
 
-${validate_component(Form, "Form").$$render($$result, {}, {}, {
+${validate_component(Form, "Form").$$render($$result, { name: "main-form" }, {}, {
 		default: () => `
     <br>
     <br>
 
-    ${validate_component(Input, "Input").$$render($$result, { type: "number", list: "sum-suggestions" }, {}, {})}
-
-    <br>
-    <br>
-
-    ${validate_component(Input, "Input").$$render($$result, { type: "text", list: "sum-suggestions" }, {}, {})}
-
-    <br>
-    <br>
-
-    ${validate_component(Input, "Input").$$render($$result, { type: "email", list: "sum-suggestions" }, {}, {})}
-
-    <br>
-    <br>
-
-    ${validate_component(Input, "Input").$$render($$result, { type: "url", list: "sum-suggestions" }, {}, {})}
-
-    <br>
-    <br>
-
-    ${validate_component(Input, "Input").$$render($$result, { type: "search", list: "sum-suggestions" }, {}, {})}
-
-    <br>
-    <br>
-
-    ${validate_component(Input, "Input").$$render($$result, { type: "date", list: "sum-suggestions" }, {}, {})}
+    ${validate_component(Input, "Input").$$render(
+			$$result,
+			{
+				name: "test1",
+				type: "number",
+				list: "sum-suggestions"
+			},
+			{},
+			{}
+		)}
 
     <br>
     <br>
@@ -813,6 +798,77 @@ ${validate_component(Form, "Form").$$render($$result, {}, {}, {
     ${validate_component(Input, "Input").$$render(
 			$$result,
 			{
+				name: "test2",
+				type: "text",
+				list: "sum-suggestions"
+			},
+			{},
+			{}
+		)}
+
+    <br>
+    <br>
+
+    ${validate_component(Input, "Input").$$render(
+			$$result,
+			{
+				name: "test3",
+				type: "email",
+				list: "sum-suggestions"
+			},
+			{},
+			{}
+		)}
+
+    <br>
+    <br>
+
+    ${validate_component(Input, "Input").$$render(
+			$$result,
+			{
+				name: "test4",
+				type: "url",
+				list: "sum-suggestions"
+			},
+			{},
+			{}
+		)}
+
+    <br>
+    <br>
+
+    ${validate_component(Input, "Input").$$render(
+			$$result,
+			{
+				name: "test5",
+				type: "search",
+				list: "sum-suggestions"
+			},
+			{},
+			{}
+		)}
+
+    <br>
+    <br>
+
+    ${validate_component(Input, "Input").$$render(
+			$$result,
+			{
+				name: "test6",
+				type: "date",
+				list: "sum-suggestions"
+			},
+			{},
+			{}
+		)}
+
+    <br>
+    <br>
+
+    ${validate_component(Input, "Input").$$render(
+			$$result,
+			{
+				name: "test7",
 				type: "password",
 				list: "sum-suggestions"
 			},
@@ -823,7 +879,16 @@ ${validate_component(Form, "Form").$$render($$result, {}, {}, {
     <br>
     <br>
 
-    ${validate_component(Input, "Input").$$render($$result, { type: "tel", list: "sum-suggestions" }, {}, {})}
+    ${validate_component(Input, "Input").$$render(
+			$$result,
+			{
+				name: "test8",
+				type: "tel",
+				list: "sum-suggestions"
+			},
+			{},
+			{}
+		)}
 
     <br>
     <br>
@@ -942,7 +1007,7 @@ ${validate_component(Form, "Form").$$render($$result, {}, {}, {
 		$$result,
 		{
 			type: "number",
-			name: "tex1",
+			name: "tex2",
 			list: "lis"
 		},
 		{},
@@ -1628,7 +1693,7 @@ function devalue(value) {
         }
         counts.set(thing, 1);
         if (!isPrimitive(thing)) {
-            var type = getType$1(thing);
+            var type = getType(thing);
             switch (type) {
                 case 'Number':
                 case 'String':
@@ -1672,7 +1737,7 @@ function devalue(value) {
         if (isPrimitive(thing)) {
             return stringifyPrimitive(thing);
         }
-        var type = getType$1(thing);
+        var type = getType(thing);
         switch (type) {
             case 'Number':
             case 'String':
@@ -1711,7 +1776,7 @@ function devalue(value) {
                 values_1.push(stringifyPrimitive(thing));
                 return;
             }
-            var type = getType$1(thing);
+            var type = getType(thing);
             switch (type) {
                 case 'Number':
                 case 'String':
@@ -1778,7 +1843,7 @@ function stringifyPrimitive(thing) {
         return str.replace(/^(-)?0\./, '$1.');
     return str;
 }
-function getType$1(thing) {
+function getType(thing) {
     return Object.prototype.toString.call(thing).slice(8, -1);
 }
 function escapeUnsafeChar(c) {
