@@ -185,6 +185,9 @@ function get_current_component() {
         throw new Error(`Function called outside component initialization`);
     return current_component;
 }
+function onMount(fn) {
+    get_current_component().$$.on_mount.push(fn);
+}
 function createEventDispatcher() {
     const component = get_current_component();
     return (type, detail) => {
@@ -1343,11 +1346,21 @@ const Icons = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const css$8 = {
 	code: "main.svelte-7sd4o8{position:relative;max-width:56em;margin:0 auto;box-sizing:border-box}",
-	map: "{\"version\":3,\"file\":\"_layout.svelte\",\"sources\":[\"_layout.svelte\"],\"sourcesContent\":[\"<script>\\n\\timport { Nav } from '../components';\\n\\timport Icons from './_icons.svelte';\\n\\n\\texport let segment;\\n</script>\\n\\n<style>\\n\\tmain {\\n\\t\\tposition: relative;\\n\\t\\tmax-width: 56em;\\n\\t\\tmargin: 0 auto;\\n\\t\\tbox-sizing: border-box;\\n\\t}\\n</style>\\n\\n<Nav {segment}/>\\n\\n<Icons/>\\n\\n<main>\\n\\t<slot></slot>\\n</main>\\n\"],\"names\":[],\"mappings\":\"AAQC,IAAI,cAAC,CAAC,AACL,QAAQ,CAAE,QAAQ,CAClB,SAAS,CAAE,IAAI,CACf,MAAM,CAAE,CAAC,CAAC,IAAI,CACd,UAAU,CAAE,UAAU,AACvB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"_layout.svelte\",\"sources\":[\"_layout.svelte\"],\"sourcesContent\":[\"<script>\\n\\timport { Nav } from '../components';\\n\\timport Icons from './_icons.svelte';\\n\\n\\texport let segment;\\n\\n\\timport { onMount } from 'svelte';\\n\\n\\tonMount(() => {\\n\\t\\tconsole.log('init')\\n\\t\\twindow.addEventListener('popstate', function(event) {\\n\\t\\t\\tconsole.log('works hide', event)\\n\\t\\t\\talert('works hide')\\n\\t\\t});\\n\\t});\\n\\n</script>\\n\\n<style>\\n\\tmain {\\n\\t\\tposition: relative;\\n\\t\\tmax-width: 56em;\\n\\t\\tmargin: 0 auto;\\n\\t\\tbox-sizing: border-box;\\n\\t}\\n</style>\\n\\n<Nav {segment}/>\\n\\n<Icons/>\\n\\n<main>\\n\\t<slot></slot>\\n</main>\\n\"],\"names\":[],\"mappings\":\"AAmBC,IAAI,cAAC,CAAC,AACL,QAAQ,CAAE,QAAQ,CAClB,SAAS,CAAE,IAAI,CACf,MAAM,CAAE,CAAC,CAAC,IAAI,CACd,UAAU,CAAE,UAAU,AACvB,CAAC\"}"
 };
 
 const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { segment } = $$props;
+
+	onMount(() => {
+		console.log("init");
+
+		window.addEventListener("popstate", function (event) {
+			console.log("works hide", event);
+			alert("works hide");
+		});
+	});
+
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
 	$$result.css.add(css$8);
 
