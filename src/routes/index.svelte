@@ -3,15 +3,9 @@
 </script>
 
 <style>
-    h1,
-    p {
-        text-align: center;
-        margin: 0 auto;
-    }
-
     h1 {
         text-transform: uppercase;
-        margin: 0 0 0.5em 0;
+        text-align: center;
     }
 
     .top-wrap {
@@ -45,6 +39,7 @@
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
+<br>
 
 <section class="top-wrap">
     <section class="top">
@@ -63,6 +58,7 @@
                 <Button is="success" on:click="{e => console.log(e)}">test123</Button>
             </li>
             <li>
+                <br>
                 <Input
                         type="number"
                         name="num"
@@ -78,36 +74,34 @@
                     <option value="1000">
                 </datalist>
             </li>
+            <li>
+                <Button is="warning" on:click="{e => console.log(e)}">Submit</Button>
+            </li>
         </ul>
     </section>
 
-    <ul>
-        <li>
-        <span>
-            <Icon size="small" type="heart-filled"/>
-            <Icon size="small" type="heart-filled" is="warning"/>
-            <Icon size="small" type="heart-filled" is="danger"/>
-        </span>
-        </li>
-        <li>
-        <span>
-            <Icon type="heart-filled"/>
-            <Icon type="heart-filled" is="warning"/>
-            <Icon type="heart-filled" is="danger"/>
-        </span>
-        </li>
-        <li>
-        <span>
-            <Icon size="big" type="heart-filled"/>
-            <Icon size="big" type="heart-filled" is="warning"/>
-            <Icon size="big" type="heart-filled" is="danger"/>
-        </span>
-        </li>
-    </ul>
-
     <section style="padding: 20px 5px 20px 0">
-        <Progress value="65" max="100" style="background: 0; width: 100%"></Progress>
+        <Progress value="65"></Progress>
     </section>
+
+    <span>
+            <Icon type="heart-filled"/>
+            <Icon type="heart-filled"/>
+            <Icon type="heart-filled"/>
+            <Icon type="heart-filled"/>
+            <Icon type="heart-filled"/>
+    </span>
+
+    <br>
+    <br>
+
+    <h1>The main title</h1>
+
+    <br>
+
+    <p class="text-center" style="padding: 0 10vw">
+        A small description that describes the title above and just makes text longer.
+    </p>
 </section>
 
 
@@ -176,6 +170,30 @@
 <br>
 
 <h2 class="text-warning">Interactive elements</h2>
+
+<ul>
+    <li>
+        <span>
+            <Icon size="small" type="heart-filled"/>
+            <Icon size="small" type="heart-filled" is="warning"/>
+            <Icon size="small" type="heart-filled" is="danger"/>
+        </span>
+    </li>
+    <li>
+        <span>
+            <Icon type="heart-filled"/>
+            <Icon type="heart-filled" is="warning"/>
+            <Icon type="heart-filled" is="danger"/>
+        </span>
+    </li>
+    <li>
+        <span>
+            <Icon size="big" type="heart-filled"/>
+            <Icon size="big" type="heart-filled" is="warning"/>
+            <Icon size="big" type="heart-filled" is="danger"/>
+        </span>
+    </li>
+</ul>
 
 <br>
 <br>
