@@ -15,7 +15,7 @@ function create_fragment(ctx) {
 			t0 = space();
 			section = element("section");
 			h1 = element("h1");
-			t1 = text("About this project");
+			t1 = text("Charity");
 			this.h();
 		},
 		l: function claim(nodes) {
@@ -24,17 +24,17 @@ function create_fragment(ctx) {
 			var section_nodes = children(section);
 			h1 = claim_element(section_nodes, "H1", { class: true });
 			var h1_nodes = children(h1);
-			t1 = claim_text(h1_nodes, "About this project");
+			t1 = claim_text(h1_nodes, "Charity");
 			h1_nodes.forEach(detach_dev);
 			section_nodes.forEach(detach_dev);
 			this.h();
 		},
 		h: function hydrate() {
 			document.title = "Charitify - Charity page and donate.";
-			attr_dev(h1, "class", "svelte-jdomxk");
-			add_location(h1, file, 20, 1, 241);
-			attr_dev(section, "class", "svelte-jdomxk");
-			add_location(section, file, 19, 0, 230);
+			attr_dev(h1, "class", "svelte-1w7hlc5");
+			add_location(h1, file, 16, 1, 208);
+			attr_dev(section, "class", "svelte-1w7hlc5");
+			add_location(section, file, 15, 0, 197);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, t0, anchor);
@@ -77,4 +77,4 @@ class Charity extends SvelteComponentDev {
 }
 
 export default Charity;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2hhcml0eS5kNDk2MDkwYS5qcyIsInNvdXJjZXMiOltdLCJzb3VyY2VzQ29udGVudCI6W10sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyJ9
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2hhcml0eS40ZDY5ODkzZi5qcyIsInNvdXJjZXMiOltdLCJzb3VyY2VzQ29udGVudCI6W10sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyJ9
