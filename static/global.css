@@ -149,16 +149,16 @@ body {
 
 /* ---------------------===================( Global Themes )===================--------------------- */
 
-body:before {
-    content: '';
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-}
+/*body:before {*/
+/*    content: '';*/
+/*    display: block;*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*    z-index: -1;*/
+/*}*/
 
 /* Background patterns: https://leaverou.github.io/css3patterns/ */
 body,
@@ -170,7 +170,7 @@ body:before,
                 radial-gradient(rgba(var(--color-white), .02) 15%, transparent 20%) 0 1px,
                 radial-gradient(rgba(var(--color-white), .02) 15%, transparent 20%) 8px 9px;
     background-color: rgba(var(--theme-bg-color));
-    background-attachment: fixed;
+    /*background-attachment: fixed;*/
     background-size: 16px 16px;
 }
 
