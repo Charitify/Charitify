@@ -32,4 +32,9 @@
     li {
         padding: calc(var(--screen-padding) / 3);
     }
+
+    .rate li {
+        -webkit-filter: drop-shadow(var(--shadow-primary));
+        filter: drop-shadow(var(--shadow-primary));
+    }
 </style>
