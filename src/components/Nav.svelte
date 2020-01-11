@@ -25,10 +25,10 @@
 	</ul>
 
   <span class="nav-actions">
-    <Button on:click={changeTheme} auto size="medium">
+    <Button on:click={changeTheme} auto size="small">
       En
     </Button>
-    <Button on:click={changeTheme} auto size="medium">
+    <Button on:click={changeTheme} auto size="small">
       <Icon is="info" type="moon" class="theme-fill-color"/>
     </Button>
   </span>

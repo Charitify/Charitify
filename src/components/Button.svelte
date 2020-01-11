@@ -9,7 +9,7 @@
     export let href = undefined
     export let auto = false
     export let type = 'button'
-    export let size = 'big'
+    export let size = 'medium'
     export let title = undefined
     export let disabled = false
     export let ariaLabel = undefined
@@ -67,20 +67,20 @@
 
     .small {
         padding: 5px;
-        min-width: calc(var(--min-interactive-size) / 2);
-        min-height: calc(var(--min-interactive-size) / 2);
-    }
-
-    .medium {
-        padding: 5px 10px;
         min-width: calc(var(--min-interactive-size) / 1.5);
         min-height: calc(var(--min-interactive-size) / 1.5);
     }
 
-    .big {
-        padding: 5px 15px;
+    .medium {
+        padding: 5px 10px;
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
+    }
+
+    .big {
+        padding: 5px 15px;
+        min-width: calc(var(--min-interactive-size) * 1.5);
+        min-height: calc(var(--min-interactive-size) * 1.5);
     }
 
     .btn:focus {
