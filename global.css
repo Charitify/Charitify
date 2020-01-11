@@ -1,27 +1,58 @@
-/* calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))) */
+/*
+ *
+ * Some CSS formula templates:
+ *
+ * calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width])))
+ *
+ */
 
+/* ---------------------===================( Variables )===================--------------------- */
 :root {
-    /* ---------------------===================( Variables )===================--------------------- */
 
     /* -----------========( Colors )=========----------- */
-    --color-light: #e6e6e6;
-    --color-dark: #282828;
 
-    --color-light-font: #ddd;
-    --color-dark-font: #333;
+    /* Mono */
 
-    --color-success: 69, 161, 75; /* #45a14b */
-    --color-success-dark: 46, 107, 51; /* #2e6b33 */
+    --color-white: 255, 255, 255;           /* #ffffff */
+    --color-black: 0, 0, 0;                 /* #000000 */
 
-    --color-warning: 218, 160, 11; /* #daa00b */
-    --color-warning-dark: 146, 107, 7; /* #926b07 */
+    --color-lihgt: 230, 230, 230;           /* #e6e6e6 */
+    --color-light-1: 221, 221, 221;         /* #dddddd */
 
-    --color-danger: 217, 83, 79; /* #d8544f */
-    --color-danger-dark: 188, 46, 41; /* #bc2e29 */
+    --color-dark: 40, 40, 40;               /* #282828 */
+    --color-dark-1: 51, 51, 51;             /* #333333 */
 
-    --color-info: 158, 158, 158; /* #9e9e9e */
+    /* Multi */
 
-    /* -----------========( END: Colors )=========----------- */
+    --color-success: 69, 161, 75;           /* #45a14b */
+    --color-success-dark: 46, 107, 51;      /* #2e6b33 */
+
+    --color-warning: 218, 160, 11;          /* #daa00b */
+    --color-warning-dark: 146, 107, 7;      /* #926b07 */
+
+    --color-danger: 217, 83, 79;            /* #d8544f */
+    --color-danger-dark: 188, 46, 41;       /* #bc2e29 */
+
+    --color-info: 158, 158, 158;            /* #9e9e9e */
+    --color-info-dark: 120, 120, 120;       /* #787878 */
+
+    /* Font */
+
+    --color-font-light: var(--color-light-1);
+    --color-font-dark: var(--color-dark-1);
+
+
+
+
+    /* -----------========( Current Theme )=========----------- */
+
+    --theme-svg-fill: var(--color-dark-1);
+    --theme-bg-color: var(--color-light-1);
+    --theme-font-color: var(--color-font-dark);
+    --theme-font-color-opposite: var(--color-font-light);
+
+
+
 
     /* -----------========( Breakpoints )=========----------- */
 
@@ -37,24 +68,19 @@
     --screen-desktop-start: 1441px;
     --screen-desktop-end: 1920px;
 
-    /* -----------========( END: Breakpoints )=========----------- */
+
+
 
     /* -----------========( Shadows )=========----------- */
 
-    --primary-shadow: -1px 2px 1px rgba(0, 0, 0, .2);
-    --secondary-shadow: 0 2px 4px 0 rgba(0, 0, 0, .3);
+    --shadow-primary: -1px 2px 1px rgba(var(--color-black), .2);
+    --shadow-secondary: 0 2px 4px 0 rgba(var(--color-black), .3);
+    --shadow-secondary-inset: 1px -1px 2px rgba(var(--color-black), .1), inset 1px 0 2px rgba(var(--color-black), .2);
 
-    /* -----------========( END: Shadows )=========----------- */
 
-    /* -----------========( Padding )=========----------- */
 
-    --screen-padding: 7px;
 
-    /* -----------========( END: Padding )=========----------- */
-
-    --min-interactive-size: 50px;
-
-    --border-radius: 4px;
+    /* -----------========( Font )=========----------- */
 
     --font-weight: 400;
     --font-size-min: 14;
@@ -74,9 +100,36 @@
     /* The most readable online fonts: "1. Verdana, 2. Arial, 3. Courier" -> (https://www.awai.com/2011/10/the-best-fonts-to-use-in-print-online-and-email/) */
     /* Fonts supporting (https://www.cssfontstack.com/) */
     --font-family: Verdana, Arial, Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+
+
+
+    /* -----------========( Other )=========----------- */
+
+    --screen-padding: 8px;
+
+    --min-interactive-size: 50px;
+
+    --border-radius: 4px;
 }
 
+
+
 /* ---------------------===================( Settings )===================--------------------- */
+
+body.theme-light {
+    --theme-bg-color: var(--color-light-1);
+    --theme-svg-fill: var(--color-dark-1);
+    --theme-font-color: var(--color-font-dark);
+    --theme-font-color-opposite: var(--color-font-light);
+}
+
+body.theme-dark {
+    --theme-bg-color: var(--color-dark-1);
+    --theme-svg-fill: var(--color-light-1);
+    --theme-font-color: var(--color-font-light);
+    --theme-font-color-opposite: var(--color-font-dark);
+}
 
 body {
     text-align: left;
@@ -86,11 +139,13 @@ body {
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     font-size: var(--font-size);
-    color: var(--color-dark-font);
+    color: rgba(var(--theme-font-color));
     font-family: var(--font-family);
     line-height: var(--font-line-height);
-    background-color: var(--color-light-font);
+    background-color: rgba(var(--theme-bg-color));
 }
+
+
 
 /* ---------------------===================( Global Themes )===================--------------------- */
 
@@ -106,51 +161,29 @@ body:before {
 }
 
 /* Background patterns: https://leaverou.github.io/css3patterns/ */
-body.theme-light,
-body.theme-light:before,
-body.theme-light .theme-bg {
-    color: var(--color-dark-font);
-    background: radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 0 0,
-    radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 8px 8px,
-    radial-gradient(rgba(255, 255, 255, .1) 15%, transparent 20%) 0 1px,
-    radial-gradient(rgba(255, 255, 255, .1) 15%, transparent 20%) 8px 9px;
-    background-color: var(--color-light);
+body,
+body:before,
+.theme-bg {
+    color: rgba(var(--theme-font-color));
+    background: radial-gradient(rgba(var(--color-black), .025) 15%, transparent 16%) 0 0,
+                radial-gradient(rgba(var(--color-black), .025) 15%, transparent 16%) 8px 8px,
+                radial-gradient(rgba(var(--color-white), .015) 15%, transparent 20%) 0 1px,
+                radial-gradient(rgba(var(--color-white), .015) 15%, transparent 20%) 8px 9px;
+    background-color: rgba(var(--theme-bg-color));
     background-attachment: fixed;
     background-size: 16px 16px;
 }
 
-body.theme-light .theme-bg-color {
-    background-color: var(--color-light);
+.theme-bg-color {
+    background-color: rgba(var(--theme-bg-color));
 }
 
-body.theme-light .theme-fill-color,
-body.theme-light .theme-fill-color * {
-    fill: var(--color-dark-font);
-    stroke: var(--color-dark-font);
+.theme-svg-fill, .theme-svg-fill * {
+    fill: var(--theme-svg-fill);
+    stroke: var(--theme-svg-fill);
 }
 
-body.theme-dark,
-body.theme-dark:before,
-body.theme-dark .theme-bg {
-    color: var(--color-light-font);
-    background: radial-gradient(rgba(0, 0, 0, .15) 15%, transparent 16%) 0 0,
-    radial-gradient(rgba(0, 0, 0, .15) 15%, transparent 16%) 8px 8px,
-    radial-gradient(rgba(255, 255, 255, .03) 15%, transparent 20%) 0 1px,
-    radial-gradient(rgba(255, 255, 255, .03) 15%, transparent 20%) 8px 9px;
-    background-color: var(--color-dark);
-    background-attachment: fixed;
-    background-size: 16px 16px;
-}
 
-body.theme-dark .theme-bg-color {
-    background-color: var(--color-dark);
-}
-
-body.theme-dark .theme-fill-color,
-body.theme-dark .theme-fill-color * {
-    fill: var(--color-light-font);
-    stroke: var(--color-light-font);
-}
 
 /* ---------------------===================( Reset/Normalize )===================--------------------- */
 /* All styles (https://dev.to/hankchizljaw/a-modern-css-reset-6p3/) */
