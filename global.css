@@ -11,7 +11,7 @@
     --color-dark-font: #333;
 
     --color-success: 69, 161, 75; /* #45a14b */
-    --color-success-dark: 54, 125, 60; /* #367d3c */
+    --color-success-dark: 46, 107, 51; /* #2e6b33 */
 
     --color-warning: 218, 160, 11; /* #daa00b */
     --color-warning-dark: 146, 107, 7; /* #926b07 */
@@ -123,6 +123,11 @@ body.theme-light .theme-bg-color {
     background-color: var(--color-light);
 }
 
+body.theme-light .theme-fill-color * {
+    fill: var(--color-dark-font);
+    stroke: var(--color-dark-font);
+}
+
 body.theme-dark,
 body.theme-dark:before,
 body.theme-dark .theme-bg {
@@ -140,12 +145,9 @@ body.theme-dark .theme-bg-color {
     background-color: var(--color-dark);
 }
 
-.main-shadow {
-    box-shadow: -1px 2px 0 rgba(0, 0, 0, .2);
-}
-
-.main-shadow-inset {
-    box-shadow: inset -1px 2px 0 rgba(0, 0, 0, .2);
+body.theme-dark .theme-fill-color * {
+    fill: var(--color-light-font);
+    stroke: var(--color-light-font);
 }
 
 /* ---------------------===================( Reset/Normalize )===================--------------------- */
