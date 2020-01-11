@@ -1,6 +1,6 @@
 <script>
     import { classnames } from '../utils'
-    import Picture from '../components/Picture.svelte'
+    import Picture from './Picture.svelte'
 
     export let src
     export let alt

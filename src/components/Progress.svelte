@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher, onMount, tick } from 'svelte'
+    import { createEventDispatcher, onMount } from 'svelte'
     import { classnames } from '../utils'
 
     const dispatch = createEventDispatcher()
@@ -44,7 +44,7 @@
         padding: 7px;
         border-radius: 9999px;
         background-color: rgba(255, 255, 255, .2);
-        box-shadow: inset var(--primary-shadow), 1px -1px 2px rgba(0,0,0,.1);
+        box-shadow: inset var(--primary-shadow), 1px -1px 2px rgba(0,0,0,.1), inset 1px 0 2px rgba(0,0,0,.2);
     }
 
     .progress-inner-frame {

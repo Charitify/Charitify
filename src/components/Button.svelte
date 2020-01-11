@@ -7,7 +7,9 @@
     export let is = undefined
     export let id = undefined
     export let href = undefined
+    export let auto = false
     export let type = 'button'
+    export let size = 'big'
     export let title = undefined
     export let disabled = false
     export let ariaLabel = undefined
@@ -15,7 +17,7 @@
     let titleProp = title || ariaLabel
     let ariaLabelProp = ariaLabel || title
 
-    $: classProp = classnames('btn', is, $$props.class, { disabled })
+    $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })
 </script>
 
 {#if href}
@@ -44,9 +46,12 @@
 {/if}
 
 <style>
+    .btn:not(.auto) {
+        width: 100%;
+    }
+
     .btn {
         flex: none;
-        width: 100%;
         color: inherit;
         max-width: 100%;
         user-select: none;
@@ -57,9 +62,25 @@
         display: inline-flex;
         justify-content: center;
         border-radius: var(--border-radius);
+        text-shadow: 1px 1px rgba(0, 0, 0, .3);
+    }
+
+    .small {
+        padding: 5px;
+        min-width: calc(var(--min-interactive-size) / 2);
+        min-height: calc(var(--min-interactive-size) / 2);
+    }
+
+    .medium {
+        padding: 5px 10px;
+        min-width: calc(var(--min-interactive-size) / 1.5);
+        min-height: calc(var(--min-interactive-size) / 1.5);
+    }
+
+    .big {
+        padding: 5px 15px;
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
-        text-shadow: 1px 1px rgba(0, 0, 0, .3);
     }
 
     .btn:focus {

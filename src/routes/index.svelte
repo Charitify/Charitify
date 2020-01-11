@@ -1,6 +1,6 @@
 <script>
     import { Swipe, SwipeItem } from "../plugins";
-    import { Button, Picture, Input, Progress, Icon, Form, Rate, Avatar } from '../components'
+    import { Button, Picture, Input, Progress, Icon, Form, Rate, Avatar, Divider } from '../components'
 </script>
 
 <style>
@@ -20,6 +20,7 @@
         flex-grow: 1;
         overflow: hidden;
         border-radius: var(--border-radius);
+        box-shadow: var(--primary-shadow);
     }
 
     .options {
@@ -37,7 +38,7 @@
 
     .rate-section {
         display: flex;
-        align-items: flex-end;
+        align-items: baseline;
         justify-content: space-between;
         padding: calc(var(--screen-padding) * 2) 0;
     }
@@ -73,7 +74,7 @@
 
 <section class="container">
     <section class="top">
-        <div class="top-pic main-shadow">
+        <div class="top-pic">
             <Swipe>
                 <SwipeItem>
                     <Picture src="https://placeimg.com/300/300/people" alt="sample"/>
@@ -151,6 +152,10 @@
         A small description that describes the title above and just makes text longer.
     </p>
 </section>
+
+<br>
+
+<Divider/>
 
 
 <Form on:submit="{(e) => console.log(e)}" name="main-form">

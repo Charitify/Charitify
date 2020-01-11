@@ -1,4 +1,7 @@
 <script>
+  import Icon from './Icon.svelte'
+  import Button from './Button.svelte'
+
   export let segment;
 
   let isDarkTheme = true
@@ -11,7 +14,7 @@
   }
 </script>
 
-<nav class="theme-bg">
+<nav class="theme-bg container">
 	<ul>
 		<li><a class:selected='{segment === undefined}' href='.'>home</a></li>
 		<li><a class:selected='{segment === "about"}' href='about'>about</a></li>
@@ -21,20 +24,24 @@
 		<li><a rel=prefetch class:selected='{segment === "blog"}' href='blog'>blog</a></li>
 	</ul>
 
-  <button type="button" on:click={changeTheme}>
-    Switch theme
-  </button>
+  <span class="nav-actions">
+    <Button on:click={changeTheme} auto size="medium">
+      En
+    </Button>
+    <Button on:click={changeTheme} auto size="medium">
+      <Icon is="info" type="moon" class="theme-fill-color"/>
+    </Button>
+  </span>
 </nav>
 
 <style>
   nav {
     position: sticky;
     top: 0;
+    z-index: 1;
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid rgba(var(--color-danger), .1);
-    padding: 0 1em;
-    z-index: 1;
     box-shadow: var(--secondary-shadow);
   }
 
@@ -54,6 +61,11 @@
   }
 
   a {
-    padding: 1em 0.5em;
+    padding: .8em 0.5em;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
   }
 </style>
