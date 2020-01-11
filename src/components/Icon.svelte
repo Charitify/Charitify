@@ -32,6 +32,11 @@
         display: inherit;
     }
 
+    svg, svg * {
+        fill: rgba(var(--theme-svg-fill));
+        stroke: rgba(var(--theme-svg-fill));
+    }
+
     /* ------------=========( Size )=========------------ */
     .small {
         width: 15px;
@@ -70,12 +75,12 @@
     }
 
     .light, .light * {
-        fill: var(--color-light-font);
-        stroke: var(--color-light-font);
+        fill: var(--color-light-1);
+        stroke: var(--color-light-1);
     }
 
     .dark, .dark * {
-        fill: var(--color-dark-font);
-        stroke: var(--color-dark-font);
+        fill: var(--color-dark-1);
+        stroke: var(--color-dark-1);
     }
 </style>

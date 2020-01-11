@@ -35,7 +35,7 @@
     let styleProp = toCSSString({ ...style, textAlign: align })
     let patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
 
-    $: classProp = classnames('inp', 'theme-bg-color', $$props.class, { disabled, readonly, required, invalid })
+    $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
 
     /**
      *
@@ -111,7 +111,9 @@
         border-radius: var(--border-radius);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
-        border: 2px solid rgb(var(--color-info));
+        border: 1px solid rgba(var(--color-black), .1);
+        background-color: rgba(var(--theme-bg-color), .75);
+        box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
 
     .inp:focus {

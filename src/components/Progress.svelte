@@ -43,8 +43,8 @@
         height: 30px;
         padding: 7px;
         border-radius: 9999px;
-        background-color: rgba(255, 255, 255, .2);
-        box-shadow: inset var(--primary-shadow), 1px -1px 2px rgba(0,0,0,.1), inset 1px 0 2px rgba(0,0,0,.2);
+        background-color: rgba(var(--theme-bg-color), .75);
+        box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
 
     .progress-inner-frame {
@@ -60,8 +60,8 @@
         align-self: stretch;
         transition: 1s ease-in-out;
         margin-bottom: 2px;
-        box-shadow: var(--primary-shadow);
+        box-shadow: var(--shadow-primary);
         border-radius: var(--border-radius);
-        background-color: rgb(var(--color-success));
+        background-color: rgba(var(--color-success));
     }
 </style>

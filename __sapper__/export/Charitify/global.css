@@ -4,11 +4,11 @@
     /* ---------------------===================( Variables )===================--------------------- */
 
     /* -----------========( Colors )=========----------- */
-    --color-light: #e6e6e6;
+    --color-primary: #e6e6e6;
     --color-dark: #282828;
 
     --color-light-font: #ddd;
-    --color-dark-font: #333;
+    ----color-font-dark: #333;
 
     --color-success: 69, 161, 75; /* #45a14b */
     --color-success-dark: 46, 107, 51; /* #2e6b33 */
@@ -41,8 +41,8 @@
 
     /* -----------========( Shadows )=========----------- */
 
-    --primary-shadow: -1px 2px 1px rgba(0, 0, 0, .2);
-    --secondary-shadow: 0 2px 4px 0 rgba(0, 0, 0, .3);
+    --shadow-primary: -1px 2px 1px rgba(0, 0, 0, .2);
+    --shadow-secondary: 0 2px 4px 0 rgba(0, 0, 0, .3);
 
     /* -----------========( END: Shadows )=========----------- */
 
@@ -86,7 +86,7 @@ body {
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     font-size: var(--font-size);
-    color: var(--color-dark-font);
+    color: var(----color-font-dark);
     font-family: var(--font-family);
     line-height: var(--font-line-height);
     background-color: var(--color-light-font);
@@ -109,24 +109,24 @@ body:before {
 body.theme-light,
 body.theme-light:before,
 body.theme-light .theme-bg {
-    color: var(--color-dark-font);
+    color: var(----color-font-dark);
     background: radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 0 0,
     radial-gradient(rgba(0, 0, 0, .035) 15%, transparent 16%) 8px 8px,
     radial-gradient(rgba(255, 255, 255, .1) 15%, transparent 20%) 0 1px,
     radial-gradient(rgba(255, 255, 255, .1) 15%, transparent 20%) 8px 9px;
-    background-color: var(--color-light);
+    background-color: rgba(var(--color-primary));
     background-attachment: fixed;
     background-size: 16px 16px;
 }
 
 body.theme-light .theme-bg-color {
-    background-color: var(--color-light);
+    background-color: rgba(var(--color-primary));
 }
 
 body.theme-light .theme-fill-color,
 body.theme-light .theme-fill-color * {
-    fill: var(--color-dark-font);
-    stroke: var(--color-dark-font);
+    fill: var(----color-font-dark);
+    stroke: var(----color-font-dark);
 }
 
 body.theme-dark,
@@ -137,13 +137,13 @@ body.theme-dark .theme-bg {
     radial-gradient(rgba(0, 0, 0, .15) 15%, transparent 16%) 8px 8px,
     radial-gradient(rgba(255, 255, 255, .03) 15%, transparent 20%) 0 1px,
     radial-gradient(rgba(255, 255, 255, .03) 15%, transparent 20%) 8px 9px;
-    background-color: var(--color-dark);
+    background-color: rgba(var(--color-secendary));
     background-attachment: fixed;
     background-size: 16px 16px;
 }
 
 body.theme-dark .theme-bg-color {
-    background-color: var(--color-dark);
+    background-color: rgba(var(--color-secendary));
 }
 
 body.theme-dark .theme-fill-color,

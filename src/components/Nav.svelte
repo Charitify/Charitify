@@ -4,7 +4,7 @@
 
   export let segment;
 
-  let isDarkTheme = true
+  let isDarkTheme = false
 
   let value = 'ua'
 
@@ -34,7 +34,7 @@
     </select>
 
     <Button on:click={changeTheme} auto size="small">
-      <Icon type="moon" class="theme-fill-color"/>
+      <Icon type="moon" class="theme-svg-fill"/>
     </Button>
   </span>
 </nav>
@@ -46,8 +46,8 @@
     z-index: 1;
     display: flex;
     justify-content: space-between;
+    box-shadow: var(--shadow-secondary);
     border-bottom: 1px solid rgba(var(--color-danger), .1);
-    box-shadow: var(--secondary-shadow);
   }
 
   .selected {
@@ -82,6 +82,6 @@
   .lang-select:hover,
   .lang-select:focus {
     box-shadow: none;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(var(--color-black), 0.1);
   }
 </style>

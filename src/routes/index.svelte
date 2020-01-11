@@ -20,7 +20,7 @@
         flex-grow: 1;
         overflow: hidden;
         border-radius: var(--border-radius);
-        box-shadow: var(--primary-shadow);
+        box-shadow: var(--shadow-primary);
     }
 
     .options {
