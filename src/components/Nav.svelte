@@ -29,7 +29,7 @@
       En
     </Button>
     <Button on:click={changeTheme} auto size="small">
-      <Icon is="info" type="moon" class="theme-fill-color"/>
+      <Icon type="moon" class="theme-fill-color"/>
     </Button>
   </span>
 </nav>

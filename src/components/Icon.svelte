@@ -2,7 +2,7 @@
     import { classnames, toCSSString } from '../utils'
 
     export let type
-    export let is = 'primary' // primary|warning|danger
+    export let is // primary|warning|danger|light|dark
     export let size = 'medium' // small|medium|big
     export let rotate = 0
     export let style = undefined
@@ -24,7 +24,7 @@
         style={styleProp}
         aria-label={ariaLabelProp}
 >
-    <use xlink:href={`#ico-${type}`} class="ico_use"/>
+    <use xlink:href={`#ico-${type}`} class="ico-use"/>
 </svg>
 
 <style>
@@ -49,18 +49,33 @@
     }
 
     /* ------------=========( Color )=========------------ */
-    .primary * {
+    .primary, .primary * {
         fill: rgb(var(--color-success));
         stroke: rgb(var(--color-success));
     }
 
-    .warning * {
+    .warning, .warning * {
         fill: rgb(var(--color-warning));
         stroke: rgb(var(--color-warning));
     }
 
-    .danger * {
+    .danger, .danger * {
         fill: rgb(var(--color-danger));
         stroke: rgb(var(--color-danger));
+    }
+
+    .info, .info * {
+        fill: rgb(var(--color-info));
+        stroke: rgb(var(--color-info));
+    }
+
+    .light, .light * {
+        fill: var(--color-light-font);
+        stroke: var(--color-light-font);
+    }
+
+    .dark, .dark * {
+        fill: var(--color-dark-font);
+        stroke: var(--color-dark-font);
     }
 </style>
