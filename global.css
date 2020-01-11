@@ -123,6 +123,7 @@ body.theme-light .theme-bg-color {
     background-color: var(--color-light);
 }
 
+body.theme-light .theme-fill-color,
 body.theme-light .theme-fill-color * {
     fill: var(--color-dark-font);
     stroke: var(--color-dark-font);
@@ -145,6 +146,7 @@ body.theme-dark .theme-bg-color {
     background-color: var(--color-dark);
 }
 
+body.theme-dark .theme-fill-color,
 body.theme-dark .theme-fill-color * {
     fill: var(--color-light-font);
     stroke: var(--color-light-font);
