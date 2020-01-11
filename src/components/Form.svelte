@@ -15,11 +15,6 @@
     let autocompleteProp = autocomplete ? 'on' : 'off'
 
     $: classProp = classnames('form', $$props.class)
-
-    function onSubmit(e) {
-        e.preventDefault()
-        dispatch('submit', e)
-    }
 </script>
 
 <form
@@ -29,7 +24,7 @@
         class={classProp}
         aria-label={ariaLabelProp}
         autocomplete={autocompleteProp}
-        on:submit={onSubmit}
+        on:submit|preventDefault={e => dispatch('submit', e)}
 >
     <slot></slot>
 </form>

@@ -11,6 +11,7 @@
     export let type = 'button'
     export let size = 'medium'
     export let title = undefined
+    export let htmlFor = undefined
     export let disabled = false
     export let ariaLabel = undefined
 
@@ -18,6 +19,12 @@
     let ariaLabelProp = ariaLabel || title
 
     $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })
+
+    function onLabelClick(e) {
+        document.getElementById(htmlFor).click()
+        // try { document.getElementById(htmlFor).click() } catch (e) {}
+        !disabled && dispatch("click", e)
+    }
 </script>
 
 {#if href}
@@ -31,6 +38,18 @@
     >
         <slot></slot>
     </a>
+{:else if htmlFor}
+    <label
+            {id}
+            {disabled}
+            for={htmlFor}
+            title={titleProp}
+            class={classProp}
+            aria-label={ariaLabelProp}
+            on:click={onLabelClick}
+    >
+        <slot></slot>
+    </label>
 {:else}
     <button
             {id}
@@ -50,9 +69,10 @@
         width: 100%;
     }
 
-    .btn {
+    :global(.btn) {
         flex: none;
         color: inherit;
+        cursor: pointer;
         max-width: 100%;
         user-select: none;
         padding: 5px 15px;
@@ -65,34 +85,34 @@
         text-shadow: 1px 1px rgba(0, 0, 0, .3);
     }
 
-    .small {
+    :global(.btn.small) {
         padding: 5px;
         min-width: calc(var(--min-interactive-size) / 1.5);
         min-height: calc(var(--min-interactive-size) / 1.5);
     }
 
-    .medium {
+    :global(.btn.medium) {
         padding: 5px 10px;
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
     }
 
-    .big {
+    :global(.btn.big) {
         padding: 5px 15px;
         min-width: calc(var(--min-interactive-size) * 1.5);
         min-height: calc(var(--min-interactive-size) * 1.5);
     }
 
-    .btn:focus {
+    :global(.btn:focus) {
         background-color: rgba(0, 0, 0, 0.1);
     }
 
-    .btn:hover {
+    :global(.btn:hover) {
         box-shadow: 0 2px rgba(0, 0, 0, 0.2);
         background-color: rgba(0, 0, 0, 0.1);
     }
 
-    .btn:active {
+    :global(.btn:active) {
         transform: translateY(1px);
         box-shadow: 0 1px rgba(0, 0, 0, 0.2);
         background-color: rgba(0, 0, 0, 0.1);

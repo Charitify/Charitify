@@ -6,6 +6,8 @@
 
   let isDarkTheme = true
 
+  let value = 'ua'
+
   function changeTheme() {
     isDarkTheme = !isDarkTheme
     document.body.classList.remove('theme-dark')
@@ -25,9 +27,12 @@
 	</ul>
 
   <span class="nav-actions">
-    <Button on:click={changeTheme} auto size="small">
-      En
-    </Button>
+    <select {value} name="lang" id="lang" class="btn small lang-select">
+      <option value="ua">Ua</option>
+      <option value="ru">Ru</option>
+      <option value="en">En</option>
+    </select>
+
     <Button on:click={changeTheme} auto size="small">
       <Icon type="moon" class="theme-fill-color"/>
     </Button>
@@ -67,5 +72,16 @@
   .nav-actions {
     display: flex;
     align-items: center;
+  }
+
+  .lang-select {
+    padding: 5px;
+    background-color: transparent;
+  }
+
+  .lang-select:hover,
+  .lang-select:focus {
+    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0.1);
   }
 </style>
