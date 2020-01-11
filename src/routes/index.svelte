@@ -19,6 +19,7 @@
         z-index: 0;
         flex-grow: 1;
         overflow: hidden;
+        margin-bottom: 2px;
         border-radius: var(--border-radius);
         box-shadow: var(--shadow-primary);
     }

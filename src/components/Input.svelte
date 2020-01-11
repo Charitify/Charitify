@@ -112,7 +112,7 @@
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
         border: 1px solid rgba(var(--color-black), .2);
-        background-color: rgba(var(--theme-bg-color), .75);
+        background-color: rgba(var(--theme-bg-color));
         box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
 

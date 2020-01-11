@@ -43,7 +43,7 @@
         height: 30px;
         padding: 7px;
         border-radius: 9999px;
-        background-color: rgba(var(--theme-bg-color), .75);
+        background-color: rgba(var(--theme-bg-color));
         box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
 
