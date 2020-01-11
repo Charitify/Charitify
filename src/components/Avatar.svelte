@@ -19,6 +19,7 @@
         display: flex;
         border-radius: 50%;
         overflow: hidden;
+        box-shadow: var(--shadow-primary);
     }
 
     .small {

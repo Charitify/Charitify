@@ -11,7 +11,7 @@
 
     .top {
         display: flex;
-        margin-bottom: calc(var(--screen-padding) * 2);
+        margin-bottom: calc(var(--screen-padding) * 1.5);
         margin-top: var(--screen-padding);
     }
 
@@ -28,20 +28,20 @@
         flex: 0;
         display: flex;
         flex-direction: column;
-        margin: calc(var(--screen-padding) * -1) 0;
+        margin: calc(var(--screen-padding) * -1 / 2) 0;
         padding: 0 0 0 var(--screen-padding);
     }
 
     .options li {
         flex: none;
-        margin: var(--screen-padding) 0;
+        margin: calc(var(--screen-padding) / 2) 0;
     }
 
     .rate-section {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        padding: calc(var(--screen-padding) * 2) 0;
+        padding: calc(var(--screen-padding) * 1.5) 0;
     }
 
     .ava-section {
