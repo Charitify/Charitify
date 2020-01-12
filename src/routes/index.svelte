@@ -355,10 +355,6 @@
 
 <h2 class="text-info">Images</h2>
 
-<Picture alt="Borat" src="great-success.png" class="picture">
-    HIGH FIVE!
-</Picture>
-
 <br>
 <br>
 
