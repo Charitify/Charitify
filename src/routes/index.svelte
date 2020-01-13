@@ -1,6 +1,6 @@
 <script>
     import { Swipe, SwipeItem } from "../plugins";
-    import { Button, Picture, Input, Progress, Icon, Form, Rate, Avatar, Divider } from '../components'
+    import { Button, Picture, Input, Progress, ProgressNext, Icon, Form, Rate, Avatar, Divider } from '../components'
 </script>
 
 <style>
@@ -128,7 +128,9 @@
         </ul>
     </section>
 
-    <Progress value="65"></Progress>
+<!--    <Progress value="65"></Progress>-->
+
+    <ProgressNext value="75"></ProgressNext>
 
     <section class="rate-section">
         <div class="ava-section">

@@ -113,7 +113,8 @@
         min-height: var(--min-interactive-size);
         border: 1px solid rgba(var(--color-black), .2);
         background-color: rgba(var(--theme-bg-color));
-        box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
+        /*box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);*/
+        box-shadow: inset -1px -2px 7px rgba(var(--color-black), .4), inset 1px 2px 7px rgba(var(--color-black), .3);
     }
 
     .inp:focus {

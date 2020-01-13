@@ -71,6 +71,9 @@
 
     /* -----------========( Shadows )=========----------- */
 
+    /*--shadow-primary: -1px -2px 0 1px rgba(var(--color-black), .2);*/
+
+    /*--shadow-primary: -1px -2px 0 1px rgba(var(--color-black), .2);*/
     --shadow-primary: -1px 2px 1px rgba(var(--color-black), .2);
     --shadow-secondary: 0 2px 4px 0 rgba(var(--color-black), .3);
     --shadow-secondary-inset: 1px -1px 3px rgba(var(--color-black), .1), inset -1px 1px 2px 1px rgba(var(--color-black), .2);
