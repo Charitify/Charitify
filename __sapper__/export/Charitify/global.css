@@ -118,15 +118,7 @@
 /* Prevent adjustments of font size after orientation changes in iOS. */
 html {
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
     -webkit-text-size-adjust: 100%
-}
-
-body {
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 /* Box sizing rules. Padding inside elements */
@@ -268,6 +260,7 @@ body {
     align-content: stretch;
     justify-content: stretch;
     text-align: left;
+    min-height: 100%;
     position: relative;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
