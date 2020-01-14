@@ -117,7 +117,6 @@
 
 /* Prevent adjustments of font size after orientation changes in iOS. */
 html {
-    height: 100%;
     -webkit-text-size-adjust: 100%
 }
 
@@ -260,7 +259,9 @@ body {
     align-content: stretch;
     justify-content: stretch;
     text-align: left;
-    min-height: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
