@@ -36,7 +36,7 @@
 
     <h5>{title}</h5>
 
-    <p class="text-center" style="padding-top: 4px">
+    <p class="text-center" style="padding-top: var(--screen-padding)">
         <Rate size="small"/>
     </p>
 
@@ -67,7 +67,10 @@
     }
 
     h5 {
-        height: calc(var(--font-line-height) * 2);
+        --card-line-height: 1.4;
+
+        line-height: var(--card-line-height);
+        height: calc(var(--font-size) * (var(--card-line-height) / 1.2) * 2);
         overflow: hidden;
     }
 

@@ -6,6 +6,7 @@
 
     export let id = undefined
     export let value = 0 // 0 - 100
+    export let size = 'medium'
     export let title = undefined
     export let ariaLabel = undefined
     export let borderRadius = undefined
@@ -13,7 +14,7 @@
     $: val = 0
     $: titleProp = title || `Progress - ${val}%`
     $: ariaLabelProp = ariaLabel || `Progress - ${val}%`
-    $: classProp = classnames('progress', $$props.class)
+    $: classProp = classnames('progress', size, $$props.class)
 
     onMount(() => {
         // Make loading progress effect on mount component.
@@ -48,13 +49,31 @@
 <style>
     .progress {
         --progress-height: 20px;
+        --progress-padding-point: 4;
+    }
 
+    .progress.small {
+        --progress-height: 15px;
+        --progress-padding-point: 3;
+    }
+
+    .progress.medium {
+        --progress-height: 20px;
+        --progress-padding-point: 3;
+    }
+
+    .progress.big {
+        --progress-height: 30px;
+        --progress-padding-point: 4;
+    }
+
+    .progress {
         flex: 0;
         width: 100%;
         border-radius: 9999px;
         height: var(--progress-height);
-        padding: calc(var(--progress-height) / 4);
         background-color: rgba(var(--theme-bg-color));
+        padding: calc(var(--progress-height) / var(--progress-padding-point));
         box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
 

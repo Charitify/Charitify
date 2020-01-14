@@ -197,7 +197,7 @@
         </ul>
     </section>
 
-    <Progress value="65"></Progress>
+    <Progress value="65" size="big"></Progress>
 
     <section class="rate-section">
         <div class="ava-section">
