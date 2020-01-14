@@ -42,14 +42,14 @@
         style={`${getBorderRadius(borderRadius)}`}
 >
     <div class="progress-inner-frame">
-        <div class="progress-core" style={`width:${val}%;`}></div>
+        <div class="progress-core" style={`width:${val}%`}></div>
     </div>
 </div>
 
 <style>
     .progress {
         --progress-height: 20px;
-        --progress-padding-point: 4;
+        --progress-padding-point: 3;
     }
 
     .progress.small {
@@ -59,7 +59,7 @@
 
     .progress.medium {
         --progress-height: 20px;
-        --progress-padding-point: 3;
+        --progress-padding-point: 3.5;
     }
 
     .progress.big {
