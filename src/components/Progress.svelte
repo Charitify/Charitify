@@ -38,11 +38,13 @@
 
 <style>
     .progress {
+        --progress-height: 20px;
+
         flex: 0;
         width: 100%;
-        height: 30px;
-        padding: 7px;
         border-radius: 9999px;
+        height: var(--progress-height);
+        padding: calc(var(--progress-height) / 4);
         background-color: rgba(var(--theme-bg-color));
         box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
