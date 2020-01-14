@@ -9,7 +9,9 @@
     export let title = undefined
     export let ariaLabel = undefined
 
-    $: val = Array.from(new Array(7))
+    const arr = Array.from(new Array(17))
+
+    $: val = 0
     $: titleProp = title || `Progress - ${val}%`
     $: ariaLabelProp = ariaLabel || `Progress - ${val}%`
     $: classProp = classnames('progress', $$props.class)
@@ -32,8 +34,8 @@
         aria-valuenow={val}
 >
     <div class="progress-inner-frame">
-        {#each val as i}
-        <div class="progress-core"></div>
+        {#each arr as i}
+            <div class="progress-core"></div>
         {/each}
     </div>
 </div>
@@ -62,7 +64,7 @@
         width: 14px;
         align-self: stretch;
         transition: 2s ease-in-out;
-        margin-right: 2px;
+        margin-right: 1px;
         margin-bottom: 2px;
         box-shadow: var(--shadow-primary);
         border-radius: var(--border-radius);

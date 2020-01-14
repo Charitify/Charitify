@@ -124,7 +124,7 @@
     .btn.success {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-success));
-        box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary);
+        box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     .btn.success:focus {
@@ -133,7 +133,7 @@
 
     .btn.success:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary);
+        box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     .btn.success:active {
@@ -146,7 +146,7 @@
     .btn.warning {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-warning));
-        box-shadow: 0 2px rgba(var(--color-warning-dark)), var(--shadow-secondary);
+        box-shadow: 0 2px rgba(var(--color-warning-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     .btn.warning:focus {
@@ -155,7 +155,7 @@
 
     .btn.warning:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgba(var(--color-warning-dark)), var(--shadow-secondary);
+        box-shadow: 0 2px rgba(var(--color-warning-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     .btn.warning:active {
@@ -168,7 +168,7 @@
     .btn.danger {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-danger));
-        box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary);
+        box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     .btn.danger:focus {
@@ -177,7 +177,7 @@
 
     .btn.danger:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary);
+        box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     .btn.danger:active {
@@ -191,15 +191,15 @@
             margin-bottom: 2px;
         }
         .btn.success {
-            box-shadow: 0 3px rgba(var(--color-success-dark)), var(--shadow-secondary);
+            box-shadow: 0 3px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
         }
 
         .btn.warning {
-            box-shadow: 0 3px rgba(var(--color-warning-dark)), var(--shadow-secondary);
+            box-shadow: 0 3px rgba(var(--color-warning-dark)), var(--shadow-secondary), var(--shadow-primary);
         }
 
         .btn.danger {
-            box-shadow: 0 3px rgba(var(--color-danger-dark)), var(--shadow-secondary);
+            box-shadow: 0 3px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
         }
     }
 </style>

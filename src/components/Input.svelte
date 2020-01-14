@@ -111,10 +111,9 @@
         border-radius: var(--border-radius);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
-        border: 1px solid rgba(var(--color-black), .2);
+        border: 1px solid rgba(var(--color-black), .25);
         background-color: rgba(var(--theme-bg-color));
-        /*box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);*/
-        box-shadow: inset -1px -2px 7px rgba(var(--color-black), .4), inset 1px 2px 7px rgba(var(--color-black), .3);
+        box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
 
     .inp:focus {

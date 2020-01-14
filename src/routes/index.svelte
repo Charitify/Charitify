@@ -128,8 +128,8 @@
         </ul>
     </section>
 
-<!--    <Progress value="65"></Progress>-->
-
+    <Progress value="65"></Progress>
+    <br>
     <ProgressNext value="75"></ProgressNext>
 
     <section class="rate-section">
