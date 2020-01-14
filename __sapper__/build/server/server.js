@@ -1073,7 +1073,7 @@ const CharityCard = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 const css$c = {
 	code: "nav.svelte-xs8syd{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;box-shadow:var(--shadow-secondary);border-bottom:1px solid rgba(var(--color-danger), .1)}.selected.svelte-xs8syd{position:relative;display:inline-block}.selected.svelte-xs8syd::after{position:absolute;content:\"\";width:calc(100% - 1em);height:2px;background-color:rgb(var(--color-danger));display:block;bottom:-1px}a.svelte-xs8syd{padding:.8em 0.5em}.nav-actions.svelte-xs8syd{display:flex;align-items:center}.lang-select.svelte-xs8syd{padding:5px;background-color:transparent}.lang-select.svelte-xs8syd:hover,.lang-select.svelte-xs8syd:focus{box-shadow:none;background-color:rgba(var(--color-black), 0.1)}",
-	map: "{\"version\":3,\"file\":\"NavigationBar.svelte\",\"sources\":[\"NavigationBar.svelte\"],\"sourcesContent\":[\"<script>\\n  import Icon from './Icon.svelte'\\n  import Button from './Button.svelte'\\n\\n  export let segment;\\n\\n  let isDarkTheme = false\\n\\n  let value = 'ua'\\n\\n  function changeTheme() {\\n    isDarkTheme = !isDarkTheme\\n    document.body.classList.remove('theme-dark')\\n    document.body.classList.remove('theme-light')\\n    document.body.classList.add(isDarkTheme ? 'theme-dark' : 'theme-light')\\n  }\\n</script>\\n\\n<nav class=\\\"theme-bg container\\\">\\n\\t<ul>\\n\\t\\t<li><a class:selected='{segment === undefined}' href='.'>home</a></li>\\n\\t\\t<li><a class:selected='{segment === \\\"about\\\"}' href='about'>about</a></li>\\n\\n\\t\\t<!-- for the blog link, we're using rel=prefetch so that Sapper prefetches\\n\\t\\t     the blog data when we hover over the link or tap it on a touchscreen -->\\n\\t\\t<li><a rel=prefetch class:selected='{segment === \\\"charity\\\"}' href='charity'>charity</a></li>\\n\\t</ul>\\n\\n  <span class=\\\"nav-actions\\\">\\n    <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n      <option value=\\\"ua\\\">Ua</option>\\n      <option value=\\\"ru\\\">Ru</option>\\n      <option value=\\\"en\\\">En</option>\\n    </select>\\n\\n    <Button on:click={changeTheme} auto size=\\\"small\\\">\\n      <Icon type=\\\"moon\\\" class=\\\"theme-svg-fill\\\"/>\\n    </Button>\\n  </span>\\n</nav>\\n\\n<style>\\n  nav {\\n    position: sticky;\\n    top: 0;\\n    z-index: 10;\\n    display: flex;\\n    justify-content: space-between;\\n    box-shadow: var(--shadow-secondary);\\n    border-bottom: 1px solid rgba(var(--color-danger), .1);\\n  }\\n\\n  .selected {\\n    position: relative;\\n    display: inline-block;\\n  }\\n\\n  .selected::after {\\n    position: absolute;\\n    content: \\\"\\\";\\n    width: calc(100% - 1em);\\n    height: 2px;\\n    background-color: rgb(var(--color-danger));\\n    display: block;\\n    bottom: -1px;\\n  }\\n\\n  a {\\n    padding: .8em 0.5em;\\n  }\\n\\n  .nav-actions {\\n    display: flex;\\n    align-items: center;\\n  }\\n\\n  .lang-select {\\n    padding: 5px;\\n    background-color: transparent;\\n  }\\n\\n  .lang-select:hover,\\n  .lang-select:focus {\\n    box-shadow: none;\\n    background-color: rgba(var(--color-black), 0.1);\\n  }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AA0CE,GAAG,cAAC,CAAC,AACH,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,CAAC,CACN,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,UAAU,CAAE,IAAI,kBAAkB,CAAC,CACnC,aAAa,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,AACxD,CAAC,AAED,SAAS,cAAC,CAAC,AACT,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACvB,CAAC,AAED,uBAAS,OAAO,AAAC,CAAC,AAChB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AACd,CAAC,AAED,CAAC,cAAC,CAAC,AACD,OAAO,CAAE,IAAI,CAAC,KAAK,AACrB,CAAC,AAED,YAAY,cAAC,CAAC,AACZ,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,AACrB,CAAC,AAED,YAAY,cAAC,CAAC,AACZ,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,AAC/B,CAAC,AAED,0BAAY,MAAM,CAClB,0BAAY,MAAM,AAAC,CAAC,AAClB,UAAU,CAAE,IAAI,CAChB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACjD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"NavigationBar.svelte\",\"sources\":[\"NavigationBar.svelte\"],\"sourcesContent\":[\"<script>\\n  import Icon from './Icon.svelte'\\n  import Button from './Button.svelte'\\n\\n  export let segment;\\n\\n  let isDarkTheme = false\\n\\n  let value = 'ua'\\n\\n  function changeTheme() {\\n    isDarkTheme = !isDarkTheme\\n    document.body.classList.remove('theme-dark')\\n    document.body.classList.remove('theme-light')\\n    document.body.classList.add(isDarkTheme ? 'theme-dark' : 'theme-light')\\n  }\\n</script>\\n\\n<nav class=\\\"theme-bg container\\\">\\n\\t<ul>\\n\\t\\t<li><a class:selected='{segment === undefined}' href='.'>home</a></li>\\n\\t\\t<li><a rel=prefetch class:selected='{segment === \\\"charity\\\"}' href='charity'>charity</a></li>\\n\\t\\t<li><a class:selected='{segment === \\\"about\\\"}' href='about'>about</a></li>\\n\\t</ul>\\n\\n  <span class=\\\"nav-actions\\\">\\n    <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n      <option value=\\\"ua\\\">Ua</option>\\n      <option value=\\\"ru\\\">Ru</option>\\n      <option value=\\\"en\\\">En</option>\\n    </select>\\n\\n    <Button on:click={changeTheme} auto size=\\\"small\\\">\\n      <Icon type=\\\"moon\\\" class=\\\"theme-svg-fill\\\"/>\\n    </Button>\\n  </span>\\n</nav>\\n\\n<style>\\n  nav {\\n    position: sticky;\\n    top: 0;\\n    z-index: 10;\\n    display: flex;\\n    justify-content: space-between;\\n    box-shadow: var(--shadow-secondary);\\n    border-bottom: 1px solid rgba(var(--color-danger), .1);\\n  }\\n\\n  .selected {\\n    position: relative;\\n    display: inline-block;\\n  }\\n\\n  .selected::after {\\n    position: absolute;\\n    content: \\\"\\\";\\n    width: calc(100% - 1em);\\n    height: 2px;\\n    background-color: rgb(var(--color-danger));\\n    display: block;\\n    bottom: -1px;\\n  }\\n\\n  a {\\n    padding: .8em 0.5em;\\n  }\\n\\n  .nav-actions {\\n    display: flex;\\n    align-items: center;\\n  }\\n\\n  .lang-select {\\n    padding: 5px;\\n    background-color: transparent;\\n  }\\n\\n  .lang-select:hover,\\n  .lang-select:focus {\\n    box-shadow: none;\\n    background-color: rgba(var(--color-black), 0.1);\\n  }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAuCE,GAAG,cAAC,CAAC,AACH,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,CAAC,CACN,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,UAAU,CAAE,IAAI,kBAAkB,CAAC,CACnC,aAAa,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,AACxD,CAAC,AAED,SAAS,cAAC,CAAC,AACT,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACvB,CAAC,AAED,uBAAS,OAAO,AAAC,CAAC,AAChB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AACd,CAAC,AAED,CAAC,cAAC,CAAC,AACD,OAAO,CAAE,IAAI,CAAC,KAAK,AACrB,CAAC,AAED,YAAY,cAAC,CAAC,AACZ,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,AACrB,CAAC,AAED,YAAY,cAAC,CAAC,AACZ,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,AAC/B,CAAC,AAED,0BAAY,MAAM,CAClB,0BAAY,MAAM,AAAC,CAAC,AAClB,UAAU,CAAE,IAAI,CAChB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACjD,CAAC\"}"
 };
 
 let value = "ua";
@@ -1087,10 +1087,8 @@ const NavigationBar = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	return `<nav class="${"theme-bg container svelte-xs8syd"}">
 	<ul>
 		<li><a href="${"."}" class="${["svelte-xs8syd", segment === undefined ? "selected" : ""].join(" ").trim()}">home</a></li>
-		<li><a href="${"about"}" class="${["svelte-xs8syd", segment === "about" ? "selected" : ""].join(" ").trim()}">about</a></li>
-
-		
 		<li><a rel="${"prefetch"}" href="${"charity"}" class="${["svelte-xs8syd", segment === "charity" ? "selected" : ""].join(" ").trim()}">charity</a></li>
+		<li><a href="${"about"}" class="${["svelte-xs8syd", segment === "about" ? "selected" : ""].join(" ").trim()}">about</a></li>
 	</ul>
 
   <span class="${"nav-actions svelte-xs8syd"}">
@@ -1351,8 +1349,8 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 /* src/routes/charity.svelte generated by Svelte v3.16.7 */
 
 const css$e = {
-	code: "section.svelte-1w7hlc5{flex-grow:1;padding:var(--screen-padding)}h1.svelte-1w7hlc5{text-align:center}",
-	map: "{\"version\":3,\"file\":\"charity.svelte\",\"sources\":[\"charity.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n\\t<title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n\\tsection {\\n\\t\\tflex-grow: 1;\\n\\t\\tpadding: var(--screen-padding);\\n\\t}\\n\\n\\th1 {\\n\\t\\ttext-align: center;\\n\\t}\\n</style>\\n\\n<section>\\n\\t<h1>Charity</h1>\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAKC,OAAO,eAAC,CAAC,AACR,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,gBAAgB,CAAC,AAC/B,CAAC,AAED,EAAE,eAAC,CAAC,AACH,UAAU,CAAE,MAAM,AACnB,CAAC\"}"
+	code: "h1.svelte-10ecna5.svelte-10ecna5{text-transform:uppercase;text-align:center}.top.svelte-10ecna5.svelte-10ecna5{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.top-pic.svelte-10ecna5.svelte-10ecna5{z-index:0;flex-grow:1;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.options.svelte-10ecna5.svelte-10ecna5{flex:0;display:flex;flex-direction:column;margin:calc(var(--screen-padding) * -1 / 2) 0;padding:0 0 0 var(--screen-padding)}.options.svelte-10ecna5 li.svelte-10ecna5{flex:none;margin:calc(var(--screen-padding) / 2) 0}.rate-section.svelte-10ecna5.svelte-10ecna5{display:flex;align-items:baseline;justify-content:space-between;padding:calc(var(--screen-padding) * 1.5) 0}.ava-section.svelte-10ecna5.svelte-10ecna5{display:flex;align-items:center;justify-content:space-between}.ava-section.svelte-10ecna5 span.svelte-10ecna5{font-size:.7rem;padding:0 var(--screen-padding)}.ava-section.svelte-10ecna5 span p.svelte-10ecna5{font-size:.6rem}.ava-section.svelte-10ecna5 span p.svelte-10ecna5,.ava-section.svelte-10ecna5 span h3.svelte-10ecna5{max-width:100%;line-height:1.4;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.title.svelte-10ecna5.svelte-10ecna5{overflow:hidden;animation:svelte-10ecna5-title-anim 1s forwards ease-in}@keyframes svelte-10ecna5-title-anim{0%{max-height:0}99.9%{max-height:100vh}100%{max-height:none}}",
+	map: "{\"version\":3,\"file\":\"charity.svelte\",\"sources\":[\"charity.svelte\"],\"sourcesContent\":[\"<script>\\n\\timport { Swipe, SwipeItem } from '../plugins'\\n\\timport {\\n\\t\\tIcon,\\n\\t\\tRate,\\n\\t\\tInput,\\n\\t\\tFooter,\\n\\t\\tAvatar,\\n\\t\\tButton,\\n\\t\\tDivider,\\n\\t\\tPicture,\\n\\t\\tProgress,\\n\\t} from '../components'\\n</script>\\n\\n<svelte:head>\\n\\t<title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n\\th1 {\\n\\t\\ttext-transform: uppercase;\\n\\t\\ttext-align: center;\\n\\t}\\n\\n\\t.top {\\n\\t\\tdisplay: flex;\\n\\t\\tmargin-bottom: calc(var(--screen-padding) * 1.5);\\n\\t\\tmargin-top: var(--screen-padding);\\n\\t}\\n\\n\\t.top-pic {\\n\\t\\tz-index: 0;\\n\\t\\tflex-grow: 1;\\n\\t\\toverflow: hidden;\\n\\t\\tmargin-bottom: 2px;\\n\\t\\tborder-radius: var(--border-radius);\\n\\t\\tbox-shadow: var(--shadow-primary);\\n\\t}\\n\\n\\t.options {\\n\\t\\tflex: 0;\\n\\t\\tdisplay: flex;\\n\\t\\tflex-direction: column;\\n\\t\\tmargin: calc(var(--screen-padding) * -1 / 2) 0;\\n\\t\\tpadding: 0 0 0 var(--screen-padding);\\n\\t}\\n\\n\\t.options li {\\n\\t\\tflex: none;\\n\\t\\tmargin: calc(var(--screen-padding) / 2) 0;\\n\\t}\\n\\n\\t.rate-section {\\n\\t\\tdisplay: flex;\\n\\t\\talign-items: baseline;\\n\\t\\tjustify-content: space-between;\\n\\t\\tpadding: calc(var(--screen-padding) * 1.5) 0;\\n\\t}\\n\\n\\t.ava-section {\\n\\t\\tdisplay: flex;\\n\\t\\talign-items: center;\\n\\t\\tjustify-content: space-between;\\n\\t}\\n\\n\\t.ava-section span {\\n\\t\\tfont-size: .7rem;\\n\\t\\tpadding: 0 var(--screen-padding);\\n\\t}\\n\\n\\t.ava-section span p {\\n\\t\\tfont-size: .6rem;\\n\\t}\\n\\n\\t.ava-section span p,\\n\\t.ava-section span h3 {\\n\\t\\tmax-width: 100%;\\n\\t\\tline-height: 1.4;\\n\\t\\toverflow: hidden;\\n\\t\\twhite-space: nowrap;\\n\\t\\ttext-overflow: ellipsis;\\n\\t}\\n\\n\\t.title {\\n\\t\\toverflow: hidden;\\n\\t\\tanimation: title-anim 1s forwards ease-in;\\n\\t}\\n\\n\\t@keyframes title-anim {\\n\\t\\t0% {\\n\\t\\t\\tmax-height: 0;\\n\\t\\t}\\n\\t\\t99.9% {\\n\\t\\t\\tmax-height: 100vh;\\n\\t\\t}\\n\\t\\t100% {\\n\\t\\t\\tmax-height: none;\\n\\t\\t}\\n\\t}\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n\\t<section class=\\\"title\\\">\\n\\t\\t<br>\\n\\n\\t\\t<h1>The main title</h1>\\n\\n\\t\\t<br>\\n\\n\\t\\t<p class=\\\"text-center\\\" style=\\\"padding: 0 10vw\\\">\\n\\t\\t\\tA small description that describes the title above and just makes text longer.\\n\\t\\t</p>\\n\\n\\t\\t<br>\\n\\t</section>\\n\\n\\t<section class=\\\"top\\\">\\n\\t\\t<div class=\\\"top-pic\\\">\\n\\t\\t\\t<Swipe>\\n\\t\\t\\t\\t<SwipeItem>\\n\\t\\t\\t\\t\\t<Picture src=\\\"https://placeimg.com/300/300/people\\\" alt=\\\"sample\\\"/>\\n\\t\\t\\t\\t</SwipeItem>\\n\\t\\t\\t\\t<SwipeItem>\\n\\t\\t\\t\\t\\t<Picture src=\\\"https://placeimg.com/300/300/any\\\" alt=\\\"sample\\\"/>\\n\\t\\t\\t\\t</SwipeItem>\\n\\t\\t\\t\\t<SwipeItem>\\n\\t\\t\\t\\t\\t<Picture src=\\\"https://placeimg.com/300/300/arch\\\" alt=\\\"sample\\\"/>\\n\\t\\t\\t\\t</SwipeItem>\\n\\t\\t\\t\\t<SwipeItem>\\n\\t\\t\\t\\t\\t<Picture src=\\\"https://placeimg.com/300/300/nature\\\" alt=\\\"sample\\\"/>\\n\\t\\t\\t\\t</SwipeItem>\\n\\t\\t\\t\\t<SwipeItem>\\n\\t\\t\\t\\t\\t<Picture src=\\\"https://placeimg.com/300/300/tech\\\" alt=\\\"sample\\\"/>\\n\\t\\t\\t\\t</SwipeItem>\\n\\t\\t\\t</Swipe>\\n\\t\\t</div>\\n\\n\\t\\t<ul class=\\\"options\\\">\\n\\t\\t\\t<li>\\n\\t\\t\\t\\t<Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test1</Button>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li>\\n\\t\\t\\t\\t<Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test12</Button>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li>\\n\\t\\t\\t\\t<Button is=\\\"success\\\" on:click=\\\"{e => console.log(e)}\\\">test123</Button>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li>\\n\\t\\t\\t\\t<br>\\n\\t\\t\\t\\t<Input\\n\\t\\t\\t\\t\\t\\ttype=\\\"number\\\"\\n\\t\\t\\t\\t\\t\\tname=\\\"num\\\"\\n\\t\\t\\t\\t\\t\\tlist=\\\"sum-suggestions\\\"\\n\\t\\t\\t\\t\\t\\tplaceholder=\\\"Num\\\"\\n\\t\\t\\t\\t\\t\\tautoselect\\n\\t\\t\\t\\t\\t\\talign=\\\"right\\\"\\n\\t\\t\\t\\t/>\\n\\n\\t\\t\\t\\t<datalist id=\\\"sum-suggestions\\\">\\n\\t\\t\\t\\t\\t<option value=\\\"20\\\">\\n\\t\\t\\t\\t\\t<option value=\\\"500\\\">\\n\\t\\t\\t\\t\\t<option value=\\\"1000\\\">\\n\\t\\t\\t\\t</datalist>\\n\\t\\t\\t</li>\\n\\t\\t\\t<li>\\n\\t\\t\\t\\t<Button is=\\\"warning\\\" on:click=\\\"{e => console.log(e)}\\\">Submit</Button>\\n\\t\\t\\t</li>\\n\\t\\t</ul>\\n\\t</section>\\n\\n\\t<Progress value=\\\"65\\\" size=\\\"big\\\"></Progress>\\n\\n\\t<section class=\\\"rate-section\\\">\\n\\t\\t<div class=\\\"ava-section\\\">\\n\\t\\t\\t<Avatar src=\\\"https://placeimg.com/300/300/people\\\" alt=\\\"avatar\\\"/>\\n\\n\\t\\t\\t<span>\\n                <h3>Tina Kandelaki</h3>\\n                <p>ORG charity charitify</p>\\n            </span>\\n\\t\\t</div>\\n\\n\\t\\t<Rate/>\\n\\t</section>\\n</section>\\n\\n<br>\\n<br>\\n<br>\\n\\n<Footer/>\\n\"],\"names\":[],\"mappings\":\"AAoBC,EAAE,8BAAC,CAAC,AACH,cAAc,CAAE,SAAS,CACzB,UAAU,CAAE,MAAM,AACnB,CAAC,AAED,IAAI,8BAAC,CAAC,AACL,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAClC,CAAC,AAED,QAAQ,8BAAC,CAAC,AACT,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAClC,CAAC,AAED,QAAQ,8BAAC,CAAC,AACT,IAAI,CAAE,CAAC,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,MAAM,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,OAAO,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,uBAAQ,CAAC,EAAE,eAAC,CAAC,AACZ,IAAI,CAAE,IAAI,CACV,MAAM,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,AAC1C,CAAC,AAED,aAAa,8BAAC,CAAC,AACd,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,AAC7C,CAAC,AAED,YAAY,8BAAC,CAAC,AACb,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,CACnB,eAAe,CAAE,aAAa,AAC/B,CAAC,AAED,2BAAY,CAAC,IAAI,eAAC,CAAC,AAClB,SAAS,CAAE,KAAK,CAChB,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC,AACjC,CAAC,AAED,2BAAY,CAAC,IAAI,CAAC,CAAC,eAAC,CAAC,AACpB,SAAS,CAAE,KAAK,AACjB,CAAC,AAED,2BAAY,CAAC,IAAI,CAAC,gBAAC,CACnB,2BAAY,CAAC,IAAI,CAAC,EAAE,eAAC,CAAC,AACrB,SAAS,CAAE,IAAI,CACf,WAAW,CAAE,GAAG,CAChB,QAAQ,CAAE,MAAM,CAChB,WAAW,CAAE,MAAM,CACnB,aAAa,CAAE,QAAQ,AACxB,CAAC,AAED,MAAM,8BAAC,CAAC,AACP,QAAQ,CAAE,MAAM,CAChB,SAAS,CAAE,yBAAU,CAAC,EAAE,CAAC,QAAQ,CAAC,OAAO,AAC1C,CAAC,AAED,WAAW,yBAAW,CAAC,AACtB,EAAE,AAAC,CAAC,AACH,UAAU,CAAE,CAAC,AACd,CAAC,AACD,KAAK,AAAC,CAAC,AACN,UAAU,CAAE,KAAK,AAClB,CAAC,AACD,IAAI,AAAC,CAAC,AACL,UAAU,CAAE,IAAI,AACjB,CAAC,AACF,CAAC\"}"
 };
 
 const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1362,9 +1360,162 @@ const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 
 
 
-<section class="${"svelte-1w7hlc5"}">
-	<h1 class="${"svelte-1w7hlc5"}">Charity</h1>
-</section>`;
+<section class="${"container"}">
+
+	<section class="${"title svelte-10ecna5"}">
+		<br>
+
+		<h1 class="${"svelte-10ecna5"}">The main title</h1>
+
+		<br>
+
+		<p class="${"text-center"}" style="${"padding: 0 10vw"}">
+			A small description that describes the title above and just makes text longer.
+		</p>
+
+		<br>
+	</section>
+
+	<section class="${"top svelte-10ecna5"}">
+		<div class="${"top-pic svelte-10ecna5"}">
+			${validate_component(Swipe, "Swipe").$$render($$result, {}, {}, {
+		default: () => `
+				${validate_component(SwipeItem, "SwipeItem").$$render($$result, {}, {}, {
+			default: () => `
+					${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src: "https://placeimg.com/300/300/people",
+					alt: "sample"
+				},
+				{},
+				{}
+			)}
+				`
+		})}
+				${validate_component(SwipeItem, "SwipeItem").$$render($$result, {}, {}, {
+			default: () => `
+					${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src: "https://placeimg.com/300/300/any",
+					alt: "sample"
+				},
+				{},
+				{}
+			)}
+				`
+		})}
+				${validate_component(SwipeItem, "SwipeItem").$$render($$result, {}, {}, {
+			default: () => `
+					${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src: "https://placeimg.com/300/300/arch",
+					alt: "sample"
+				},
+				{},
+				{}
+			)}
+				`
+		})}
+				${validate_component(SwipeItem, "SwipeItem").$$render($$result, {}, {}, {
+			default: () => `
+					${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src: "https://placeimg.com/300/300/nature",
+					alt: "sample"
+				},
+				{},
+				{}
+			)}
+				`
+		})}
+				${validate_component(SwipeItem, "SwipeItem").$$render($$result, {}, {}, {
+			default: () => `
+					${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src: "https://placeimg.com/300/300/tech",
+					alt: "sample"
+				},
+				{},
+				{}
+			)}
+				`
+		})}
+			`
+	})}
+		</div>
+
+		<ul class="${"options svelte-10ecna5"}">
+			<li class="${"svelte-10ecna5"}">
+				${validate_component(Button, "Button").$$render($$result, { is: "success" }, {}, { default: () => `test1` })}
+			</li>
+			<li class="${"svelte-10ecna5"}">
+				${validate_component(Button, "Button").$$render($$result, { is: "success" }, {}, { default: () => `test12` })}
+			</li>
+			<li class="${"svelte-10ecna5"}">
+				${validate_component(Button, "Button").$$render($$result, { is: "success" }, {}, { default: () => `test123` })}
+			</li>
+			<li class="${"svelte-10ecna5"}">
+				<br>
+				${validate_component(Input, "Input").$$render(
+		$$result,
+		{
+			type: "number",
+			name: "num",
+			list: "sum-suggestions",
+			placeholder: "Num",
+			autoselect: true,
+			align: "right"
+		},
+		{},
+		{}
+	)}
+
+				<datalist id="${"sum-suggestions"}">
+					<option value="${"20"}">
+					</option><option value="${"500"}">
+					</option><option value="${"1000"}">
+				</option></datalist>
+			</li>
+			<li class="${"svelte-10ecna5"}">
+				${validate_component(Button, "Button").$$render($$result, { is: "warning" }, {}, { default: () => `Submit` })}
+			</li>
+		</ul>
+	</section>
+
+	${validate_component(Progress, "Progress").$$render($$result, { value: "65", size: "big" }, {}, {})}
+
+	<section class="${"rate-section svelte-10ecna5"}">
+		<div class="${"ava-section svelte-10ecna5"}">
+			${validate_component(Avatar, "Avatar").$$render(
+		$$result,
+		{
+			src: "https://placeimg.com/300/300/people",
+			alt: "avatar"
+		},
+		{},
+		{}
+	)}
+
+			<span class="${"svelte-10ecna5"}">
+                <h3 class="${"svelte-10ecna5"}">Tina Kandelaki</h3>
+                <p class="${"svelte-10ecna5"}">ORG charity charitify</p>
+            </span>
+		</div>
+
+		${validate_component(Rate, "Rate").$$render($$result, {}, {}, {})}
+	</section>
+</section>
+
+<br>
+<br>
+<br>
+
+${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 });
 
 /* src/routes/about.svelte generated by Svelte v3.16.7 */
