@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher, onMount } from 'svelte'
-    import { classnames } from '../utils'
+    import { classnames, safeGet } from '../utils'
 
     const dispatch = createEventDispatcher()
 
@@ -8,6 +8,7 @@
     export let value = 0 // 0 - 100
     export let title = undefined
     export let ariaLabel = undefined
+    export let borderRadius = undefined
 
     $: val = 0
     $: titleProp = title || `Progress - ${val}%`
@@ -18,6 +19,13 @@
         // Make loading progress effect on mount component.
         setTimeout(() => val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0, 0)
     })
+
+    function getBorderRadius(borders, defaults = '99999px') {
+        const brDefault = new Array(4).fill(defaults)
+        const bds = safeGet(() => borders.split(' '), [], true)
+        const rule = 'border-radius'
+        return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(' ')}`
+    }
 </script>
 
 
@@ -30,9 +38,10 @@
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow={val}
+        style={`${getBorderRadius(borderRadius)}`}
 >
     <div class="progress-inner-frame">
-        <div class="progress-core" style={`width:${val}%`}></div>
+        <div class="progress-core" style={`width:${val}%;`}></div>
     </div>
 </div>
 

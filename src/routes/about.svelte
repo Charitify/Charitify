@@ -1,5 +1,5 @@
 <script>
-	let currYear = new Date().getFullYear()
+	import { Footer } from '../components'
 </script>
 
 <svelte:head>
@@ -18,10 +18,6 @@
 
 	p {
 		text-align: justify;
-	}
-
-	footer {
-		padding: var(--screen-padding);
 	}
 </style>
 
@@ -44,6 +40,4 @@
 	<br>
 </section>
 
-<footer>
-	<p>© 2019 - {currYear}</p>
-</footer>
+<Footer/>

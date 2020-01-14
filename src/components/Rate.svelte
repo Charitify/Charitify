@@ -25,7 +25,7 @@
 
 <style>
     .rate {
-        display: flex;
+        display: inline-flex;
         margin: calc(var(--screen-padding) * -1 / 3);
     }
 
@@ -34,7 +34,7 @@
     }
 
     .rate li {
-        -webkit-filter: drop-shadow(var(--shadow-primary));
-        filter: drop-shadow(var(--shadow-primary));
+        -webkit-filter: drop-shadow(-1px 2px 1px rgba(var(--color-black), .25));
+        filter: drop-shadow(-1px 2px 1px rgba(var(--color-black), .25));
     }
 </style>

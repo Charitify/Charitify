@@ -15,6 +15,8 @@
     .divider {
         margin: 0;
         border: none;
+        box-sizing: content-box;
+        background-clip: content-box;
     }
 
     .info {
