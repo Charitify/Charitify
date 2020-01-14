@@ -127,8 +127,8 @@
 
     .cards li {
         display: flex;
-        flex-grow: 1;
-        max-width: 50%;
+        justify-content: stretch;
+        width: 50%;
         overflow: hidden;
         padding: calc(var(--screen-padding) * 3) var(--screen-padding);
     }

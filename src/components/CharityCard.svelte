@@ -55,6 +55,7 @@
         display: flex;
         flex-direction: column;
         flex: none;
+        width: 100%;
         max-width: 100%;
     }
 
