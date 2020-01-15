@@ -1,5 +1,5 @@
 <script>
-	import { NavigationBar } from '../components';
+	import { NavigationBar, Footer } from '../layouts';
 	import Icons from './_icons.svelte';
 
 	export let segment;
@@ -16,3 +16,5 @@
 <main>
 	<slot></slot>
 </main>
+
+<Footer/>

@@ -1,5 +1,4 @@
 <script>
-	import { Footer } from '../components'
 </script>
 
 <svelte:head>
@@ -39,5 +38,3 @@
 	<br>
 	<br>
 </section>
-
-<Footer/>
