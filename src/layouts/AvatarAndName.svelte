@@ -29,10 +29,6 @@
         padding: 0 8px;
     }
 
-    span h6 {
-        font-weight: normal;
-    }
-
     span h4,
     span p {
         line-height: 1.2;
