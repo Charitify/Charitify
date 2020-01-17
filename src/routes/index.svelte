@@ -1,45 +1,16 @@
 <script>
-    import { Carousel } from '../layouts'
-
-    const cards = [
-        {
-            src: 'https://placeimg.com/300/300/tech',
-            title: 'The main title and short description.',
-            percent: 45,
-            orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
-        },
-        {
-            src: 'https://placeimg.com/300/300/arch',
-            title: 'Second bigger major card title line with a bit longer description.',
-            percent: 65,
-            orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
-        },
-        {
-            src: 'https://placeimg.com/300/300/any',
-            title: 'The main title and short description.',
-            percent: 5,
-            orgHead: 'Tinaramisimuss Kandelakinuskas',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
-        },
-        {
-            src: 'https://placeimg.com/300/300/nature',
-            title: 'The main title and short description.',
-            percent: 95,
-            orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG giant charity organization of big Charitify company.',
-        },
-    ]
-
-    const images = cards.map(card => ({
-        src: [card.src, card.src, card.src],
-        alt: card.title,
-    }))
+    import {
+        Carousel,
+        CharityCards,
+        ContentHolder,
+        TitleSubTitle,
+        AvatarAndName,
+    } from '../layouts'
+    import {
+        Br,
+        Divider,
+        Progress,
+    } from '../components'
 </script>
 
 <style>
@@ -48,11 +19,9 @@
         z-index: 0;
         width: 100%;
         height: 200px;
-        overflow: hidden;
         display: flex;
-        margin-bottom: 2px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-primary);
+        overflow: hidden;
+        border-radius: 0;
     }
 </style>
 
@@ -61,10 +30,70 @@
 </svelte:head>
 
 <div class="top-pic">
-    <Carousel {images}/>
+    <Carousel/>
 </div>
 
+<Progress borderRadius="0 0 8px 8px" value="30"/>
+
+<p>These guys rise a pound of vegetables. They like vegetables and long text under photos.</p>
+
+<Br amount="5"/>
+
+<TitleSubTitle/>
+
+<Br amount="5"/>
+
 <section class="container">
-
-
+    <CharityCards amount="2"/>
 </section>
+
+<Br amount="5"/>
+
+<ContentHolder/>
+
+<Br amount="5"/>
+
+<section class="container">
+    <ul style="display: flex; flex-wrap: wrap">
+        <li style="width: 50%">
+            <AvatarAndName
+                    src="https://placeimg.com/300/300/people"
+                    title="Tina Kandelaki"
+                    subtitle="ORG charity charitify"
+            />
+            <br>
+        </li>
+        <li style="width: 50%">
+            <AvatarAndName
+                    src="https://placeimg.com/300/300/people"
+                    title="Tina Kandelaki"
+                    subtitle="ORG charity charitify"
+            />
+            <br>
+        </li>
+        <li style="width: 50%">
+            <AvatarAndName
+                    src="https://placeimg.com/300/300/people"
+                    title="Tina Kandelaki"
+                    subtitle="ORG charity charitify"
+            />
+            <br>
+        </li>
+        <li style="width: 50%">
+            <AvatarAndName
+                    src="https://placeimg.com/300/300/people"
+                    title="Tina Kandelaki"
+                    subtitle="ORG charity charitify"
+            />
+            <br>
+        </li>
+    </ul>
+</section>
+
+<Br amount="5"/>
+
+<section class="container">
+    <CharityCards amount="2"/>
+</section>
+
+<Br amount="5"/>

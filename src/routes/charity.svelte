@@ -1,47 +1,7 @@
 <script>
 	import { Swipe, SwipeItem } from '../plugins'
 	import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup } from '../layouts'
-	import { Rate, Progress } from '../components'
-
-	const cards = [
-		{
-			src: 'https://placeimg.com/300/300/tech',
-			title: 'The main title and short description.',
-			percent: 45,
-			orgHead: 'Tina Kandelaki',
-			orgHeadSrc: 'https://placeimg.com/300/300/people',
-			organization: 'ORG charity of Charitify.',
-		},
-		{
-			src: 'https://placeimg.com/300/300/arch',
-			title: 'Second bigger major card title line with a bit longer description.',
-			percent: 65,
-			orgHead: 'Tina Kandelaki',
-			orgHeadSrc: 'https://placeimg.com/300/300/people',
-			organization: 'ORG charity of Charitify.',
-		},
-		{
-			src: 'https://placeimg.com/300/300/any',
-			title: 'The main title and short description.',
-			percent: 5,
-			orgHead: 'Tinaramisimuss Kandelakinuskas',
-			orgHeadSrc: 'https://placeimg.com/300/300/people',
-			organization: 'ORG charity of Charitify.',
-		},
-		{
-			src: 'https://placeimg.com/300/300/nature',
-			title: 'The main title and short description.',
-			percent: 95,
-			orgHead: 'Tina Kandelaki',
-			orgHeadSrc: 'https://placeimg.com/300/300/people',
-			organization: 'ORG giant charity organization of big Charitify company.',
-		},
-	]
-
-	const images = cards.map(card => ({
-		src: [card.src, card.src, card.src],
-		alt: card.title,
-	}))
+	import { Rate, Progress, Br } from '../components'
 </script>
 
 <svelte:head>
@@ -100,7 +60,7 @@
 
 	<section class="top">
 		<div class="pics-wrap">
-			<Carousel {images}/>
+			<Carousel/>
 		</div>
 
 		<DonatingGroup/>
@@ -119,6 +79,4 @@
 	</section>
 </section>
 
-<br>
-<br>
-<br>
+<Br amount="3"/>

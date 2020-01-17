@@ -3,20 +3,20 @@
 
     export let src = undefined
     export let title = undefined
-    export let subTitle = undefined
+    export let subtitle = undefined
 </script>
 
-<section class="ava-with-name">
+<section>
     <Avatar src={src} alt={title}/>
 
     <span>
-        <h5>{title}</h5>
-        <h6>{subTitle}</h6>
+        <h4>{title}</h4>
+        <p>{subtitle}</p>
     </span>
 </section>
 
 <style>
-    .ava-with-name {
+    section {
         width: 100%;
         flex-grow: 1;
         display: flex;
@@ -33,10 +33,10 @@
         font-weight: normal;
     }
 
-    span h6,
-    span h5 {
+    span h4,
+    span p {
+        line-height: 1.2;
         max-width: 100%;
-        line-height: 1.4;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;

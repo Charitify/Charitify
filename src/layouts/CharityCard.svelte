@@ -11,7 +11,7 @@
     export let organization = undefined
 </script>
 
-<div class="card">
+<section class="card">
     <div class="images-wrap">
         <Carousel images={src}/>
     </div>
@@ -25,9 +25,9 @@
     </div>
 
     <footer>
-        <AvatarAndName src={orgHeadSrc} title={orgHead} subTitle={organization}/>
+        <AvatarAndName src={orgHeadSrc} title={orgHead} subtitle={organization}/>
     </footer>
-</div>
+</section>
 
 <style>
     .card {

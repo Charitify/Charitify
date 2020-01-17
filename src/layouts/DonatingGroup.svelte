@@ -2,7 +2,7 @@
     import { Input, Button } from '../components'
 </script>
 
-<ul class="options">
+<ul>
     <li>
         <Button is="success" on:click="{e => console.log(e)}">test1</Button>
     </li>
@@ -35,7 +35,7 @@
 </ul>
 
 <style>
-    .options {
+    ul {
         flex: 0;
         display: flex;
         flex-direction: column;
@@ -43,7 +43,7 @@
         padding: 0 0 0 var(--screen-padding);
     }
 
-    .options li {
+    ul li {
         flex: none;
         margin: calc(var(--screen-padding) / 2) 0;
     }

@@ -2,6 +2,46 @@
     import { Swipe, SwipeItem } from '../plugins'
     import { Picture } from '../components'
 
+    const cards = [
+        {
+            src: 'https://placeimg.com/300/300/tech',
+            title: 'The main title and short description.',
+            percent: 45,
+            orgHead: 'Tina Kandelaki',
+            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            organization: 'ORG charity of Charitify.',
+        },
+        {
+            src: 'https://placeimg.com/300/300/arch',
+            title: 'Second bigger major card title line with a bit longer description.',
+            percent: 65,
+            orgHead: 'Tina Kandelaki',
+            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            organization: 'ORG charity of Charitify.',
+        },
+        {
+            src: 'https://placeimg.com/300/300/any',
+            title: 'The main title and short description.',
+            percent: 5,
+            orgHead: 'Tinaramisimuss Kandelakinuskas',
+            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            organization: 'ORG charity of Charitify.',
+        },
+        {
+            src: 'https://placeimg.com/300/300/nature',
+            title: 'The main title and short description.',
+            percent: 95,
+            orgHead: 'Tina Kandelaki',
+            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            organization: 'ORG giant charity organization of big Charitify company.',
+        },
+    ]
+
+    const imagesDefault = cards.map(card => ({
+        src: [card.src, card.src, card.src],
+        alt: card.title,
+    }))
+
     /**
      *
      * @type {{
@@ -10,12 +50,12 @@
      *     onClick?: function,
      * }[]}
      */
-    export let images = undefined
+    export let images = imagesDefault
 
     $: imagesArr = [].concat(images).map(img => typeof img === 'string' ? { src: img } : img)
 </script>
 
-<section class="carousel">
+<section>
     <Swipe>
         {#each imagesArr as img}
             <SwipeItem>
@@ -26,12 +66,12 @@
 </section>
 
 <style>
-    .carousel {
+    section {
         z-index: 0;
         flex-grow: 1;
         overflow: hidden;
         margin-bottom: 2px;
-        border-radius: var(--border-radius);
         box-shadow: var(--shadow-primary);
+        border-radius: var(--border-radius);
     }
 </style>
