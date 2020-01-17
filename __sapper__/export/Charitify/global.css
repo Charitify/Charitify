@@ -315,7 +315,7 @@ h5 {
 }
 
 h6 {
-    font-size: .675em
+    font-size: .675em;
     line-height: calc(var(--font-line-height) * 1.2);
 }
 
