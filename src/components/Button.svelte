@@ -20,25 +20,13 @@
 
     $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })
 
-    function playClick() {
-        try {
-            const clickAudio = document.getElementById('button_click')
-            clickAudio.volume = 0.2;
-            return clickAudio.play()
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
     function onLabelClick(e) {
         document.getElementById(htmlFor).click()
         !disabled && dispatch('click', e)
-        playClick()
     }
 
     function onClick(e) {
         !disabled && dispatch('click', e)
-        playClick()
     }
 </script>
 
