@@ -319,6 +319,28 @@ h6 {
     line-height: calc(var(--font-line-height) * 1.2);
 }
 
+sub {
+    vertical-align: baseline;
+    font-weight: normal;
+    font-size: .825em;
+    line-height: calc(var(--font-line-height) * 1.2);
+}
+
+sup {
+    vertical-align: baseline;
+    font-weight: normal;
+    font-size: 1.2em;
+    line-height: calc(var(--font-line-height) * 1.2);
+}
+
+pre {
+    font: inherit;
+    max-width: 100%;
+    overflow: hidden;
+    word-break: break-word;
+    white-space: pre-line;
+}
+
 
 /* ---------------------===================( Global Theme )===================--------------------- */
 
