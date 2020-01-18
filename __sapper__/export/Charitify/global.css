@@ -254,10 +254,7 @@ body.theme-dark {
 }
 
 html {
-    width: 100%;
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 body {
@@ -265,6 +262,9 @@ body {
     flex-direction: column;
     align-content: stretch;
     justify-content: stretch;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
     text-align: left;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
@@ -273,15 +273,15 @@ body {
     font-family: var(--font-family);
     line-height: var(--font-line-height);
     background-color: rgba(var(--theme-bg-color));
-    box-shadow: inset 0 0 20px 15px rgba(var(--color-black),.2);
 }
 
 #sapper {
-    flex: 1 1 100%;
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
     align-content: stretch;
     justify-content: stretch;
+    box-shadow: inset 0 0 20px 15px rgba(var(--color-black),.2);
 }
 
 main {
