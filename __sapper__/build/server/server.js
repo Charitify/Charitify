@@ -1735,7 +1735,7 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 ${validate_component(Icons, "Icons").$$render($$result, {}, {}, {})}
 
-<main>
+<main id="${"main"}">
 	${$$slots.default ? $$slots.default({}) : ``}
 </main>
 
