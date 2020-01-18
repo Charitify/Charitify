@@ -1,7 +1,7 @@
 <script>
 	import { Swipe, SwipeItem } from '../plugins'
 	import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup } from '../layouts'
-	import { Rate, Progress, Br } from '../components'
+	import { Rate, Progress } from '../components'
 </script>
 
 <svelte:head>
@@ -66,7 +66,7 @@
 		<DonatingGroup/>
 	</section>
 
-	<Progress value="65" size="big"></Progress>
+	<Progress value="65" size="big"/>
 
 	<section class="rate-section">
 		<AvatarAndName
@@ -79,4 +79,6 @@
 	</section>
 </section>
 
-<Br amount="3"/>
+<br>
+<br>
+<br>

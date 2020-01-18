@@ -1,13 +1,12 @@
 <script>
     import {
+        Comment,
         Carousel,
         CharityCards,
         ContentHolder,
         TitleSubTitle,
-        AvatarAndName,
     } from '../layouts'
     import {
-        Br,
         Divider,
         Progress,
     } from '../components'
@@ -37,26 +36,42 @@
 
 <p>These guys rise a pound of vegetables. They like vegetables and long text under photos.</p>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <TitleSubTitle/>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <section class="container">
     <CharityCards amount="2"/>
 </section>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <ContentHolder/>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <section class="container">
     <ul style="display: flex; flex-wrap: wrap">
         <li style="width: 50%">
-            <AvatarAndName
+            <Comment
                     src="https://placeimg.com/300/300/people"
                     title="Tina Kandelaki"
                     subtitle="ORG charity charitify"
@@ -64,7 +79,7 @@
             <br>
         </li>
         <li style="width: 50%">
-            <AvatarAndName
+            <Comment
                     src="https://placeimg.com/300/300/people"
                     title="Tina Kandelaki"
                     subtitle="ORG charity charitify"
@@ -72,7 +87,7 @@
             <br>
         </li>
         <li style="width: 50%">
-            <AvatarAndName
+            <Comment
                     src="https://placeimg.com/300/300/people"
                     title="Tina Kandelaki"
                     subtitle="ORG charity charitify"
@@ -80,7 +95,7 @@
             <br>
         </li>
         <li style="width: 50%">
-            <AvatarAndName
+            <Comment
                     src="https://placeimg.com/300/300/people"
                     title="Tina Kandelaki"
                     subtitle="ORG charity charitify"
@@ -90,10 +105,18 @@
     </ul>
 </section>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <section class="container">
     <CharityCards amount="2"/>
 </section>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>

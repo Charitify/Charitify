@@ -7,7 +7,7 @@
         AvatarAndName,
         DonatingGroup,
     } from '../layouts'
-    import { Rate, Divider, Progress, Br } from '../components'
+    import { Rate, Divider, Progress } from '../components'
 </script>
 
 <style>
@@ -61,21 +61,32 @@
         <Rate/>
     </section>
 
-    <Br amount="2"/>
+    <br>
+    <br>
 
     <TitleSubTitle/>
 </section>
 
-<Br amount="3"/>
+<br>
+<br>
+<br>
 
 <div class="container">
     <CharityCards/>
 </div>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <div class="container">
     <CharityCards/>
 </div>
 
-<Br amount="5"/>
+<br>
+<br>
+<br>
+<br>
+<br>

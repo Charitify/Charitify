@@ -11,7 +11,7 @@
 
     <span>
         <h4>{title}</h4>
-        <p>{subtitle}</p>
+        <sub>{subtitle}</sub>
     </span>
 </section>
 
@@ -30,7 +30,7 @@
     }
 
     span h4,
-    span p {
+    span sub {
         line-height: 1.2;
         max-width: 100%;
         overflow: hidden;

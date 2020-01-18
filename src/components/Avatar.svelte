@@ -10,7 +10,7 @@
 </script>
 
 <div class={classProp}>
-    <Picture {src} {alt}/>
+    <Picture {src} alt={`Picture: ${alt}`}/>
 </div>
 
 <style>

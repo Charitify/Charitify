@@ -1,5 +1,4 @@
 <script>
-	import { Br } from '../components'
 	import { ContentHolder } from '../layouts'
 </script>
 
@@ -16,7 +15,9 @@
 </style>
 
 <section>
-	<Br amount="2"/>
+	<br>
+	<br>
 	<ContentHolder/>
-	<Br amount="2"/>
+	<br>
+	<br>
 </section>

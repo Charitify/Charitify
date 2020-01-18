@@ -1,4 +1,5 @@
 export { default as Footer } from './Footer.svelte'
+export { default as Comment } from './Comment.svelte'
 export { default as Carousel } from './Carousel.svelte'
 export { default as CharityCard } from './CharityCard.svelte'
 export { default as CharityCards } from './CharityCards.svelte'
