@@ -253,6 +253,10 @@ body.theme-dark {
     --theme-font-color-opposite: var(--color-font-dark);
 }
 
+html {
+    height: 100%;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -260,6 +264,7 @@ body {
     justify-content: stretch;
     overflow-x: hidden;
     overflow-y: auto;
+    min-height: 100%;
     text-align: left;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
@@ -279,8 +284,8 @@ body {
     box-shadow: inset 0 0 20px 15px rgba(var(--color-black),.2);
 }
 
-main {
-    flex: 1 1 0;
+#main {
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     align-content: stretch;
@@ -341,20 +346,22 @@ pre {
 }
 
 br {
-    content: " ";
     display: block;
+    height: 0;
+    content: '';
+    box-sizing: content-box;
 }
 
 br.small {
-    height: calc(1em * .57); /* 8px */
+    padding: calc(1em * .57 / 2) 0; /* 8px */
 }
 
 br.medium, br {
-    height: calc(1em * 1.14); /* 16px */
+    padding: calc(1em * 1.14 / 2) 0; /* 16px */
 }
 
 br.big {
-    height: calc(1em * 2.28); /* 32px */
+    padding: calc(1em * 2.28 / 2) 0; /* 32px */
 }
 
 
@@ -362,7 +369,7 @@ br.big {
 /* ---------------------===================( Global Theme )===================--------------------- */
 
 /* Background patterns: https://leaverou.github.io/css3patterns/ */
-body, .theme-bg {
+#sapper, .theme-bg {
     color: rgba(var(--theme-font-color));
     background: radial-gradient(rgba(var(--color-black), .02) 15%, transparent 16%) 0 0,
                 radial-gradient(rgba(var(--color-black), .02) 15%, transparent 16%) 8px 8px,
