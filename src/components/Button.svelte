@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
+    import { createEventDispatcher, onMount } from 'svelte'
     import { classnames } from '../utils'
 
     const dispatch = createEventDispatcher()
@@ -20,10 +20,25 @@
 
     $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })
 
+    function playClick() {
+        try {
+            const clickAudio = document.getElementById('button_click')
+            clickAudio.volume = 0.2;
+            return clickAudio.play()
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     function onLabelClick(e) {
         document.getElementById(htmlFor).click()
-        // try { document.getElementById(htmlFor).click() } catch (e) {}
-        !disabled && dispatch("click", e)
+        !disabled && dispatch('click', e)
+        playClick()
+    }
+
+    function onClick(e) {
+        !disabled && dispatch('click', e)
+        playClick()
     }
 </script>
 
@@ -34,7 +49,7 @@
             title={titleProp}
             class={classProp}
             aria-label={ariaLabelProp}
-            on:click='{e => !disabled && dispatch("click", e)}'
+            on:click={onClick}
     >
         <slot></slot>
     </a>
@@ -58,7 +73,7 @@
             title={titleProp}
             class={classProp}
             aria-label={ariaLabelProp}
-            on:click='{e => !disabled && dispatch("click", e)}'
+            on:click={onClick}
     >
         <slot></slot>
     </button>
@@ -190,6 +205,7 @@
         :global(.btn) {
             margin-bottom: 2px;
         }
+
         .btn.success {
             box-shadow: 0 3px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
         }
