@@ -51,24 +51,6 @@
 <br>
 
 <section class="container">
-    <CharityCards amount="2"/>
-</section>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-
-<ContentHolder/>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-
-<section class="container">
     <ul style="display: flex; flex-wrap: wrap">
         <li style="width: 50%">
             <Comment
@@ -104,6 +86,24 @@
         </li>
     </ul>
 </section>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<section class="container">
+    <CharityCards amount="2"/>
+</section>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<ContentHolder/>
 
 <br>
 <br>

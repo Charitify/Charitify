@@ -31,7 +31,7 @@
 
     span h4,
     span sub {
-        line-height: 1.2;
+        line-height: 1;
         max-width: 100%;
         overflow: hidden;
         white-space: nowrap;

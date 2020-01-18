@@ -15,7 +15,9 @@
             <sub>{subtitle}</sub>
         </span>
 
-        <pre>A loooooooooong comment that has been
+        <br class="small">
+
+        <pre>A loooooooooooooooooong comment that has been
             left by a very angry guy who complains upon
             looooong comments.
         </pre>
@@ -44,7 +46,7 @@
 
     span h4,
     span sub {
-        line-height: 1.2;
+        line-height: 1;
         max-width: 100%;
         overflow: hidden;
         white-space: nowrap;
@@ -53,5 +55,7 @@
 
     pre {
         padding: 0 8px;
+        font-size: .825em;
+        line-height: 1.2;
     }
 </style>
