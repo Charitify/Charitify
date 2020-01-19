@@ -1,84 +1,73 @@
 <script>
-	import { Swipe, SwipeItem } from '../plugins'
-	import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup } from '../layouts'
-	import { Rate, Progress } from '../components'
+    import { Swipe, SwipeItem } from '../plugins'
+    import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup } from '../layouts'
+    import { Rate, Progress } from '../components'
+    import { send, receive } from '../shared'
 </script>
 
 <svelte:head>
-	<title>Charitify - Charity page and donate.</title>
+    <title>Charitify - Charity page and donate.</title>
 </svelte:head>
 
 <style>
-	.top {
-		display: flex;
-		margin-bottom: calc(var(--screen-padding) * 1.5);
-		margin-top: var(--screen-padding);
-	}
+    .top {
+        display: flex;
+        margin-bottom: calc(var(--screen-padding) * 1.5);
+        margin-top: var(--screen-padding);
+    }
 
-	.pics-wrap {
-		z-index: 0;
-		flex-grow: 1;
-		display: flex;
-		overflow: hidden;
-		margin-bottom: 2px;
-		border-radius: var(--border-radius);
-		box-shadow: var(--shadow-primary);
-	}
+    .pics-wrap {
+        z-index: 0;
+        flex-grow: 1;
+        display: flex;
+        overflow: hidden;
+        margin-bottom: 2px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-primary);
+    }
 
-	.rate-section {
-		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		padding: 12px 0;
-	}
-
-	.title-wrap {
-		overflow: hidden;
-		animation: title-anim 1s forwards ease-in;
-	}
-
-	@keyframes title-anim {
-		0% {
-			max-height: 0;
-		}
-		99.9% {
-			max-height: 100vh;
-		}
-		100% {
-			max-height: none;
-		}
-	}
+    .rate-section {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 12px 0;
+    }
 </style>
 
-<section class="container">
+<main class="page">
+    <section class="container">
 
-	<section class="title-wrap">
-		<br>
-		<TitleSubTitle/>
-		<br>
-	</section>
+        <section out:send="{{key: 'title'}}" in:receive="{{key: 'title'}}">
+            <br>
+            <TitleSubTitle/>
+            <br>
+        </section>
 
-	<section class="top">
-		<div class="pics-wrap">
-			<Carousel/>
-		</div>
+        <div out:send="{{key: 'pictures'}}" in:receive="{{key: 'pictures'}}">
+            <section class="top">
+                <div class="pics-wrap">
+                    <Carousel/>
+                </div>
 
-		<DonatingGroup/>
-	</section>
+                <DonatingGroup/>
+            </section>
 
-	<Progress value="65" size="big"/>
+            <Progress value="65" size="big"/>
 
-	<section class="rate-section">
-		<AvatarAndName
-				src="https://placeimg.com/300/300/people"
-				title="Tina Kandelaki"
-				subTitle="ORG charity charitify"
-		/>
+            <section class="rate-section">
+                <AvatarAndName
+                        src="https://placeimg.com/300/300/people"
+                        title="Tina Kandelaki"
+                        subTitle="ORG charity charitify"
+                />
 
-		<Rate/>
-	</section>
-</section>
+                <Rate/>
+            </section>
+        </div>
+    </section>
 
-<br>
-<br>
-<br>
+    <br>
+    <br>
+    <br>
+
+</main>

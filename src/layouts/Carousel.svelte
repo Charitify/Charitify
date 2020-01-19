@@ -4,35 +4,35 @@
 
     const cards = [
         {
-            src: 'https://placeimg.com/300/300/tech',
+            src: 'https://placeimg.com/30/30/tech',
             title: 'The main title and short description.',
             percent: 45,
             orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            orgHeadSrc: 'https://placeimg.com/30/30/people',
             organization: 'ORG charity of Charitify.',
         },
         {
-            src: 'https://placeimg.com/300/300/arch',
+            src: 'https://placeimg.com/30/30/arch',
             title: 'Second bigger major card title line with a bit longer description.',
             percent: 65,
             orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            orgHeadSrc: 'https://placeimg.com/30/30/people',
             organization: 'ORG charity of Charitify.',
         },
         {
-            src: 'https://placeimg.com/300/300/any',
+            src: 'https://placeimg.com/30/30/any',
             title: 'The main title and short description.',
             percent: 5,
             orgHead: 'Tinaramisimuss Kandelakinuskas',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            orgHeadSrc: 'https://placeimg.com/30/30/people',
             organization: 'ORG charity of Charitify.',
         },
         {
-            src: 'https://placeimg.com/300/300/nature',
+            src: 'https://placeimg.com/30/30/nature',
             title: 'The main title and short description.',
             percent: 95,
             orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
+            orgHeadSrc: 'https://placeimg.com/30/30/people',
             organization: 'ORG giant charity organization of big Charitify company.',
         },
     ]

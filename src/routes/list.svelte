@@ -8,6 +8,7 @@
         DonatingGroup,
     } from '../layouts'
     import { Rate, Divider, Progress } from '../components'
+    import { send, receive } from '../shared'
 </script>
 
 <style>
@@ -39,54 +40,61 @@
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-<section class="container">
-    <section class="top">
+<main class="page">
+    <section class="container">
 
-        <div class="pics-wrap">
-            <Carousel/>
+        <div out:send="{{key: 'pictures'}}" in:receive="{{key: 'pictures'}}">
+            <section class="top">
+                <div class="pics-wrap">
+                    <Carousel/>
+                </div>
+
+                <DonatingGroup/>
+            </section>
+
+            <Progress value="65" size="big"></Progress>
+
+            <section class="rate-section">
+                <AvatarAndName
+                        src="https://placeimg.com/300/300/people"
+                        title="Tina Kandelaki"
+                        subtitle="ORG charity charitify"
+                />
+
+                <Rate/>
+            </section>
         </div>
 
-        <DonatingGroup/>
-    </section>
+        <br>
+        <br>
 
-    <Progress value="65" size="big"></Progress>
-
-    <section class="rate-section">
-        <AvatarAndName
-                src="https://placeimg.com/300/300/people"
-                title="Tina Kandelaki"
-                subtitle="ORG charity charitify"
-        />
-
-        <Rate/>
+        <section out:send="{{key: 'title'}}" in:receive="{{key: 'title'}}">
+            <TitleSubTitle/>
+        </section>
     </section>
 
     <br>
     <br>
+    <br>
 
-    <TitleSubTitle/>
-</section>
+    <div class="container">
+        <CharityCards/>
+    </div>
 
-<br>
-<br>
-<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-<div class="container">
-    <CharityCards/>
-</div>
+    <div class="container">
+        <CharityCards/>
+    </div>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-<div class="container">
-    <CharityCards/>
-</div>
-
-<br>
-<br>
-<br>
-<br>
-<br>
+</main>
