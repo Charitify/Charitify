@@ -158,6 +158,12 @@ var route_1 = /*#__PURE__*/Object.freeze({
 });
 
 function noop() { }
+function assign(tar, src) {
+    // @ts-ignore
+    for (const k in src)
+        tar[k] = src[k];
+    return tar;
+}
 function run(fn) {
     return fn();
 }
@@ -166,6 +172,9 @@ function blank_object() {
 }
 function run_all(fns) {
     fns.forEach(run);
+}
+function is_function(thing) {
+    return typeof thing === 'function';
 }
 function safe_not_equal(a, b) {
     return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
@@ -1033,41 +1042,41 @@ const SwipeItem = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 
 const css$c = {
 	code: "section.svelte-f86mtu{z-index:0;flex-grow:1;overflow:hidden;margin-bottom:2px;box-shadow:var(--shadow-primary);border-radius:var(--border-radius)}",
-	map: "{\"version\":3,\"file\":\"Carousel.svelte\",\"sources\":[\"Carousel.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Swipe, SwipeItem } from '../plugins'\\n    import { Picture } from '../components'\\n\\n    const cards = [\\n        {\\n            src: 'https://placeimg.com/300/300/tech',\\n            title: 'The main title and short description.',\\n            percent: 45,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG charity of Charitify.',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/arch',\\n            title: 'Second bigger major card title line with a bit longer description.',\\n            percent: 65,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG charity of Charitify.',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/any',\\n            title: 'The main title and short description.',\\n            percent: 5,\\n            orgHead: 'Tinaramisimuss Kandelakinuskas',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG charity of Charitify.',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/nature',\\n            title: 'The main title and short description.',\\n            percent: 95,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG giant charity organization of big Charitify company.',\\n        },\\n    ]\\n\\n    const imagesDefault = cards.map(card => ({\\n        src: [card.src, card.src, card.src],\\n        alt: card.title,\\n    }))\\n\\n    /**\\n     *\\n     * @type {{\\n     *     src: string,\\n     *     alt: string,\\n     *     onClick?: function,\\n     * }[]}\\n     */\\n    export let images = imagesDefault\\n\\n    $: imagesArr = [].concat(images).map(img => typeof img === 'string' ? { src: img } : img)\\n</script>\\n\\n<section>\\n    <Swipe>\\n        {#each imagesArr as img}\\n            <SwipeItem>\\n                <Picture src={img.src} alt={img.alt}/>\\n            </SwipeItem>\\n        {/each}\\n    </Swipe>\\n</section>\\n\\n<style>\\n    section {\\n        z-index: 0;\\n        flex-grow: 1;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        box-shadow: var(--shadow-primary);\\n        border-radius: var(--border-radius);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAoEI,OAAO,cAAC,CAAC,AACL,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACjC,aAAa,CAAE,IAAI,eAAe,CAAC,AACvC,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Carousel.svelte\",\"sources\":[\"Carousel.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Swipe, SwipeItem } from '../plugins'\\n    import { Picture } from '../components'\\n\\n    const cards = [\\n        {\\n            src: 'https://placeimg.com/30/30/tech',\\n            title: 'The main title and short description.',\\n            percent: 45,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/30/30/people',\\n            organization: 'ORG charity of Charitify.',\\n        },\\n        {\\n            src: 'https://placeimg.com/30/30/arch',\\n            title: 'Second bigger major card title line with a bit longer description.',\\n            percent: 65,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/30/30/people',\\n            organization: 'ORG charity of Charitify.',\\n        },\\n        {\\n            src: 'https://placeimg.com/30/30/any',\\n            title: 'The main title and short description.',\\n            percent: 5,\\n            orgHead: 'Tinaramisimuss Kandelakinuskas',\\n            orgHeadSrc: 'https://placeimg.com/30/30/people',\\n            organization: 'ORG charity of Charitify.',\\n        },\\n        {\\n            src: 'https://placeimg.com/30/30/nature',\\n            title: 'The main title and short description.',\\n            percent: 95,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/30/30/people',\\n            organization: 'ORG giant charity organization of big Charitify company.',\\n        },\\n    ]\\n\\n    const imagesDefault = cards.map(card => ({\\n        src: [card.src, card.src, card.src],\\n        alt: card.title,\\n    }))\\n\\n    /**\\n     *\\n     * @type {{\\n     *     src: string,\\n     *     alt: string,\\n     *     onClick?: function,\\n     * }[]}\\n     */\\n    export let images = imagesDefault\\n\\n    $: imagesArr = [].concat(images).map(img => typeof img === 'string' ? { src: img } : img)\\n</script>\\n\\n<section>\\n    <Swipe>\\n        {#each imagesArr as img}\\n            <SwipeItem>\\n                <Picture src={img.src} alt={img.alt}/>\\n            </SwipeItem>\\n        {/each}\\n    </Swipe>\\n</section>\\n\\n<style>\\n    section {\\n        z-index: 0;\\n        flex-grow: 1;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        box-shadow: var(--shadow-primary);\\n        border-radius: var(--border-radius);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAoEI,OAAO,cAAC,CAAC,AACL,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACjC,aAAa,CAAE,IAAI,eAAe,CAAC,AACvC,CAAC\"}"
 };
 
 const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const cards = [
 		{
-			src: "https://placeimg.com/300/300/tech",
+			src: "https://placeimg.com/30/30/tech",
 			title: "The main title and short description.",
 			percent: 45,
 			orgHead: "Tina Kandelaki",
-			orgHeadSrc: "https://placeimg.com/300/300/people",
+			orgHeadSrc: "https://placeimg.com/30/30/people",
 			organization: "ORG charity of Charitify."
 		},
 		{
-			src: "https://placeimg.com/300/300/arch",
+			src: "https://placeimg.com/30/30/arch",
 			title: "Second bigger major card title line with a bit longer description.",
 			percent: 65,
 			orgHead: "Tina Kandelaki",
-			orgHeadSrc: "https://placeimg.com/300/300/people",
+			orgHeadSrc: "https://placeimg.com/30/30/people",
 			organization: "ORG charity of Charitify."
 		},
 		{
-			src: "https://placeimg.com/300/300/any",
+			src: "https://placeimg.com/30/30/any",
 			title: "The main title and short description.",
 			percent: 5,
 			orgHead: "Tinaramisimuss Kandelakinuskas",
-			orgHeadSrc: "https://placeimg.com/300/300/people",
+			orgHeadSrc: "https://placeimg.com/30/30/people",
 			organization: "ORG charity of Charitify."
 		},
 		{
-			src: "https://placeimg.com/300/300/nature",
+			src: "https://placeimg.com/30/30/nature",
 			title: "The main title and short description.",
 			percent: 95,
 			orgHead: "Tina Kandelaki",
-			orgHeadSrc: "https://placeimg.com/300/300/people",
+			orgHeadSrc: "https://placeimg.com/30/30/people",
 			organization: "ORG giant charity organization of big Charitify company."
 		}
 	];
@@ -1495,11 +1504,113 @@ ${validate_component(ContentHolder, "ContentHolder").$$render($$result, {}, {}, 
 <br>`;
 });
 
+function cubicOut(t) {
+    const f = t - 1.0;
+    return f * f * f + 1.0;
+}
+function quintOut(t) {
+    return --t * t * t * t * t + 1;
+}
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
+function crossfade(_a) {
+    var { fallback } = _a, defaults = __rest(_a, ["fallback"]);
+    const to_receive = new Map();
+    const to_send = new Map();
+    function crossfade(from, node, params) {
+        const { delay = 0, duration = d => Math.sqrt(d) * 30, easing = cubicOut } = assign(assign({}, defaults), params);
+        const to = node.getBoundingClientRect();
+        const dx = from.left - to.left;
+        const dy = from.top - to.top;
+        const dw = from.width / to.width;
+        const dh = from.height / to.height;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        const style = getComputedStyle(node);
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const opacity = +style.opacity;
+        return {
+            delay,
+            duration: is_function(duration) ? duration(d) : duration,
+            easing,
+            css: (t, u) => `
+				opacity: ${t * opacity};
+				transform-origin: top left;
+				transform: ${transform} translate(${u * dx}px,${u * dy}px) scale(${t + (1 - t) * dw}, ${t + (1 - t) * dh});
+			`
+        };
+    }
+    function transition(items, counterparts, intro) {
+        return (node, params) => {
+            items.set(params.key, {
+                rect: node.getBoundingClientRect()
+            });
+            return () => {
+                if (counterparts.has(params.key)) {
+                    const { rect } = counterparts.get(params.key);
+                    counterparts.delete(params.key);
+                    return crossfade(rect, node, params);
+                }
+                // if the node is disappearing altogether
+                // (i.e. wasn't claimed by the other list)
+                // then we need to supply an outro
+                items.delete(params.key);
+                return fallback && fallback(node, params, intro);
+            };
+        };
+    }
+    return [
+        transition(to_send, to_receive, false),
+        transition(to_receive, to_send, true)
+    ];
+}
+
+const [send, receive] = crossfade({
+  duration: d => Math.sqrt(d * 300),
+  fallback(node, params) {
+    const style = getComputedStyle(node);
+    const transform = style.transform === 'none' ? '' : style.transform;
+
+    return {
+      duration: 600,
+      easing: quintOut,
+      css: t => `
+                transform: ${transform} scale(${t});
+                opacity: ${t}
+            `,
+    }
+  },
+});
+
 /* src/routes/charity.svelte generated by Svelte v3.16.7 */
 
 const css$k = {
-	code: ".top.svelte-1nxg3k7{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.pics-wrap.svelte-1nxg3k7{z-index:0;flex-grow:1;display:flex;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.rate-section.svelte-1nxg3k7{display:flex;align-items:flex-end;justify-content:space-between;padding:12px 0}.title-wrap.svelte-1nxg3k7{overflow:hidden;animation:svelte-1nxg3k7-title-anim 1s forwards ease-in}@keyframes svelte-1nxg3k7-title-anim{0%{max-height:0}99.9%{max-height:100vh}100%{max-height:none}}",
-	map: "{\"version\":3,\"file\":\"charity.svelte\",\"sources\":[\"charity.svelte\"],\"sourcesContent\":[\"<script>\\n\\timport { Swipe, SwipeItem } from '../plugins'\\n\\timport { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup } from '../layouts'\\n\\timport { Rate, Progress } from '../components'\\n</script>\\n\\n<svelte:head>\\n\\t<title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n\\t.top {\\n\\t\\tdisplay: flex;\\n\\t\\tmargin-bottom: calc(var(--screen-padding) * 1.5);\\n\\t\\tmargin-top: var(--screen-padding);\\n\\t}\\n\\n\\t.pics-wrap {\\n\\t\\tz-index: 0;\\n\\t\\tflex-grow: 1;\\n\\t\\tdisplay: flex;\\n\\t\\toverflow: hidden;\\n\\t\\tmargin-bottom: 2px;\\n\\t\\tborder-radius: var(--border-radius);\\n\\t\\tbox-shadow: var(--shadow-primary);\\n\\t}\\n\\n\\t.rate-section {\\n\\t\\tdisplay: flex;\\n\\t\\talign-items: flex-end;\\n\\t\\tjustify-content: space-between;\\n\\t\\tpadding: 12px 0;\\n\\t}\\n\\n\\t.title-wrap {\\n\\t\\toverflow: hidden;\\n\\t\\tanimation: title-anim 1s forwards ease-in;\\n\\t}\\n\\n\\t@keyframes title-anim {\\n\\t\\t0% {\\n\\t\\t\\tmax-height: 0;\\n\\t\\t}\\n\\t\\t99.9% {\\n\\t\\t\\tmax-height: 100vh;\\n\\t\\t}\\n\\t\\t100% {\\n\\t\\t\\tmax-height: none;\\n\\t\\t}\\n\\t}\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n\\t<section class=\\\"title-wrap\\\">\\n\\t\\t<br>\\n\\t\\t<TitleSubTitle/>\\n\\t\\t<br>\\n\\t</section>\\n\\n\\t<section class=\\\"top\\\">\\n\\t\\t<div class=\\\"pics-wrap\\\">\\n\\t\\t\\t<Carousel/>\\n\\t\\t</div>\\n\\n\\t\\t<DonatingGroup/>\\n\\t</section>\\n\\n\\t<Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n\\t<section class=\\\"rate-section\\\">\\n\\t\\t<AvatarAndName\\n\\t\\t\\t\\tsrc=\\\"https://placeimg.com/300/300/people\\\"\\n\\t\\t\\t\\ttitle=\\\"Tina Kandelaki\\\"\\n\\t\\t\\t\\tsubTitle=\\\"ORG charity charitify\\\"\\n\\t\\t/>\\n\\n\\t\\t<Rate/>\\n\\t</section>\\n</section>\\n\\n<br>\\n<br>\\n<br>\\n\"],\"names\":[],\"mappings\":\"AAWC,IAAI,eAAC,CAAC,AACL,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAClC,CAAC,AAED,UAAU,eAAC,CAAC,AACX,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAClC,CAAC,AAED,aAAa,eAAC,CAAC,AACd,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AAChB,CAAC,AAED,WAAW,eAAC,CAAC,AACZ,QAAQ,CAAE,MAAM,CAChB,SAAS,CAAE,yBAAU,CAAC,EAAE,CAAC,QAAQ,CAAC,OAAO,AAC1C,CAAC,AAED,WAAW,yBAAW,CAAC,AACtB,EAAE,AAAC,CAAC,AACH,UAAU,CAAE,CAAC,AACd,CAAC,AACD,KAAK,AAAC,CAAC,AACN,UAAU,CAAE,KAAK,AAClB,CAAC,AACD,IAAI,AAAC,CAAC,AACL,UAAU,CAAE,IAAI,AACjB,CAAC,AACF,CAAC\"}"
+	code: ".top.svelte-uz5elz{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.pics-wrap.svelte-uz5elz{z-index:0;flex-grow:1;display:flex;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.rate-section.svelte-uz5elz{display:flex;align-items:flex-end;justify-content:space-between;padding:12px 0}",
+	map: "{\"version\":3,\"file\":\"charity.svelte\",\"sources\":[\"charity.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Swipe, SwipeItem } from '../plugins'\\n    import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup } from '../layouts'\\n    import { Rate, Progress } from '../components'\\n    import { send, receive } from '../shared'\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<main class=\\\"page\\\">\\n    <section class=\\\"container\\\">\\n\\n        <section out:send=\\\"{{key: 'title'}}\\\" in:receive=\\\"{{key: 'title'}}\\\">\\n            <br>\\n            <TitleSubTitle/>\\n            <br>\\n        </section>\\n\\n        <div out:send=\\\"{{key: 'pictures'}}\\\" in:receive=\\\"{{key: 'pictures'}}\\\">\\n            <section class=\\\"top\\\">\\n                <div class=\\\"pics-wrap\\\">\\n                    <Carousel/>\\n                </div>\\n\\n                <DonatingGroup/>\\n            </section>\\n\\n            <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n            <section class=\\\"rate-section\\\">\\n                <AvatarAndName\\n                        src=\\\"https://placeimg.com/300/300/people\\\"\\n                        title=\\\"Tina Kandelaki\\\"\\n                        subTitle=\\\"ORG charity charitify\\\"\\n                />\\n\\n                <Rate/>\\n            </section>\\n        </div>\\n    </section>\\n\\n    <br>\\n    <br>\\n    <br>\\n\\n</main>\\n\"],\"names\":[],\"mappings\":\"AAYI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
 };
 
 const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1509,26 +1620,28 @@ const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 
 
 
-<section class="${"container"}">
+<main class="${"page"}">
+    <section class="${"container"}">
 
-	<section class="${"title-wrap svelte-1nxg3k7"}">
-		<br>
-		${validate_component(TitleSubTitle, "TitleSubTitle").$$render($$result, {}, {}, {})}
-		<br>
-	</section>
+        <section>
+            <br>
+            ${validate_component(TitleSubTitle, "TitleSubTitle").$$render($$result, {}, {}, {})}
+            <br>
+        </section>
 
-	<section class="${"top svelte-1nxg3k7"}">
-		<div class="${"pics-wrap svelte-1nxg3k7"}">
-			${validate_component(Carousel, "Carousel").$$render($$result, {}, {}, {})}
-		</div>
+        <div>
+            <section class="${"top svelte-uz5elz"}">
+                <div class="${"pics-wrap svelte-uz5elz"}">
+                    ${validate_component(Carousel, "Carousel").$$render($$result, {}, {}, {})}
+                </div>
 
-		${validate_component(DonatingGroup, "DonatingGroup").$$render($$result, {}, {}, {})}
-	</section>
+                ${validate_component(DonatingGroup, "DonatingGroup").$$render($$result, {}, {}, {})}
+            </section>
 
-	${validate_component(Progress, "Progress").$$render($$result, { value: "65", size: "big" }, {}, {})}
+            ${validate_component(Progress, "Progress").$$render($$result, { value: "65", size: "big" }, {}, {})}
 
-	<section class="${"rate-section svelte-1nxg3k7"}">
-		${validate_component(AvatarAndName, "AvatarAndName").$$render(
+            <section class="${"rate-section svelte-uz5elz"}">
+                ${validate_component(AvatarAndName, "AvatarAndName").$$render(
 		$$result,
 		{
 			src: "https://placeimg.com/300/300/people",
@@ -1539,13 +1652,16 @@ const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 		{}
 	)}
 
-		${validate_component(Rate, "Rate").$$render($$result, {}, {}, {})}
-	</section>
-</section>
+                ${validate_component(Rate, "Rate").$$render($$result, {}, {}, {})}
+            </section>
+        </div>
+    </section>
 
-<br>
-<br>
-<br>`;
+    <br>
+    <br>
+    <br>
+
+</main>`;
 });
 
 /* src/routes/about.svelte generated by Svelte v3.16.7 */
@@ -1635,7 +1751,7 @@ const U5Bslugu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 const css$o = {
 	code: ".top.svelte-9uj01k{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.pics-wrap.svelte-9uj01k{z-index:0;flex-grow:1;display:flex;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.rate-section.svelte-9uj01k{display:flex;align-items:flex-end;justify-content:space-between;padding:calc(var(--screen-padding) * 1.5) 0}",
-	map: "{\"version\":3,\"file\":\"list.svelte\",\"sources\":[\"list.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Swipe, SwipeItem } from '../plugins'\\n    import {\\n        Carousel,\\n        CharityCards,\\n        TitleSubTitle,\\n        AvatarAndName,\\n        DonatingGroup,\\n    } from '../layouts'\\n    import { Rate, Divider, Progress } from '../components'\\n</script>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: calc(var(--screen-padding) * 1.5) 0;\\n    }\\n</style>\\n\\n<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n<section class=\\\"container\\\">\\n    <section class=\\\"top\\\">\\n\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"></Progress>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src=\\\"https://placeimg.com/300/300/people\\\"\\n                title=\\\"Tina Kandelaki\\\"\\n                subtitle=\\\"ORG charity charitify\\\"\\n        />\\n\\n        <Rate/>\\n    </section>\\n\\n    <br>\\n    <br>\\n\\n    <TitleSubTitle/>\\n</section>\\n\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\"],\"names\":[],\"mappings\":\"AAaI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,AAChD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"list.svelte\",\"sources\":[\"list.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Swipe, SwipeItem } from '../plugins'\\n    import {\\n        Carousel,\\n        CharityCards,\\n        TitleSubTitle,\\n        AvatarAndName,\\n        DonatingGroup,\\n    } from '../layouts'\\n    import { Rate, Divider, Progress } from '../components'\\n    import { send, receive } from '../shared'\\n</script>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: calc(var(--screen-padding) * 1.5) 0;\\n    }\\n</style>\\n\\n<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n<main class=\\\"page\\\">\\n    <section class=\\\"container\\\">\\n\\n        <div out:send=\\\"{{key: 'pictures'}}\\\" in:receive=\\\"{{key: 'pictures'}}\\\">\\n            <section class=\\\"top\\\">\\n                <div class=\\\"pics-wrap\\\">\\n                    <Carousel/>\\n                </div>\\n\\n                <DonatingGroup/>\\n            </section>\\n\\n            <Progress value=\\\"65\\\" size=\\\"big\\\"></Progress>\\n\\n            <section class=\\\"rate-section\\\">\\n                <AvatarAndName\\n                        src=\\\"https://placeimg.com/300/300/people\\\"\\n                        title=\\\"Tina Kandelaki\\\"\\n                        subtitle=\\\"ORG charity charitify\\\"\\n                />\\n\\n                <Rate/>\\n            </section>\\n        </div>\\n\\n        <br>\\n        <br>\\n\\n        <section out:send=\\\"{{key: 'title'}}\\\" in:receive=\\\"{{key: 'title'}}\\\">\\n            <TitleSubTitle/>\\n        </section>\\n    </section>\\n\\n    <br>\\n    <br>\\n    <br>\\n\\n    <div class=\\\"container\\\">\\n        <CharityCards/>\\n    </div>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <div class=\\\"container\\\">\\n        <CharityCards/>\\n    </div>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n</main>\\n\"],\"names\":[],\"mappings\":\"AAcI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,AAChD,CAAC\"}"
 };
 
 const List = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1643,20 +1759,22 @@ const List = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 	return `${($$result.head += `<title>Charitify - is the application for helping those in need.</title>`, "")}
 
-<section class="${"container"}">
-    <section class="${"top svelte-9uj01k"}">
+<main class="${"page"}">
+    <section class="${"container"}">
 
-        <div class="${"pics-wrap svelte-9uj01k"}">
-            ${validate_component(Carousel, "Carousel").$$render($$result, {}, {}, {})}
-        </div>
+        <div>
+            <section class="${"top svelte-9uj01k"}">
+                <div class="${"pics-wrap svelte-9uj01k"}">
+                    ${validate_component(Carousel, "Carousel").$$render($$result, {}, {}, {})}
+                </div>
 
-        ${validate_component(DonatingGroup, "DonatingGroup").$$render($$result, {}, {}, {})}
-    </section>
+                ${validate_component(DonatingGroup, "DonatingGroup").$$render($$result, {}, {}, {})}
+            </section>
 
-    ${validate_component(Progress, "Progress").$$render($$result, { value: "65", size: "big" }, {}, {})}
+            ${validate_component(Progress, "Progress").$$render($$result, { value: "65", size: "big" }, {}, {})}
 
-    <section class="${"rate-section svelte-9uj01k"}">
-        ${validate_component(AvatarAndName, "AvatarAndName").$$render(
+            <section class="${"rate-section svelte-9uj01k"}">
+                ${validate_component(AvatarAndName, "AvatarAndName").$$render(
 		$$result,
 		{
 			src: "https://placeimg.com/300/300/people",
@@ -1667,38 +1785,43 @@ const List = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 		{}
 	)}
 
-        ${validate_component(Rate, "Rate").$$render($$result, {}, {}, {})}
+                ${validate_component(Rate, "Rate").$$render($$result, {}, {}, {})}
+            </section>
+        </div>
+
+        <br>
+        <br>
+
+        <section>
+            ${validate_component(TitleSubTitle, "TitleSubTitle").$$render($$result, {}, {}, {})}
+        </section>
     </section>
 
     <br>
     <br>
+    <br>
 
-    ${validate_component(TitleSubTitle, "TitleSubTitle").$$render($$result, {}, {}, {})}
-</section>
+    <div class="${"container"}">
+        ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
+    </div>
 
-<br>
-<br>
-<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-<div class="${"container"}">
-    ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
-</div>
+    <div class="${"container"}">
+        ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
+    </div>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-<div class="${"container"}">
-    ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
-</div>
-
-<br>
-<br>
-<br>
-<br>
-<br>`;
+</main>`;
 });
 
 /* src/routes/_icons.svelte generated by Svelte v3.16.7 */
