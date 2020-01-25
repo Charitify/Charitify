@@ -1,8 +1,7 @@
 <script>
     import { Swipe, SwipeItem } from '../plugins'
-    import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup } from '../layouts'
+    import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup, CharityCards } from '../layouts'
     import { Rate, Progress } from '../components'
-    import { send, receive } from '../shared'
 </script>
 
 <svelte:head>
@@ -34,40 +33,56 @@
     }
 </style>
 
-<main class="page">
-    <section class="container">
+<section class="container">
 
-        <section out:send="{{key: 'title'}}" in:receive="{{key: 'title'}}">
-            <br>
-            <TitleSubTitle/>
-            <br>
-        </section>
-
-        <div out:send="{{key: 'pictures'}}" in:receive="{{key: 'pictures'}}">
-            <section class="top">
-                <div class="pics-wrap">
-                    <Carousel/>
-                </div>
-
-                <DonatingGroup/>
-            </section>
-
-            <Progress value="65" size="big"/>
-
-            <section class="rate-section">
-                <AvatarAndName
-                        src="https://placeimg.com/300/300/people"
-                        title="Tina Kandelaki"
-                        subTitle="ORG charity charitify"
-                />
-
-                <Rate/>
-            </section>
-        </div>
+    <section>
+        <br>
+        <TitleSubTitle/>
+        <br>
     </section>
 
-    <br>
-    <br>
-    <br>
+    <section class="top">
+        <div class="pics-wrap">
+            <Carousel/>
+        </div>
 
-</main>
+        <DonatingGroup/>
+    </section>
+
+    <Progress value="65" size="big"/>
+
+    <section class="rate-section">
+        <AvatarAndName
+                src="https://placeimg.com/300/300/people"
+                title="Tina Kandelaki"
+                subtitle="ORG charity charitify"
+        />
+
+        <Rate/>
+    </section>
+</section>
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <CharityCards/>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container">
+    <CharityCards/>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+

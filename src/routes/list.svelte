@@ -1,100 +1,32 @@
 <script>
-    import { Swipe, SwipeItem } from '../plugins'
-    import {
-        Carousel,
-        CharityCards,
-        TitleSubTitle,
-        AvatarAndName,
-        DonatingGroup,
-    } from '../layouts'
-    import { Rate, Divider, Progress } from '../components'
-    import { send, receive } from '../shared'
+    import { SearchLine, ListItems } from '../layouts'
 </script>
-
-<style>
-    .top {
-        display: flex;
-        margin-bottom: calc(var(--screen-padding) * 1.5);
-        margin-top: var(--screen-padding);
-    }
-
-    .pics-wrap {
-        z-index: 0;
-        flex-grow: 1;
-        display: flex;
-        overflow: hidden;
-        margin-bottom: 2px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-primary);
-    }
-
-    .rate-section {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        padding: calc(var(--screen-padding) * 1.5) 0;
-    }
-</style>
 
 <svelte:head>
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-<main class="page">
-    <section class="container">
 
-        <div out:send="{{key: 'pictures'}}" in:receive="{{key: 'pictures'}}">
-            <section class="top">
-                <div class="pics-wrap">
-                    <Carousel/>
-                </div>
-
-                <DonatingGroup/>
-            </section>
-
-            <Progress value="65" size="big"></Progress>
-
-            <section class="rate-section">
-                <AvatarAndName
-                        src="https://placeimg.com/300/300/people"
-                        title="Tina Kandelaki"
-                        subtitle="ORG charity charitify"
-                />
-
-                <Rate/>
-            </section>
-        </div>
-
-        <br>
-        <br>
-
-        <section out:send="{{key: 'title'}}" in:receive="{{key: 'title'}}">
-            <TitleSubTitle/>
-        </section>
-    </section>
+<div class="container">
 
     <br>
-    <br>
-    <br>
 
-    <div class="container">
-        <CharityCards/>
+    <div class="search">
+        <SearchLine/>
     </div>
 
     <br>
-    <br>
-    <br>
-    <br>
-    <br>
 
-    <div class="container">
-        <CharityCards/>
-    </div>
+    <ListItems amount="20"/>
 
     <br>
     <br>
-    <br>
-    <br>
-    <br>
 
-</main>
+</div>
+
+<style>
+    .search {
+        position: sticky;
+        top: 62px;
+    }
+</style>
