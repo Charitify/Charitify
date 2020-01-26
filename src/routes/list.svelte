@@ -7,26 +7,27 @@
 </svelte:head>
 
 
-<div class="container">
-
+<div class="search theme-bg container">
     <br>
 
-    <div class="search">
-        <SearchLine/>
-    </div>
+    <SearchLine/>
 
+    <br>
+</div>
+
+<div class="container">
     <br>
 
     <ListItems amount="20"/>
 
     <br>
     <br>
-
 </div>
 
 <style>
     .search {
         position: sticky;
-        top: 62px;
+        top: 47px;
+        box-shadow: var(--shadow-primary);
     }
 </style>

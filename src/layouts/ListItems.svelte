@@ -21,8 +21,8 @@
 
 <style>
     .item {
+        box-shadow: var(--shadow-primary);
         border-radius: var(--border-radius);
-        box-shadow: inset var(--shadow-primary);
         background-color: rgba(var(--theme-bg-color));
     }
 </style>
