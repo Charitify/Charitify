@@ -1726,7 +1726,7 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 
 const css$p = {
 	code: "section.svelte-1tw6as9{flex-grow:1}",
-	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script>\\n    import { onMount } from 'svelte'\\n\\n    onMount(async () => {\\n        const { default: mapboxgl } = await import('mapbox-gl')\\n\\n        const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n\\n        mapboxgl.accessToken = token\\n\\n        const map = new mapboxgl.Map({\\n            container: 'map',\\n            style: 'mapbox://styles/mapbox/streets-v11',\\n        })\\n\\n        for (let i = 0; i < 100; i += 1) {\\n            const lat = Math.random() * 180 - 90\\n            const lng = Math.random() * 360 - 180\\n\\n            new mapboxgl.Marker()\\n                    .setLngLat([lng, lat])\\n                    .addTo(map)\\n        }\\n    })\\n</script>\\n\\n<section id=\\\"map\\\"></section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script>\\n    import { onMount } from 'svelte'\\n\\n    onMount(async () => {\\n        const { default: mapboxgl } = await import('mapbox-gl')\\n\\n        const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n\\n        mapboxgl.accessToken = token\\n\\n        const map = new mapboxgl.Map({\\n            container: 'map',\\n            style: 'mapbox://styles/mapbox/streets-v11',\\n        })\\n\\n        for (let i = 0; i < 100; i += 1) {\\n            const lng = Math.random() * 360 - 180\\n            const lat = Math.random() * 180 - 90\\n\\n            new mapboxgl.Marker()\\n                    .setLngLat([lng, lat])\\n                    .addTo(map)\\n        }\\n    })\\n</script>\\n\\n<section id=\\\"map\\\"></section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
 };
 
 const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1741,8 +1741,8 @@ const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 			});
 
 		for (let i = 0; i < 100; i += 1) {
-			const lat = Math.random() * 180 - 90;
 			const lng = Math.random() * 360 - 180;
+			const lat = Math.random() * 180 - 90;
 			new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
 		}
 	});

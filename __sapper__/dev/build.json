@@ -2,7 +2,7 @@
   "bundler": "rollup",
   "shimport": "1.0.1",
   "assets": {
-    "main": "client.96ff9835.js"
+    "main": "client.72ae67c6.js"
   },
   "css": {
     "main": "main.2467886637.css",
@@ -26,7 +26,7 @@
         "index.a58f4d53.css"
       ],
       "map.svelte": [
-        "map.316ab8d4.css"
+        "map.e073a7ec.css"
       ]
     }
   }
