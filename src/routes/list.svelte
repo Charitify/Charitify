@@ -1,5 +1,5 @@
 <script>
-    import { SearchLine, ListItems } from '../layouts'
+    import { SearchLine, ListItems, Footer } from '../layouts'
 </script>
 
 <svelte:head>
@@ -23,6 +23,8 @@
     <br>
     <br>
 </div>
+
+<Footer/>
 
 <style>
     .search {

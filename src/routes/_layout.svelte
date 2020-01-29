@@ -1,5 +1,5 @@
 <script>
-	import { NavigationBar, Footer } from '../layouts';
+	import { Header } from '../layouts';
 	import Icons from './_icons.svelte';
 
 	export let segment;
@@ -9,7 +9,7 @@
 
 </style>
 
-<NavigationBar {segment}/>
+<Header {segment}/>
 
 <Icons/>
 
@@ -17,4 +17,3 @@
 	<slot></slot>
 </main>
 
-<Footer/>

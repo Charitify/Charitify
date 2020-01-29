@@ -1,5 +1,6 @@
 <script>
     import {
+        Footer,
         Comment,
         Carousel,
         CharityCards,
@@ -120,3 +121,5 @@
 <br>
 <br>
 <br>
+
+<Footer/>
