@@ -2,25 +2,6 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-function _interopNamespace(e) {
-	if (e && e.__esModule) { return e; } else {
-		var n = {};
-		if (e) {
-			Object.keys(e).forEach(function (k) {
-				var d = Object.getOwnPropertyDescriptor(e, k);
-				Object.defineProperty(n, k, d.get ? d : {
-					enumerable: true,
-					get: function () {
-						return e[k];
-					}
-				});
-			});
-		}
-		n['default'] = e;
-		return n;
-	}
-}
-
 var sirv = _interopDefault(require('sirv'));
 var polka = _interopDefault(require('polka'));
 var compression = _interopDefault(require('compression'));
@@ -1726,42 +1707,11 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 
 const css$p = {
 	code: "section.svelte-1tw6as9{flex-grow:1}",
-	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script type=\\\"module\\\">\\n    import { onMount } from 'svelte'\\n\\n    let map\\n    let container\\n\\n    // See example: https://github.com/ccd-adc-dev/sapper-mapbox/tree/master/src/components/map\\n\\n    onMount(async () => {\\n        const { default: mapboxgl } = await import('mapbox-gl')\\n\\n        const link = document.createElement('link');\\n        link.rel = 'stylesheet';\\n        link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css';\\n\\n        const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n\\n        mapboxgl.accessToken = token\\n\\n        link.onload = () => {\\n            map = new mapboxgl.Map({\\n                container,\\n                style: 'mapbox://styles/mapbox/streets-v11',\\n            })\\n\\n            for (let i = 0; i < 100; i += 1) {\\n                const lng = Math.random() * 360 - 180\\n                const lat = Math.random() * 180 - 90\\n\\n                new mapboxgl.Marker()\\n                        .setLngLat([lng, lat])\\n                        .addTo(map)\\n            }\\n        }\\n\\n        document.head.appendChild(link);\\n\\n        return () => {\\n            map.remove();\\n            link.parentNode.removeChild(link);\\n        };\\n    })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script type=\\\"module\\\">\\n    // import { onMount } from 'svelte'\\n\\n    let map\\n    let container\\n\\n    // See example: https://github.com/ccd-adc-dev/sapper-mapbox/tree/master/src/components/map\\n\\n    // onMount(async () => {\\n    //     const { default: mapboxgl } = await import('mapbox-gl')\\n    //\\n    //     const link = document.createElement('link');\\n    //     link.rel = 'stylesheet';\\n    //     link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css';\\n    //\\n    //     const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n    //\\n    //     mapboxgl.accessToken = token\\n    //\\n    //     link.onload = () => {\\n    //         map = new mapboxgl.Map({\\n    //             container,\\n    //             style: 'mapbox://styles/mapbox/streets-v11',\\n    //         })\\n    //\\n    //         for (let i = 0; i < 100; i += 1) {\\n    //             const lng = Math.random() * 360 - 180\\n    //             const lat = Math.random() * 180 - 90\\n    //\\n    //             new mapboxgl.Marker()\\n    //                     .setLngLat([lng, lat])\\n    //                     .addTo(map)\\n    //         }\\n    //     }\\n    //\\n    //     document.head.appendChild(link);\\n    //\\n    //     return () => {\\n    //         map.remove();\\n    //         link.parentNode.removeChild(link);\\n    //     };\\n    // })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
 };
 
 const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let map;
 	let container;
-
-	onMount(async () => {
-		const { default: mapboxgl } = await new Promise(function (resolve) { resolve(_interopNamespace(require('mapbox-gl'))); });
-		const link = document.createElement("link");
-		link.rel = "stylesheet";
-		link.href = "https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css";
-		const token = "pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw";
-		mapboxgl.accessToken = token;
-
-		link.onload = () => {
-			map = new mapboxgl.Map({
-					container,
-					style: "mapbox://styles/mapbox/streets-v11"
-				});
-
-			for (let i = 0; i < 100; i += 1) {
-				const lng = Math.random() * 360 - 180;
-				const lat = Math.random() * 180 - 90;
-				new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-			}
-		};
-
-		document.head.appendChild(link);
-
-		return () => {
-			map.remove();
-			link.parentNode.removeChild(link);
-		};
-	});
-
 	$$result.css.add(css$p);
 
 	return `${($$result.head += `<title>Charitify - Map of organizations.</title>`, "")}
@@ -1771,9 +1721,7 @@ const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 
 <section class="${"svelte-1tw6as9"}"${add_attribute("this", container, 1)}>
-    ${map
-	? `${$$slots.default ? $$slots.default({}) : ``}`
-	: ``}
+    ${ ``}
 </section>`;
 });
 
