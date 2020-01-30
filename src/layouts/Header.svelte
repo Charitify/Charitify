@@ -20,7 +20,7 @@
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
         <li><a rel=prefetch href='list' class:selected='{segment === "list"}'>list</a></li>
         <li><a rel=prefetch href='charity' class:selected='{segment === "charity"}'>charity</a></li>
-        <li><a rel=prefetch href='map' class:selected='{segment === "map"}'>map</a></li>
+        <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
     </ul>
 
     <ul class="nav-actions">

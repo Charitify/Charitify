@@ -2,6 +2,25 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
+function _interopNamespace(e) {
+	if (e && e.__esModule) { return e; } else {
+		var n = {};
+		if (e) {
+			Object.keys(e).forEach(function (k) {
+				var d = Object.getOwnPropertyDescriptor(e, k);
+				Object.defineProperty(n, k, d.get ? d : {
+					enumerable: true,
+					get: function () {
+						return e[k];
+					}
+				});
+			});
+		}
+		n['default'] = e;
+		return n;
+	}
+}
+
 var sirv = _interopDefault(require('sirv'));
 var polka = _interopDefault(require('polka'));
 var compression = _interopDefault(require('compression'));
@@ -786,7 +805,7 @@ const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 const css$8 = {
 	code: "nav.svelte-iotsi1.svelte-iotsi1{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;box-shadow:var(--shadow-secondary);border-bottom:1px solid rgba(var(--color-danger), .1)}.selected.svelte-iotsi1.svelte-iotsi1{position:relative;display:inline-block}.selected.svelte-iotsi1.svelte-iotsi1::after{position:absolute;content:\"\";width:calc(100% - 1em);height:2px;background-color:rgb(var(--color-danger));display:block;bottom:-1px}a.svelte-iotsi1.svelte-iotsi1{padding:.8em 0.5em}.nav-actions.svelte-iotsi1.svelte-iotsi1{display:flex;align-items:center;margin:-3px}.nav-actions.svelte-iotsi1 li.svelte-iotsi1{padding:3px}.lang-select.svelte-iotsi1.svelte-iotsi1{padding:5px;background-color:transparent}.lang-select.svelte-iotsi1.svelte-iotsi1:hover,.lang-select.svelte-iotsi1.svelte-iotsi1:focus{box-shadow:none;background-color:rgba(var(--color-black), 0.1)}",
-	map: "{\"version\":3,\"file\":\"Header.svelte\",\"sources\":[\"Header.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Icon, Button, Avatar } from '../components'\\n\\n    export let segment\\n\\n    let isDarkTheme = false\\n\\n    let value = 'ua'\\n\\n    function changeTheme() {\\n        isDarkTheme = !isDarkTheme\\n        document.body.classList.remove('theme-dark')\\n        document.body.classList.remove('theme-light')\\n        document.body.classList.add(isDarkTheme ? 'theme-dark' : 'theme-light')\\n    }\\n</script>\\n\\n<nav class=\\\"theme-bg container\\\">\\n    <ul>\\n        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>\\n        <li><a rel=prefetch href='list' class:selected='{segment === \\\"list\\\"}'>list</a></li>\\n        <li><a rel=prefetch href='charity' class:selected='{segment === \\\"charity\\\"}'>charity</a></li>\\n        <li><a rel=prefetch href='map' class:selected='{segment === \\\"map\\\"}'>map</a></li>\\n    </ul>\\n\\n    <ul class=\\\"nav-actions\\\">\\n        <li>\\n            <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n                <option value=\\\"ua\\\">Ua</option>\\n                <option value=\\\"ru\\\">Ru</option>\\n                <option value=\\\"en\\\">En</option>\\n            </select>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Icon type=\\\"moon\\\" class=\\\"theme-svg-fill\\\"/>\\n            </Button>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Avatar size=\\\"small\\\" src=\\\"https://placeimg.com/300/300/people\\\"/>\\n            </Button>\\n        </li>\\n    </ul>\\n</nav>\\n\\n<style>\\n    nav {\\n        position: sticky;\\n        top: 0;\\n        z-index: 10;\\n        display: flex;\\n        justify-content: space-between;\\n        box-shadow: var(--shadow-secondary);\\n        border-bottom: 1px solid rgba(var(--color-danger), .1);\\n    }\\n\\n    .selected {\\n        position: relative;\\n        display: inline-block;\\n    }\\n\\n    .selected::after {\\n        position: absolute;\\n        content: \\\"\\\";\\n        width: calc(100% - 1em);\\n        height: 2px;\\n        background-color: rgb(var(--color-danger));\\n        display: block;\\n        bottom: -1px;\\n    }\\n\\n    a {\\n        padding: .8em 0.5em;\\n    }\\n\\n    .nav-actions {\\n        display: flex;\\n        align-items: center;\\n        margin: -3px;\\n    }\\n\\n    .nav-actions li {\\n        padding: 3px;\\n    }\\n\\n    .lang-select {\\n        padding: 5px;\\n        background-color: transparent;\\n    }\\n\\n    .lang-select:hover,\\n    .lang-select:focus {\\n        box-shadow: none;\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAiDI,GAAG,4BAAC,CAAC,AACD,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,CAAC,CACN,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,UAAU,CAAE,IAAI,kBAAkB,CAAC,CACnC,aAAa,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,AAC1D,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACzB,CAAC,AAED,qCAAS,OAAO,AAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,CAAC,4BAAC,CAAC,AACC,OAAO,CAAE,IAAI,CAAC,KAAK,AACvB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,CACnB,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,0BAAY,CAAC,EAAE,cAAC,CAAC,AACb,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,AACjC,CAAC,AAED,wCAAY,MAAM,CAClB,wCAAY,MAAM,AAAC,CAAC,AAChB,UAAU,CAAE,IAAI,CAChB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Header.svelte\",\"sources\":[\"Header.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Icon, Button, Avatar } from '../components'\\n\\n    export let segment\\n\\n    let isDarkTheme = false\\n\\n    let value = 'ua'\\n\\n    function changeTheme() {\\n        isDarkTheme = !isDarkTheme\\n        document.body.classList.remove('theme-dark')\\n        document.body.classList.remove('theme-light')\\n        document.body.classList.add(isDarkTheme ? 'theme-dark' : 'theme-light')\\n    }\\n</script>\\n\\n<nav class=\\\"theme-bg container\\\">\\n    <ul>\\n        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>\\n        <li><a rel=prefetch href='list' class:selected='{segment === \\\"list\\\"}'>list</a></li>\\n        <li><a rel=prefetch href='charity' class:selected='{segment === \\\"charity\\\"}'>charity</a></li>\\n        <li><a href='map' class:selected='{segment === \\\"map\\\"}'>map</a></li>\\n    </ul>\\n\\n    <ul class=\\\"nav-actions\\\">\\n        <li>\\n            <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n                <option value=\\\"ua\\\">Ua</option>\\n                <option value=\\\"ru\\\">Ru</option>\\n                <option value=\\\"en\\\">En</option>\\n            </select>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Icon type=\\\"moon\\\" class=\\\"theme-svg-fill\\\"/>\\n            </Button>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Avatar size=\\\"small\\\" src=\\\"https://placeimg.com/300/300/people\\\"/>\\n            </Button>\\n        </li>\\n    </ul>\\n</nav>\\n\\n<style>\\n    nav {\\n        position: sticky;\\n        top: 0;\\n        z-index: 10;\\n        display: flex;\\n        justify-content: space-between;\\n        box-shadow: var(--shadow-secondary);\\n        border-bottom: 1px solid rgba(var(--color-danger), .1);\\n    }\\n\\n    .selected {\\n        position: relative;\\n        display: inline-block;\\n    }\\n\\n    .selected::after {\\n        position: absolute;\\n        content: \\\"\\\";\\n        width: calc(100% - 1em);\\n        height: 2px;\\n        background-color: rgb(var(--color-danger));\\n        display: block;\\n        bottom: -1px;\\n    }\\n\\n    a {\\n        padding: .8em 0.5em;\\n    }\\n\\n    .nav-actions {\\n        display: flex;\\n        align-items: center;\\n        margin: -3px;\\n    }\\n\\n    .nav-actions li {\\n        padding: 3px;\\n    }\\n\\n    .lang-select {\\n        padding: 5px;\\n        background-color: transparent;\\n    }\\n\\n    .lang-select:hover,\\n    .lang-select:focus {\\n        box-shadow: none;\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAiDI,GAAG,4BAAC,CAAC,AACD,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,CAAC,CACN,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,UAAU,CAAE,IAAI,kBAAkB,CAAC,CACnC,aAAa,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,AAC1D,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACzB,CAAC,AAED,qCAAS,OAAO,AAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,CAAC,4BAAC,CAAC,AACC,OAAO,CAAE,IAAI,CAAC,KAAK,AACvB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,CACnB,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,0BAAY,CAAC,EAAE,cAAC,CAAC,AACb,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,AACjC,CAAC,AAED,wCAAY,MAAM,CAClB,wCAAY,MAAM,AAAC,CAAC,AAChB,UAAU,CAAE,IAAI,CAChB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC\"}"
 };
 
 let value = "ua";
@@ -802,7 +821,7 @@ const Header = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
         <li><a rel="${"prefetch"}" href="${"."}" class="${["svelte-iotsi1", segment === undefined ? "selected" : ""].join(" ").trim()}">home</a></li>
         <li><a rel="${"prefetch"}" href="${"list"}" class="${["svelte-iotsi1", segment === "list" ? "selected" : ""].join(" ").trim()}">list</a></li>
         <li><a rel="${"prefetch"}" href="${"charity"}" class="${["svelte-iotsi1", segment === "charity" ? "selected" : ""].join(" ").trim()}">charity</a></li>
-        <li><a rel="${"prefetch"}" href="${"map"}" class="${["svelte-iotsi1", segment === "map" ? "selected" : ""].join(" ").trim()}">map</a></li>
+        <li><a href="${"map"}" class="${["svelte-iotsi1", segment === "map" ? "selected" : ""].join(" ").trim()}">map</a></li>
     </ul>
 
     <ul class="${"nav-actions svelte-iotsi1"}">
@@ -1707,11 +1726,42 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 
 const css$p = {
 	code: "section.svelte-1tw6as9{flex-grow:1}",
-	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script type=\\\"module\\\">\\n    // import { onMount } from 'svelte'\\n\\n    let map\\n    let container\\n\\n    // See example: https://github.com/ccd-adc-dev/sapper-mapbox/tree/master/src/components/map\\n\\n    // onMount(async () => {\\n    //     const { default: mapboxgl } = await import('mapbox-gl')\\n    //\\n    //     const link = document.createElement('link');\\n    //     link.rel = 'stylesheet';\\n    //     link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css';\\n    //\\n    //     const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n    //\\n    //     mapboxgl.accessToken = token\\n    //\\n    //     link.onload = () => {\\n    //         map = new mapboxgl.Map({\\n    //             container,\\n    //             style: 'mapbox://styles/mapbox/streets-v11',\\n    //         })\\n    //\\n    //         for (let i = 0; i < 100; i += 1) {\\n    //             const lng = Math.random() * 360 - 180\\n    //             const lat = Math.random() * 180 - 90\\n    //\\n    //             new mapboxgl.Marker()\\n    //                     .setLngLat([lng, lat])\\n    //                     .addTo(map)\\n    //         }\\n    //     }\\n    //\\n    //     document.head.appendChild(link);\\n    //\\n    //     return () => {\\n    //         map.remove();\\n    //         link.parentNode.removeChild(link);\\n    //     };\\n    // })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script>\\n    import { onMount } from 'svelte'\\n\\n    let map\\n    let container\\n\\n    // See example: https://github.com/ccd-adc-dev/sapper-mapbox/tree/master/src/components/map\\n\\n    onMount(async () => {\\n        const { default: mapboxgl } = await import('mapbox-gl')\\n\\n        const link = document.createElement('link');\\n        link.rel = 'stylesheet';\\n        link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css';\\n\\n        const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n\\n        mapboxgl.accessToken = token\\n\\n        link.onload = () => {\\n            map = new mapboxgl.Map({\\n                container,\\n                style: 'mapbox://styles/mapbox/streets-v11',\\n            })\\n\\n            for (let i = 0; i < 100; i += 1) {\\n                const lng = Math.random() * 360 - 180\\n                const lat = Math.random() * 180 - 90\\n\\n                new mapboxgl.Marker()\\n                        .setLngLat([lng, lat])\\n                        .addTo(map)\\n            }\\n        }\\n\\n        document.head.appendChild(link);\\n\\n        return () => {\\n            map.remove();\\n            link.parentNode.removeChild(link);\\n        };\\n    })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
 };
 
 const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let map;
 	let container;
+
+	onMount(async () => {
+		const { default: mapboxgl } = await new Promise(function (resolve) { resolve(_interopNamespace(require('mapbox-gl'))); });
+		const link = document.createElement("link");
+		link.rel = "stylesheet";
+		link.href = "https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css";
+		const token = "pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw";
+		mapboxgl.accessToken = token;
+
+		link.onload = () => {
+			map = new mapboxgl.Map({
+					container,
+					style: "mapbox://styles/mapbox/streets-v11"
+				});
+
+			for (let i = 0; i < 100; i += 1) {
+				const lng = Math.random() * 360 - 180;
+				const lat = Math.random() * 180 - 90;
+				new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+			}
+		};
+
+		document.head.appendChild(link);
+
+		return () => {
+			map.remove();
+			link.parentNode.removeChild(link);
+		};
+	});
+
 	$$result.css.add(css$p);
 
 	return `${($$result.head += `<title>Charitify - Map of organizations.</title>`, "")}
@@ -1721,7 +1771,9 @@ const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 
 <section class="${"svelte-1tw6as9"}"${add_attribute("this", container, 1)}>
-    ${ ``}
+    ${map
+	? `${$$slots.default ? $$slots.default({}) : ``}`
+	: ``}
 </section>`;
 });
 
