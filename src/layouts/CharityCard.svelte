@@ -13,7 +13,7 @@
 
 <section class="card">
     <div class="images-wrap">
-        <Carousel images={src}/>
+        <Carousel images={[src, src, src]}/>
     </div>
 
     <Progress value={percent} borderRadius="0 0"/>

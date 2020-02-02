@@ -1,5 +1,4 @@
 <script>
-    import { Swipe, SwipeItem } from '../plugins'
     import { Picture } from '../components'
 
     const cards = [
@@ -55,23 +54,36 @@
     $: imagesArr = [].concat(images).map(img => typeof img === 'string' ? { src: img } : img)
 </script>
 
-<section>
-    <Swipe>
-        {#each imagesArr as img}
-            <SwipeItem>
-                <Picture src={img.src} alt={img.alt}/>
-            </SwipeItem>
-        {/each}
-    </Swipe>
-</section>
+<ul aria-label="carousel">
+    {#each imagesArr as img}
+        <li>
+            <Picture src={img.src} alt={img.alt}/>
+        </li>
+    {/each}
+</ul>
 
 <style>
-    section {
-        z-index: 0;
-        flex-grow: 1;
-        overflow: hidden;
+    ul {
+        width: 100%;
+        display: flex;
+        align-self: stretch;
+        align-items: stretch;
+        justify-content: stretch;
+        overflow-y: hidden;
+        overflow-x: auto;
         margin-bottom: 2px;
         box-shadow: var(--shadow-primary);
         border-radius: var(--border-radius);
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+    }
+
+    li {
+        width: 100%;
+        flex: none;
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+        scroll-snap-align: center;
     }
 </style>

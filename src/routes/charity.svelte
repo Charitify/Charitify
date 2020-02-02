@@ -1,5 +1,4 @@
 <script>
-    import { Swipe, SwipeItem } from '../plugins'
     import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup, CharityCards, Footer } from '../layouts'
     import { Rate, Progress } from '../components'
 </script>
