@@ -1504,50 +1504,56 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 
 const css$n = {
 	code: "section.svelte-1tw6as9{flex-grow:1}",
-	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script>\\n    import { onMount, onDestroy } from 'svelte'\\n\\n    let map\\n    let container\\n    let scriptTag\\n    let link\\n\\n    // See example: https://github.com/ccd-adc-dev/sapper-mapbox/tree/master/src/components/map\\n\\n    onMount(async () => {\\n        // const { default: mapboxgl } = await import('mapbox-gl')\\n\\n        scriptTag = document.createElement('script')\\n        scriptTag.type = 'text/javascript'\\n        scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js'\\n\\n        link = document.createElement('link');\\n        link.rel = 'stylesheet';\\n        link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css';\\n\\n        scriptTag.onload = () => {\\n            const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n\\n            mapboxgl.accessToken = token\\n\\n            link.onload = () => {\\n                map = new mapboxgl.Map({\\n                    container,\\n                    style: 'mapbox://styles/mapbox/streets-v11',\\n                })\\n\\n                for (let i = 0; i < 100; i += 1) {\\n                    const lng = Math.random() * 360 - 180\\n                    const lat = Math.random() * 180 - 90\\n\\n                    new mapboxgl.Marker()\\n                            .setLngLat([lng, lat])\\n                            .addTo(map)\\n                }\\n            }\\n\\n            document.head.appendChild(link);\\n        }\\n\\n        document.body.appendChild(scriptTag);\\n    })\\n\\n    onDestroy(() => {\\n        map.remove();\\n        link.parentNode.removeChild(link);\\n        scriptTag.parentNode.removeChild(scriptTag);\\n    })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"map.svelte\",\"sources\":[\"map.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - Map of organizations.</title>\\n</svelte:head>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n    }\\n</style>\\n\\n<script>\\n    import { onMount, onDestroy } from 'svelte'\\n\\n    let map\\n    let container\\n\\n    function renderMap() {\\n        map = new mapboxgl.Map({\\n            container,\\n            style: 'mapbox://styles/mapbox/streets-v11',\\n        })\\n\\n        for (let i = 0; i < 50; i += 1) {\\n            const lng = Math.random() * 360 - 180\\n            const lat = Math.random() * 180 - 90\\n\\n            new mapboxgl.Marker()\\n                    .setLngLat([lng, lat])\\n                    .addTo(map)\\n        }\\n        return map\\n    }\\n\\n    function createMap() {\\n        const scriptTag = document.createElement('script')\\n        scriptTag.type = 'text/javascript'\\n        scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js'\\n\\n        const link = document.createElement('link')\\n        link.rel = 'stylesheet'\\n        link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css'\\n\\n        scriptTag.onload = () => {\\n            const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n            mapboxgl.accessToken = token\\n\\n            link.onload = () => renderMap()\\n\\n            document.head.appendChild(link)\\n        }\\n\\n        document.body.appendChild(scriptTag)\\n    }\\n\\n    onMount(() => {\\n        if ('mapboxgl' in window) {\\n            renderMap()\\n        } else {\\n            createMap()\\n        }\\n    })\\n\\n    onDestroy(() => {\\n        map && map.remove()\\n    })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAKI,OAAO,eAAC,CAAC,AACL,SAAS,CAAE,CAAC,AAChB,CAAC\"}"
 };
 
 const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let map;
 	let container;
-	let scriptTag;
-	let link;
 
-	onMount(async () => {
-		scriptTag = document.createElement("script");
+	function renderMap() {
+		map = new mapboxgl.Map({
+				container,
+				style: "mapbox://styles/mapbox/streets-v11"
+			});
+
+		for (let i = 0; i < 50; i += 1) {
+			const lng = Math.random() * 360 - 180;
+			const lat = Math.random() * 180 - 90;
+			new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+		}
+
+		return map;
+	}
+
+	function createMap() {
+		const scriptTag = document.createElement("script");
 		scriptTag.type = "text/javascript";
 		scriptTag.src = "https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js";
-		link = document.createElement("link");
+		const link = document.createElement("link");
 		link.rel = "stylesheet";
 		link.href = "https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css";
 
 		scriptTag.onload = () => {
 			const token = "pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw";
 			mapboxgl.accessToken = token;
-
-			link.onload = () => {
-				map = new mapboxgl.Map({
-						container,
-						style: "mapbox://styles/mapbox/streets-v11"
-					});
-
-				for (let i = 0; i < 100; i += 1) {
-					const lng = Math.random() * 360 - 180;
-					const lat = Math.random() * 180 - 90;
-					new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
-				}
-			};
-
+			link.onload = () => renderMap();
 			document.head.appendChild(link);
 		};
 
 		document.body.appendChild(scriptTag);
+	}
+
+	onMount(() => {
+		if ("mapboxgl" in window) {
+			renderMap();
+		} else {
+			createMap();
+		}
 	});
 
 	onDestroy(() => {
-		map.remove();
-		link.parentNode.removeChild(link);
-		scriptTag.parentNode.removeChild(scriptTag);
+		map && map.remove();
 	});
 
 	$$result.css.add(css$n);
