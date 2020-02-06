@@ -1,0 +1,38 @@
+{
+  "src": [
+    "https://placeimg.com/30/30/tech",
+    "https://placeimg.com/30/30/people",
+    "https://placeimg.com/30/30/any"
+  ],
+  "src2x": [
+    "https://placeimg.com/300/300/tech",
+    "https://placeimg.com/300/300/people",
+    "https://placeimg.com/300/300/any"
+  ],
+  "title": "Short-named org",
+  "description": "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
+  "trust_rate": 6.2,
+  "percent": 25,
+  "orgHead": "Tinaramisimuss el-de-la Kandelakinuskas",
+  "orgHeadSrc": "https://placeimg.com/30/30/people",
+  "organization": "ORG of charity",
+  "documents": [
+    "https://placeimg.com/300/300/tech",
+    "https://placeimg.com/300/300/people",
+    "https://placeimg.com/300/300/any"
+  ],
+  "photos": [
+    "https://placeimg.com/30/30/tech",
+    "https://placeimg.com/30/30/people",
+    "https://placeimg.com/30/30/any"
+  ],
+  "photos2x": [
+    "https://placeimg.com/300/300/tech",
+    "https://placeimg.com/300/300/people",
+    "https://placeimg.com/300/300/any"
+  ],
+  "location": {
+    "lat": 48.9226,
+    "lng": 24.7111
+  }
+}
