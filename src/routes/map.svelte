@@ -3,70 +3,33 @@
 </svelte:head>
 
 <style>
-    section {
-        flex-grow: 1;
-    }
 </style>
 
 <script>
-    import { onMount, onDestroy } from 'svelte'
+    import { api } from '../services'
+    import { Map, MapMarker } from '../layouts'
 
-    let map
-    let container
+    let organizations = []
 
-    function renderMap() {
-        map = new mapboxgl.Map({
-            container,
-            style: 'mapbox://styles/mapbox/streets-v11',
-        })
+    async function onCreate({ detail: map }) {
+        await new Promise(r => setTimeout(r, 2000))
+        organizations = await api.getOrganizations()
 
-        for (let i = 0; i < 50; i += 1) {
-            const lng = Math.random() * 360 - 180
-            const lat = Math.random() * 180 - 90
+        console.log(organizations)
 
-            new mapboxgl.Marker()
-                    .setLngLat([lng, lat])
-                    .addTo(map)
-        }
-        return map
+        const getRange = (type, metric) => Math[type](...organizations.map(o => o.location[metric]))
+
+        const scale = -2
+        const area = [
+            [getRange('min', 'lng') + scale, getRange('min', 'lat') + scale],
+            [getRange('max', 'lng') - scale, getRange('max', 'lat') - scale]
+        ]
+        map.fitBounds(area);
     }
-
-    function createMap() {
-        const scriptTag = document.createElement('script')
-        scriptTag.type = 'text/javascript'
-        scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js'
-
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css'
-
-        scriptTag.onload = () => {
-            const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'
-            mapboxgl.accessToken = token
-
-            link.onload = () => renderMap()
-
-            document.head.appendChild(link)
-        }
-
-        document.body.appendChild(scriptTag)
-    }
-
-    onMount(() => {
-        if ('mapboxgl' in window) {
-            renderMap()
-        } else {
-            createMap()
-        }
-    })
-
-    onDestroy(() => {
-        map && map.remove()
-    })
 </script>
 
-<section bind:this={container}>
-    {#if map}
-        <slot></slot>
-    {/if}
-</section>
+<Map on:ready={onCreate}>
+    {#each organizations as o}
+        <MapMarker lat={o.location.lat} lng={o.location.lng}/>
+    {/each}
+</Map>

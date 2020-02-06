@@ -1,0 +1,3 @@
+const contextMapbox = {}
+
+export { contextMapbox }

@@ -22,6 +22,7 @@
         display: flex;
         align-self: stretch;
         align-items: center;
+        overflow: hidden;
     }
 
     span {
@@ -31,7 +32,7 @@
 
     span h4,
     span sub {
-        line-height: 1;
+        line-height: 1.4;
         max-width: 100%;
         overflow: hidden;
         white-space: nowrap;

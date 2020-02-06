@@ -1,6 +1,17 @@
 <script>
+    import { onMount } from 'svelte'
+    import { api } from '../services'
     import { TitleSubTitle, AvatarAndName, DonatingGroup, CharityCards, Footer } from '../layouts'
     import { Rate, Progress, Carousel } from '../components'
+
+    let charity = {}
+
+    $: carousel = (charity.src || []).map(src => ({ src }))
+
+    onMount(async () => {
+        await new Promise(r => setTimeout(r, 2000))
+        charity = await api.getCharity(1)
+    })
 </script>
 
 <svelte:head>
@@ -36,13 +47,16 @@
 
     <section>
         <br>
-        <TitleSubTitle/>
+        <TitleSubTitle
+            title={charity.title}
+            subtitle={charity.description}
+        />
         <br>
     </section>
 
     <section class="top">
         <div class="pics-wrap">
-            <Carousel/>
+            <Carousel items={carousel}/>
         </div>
 
         <DonatingGroup/>
@@ -52,9 +66,9 @@
 
     <section class="rate-section">
         <AvatarAndName
-                src="https://placeimg.com/300/300/people"
-                title="Tina Kandelaki"
-                subtitle="ORG charity charitify"
+                src={charity.orgHeadSrc}
+                title={charity.orgHead}
+                subtitle={charity.organization}
         />
 
         <Rate/>

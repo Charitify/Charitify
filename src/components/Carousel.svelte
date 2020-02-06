@@ -50,8 +50,6 @@
      * }[]}
      */
     export let items = imagesDefault
-
-    $: arrIfAmount = Number.isFinite(+items) ? imagesDefault.slice(0, +items - 1) : items
 </script>
 
 <ul aria-label="carousel">

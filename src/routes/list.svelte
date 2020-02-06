@@ -1,11 +1,20 @@
-<script>
-    import { SearchLine, ListItems, Footer } from '../layouts'
-</script>
-
 <svelte:head>
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
+<script>
+    import { onMount } from 'svelte'
+    import { api } from '../services'
+    import { SearchLine, ListItems, Footer } from '../layouts'
+
+    let organizations = []
+
+    onMount(async () => {
+        await new Promise(r => setTimeout(r, 2000))
+        const orgs = await api.getOrganizations()
+        organizations = new Array(5).fill(orgs).reduce((a, o) => a.concat(...o), [])
+    })
+</script>
 
 <div class="search theme-bg container">
     <br>
@@ -15,10 +24,10 @@
     <br>
 </div>
 
-<div class="container">
+<div class="list-wrap">
     <br>
 
-    <ListItems amount="20"/>
+    <ListItems items={organizations}/>
 
     <br>
     <br>
@@ -31,5 +40,10 @@
         position: sticky;
         top: 47px;
         box-shadow: var(--shadow-primary);
+    }
+
+    .list-wrap {
+        flex: 1 1 auto;
+        padding: 0 var(--screen-padding)
     }
 </style>
