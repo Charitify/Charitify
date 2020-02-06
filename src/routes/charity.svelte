@@ -1,6 +1,6 @@
 <script>
-    import { TitleSubTitle, AvatarAndName, Carousel, DonatingGroup, CharityCards, Footer } from '../layouts'
-    import { Rate, Progress } from '../components'
+    import { TitleSubTitle, AvatarAndName, DonatingGroup, CharityCards, Footer } from '../layouts'
+    import { Rate, Progress, Carousel } from '../components'
 </script>
 
 <svelte:head>

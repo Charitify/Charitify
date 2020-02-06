@@ -2,14 +2,15 @@
     import {
         Footer,
         Comment,
-        Carousel,
         CharityCards,
         ContentHolder,
         TitleSubTitle,
+        ListOfFeatures,
     } from '../layouts'
     import {
         Divider,
         Progress,
+        Carousel,
     } from '../components'
 </script>
 
@@ -42,78 +43,111 @@
 <br>
 <br>
 <br>
-
-<TitleSubTitle/>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-
 <section class="container">
-    <ul style="display: flex; flex-wrap: wrap">
-        <li style="width: 50%">
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tina Kandelaki"
-                    subtitle="ORG charity charitify"
-            />
-            <br>
-        </li>
-        <li style="width: 50%">
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tina Kandelaki"
-                    subtitle="ORG charity charitify"
-            />
-            <br>
-        </li>
-        <li style="width: 50%">
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tina Kandelaki"
-                    subtitle="ORG charity charitify"
-            />
-            <br>
-        </li>
-        <li style="width: 50%">
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tina Kandelaki"
-                    subtitle="ORG charity charitify"
-            />
-            <br>
-        </li>
-    </ul>
-</section>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+    <TitleSubTitle
+            title="Charitify"
+            subtitle="Charity application for helping those in need"
+    />
 
-<section class="container">
-    <CharityCards amount="2"/>
-</section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+    <Carousel amount="2">
+        <CharityCards amount="2" listName="Nearest to you:"/>
+    </Carousel>
 
-<ContentHolder/>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+    <ContentHolder/>
 
-<section class="container">
-    <CharityCards amount="2"/>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <Divider size="16"/>
+    <h3 class="h2 text-right">Comments:</h3>
+    <Divider size="20"/>
+
+    <Carousel amount="4">
+        <ul style="display: flex; flex-wrap: wrap; overflow: hidden">
+            <li style="width: 50%">
+                <Comment
+                        src="https://placeimg.com/300/300/people"
+                        title="Tina Kandelaki"
+                        subtitle="ORG charity charitify"
+                >
+                    <pre>
+                        I really hate this things.
+                        It looks awful. Will never ever enter here.
+                    </pre>
+                </Comment>
+                <br>
+            </li>
+            <li style="width: 50%">
+                <Comment
+                        src="https://placeimg.com/300/300/people"
+                        title="Tinaramisimuss el-de-la Kandelakinuskas"
+                        subtitle="ORG charity charitify"
+                >
+                    <pre>
+                         👍
+                    </pre>
+                </Comment>
+                <br>
+            </li>
+            <li style="width: 50%">
+                <Comment
+                        src="https://placeimg.com/300/300/people"
+                        title="Tina Kandelaki"
+                        subtitle="ORG charity charitify"
+                >
+                    <pre>
+                        Like
+                    </pre>
+                </Comment>
+                <br>
+            </li>
+            <li style="width: 50%">
+                <Comment
+                        src="https://placeimg.com/300/300/people"
+                        title="Tina Kandelaki"
+                        subtitle="Head of the organization with loooooooong-naaaaaamed charity"
+                >
+                     <pre>
+                         Don't listen him, hi's wrong. I think this is a good idea and we should continue.
+                         Anyway, I wish you lusk.
+                    </pre>
+                </Comment>
+                <br>
+            </li>
+        </ul>
+    </Carousel>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <ContentHolder/>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <ListOfFeatures/>
 </section>
 
 <br>

@@ -292,32 +292,32 @@ body {
     justify-content: stretch;
 }
 
-h1 {
+h1, .h1 {
     font-size: 2em;
     line-height: calc(var(--font-line-height) * 1.5);
 }
 
-h2 {
+h2, .h2 {
     font-size: 1.5em;
     line-height: calc(var(--font-line-height) * 1.3);
 }
 
-h3 {
+h3, .h3 {
     font-size: 1.2em;
     line-height: calc(var(--font-line-height) * 1.2);
 }
 
-h4 {
+h4, .h4, p, .p {
     font-size: 1em;
     line-height: calc(var(--font-line-height) * 1.2);
 }
 
-h5 {
+h5, .h5 {
     font-size: .825em;
     line-height: calc(var(--font-line-height) * 1.2);
 }
 
-h6 {
+h6, .h6 {
     font-size: .675em;
     line-height: calc(var(--font-line-height) * 1.2);
 }
@@ -444,6 +444,19 @@ button:not([class]):focus {
 .text-center {
     text-align: center;
 }
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
 
 /* ----------=========( Text color )=========----------- */
 .text-success {

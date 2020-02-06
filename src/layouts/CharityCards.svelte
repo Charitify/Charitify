@@ -2,40 +2,41 @@
     import { Divider } from '../components'
     import CharityCard from '../layouts/CharityCard.svelte'
 
+    export let listName
     export let amount = 2
 
     $: cards = [
         {
             src: 'https://placeimg.com/300/300/tech',
-            title: 'The main title and short description.',
+            title: 'This person needs your help',
             percent: 45,
             orgHead: 'Tina Kandelaki',
             orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
+            organization: 'Head of the organization with loooooooong-naaaaaamed charity',
         },
         {
             src: 'https://placeimg.com/300/300/arch',
-            title: 'Second bigger major card title line with a bit longer description.',
+            title: 'Another person who needs your quick help',
             percent: 65,
             orgHead: 'Tina Kandelaki',
             orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
+            organization: 'Head of another organization',
         },
         {
             src: 'https://placeimg.com/300/300/any',
-            title: 'The main title and short description.',
+            title: 'The person with the longest name is also wait for you',
             percent: 5,
-            orgHead: 'Tinaramisimuss Kandelakinuskas',
+            orgHead: 'Tinaramisimuss el-de-la Kandelakinuskas',
             orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
+            organization: 'ORG of charity',
         },
         {
             src: 'https://placeimg.com/300/300/nature',
-            title: 'The main title and short description.',
+            title: 'Needs',
             percent: 95,
             orgHead: 'Tina Kandelaki',
             orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG giant charity organization of big Charitify company.',
+            organization: 'ORG giant charity organization of big Charitify company',
         },
     ].slice(Number.isFinite(+amount) ? +amount : 0)
 
@@ -45,19 +46,30 @@
     }))
 </script>
 
-<Divider size="16"/>
-<h2 style="text-align: right">The second list:</h2>
-<Divider size="20"/>
-<br>
-<ul class="cards">
-    {#each cards as card}
-        <li>
-            <CharityCard {...card}/>
-        </li>
-    {/each}
-</ul>
+<section>
+    {#if listName}
+        <Divider size="16"/>
+        <h3 class="h2 text-right">{listName}</h3>
+        <Divider size="20"/>
+        <br>
+    {/if}
+    <ul class="cards">
+        {#each cards as card}
+            <li>
+                <CharityCard {...card}/>
+            </li>
+        {/each}
+    </ul>
+</section>
 
 <style>
+    section {
+        flex-grow: 1;
+        align-self: stretch;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
     .cards {
         display: flex;
         flex-wrap: wrap;

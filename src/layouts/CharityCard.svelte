@@ -1,6 +1,5 @@
 <script>
-    import { Rate, Progress, Avatar } from '../components'
-    import Carousel from './Carousel.svelte'
+    import { Rate, Progress, Avatar, Carousel } from '../components'
     import AvatarAndName from './AvatarAndName.svelte'
 
     export let src = undefined
@@ -9,11 +8,16 @@
     export let orgHead = undefined
     export let orgHeadSrc = undefined
     export let organization = undefined
+
+    $: images = new Array(4).fill({
+        src,
+        alt: title,
+    })
 </script>
 
 <section class="card">
     <div class="images-wrap">
-        <Carousel images={[src, src, src]}/>
+        <Carousel items={images}/>
     </div>
 
     <Progress value={percent} borderRadius="0 0"/>

@@ -17,10 +17,13 @@
 
         <br class="small">
 
-        <pre>A loooooooooooooooooong comment that has been
-            left by a very angry guy who complains upon
-            looooong comments.
-        </pre>
+        <slot>
+            <pre>
+                A loooooooooong comment that has been
+                left by a very angry guy who complains upon
+                looooong comments.
+            </pre>
+        </slot>
     </div>
 </section>
 
@@ -36,6 +39,7 @@
     div {
         display: flex;
         flex-direction: column;
+        overflow: hidden;
     }
 
     span {
@@ -46,6 +50,7 @@
 
     span h4,
     span sub {
+        display: inline-block;
         line-height: 1;
         max-width: 100%;
         overflow: hidden;
