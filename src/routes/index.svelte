@@ -125,7 +125,7 @@
                 >
                      <pre>
                          Don't listen him, hi's wrong. I think this is a good idea and we should continue.
-                         Anyway, I wish you lusk.
+                         Anyway, I wish you luck.
                     </pre>
                 </Comment>
                 <br>
