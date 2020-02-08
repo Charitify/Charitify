@@ -2,35 +2,35 @@
   "bundler": "rollup",
   "shimport": "1.0.1",
   "assets": {
-    "main": "client.d112314e.js"
+    "main": "client.469b1406.js"
   },
   "css": {
     "main": "main.2244788068.css",
     "chunks": {
       "index.svelte": [
-        "index.a11983bd.css",
-        "client.d112314e.css"
+        "index.e6728e97.css",
+        "client.469b1406.css"
       ],
       "organization.svelte": [
-        "organization.72645573.css",
-        "client.d112314e.css"
+        "organization.5a6638b3.css",
+        "client.469b1406.css"
       ],
       "charity.svelte": [
-        "charity.5c4a5262.css",
-        "client.d112314e.css"
+        "charity.0b5d1df5.css",
+        "client.469b1406.css"
       ],
       "lists/_layout.svelte": [
-        "_layout.96b74e94.css",
-        "client.d112314e.css"
+        "_layout.b73dc5f8.css",
+        "client.469b1406.css"
       ],
       "lists/index.svelte": [
-        "client.d112314e.css"
+        "client.469b1406.css"
       ],
       "lists/organizations/index.svelte": [
-        "client.d112314e.css"
+        "client.469b1406.css"
       ],
       "map.svelte": [
-        "client.d112314e.css"
+        "client.469b1406.css"
       ]
     }
   }
