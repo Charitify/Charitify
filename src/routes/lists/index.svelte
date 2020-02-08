@@ -6,9 +6,9 @@
     let chariries = []
 
     onMount(async () => {
-        await new Promise(r => setTimeout(r, 2000))
+        await new Promise(r => setTimeout(r, 1000))
         const chars = await api.getCharities()
-        chariries = new Array(1).fill(chars).reduce((a, o) => a.concat(...o), [])
+        chariries = new Array(5).fill(chars).reduce((a, o) => a.concat(...o), [])
     })
 </script>
 
