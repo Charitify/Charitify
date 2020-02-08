@@ -2,7 +2,7 @@
 
 </script>
 
-Index - test
+Index
 
 <style>
 </style>
