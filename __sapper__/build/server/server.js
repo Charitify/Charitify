@@ -15,149 +15,6 @@ var Url = _interopDefault(require('url'));
 var https = _interopDefault(require('https'));
 var zlib = _interopDefault(require('zlib'));
 
-// Ordinarily, you'd generate this data from markdown files in your
-// repo, or fetch them from a database of some kind. But in order to
-// avoid unnecessary dependencies in the starter template, and in the
-// service of obviousness, we're just going to leave it here.
-
-// This file is called `_posts.js` rather than `posts.js`, because
-// we don't want to create an `/blog/posts` route — the leading
-// underscore tells Sapper not to do that.
-
-const posts = [
-	{
-		title: 'What is Sapper?',
-		slug: 'what-is-sapper',
-		html: `
-			<p>First, you have to know what <a href='https://svelte.dev'>Svelte</a> is. Svelte is a UI framework with a bold new idea: rather than providing a library that you write code with (like React or Vue, for example), it's a compiler that turns your components into highly optimized vanilla JavaScript. If you haven't already read the <a href='https://svelte.dev/blog/frameworks-without-the-framework'>introductory blog post</a>, you should!</p>
-
-			<p>Sapper is a Next.js-style framework (<a href='blog/how-is-sapper-different-from-next'>more on that here</a>) built around Svelte. It makes it embarrassingly easy to create extremely high performance web apps. Out of the box, you get:</p>
-
-			<ul>
-				<li>Code-splitting, dynamic imports and hot module replacement, powered by webpack</li>
-				<li>Server-side rendering (SSR) with client-side hydration</li>
-				<li>Service worker for offline support, and all the PWA bells and whistles</li>
-				<li>The nicest development experience you've ever had, or your money back</li>
-			</ul>
-
-			<p>It's implemented as Express middleware. Everything is set up and waiting for you to get started, but you keep complete control over the server, service worker, webpack config and everything else, so it's as flexible as you need it to be.</p>
-		`
-	},
-
-	{
-		title: 'How to use Sapper',
-		slug: 'how-to-use-sapper',
-		html: `
-			<h2>Step one</h2>
-			<p>Create a new project, using <a href='https://github.com/Rich-Harris/degit'>degit</a>:</p>
-
-			<pre><code>npx degit "sveltejs/sapper-template#rollup" my-app
-			cd my-app
-			npm install # or yarn!
-			npm run dev
-			</code></pre>
-
-			<h2>Step two</h2>
-			<p>Go to <a href='http://localhost:3000'>localhost:3000</a>. Open <code>my-app</code> in your editor. Edit the files in the <code>src/routes</code> directory or add new ones.</p>
-
-			<h2>Step three</h2>
-			<p>...</p>
-
-			<h2>Step four</h2>
-			<p>Resist overdone joke formats.</p>
-		`
-	},
-
-	{
-		title: 'Why the name?',
-		slug: 'why-the-name',
-		html: `
-			<p>In war, the soldiers who build bridges, repair roads, clear minefields and conduct demolitions — all under combat conditions — are known as <em>sappers</em>.</p>
-
-			<p>For web developers, the stakes are generally lower than those for combat engineers. But we face our own hostile environment: underpowered devices, poor network connections, and the complexity inherent in front-end engineering. Sapper, which is short for <strong>S</strong>velte <strong>app</strong> mak<strong>er</strong>, is your courageous and dutiful ally.</p>
-		`
-	},
-
-	{
-		title: 'How is Sapper different from Next.js?',
-		slug: 'how-is-sapper-different-from-next',
-		html: `
-			<p><a href='https://github.com/zeit/next.js'>Next.js</a> is a React framework from <a href='https://zeit.co'>Zeit</a>, and is the inspiration for Sapper. There are a few notable differences, however:</p>
-
-			<ul>
-				<li>It's powered by <a href='https://svelte.dev'>Svelte</a> instead of React, so it's faster and your apps are smaller</li>
-				<li>Instead of route masking, we encode route parameters in filenames. For example, the page you're looking at right now is <code>src/routes/blog/[slug].html</code></li>
-				<li>As well as pages (Svelte components, which render on server or client), you can create <em>server routes</em> in your <code>routes</code> directory. These are just <code>.js</code> files that export functions corresponding to HTTP methods, and receive Express <code>request</code> and <code>response</code> objects as arguments. This makes it very easy to, for example, add a JSON API such as the one <a href='blog/how-is-sapper-different-from-next.json'>powering this very page</a></li>
-				<li>Links are just <code>&lt;a&gt;</code> elements, rather than framework-specific <code>&lt;Link&gt;</code> components. That means, for example, that <a href='blog/how-can-i-get-involved'>this link right here</a>, despite being inside a blob of HTML, works with the router as you'd expect.</li>
-			</ul>
-		`
-	},
-
-	{
-		title: 'How can I get involved?',
-		slug: 'how-can-i-get-involved',
-		html: `
-			<p>We're so glad you asked! Come on over to the <a href='https://github.com/sveltejs/svelte'>Svelte</a> and <a href='https://github.com/sveltejs/sapper'>Sapper</a> repos, and join us in the <a href='https://svelte.dev/chat'>Discord chatroom</a>. Everyone is welcome, especially you!</p>
-		`
-	}
-];
-
-posts.forEach(post => {
-	post.html = post.html.replace(/^\t{3}/gm, '');
-});
-
-const contents = JSON.stringify(posts.map(post => {
-	return {
-		title: post.title,
-		slug: post.slug
-	};
-}));
-
-function get(req, res) {
-	res.writeHead(200, {
-		'Content-Type': 'application/json'
-	});
-
-	res.end(contents);
-}
-
-var route_0 = /*#__PURE__*/Object.freeze({
-	__proto__: null,
-	get: get
-});
-
-const lookup = new Map();
-posts.forEach(post => {
-	lookup.set(post.slug, JSON.stringify(post));
-});
-
-function get$1(req, res, next) {
-	// the `slug` parameter is available because
-	// this file is called [slug].json.js
-	const { slug } = req.params;
-
-	if (lookup.has(slug)) {
-		res.writeHead(200, {
-			'Content-Type': 'application/json'
-		});
-
-		res.end(lookup.get(slug));
-	} else {
-		res.writeHead(404, {
-			'Content-Type': 'application/json'
-		});
-
-		res.end(JSON.stringify({
-			message: `Not found`
-		}));
-	}
-}
-
-var route_1 = /*#__PURE__*/Object.freeze({
-	__proto__: null,
-	get: get$1
-});
-
 function noop() { }
 function run(fn) {
     return fn();
@@ -634,7 +491,7 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
 	if ($$props.min === void 0 && $$bindings.min && min !== void 0) $$bindings.min(min);
 	if ($$props.max === void 0 && $$bindings.max && max !== void 0) $$bindings.max(max);
-	if ($$props.organizations === void 0 && $$bindings.organizations && list !== void 0) $$bindings.organizations(list);
+	if ($$props.list === void 0 && $$bindings.list && list !== void 0) $$bindings.list(list);
 	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
 	if ($$props.readonly === void 0 && $$bindings.readonly && readonly !== void 0) $$bindings.readonly(readonly);
 	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
@@ -944,7 +801,7 @@ const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 const css$a = {
 	code: "nav.svelte-iotsi1.svelte-iotsi1{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;box-shadow:var(--shadow-secondary);border-bottom:1px solid rgba(var(--color-danger), .1)}.selected.svelte-iotsi1.svelte-iotsi1{position:relative;display:inline-block}.selected.svelte-iotsi1.svelte-iotsi1::after{position:absolute;content:\"\";width:calc(100% - 1em);height:2px;background-color:rgb(var(--color-danger));display:block;bottom:-1px}a.svelte-iotsi1.svelte-iotsi1{padding:.8em 0.5em}.nav-actions.svelte-iotsi1.svelte-iotsi1{display:flex;align-items:center;margin:-3px}.nav-actions.svelte-iotsi1 li.svelte-iotsi1{padding:3px}.lang-select.svelte-iotsi1.svelte-iotsi1{padding:5px;background-color:transparent}.lang-select.svelte-iotsi1.svelte-iotsi1:hover,.lang-select.svelte-iotsi1.svelte-iotsi1:focus{box-shadow:none;background-color:rgba(var(--color-black), 0.1)}",
-	map: "{\"version\":3,\"file\":\"Header.svelte\",\"sources\":[\"Header.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Icon, Button, Avatar } from '../components'\\n\\n    export let segment\\n\\n    let isDarkTheme = false\\n\\n    let value = 'ua'\\n\\n    function changeTheme() {\\n        isDarkTheme = !isDarkTheme\\n        document.body.classList.remove('theme-dark')\\n        document.body.classList.remove('theme-light')\\n        document.body.classList.add(isDarkTheme ? 'theme-dark' : 'theme-light')\\n    }\\n</script>\\n\\n<nav class=\\\"theme-bg container\\\">\\n    <ul>\\n        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>\\n        <li><a rel=prefetch href='list' class:selected='{segment === \\\"list\\\"}'>list</a></li>\\n        <li><a rel=prefetch href='charity' class:selected='{segment === \\\"charity\\\"}'>charity</a></li>\\n        <li><a href='map' class:selected='{segment === \\\"map\\\"}'>map</a></li>\\n    </ul>\\n\\n    <ul class=\\\"nav-actions\\\">\\n        <li>\\n            <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n                <option value=\\\"ua\\\">Ua</option>\\n                <option value=\\\"ru\\\">Ru</option>\\n                <option value=\\\"en\\\">En</option>\\n            </select>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Icon type=\\\"moon\\\" class=\\\"theme-svg-fill\\\"/>\\n            </Button>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Avatar size=\\\"small\\\" src=\\\"https://placeimg.com/300/300/people\\\"/>\\n            </Button>\\n        </li>\\n    </ul>\\n</nav>\\n\\n<style>\\n    nav {\\n        position: sticky;\\n        top: 0;\\n        z-index: 10;\\n        display: flex;\\n        justify-content: space-between;\\n        box-shadow: var(--shadow-secondary);\\n        border-bottom: 1px solid rgba(var(--color-danger), .1);\\n    }\\n\\n    .selected {\\n        position: relative;\\n        display: inline-block;\\n    }\\n\\n    .selected::after {\\n        position: absolute;\\n        content: \\\"\\\";\\n        width: calc(100% - 1em);\\n        height: 2px;\\n        background-color: rgb(var(--color-danger));\\n        display: block;\\n        bottom: -1px;\\n    }\\n\\n    a {\\n        padding: .8em 0.5em;\\n    }\\n\\n    .nav-actions {\\n        display: flex;\\n        align-items: center;\\n        margin: -3px;\\n    }\\n\\n    .nav-actions li {\\n        padding: 3px;\\n    }\\n\\n    .lang-select {\\n        padding: 5px;\\n        background-color: transparent;\\n    }\\n\\n    .lang-select:hover,\\n    .lang-select:focus {\\n        box-shadow: none;\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAiDI,GAAG,4BAAC,CAAC,AACD,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,CAAC,CACN,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,UAAU,CAAE,IAAI,kBAAkB,CAAC,CACnC,aAAa,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,AAC1D,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACzB,CAAC,AAED,qCAAS,OAAO,AAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,CAAC,4BAAC,CAAC,AACC,OAAO,CAAE,IAAI,CAAC,KAAK,AACvB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,CACnB,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,0BAAY,CAAC,EAAE,cAAC,CAAC,AACb,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,AACjC,CAAC,AAED,wCAAY,MAAM,CAClB,wCAAY,MAAM,AAAC,CAAC,AAChB,UAAU,CAAE,IAAI,CAChB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Header.svelte\",\"sources\":[\"Header.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Icon, Button, Avatar } from '../components'\\n\\n    export let segment\\n\\n    let isDarkTheme = false\\n\\n    let value = 'ua'\\n\\n    function changeTheme() {\\n        isDarkTheme = !isDarkTheme\\n        document.body.classList.remove('theme-dark')\\n        document.body.classList.remove('theme-light')\\n        document.body.classList.add(isDarkTheme ? 'theme-dark' : 'theme-light')\\n    }\\n</script>\\n\\n<nav class=\\\"theme-bg container\\\">\\n    <ul>\\n        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>\\n        <li><a href='map' class:selected='{segment === \\\"map\\\"}'>map</a></li>\\n        <li><a rel=prefetch href='lists' class:selected='{segment === \\\"lists\\\"}'>lists</a></li>\\n        <li><a rel=prefetch href='charity' class:selected='{segment === \\\"charity\\\"}'>charity</a></li>\\n        <li><a rel=prefetch href='organization' class:selected='{segment === \\\"organization\\\"}'>organization</a></li>\\n    </ul>\\n\\n    <ul class=\\\"nav-actions\\\">\\n        <li>\\n            <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n                <option value=\\\"ua\\\">Ua</option>\\n                <option value=\\\"ru\\\">Ru</option>\\n                <option value=\\\"en\\\">En</option>\\n            </select>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Icon type=\\\"moon\\\" class=\\\"theme-svg-fill\\\"/>\\n            </Button>\\n        </li>\\n\\n        <li>\\n            <Button on:click={changeTheme} auto size=\\\"small\\\">\\n                <Avatar size=\\\"small\\\" src=\\\"https://placeimg.com/300/300/people\\\"/>\\n            </Button>\\n        </li>\\n    </ul>\\n</nav>\\n\\n<style>\\n    nav {\\n        position: sticky;\\n        top: 0;\\n        z-index: 10;\\n        display: flex;\\n        justify-content: space-between;\\n        box-shadow: var(--shadow-secondary);\\n        border-bottom: 1px solid rgba(var(--color-danger), .1);\\n    }\\n\\n    .selected {\\n        position: relative;\\n        display: inline-block;\\n    }\\n\\n    .selected::after {\\n        position: absolute;\\n        content: \\\"\\\";\\n        width: calc(100% - 1em);\\n        height: 2px;\\n        background-color: rgb(var(--color-danger));\\n        display: block;\\n        bottom: -1px;\\n    }\\n\\n    a {\\n        padding: .8em 0.5em;\\n    }\\n\\n    .nav-actions {\\n        display: flex;\\n        align-items: center;\\n        margin: -3px;\\n    }\\n\\n    .nav-actions li {\\n        padding: 3px;\\n    }\\n\\n    .lang-select {\\n        padding: 5px;\\n        background-color: transparent;\\n    }\\n\\n    .lang-select:hover,\\n    .lang-select:focus {\\n        box-shadow: none;\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAkDI,GAAG,4BAAC,CAAC,AACD,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,CAAC,CACN,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,UAAU,CAAE,IAAI,kBAAkB,CAAC,CACnC,aAAa,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,AAC1D,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACzB,CAAC,AAED,qCAAS,OAAO,AAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,CAAC,4BAAC,CAAC,AACC,OAAO,CAAE,IAAI,CAAC,KAAK,AACvB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,CACnB,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,0BAAY,CAAC,EAAE,cAAC,CAAC,AACb,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,AACjC,CAAC,AAED,wCAAY,MAAM,CAClB,wCAAY,MAAM,AAAC,CAAC,AAChB,UAAU,CAAE,IAAI,CAChB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC\"}"
 };
 
 let value = "ua";
@@ -958,9 +815,10 @@ const Header = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	return `<nav class="${"theme-bg container svelte-iotsi1"}">
     <ul>
         <li><a rel="${"prefetch"}" href="${"."}" class="${["svelte-iotsi1", segment === undefined ? "selected" : ""].join(" ").trim()}">home</a></li>
-        <li><a rel="${"prefetch"}" href="${"list"}" class="${["svelte-iotsi1", segment === "list" ? "selected" : ""].join(" ").trim()}">list</a></li>
-        <li><a rel="${"prefetch"}" href="${"charity"}" class="${["svelte-iotsi1", segment === "charity" ? "selected" : ""].join(" ").trim()}">charity</a></li>
         <li><a href="${"map"}" class="${["svelte-iotsi1", segment === "map" ? "selected" : ""].join(" ").trim()}">map</a></li>
+        <li><a rel="${"prefetch"}" href="${"lists"}" class="${["svelte-iotsi1", segment === "lists" ? "selected" : ""].join(" ").trim()}">lists</a></li>
+        <li><a rel="${"prefetch"}" href="${"charity"}" class="${["svelte-iotsi1", segment === "charity" ? "selected" : ""].join(" ").trim()}">charity</a></li>
+        <li><a rel="${"prefetch"}" href="${"organization"}" class="${["svelte-iotsi1", segment === "organization" ? "selected" : ""].join(" ").trim()}">organization</a></li>
     </ul>
 
     <ul class="${"nav-actions svelte-iotsi1"}">
@@ -1550,30 +1408,97 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
  * @description API URLs builders.
  */
 const endpoints = {
-  BASE_URL: './mock/',
+  RECENT_NEWS: () => `recent_news.json`,
 
-  CHARITY: (id) => `${endpoints.BASE_URL}charity.json?id=${id}`,
-  CHARITIES: () => `${endpoints.BASE_URL}charities.json`,
-  CHARITY_COMMENTS: (id) => `${endpoints.BASE_URL}charity_comments.json?id=${id}`,
+  CHARITY: (id) => `charity.json?id=${id}`,
+  CHARITIES: () => `charities.json`,
+  CHARITY_COMMENTS: (id) => `charity_comments.json?id=${id}`,
 
-  ORGANIZATION: (id) => `${endpoints.BASE_URL}organization.json?id=${id}`,
-  ORGANIZATIONS: () => `${endpoints.BASE_URL}organizations.json`,
-  ORGANIZATION_COMMENTS: (id) => `${endpoints.BASE_URL}organization_comments.json?id=${id}`,
-
-  RECENT_NEWS: () => `${endpoints.BASE_URL}recent_news.json`,
+  ORGANIZATION: (id) => `organization.json?id=${id}`,
+  ORGANIZATIONS: () => `organizations.json`,
+  ORGANIZATION_COMMENTS: (id) => `$organization/comments.json?id=${id}`,
 };
 
 class APIService {
-  constructor() {
-    this._localConfig = {};
-    this._adapter = zlFetch;
+  /**
+   *
+   * @typedef Config {{
+   *   adapter: Function, (zlFetch)
+   *
+   *   basePath: string,
+   *
+   *   requestInterceptor([
+   *     endpoint: string,
+   *     params?: object,
+   *     config?: object,
+   *   ]): {*},
+   *   responseInterceptor() {
+   *     body: {*},
+   *     headers: object,
+   *     response: {Response},
+   *     status: number,
+   *     statusText: string,
+   *   },
+   *   errorInterceptor() {{
+   *     body: {*},
+   *     headers: object,
+   *     response: {Response},
+   *     status: number,
+   *     statusText: string,
+   *   }},
+   * }}
+   * @param config {Config}
+   */
+  constructor(config = {}) {
+    this._adapter = config.adapter || zlFetch;
+
+    this._base_path = config.basePath ? `${config.basePath}/` : '';
+
+    this._requestInterceptor = config.requestInterceptor || (async (...args) => args);
+    this._responseInterceptor = config.responseInterceptor || (async (...args) => args);
+    this._errorInterceptor = config.errorInterceptor || Promise.reject;
   }
 
-  handleResponse(response) {
+  /**
+   *
+   * @param method {'get'|'put'|'post'|'delete'|'patch'}
+   * @param args {*[]}
+   */
+  async newRequest(method, ...args) {
+    return this.withInterceptors(this._adapter[method], ...args)
+  }
+
+  async withInterceptors(caller, ...args) {
+    const newArgs1 = await this.requestInterceptor(...args);
+    const newArgs2 = await this._requestInterceptor(...newArgs1);
+
+    return caller(...newArgs2)
+      .then(async (response) => {
+        const newResponse = await this._responseInterceptor(response);
+        return await this.handleResponse(newResponse)
+      })
+      .catch(async (reject) => {
+        try {
+          return await this._errorInterceptor(reject)
+        } catch (error) {
+          throw error
+        }
+      })
+      .catch(this.handleReject)
+  }
+
+  async requestInterceptor(...args) {
+    if (typeof args[0] === 'string') { // If URL then concat BASE_PATH.
+      args[0] = `${this._base_path}${args[0]}`;
+    }
+    return [...args]
+  }
+
+  async handleResponse(response) {
     return response.body
   }
 
-  handleReject(reject) {
+  async handleReject(reject) {
     throw reject
   }
 }
@@ -1582,70 +1507,86 @@ class APIService {
  *
  * @description API class for making REST API requests in a browser.
  */
-var api = new class extends APIService {
-  constructor() {
-    super();
+class ApiClass extends APIService {
+  /**
+   *
+   * @param config {Config}
+   */
+  constructor(config) {
+    super(config);
   }
 
+  /**
+   *
+   * @description Charity
+   */
   getCharity(id, params, config) {
-    return this._adapter.get(endpoints.CHARITY(id), params, { ...this._localConfig, ...config })
-      .then(this.handleResponse)
-      .catch(this.handleReject)
+    return this.newRequest('get', endpoints.CHARITY(id), params, config)
   }
+
   getCharities(params, config) {
-    return this._adapter.get(endpoints.CHARITIES(), params, { ...this._localConfig, ...config })
-      .then(this.handleResponse)
-      .catch(this.handleReject)
+    return this.newRequest('get', endpoints.CHARITIES(), params, config)
   }
+
   getCharityComments(id, params, config) {
-    return this._adapter.get(endpoints.CHARITY_COMMENTS(id), params, { ...this._localConfig, ...config })
-      .then(this.handleResponse)
-      .catch(this.handleReject)
+    return this.newRequest('get', endpoints.CHARITY_COMMENTS(id), params, config)
   }
 
+  /**
+   *
+   * @description Organization
+   */
   getOrganization(id, params, config) {
-    return this._adapter.get(endpoints.ORGANIZATION(id), params, { ...this._localConfig, ...config })
-      .then(this.handleResponse)
-      .catch(this.handleReject)
+    return this.newRequest('get', endpoints.ORGANIZATION(id), params, config)
   }
+
   getOrganizations(params, config) {
-    return this._adapter.get(endpoints.ORGANIZATIONS(), params, { ...this._localConfig, ...config })
-      .then(this.handleResponse)
-      .catch(this.handleReject)
+    return this.newRequest('get', endpoints.ORGANIZATIONS(), params, config)
   }
+
   getOrganizationComments(id, params, config) {
-    return this._adapter.get(endpoints.ORGANIZATION_COMMENTS(id), params, { ...this._localConfig, ...config })
-      .then(this.handleResponse)
-      .catch(this.handleReject)
+    return this.newRequest('get', endpoints.ORGANIZATION_COMMENTS(id), params, config)
   }
 
+  /**
+   *
+   * @description News
+   */
   getRecentNews(params, config) {
-    return this._adapter.get(endpoints.RECENT_NEWS(), params, { ...this._localConfig, ...config })
-      .then(this.handleResponse)
-      .catch(this.handleReject)
+    return this.newRequest('get', endpoints.RECENT_NEWS(), params, config)
   }
 
-};
+}
 
-/* src/routes/charity.svelte generated by Svelte v3.16.7 */
+/**
+ *
+ * @constructor {Config}
+ */
+var api = new ApiClass({
+  basePath: process.env.BACKEND_URL,
+  responseInterceptor: res => (console.info('response -------\n', res), res),
+  errorInterceptor: rej => (console.warn('request error -------\n', rej), Promise.reject(rej)),
+});
+
+/* src/routes/organization.svelte generated by Svelte v3.16.7 */
 
 const css$l = {
 	code: ".top.svelte-uz5elz{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.pics-wrap.svelte-uz5elz{z-index:0;flex-grow:1;display:flex;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.rate-section.svelte-uz5elz{display:flex;align-items:flex-end;justify-content:space-between;padding:12px 0}",
-	map: "{\"version\":3,\"file\":\"charity.svelte\",\"sources\":[\"charity.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import { TitleSubTitle, AvatarAndName, DonatingGroup, CharityCards, Footer } from '../layouts'\\n    import { Rate, Progress, Carousel } from '../components'\\n\\n    let charity = {}\\n\\n    $: carousel = (charity.src || []).map(src => ({ src }))\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        charity = await api.getCharity(1)\\n    })\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n    <section>\\n        <br>\\n        <TitleSubTitle\\n            title={charity.title}\\n            subtitle={charity.description}\\n        />\\n        <br>\\n    </section>\\n\\n    <section class=\\\"top\\\">\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel items={carousel}/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src={charity.orgHeadSrc}\\n                title={charity.orgHead}\\n                subtitle={charity.organization}\\n        />\\n\\n        <Rate/>\\n    </section>\\n</section>\\n\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\\n<Footer/>\\n\\n\"],\"names\":[],\"mappings\":\"AAqBI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"organization.svelte\",\"sources\":[\"organization.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import { TitleSubTitle, AvatarAndName, DonatingGroup, CharityCards, Footer } from '../layouts'\\n    import { Rate, Progress, Carousel } from '../components'\\n\\n    let organization = {}\\n\\n    $: carousel = (organization.src || []).map(src => ({ src }))\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        organization = await api.getOrganization(1)\\n    })\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Organization page.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n    <section>\\n        <br>\\n        <TitleSubTitle\\n            title={organization.title}\\n            subtitle={organization.description}\\n        />\\n        <br>\\n    </section>\\n\\n    <section class=\\\"top\\\">\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel items={carousel}/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src={organization.orgHeadSrc}\\n                title={organization.orgHead}\\n                subtitle={organization.title}\\n        />\\n\\n        <Rate/>\\n    </section>\\n</section>\\n\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\\n<Footer/>\\n\\n\"],\"names\":[],\"mappings\":\"AAqBI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
 };
 
-const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let charity = {};
+const Organization = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let organization = {};
 
 	onMount(async () => {
 		await new Promise(r => setTimeout(r, 2000));
-		charity = await api.getCharity(1);
+		organization = await api.getOrganization(1);
 	});
 
 	$$result.css.add(css$l);
-	let carousel = (charity.src || []).map(src => ({ src }));
+	let carousel = (organization.src || []).map(src => ({ src }));
 
-	return `${($$result.head += `<title>Charitify - Charity page and donate.</title>`, "")}
+	return `${($$result.head += `<title>Charitify - Organization page.</title>`, "")}
 
 
 
@@ -1656,8 +1597,8 @@ const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
         ${validate_component(TitleSubTitle, "TitleSubTitle").$$render(
 		$$result,
 		{
-			title: charity.title,
-			subtitle: charity.description
+			title: organization.title,
+			subtitle: organization.description
 		},
 		{},
 		{}
@@ -1679,9 +1620,9 @@ const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
         ${validate_component(AvatarAndName, "AvatarAndName").$$render(
 		$$result,
 		{
-			src: charity.orgHeadSrc,
-			title: charity.orgHead,
-			subtitle: charity.organization
+			src: organization.orgHeadSrc,
+			title: organization.orgHead,
+			subtitle: organization.title
 		},
 		{},
 		{}
@@ -1718,74 +1659,115 @@ const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 });
 
-/* src/routes/blog/index.svelte generated by Svelte v3.16.7 */
+/* src/routes/charity.svelte generated by Svelte v3.16.7 */
 
 const css$m = {
-	code: "ul.svelte-1frg2tf{margin:0 0 1em 0;line-height:1.5}",
-	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script context=\\\"module\\\">\\n\\texport function preload({ params, query }) {\\n\\t\\treturn this.fetch(`blog.json`).then(r => r.json()).then(posts => {\\n\\t\\t\\treturn { posts };\\n\\t\\t});\\n\\t}\\n</script>\\n\\n<script>\\n\\texport let posts;\\n</script>\\n\\n<style>\\n\\tul {\\n\\t\\tmargin: 0 0 1em 0;\\n\\t\\tline-height: 1.5;\\n\\t}\\n</style>\\n\\n<svelte:head>\\n\\t<title>Blog</title>\\n</svelte:head>\\n\\n<h1>Recent posts</h1>\\n\\n<ul>\\n\\t{#each posts as post}\\n\\t\\t<!-- we're using the non-standard `rel=prefetch` attribute to\\n\\t\\t\\t\\ttell Sapper to load the data for the page as soon as\\n\\t\\t\\t\\tthe user hovers over the link or taps it, instead of\\n\\t\\t\\t\\twaiting for the 'click' event -->\\n\\t\\t<li><a rel='prefetch' href='blog/{post.slug}'>{post.title}</a></li>\\n\\t{/each}\\n</ul>\"],\"names\":[],\"mappings\":\"AAaC,EAAE,eAAC,CAAC,AACH,MAAM,CAAE,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CACjB,WAAW,CAAE,GAAG,AACjB,CAAC\"}"
+	code: ".top.svelte-uz5elz{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.pics-wrap.svelte-uz5elz{z-index:0;flex-grow:1;display:flex;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.rate-section.svelte-uz5elz{display:flex;align-items:flex-end;justify-content:space-between;padding:12px 0}",
+	map: "{\"version\":3,\"file\":\"charity.svelte\",\"sources\":[\"charity.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import { TitleSubTitle, AvatarAndName, DonatingGroup, CharityCards, Footer } from '../layouts'\\n    import { Rate, Progress, Carousel } from '../components'\\n\\n    let charity = {}\\n\\n    $: carousel = (charity.src || []).map(src => ({ src }))\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        charity = await api.getCharity(1)\\n    })\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n    <section class=\\\"top\\\">\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel items={carousel}/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src={charity.orgHeadSrc}\\n                title={charity.orgHead}\\n                subtitle={charity.organization}\\n        />\\n\\n        <Rate/>\\n    </section>\\n\\n    <section>\\n        <br>\\n        <TitleSubTitle\\n                title={charity.title}\\n                subtitle={charity.description}\\n        />\\n        <br>\\n    </section>\\n\\n</section>\\n\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\\n<div class=\\\"container\\\">\\n    <CharityCards/>\\n</div>\\n\\n<br>\\n<br>\\n<br>\\n<br>\\n<br>\\n\\n<Footer/>\\n\\n\"],\"names\":[],\"mappings\":\"AAqBI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
 };
 
-function preload({ params, query }) {
-	return this.fetch(`blog.json`).then(r => r.json()).then(posts => {
-		return { posts };
+const Charity = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let charity = {};
+
+	onMount(async () => {
+		await new Promise(r => setTimeout(r, 2000));
+		charity = await api.getCharity(1);
 	});
-}
 
-const Blog = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { posts } = $$props;
-	if ($$props.posts === void 0 && $$bindings.posts && posts !== void 0) $$bindings.posts(posts);
 	$$result.css.add(css$m);
+	let carousel = (charity.src || []).map(src => ({ src }));
 
-	return `${($$result.head += `<title>Blog</title>`, "")}
+	return `${($$result.head += `<title>Charitify - Charity page and donate.</title>`, "")}
 
-<h1>Recent posts</h1>
 
-<ul class="${"svelte-1frg2tf"}">
-	${each(posts, post => `
-		<li><a rel="${"prefetch"}" href="${"blog/" + escape(post.slug)}">${escape(post.title)}</a></li>`)}
-</ul>`;
+
+<section class="${"container"}">
+
+    <section class="${"top svelte-uz5elz"}">
+        <div class="${"pics-wrap svelte-uz5elz"}">
+            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel }, {}, {})}
+        </div>
+
+        ${validate_component(DonatingGroup, "DonatingGroup").$$render($$result, {}, {}, {})}
+    </section>
+
+    ${validate_component(Progress, "Progress").$$render($$result, { value: "65", size: "big" }, {}, {})}
+
+    <section class="${"rate-section svelte-uz5elz"}">
+        ${validate_component(AvatarAndName, "AvatarAndName").$$render(
+		$$result,
+		{
+			src: charity.orgHeadSrc,
+			title: charity.orgHead,
+			subtitle: charity.organization
+		},
+		{},
+		{}
+	)}
+
+        ${validate_component(Rate, "Rate").$$render($$result, {}, {}, {})}
+    </section>
+
+    <section>
+        <br>
+        ${validate_component(TitleSubTitle, "TitleSubTitle").$$render(
+		$$result,
+		{
+			title: charity.title,
+			subtitle: charity.description
+		},
+		{},
+		{}
+	)}
+        <br>
+    </section>
+
+</section>
+
+<br>
+<br>
+<br>
+
+<div class="${"container"}">
+    ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="${"container"}">
+    ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 });
 
-/* src/routes/blog/[slug].svelte generated by Svelte v3.16.7 */
+/* src/routes/lists/index.svelte generated by Svelte v3.16.7 */
 
-const css$n = {
-	code: ".content.svelte-gnxal1 h2{font-size:1.4em;font-weight:500}.content.svelte-gnxal1 pre{background-color:#f9f9f9;box-shadow:inset 1px 1px 5px rgba(0,0,0,0.05);padding:0.5em;border-radius:2px;overflow-x:auto}.content.svelte-gnxal1 pre code{background-color:transparent;padding:0}.content.svelte-gnxal1 ul{line-height:1.5}.content.svelte-gnxal1 li{margin:0 0 0.5em 0}",
-	map: "{\"version\":3,\"file\":\"[slug].svelte\",\"sources\":[\"[slug].svelte\"],\"sourcesContent\":[\"<script context=\\\"module\\\">\\n\\texport async function preload({ params, query }) {\\n\\t\\t// the `slug` parameter is available because\\n\\t\\t// this file is called [slug].svelte\\n\\t\\tconst res = await this.fetch(`blog/${params.slug}.json`);\\n\\t\\tconst data = await res.json();\\n\\n\\t\\tif (res.status === 200) {\\n\\t\\t\\treturn { post: data };\\n\\t\\t} else {\\n\\t\\t\\tthis.error(res.status, data.message);\\n\\t\\t}\\n\\t}\\n</script>\\n\\n<script>\\n\\texport let post;\\n</script>\\n\\n<style>\\n\\t/*\\n\\t\\tBy default, CSS is locally scoped to the component,\\n\\t\\tand any unused styles are dead-code-eliminated.\\n\\t\\tIn this page, Svelte can't know which elements are\\n\\t\\tgoing to appear inside the {{{post.html}}} block,\\n\\t\\tso we have to use the :global(...) modifier to target\\n\\t\\tall elements inside .content\\n\\t*/\\n\\t.content :global(h2) {\\n\\t\\tfont-size: 1.4em;\\n\\t\\tfont-weight: 500;\\n\\t}\\n\\n\\t.content :global(pre) {\\n\\t\\tbackground-color: #f9f9f9;\\n\\t\\tbox-shadow: inset 1px 1px 5px rgba(0,0,0,0.05);\\n\\t\\tpadding: 0.5em;\\n\\t\\tborder-radius: 2px;\\n\\t\\toverflow-x: auto;\\n\\t}\\n\\n\\t.content :global(pre) :global(code) {\\n\\t\\tbackground-color: transparent;\\n\\t\\tpadding: 0;\\n\\t}\\n\\n\\t.content :global(ul) {\\n\\t\\tline-height: 1.5;\\n\\t}\\n\\n\\t.content :global(li) {\\n\\t\\tmargin: 0 0 0.5em 0;\\n\\t}\\n</style>\\n\\n<svelte:head>\\n\\t<title>{post.title}</title>\\n</svelte:head>\\n\\n<h1>{post.title}</h1>\\n\\n<div class='content'>\\n\\t{@html post.html}\\n</div>\\n\"],\"names\":[],\"mappings\":\"AA4BC,sBAAQ,CAAC,AAAQ,EAAE,AAAE,CAAC,AACrB,SAAS,CAAE,KAAK,CAChB,WAAW,CAAE,GAAG,AACjB,CAAC,AAED,sBAAQ,CAAC,AAAQ,GAAG,AAAE,CAAC,AACtB,gBAAgB,CAAE,OAAO,CACzB,UAAU,CAAE,KAAK,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,KAAK,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CAC9C,OAAO,CAAE,KAAK,CACd,aAAa,CAAE,GAAG,CAClB,UAAU,CAAE,IAAI,AACjB,CAAC,AAED,sBAAQ,CAAC,AAAQ,GAAG,AAAC,CAAC,AAAQ,IAAI,AAAE,CAAC,AACpC,gBAAgB,CAAE,WAAW,CAC7B,OAAO,CAAE,CAAC,AACX,CAAC,AAED,sBAAQ,CAAC,AAAQ,EAAE,AAAE,CAAC,AACrB,WAAW,CAAE,GAAG,AACjB,CAAC,AAED,sBAAQ,CAAC,AAAQ,EAAE,AAAE,CAAC,AACrB,MAAM,CAAE,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CAAC,AACpB,CAAC\"}"
-};
+const Lists = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let chariries = [];
 
-async function preload$1({ params, query }) {
-	const res = await this.fetch(`blog/${params.slug}.json`);
-	const data = await res.json();
+	onMount(async () => {
+		await new Promise(r => setTimeout(r, 2000));
+		const chars = await api.getCharities();
+		chariries = new Array(1).fill(chars).reduce((a, o) => a.concat(...o), []);
+	});
 
-	if (res.status === 200) {
-		return { post: data };
-	} else {
-		this.error(res.status, data.message);
-	}
-}
-
-const U5Bslugu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { post } = $$props;
-	if ($$props.post === void 0 && $$bindings.post && post !== void 0) $$bindings.post(post);
-	$$result.css.add(css$n);
-
-	return `${($$result.head += `<title>${escape(post.title)}</title>`, "")}
-
-<h1>${escape(post.title)}</h1>
-
-<div class="${"content svelte-gnxal1"}">
-	${post.html}
-</div>`;
+	return `${validate_component(ListItems, "ListItems").$$render($$result, { items: chariries }, {}, {})}`;
 });
 
-/* src/routes/list.svelte generated by Svelte v3.16.7 */
+/* src/routes/lists/organizations/index.svelte generated by Svelte v3.16.7 */
 
-const css$o = {
-	code: ".search.svelte-krioku{position:sticky;top:47px;box-shadow:var(--shadow-primary)}.list-wrap.svelte-krioku{flex:1 1 auto;padding:0 var(--screen-padding)\n    }",
-	map: "{\"version\":3,\"file\":\"list.svelte\",\"sources\":[\"list.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import { SearchLine, ListItems, Footer } from '../layouts'\\n\\n    let organizations = []\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        const orgs = await api.getOrganizations()\\n        organizations = new Array(5).fill(orgs).reduce((a, o) => a.concat(...o), [])\\n    })\\n</script>\\n\\n<div class=\\\"search theme-bg container\\\">\\n    <br>\\n\\n    <SearchLine/>\\n\\n    <br>\\n</div>\\n\\n<div class=\\\"list-wrap\\\">\\n    <br>\\n\\n    <ListItems items={organizations}/>\\n\\n    <br>\\n    <br>\\n</div>\\n\\n<Footer/>\\n\\n<style>\\n    .search {\\n        position: sticky;\\n        top: 47px;\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .list-wrap {\\n        flex: 1 1 auto;\\n        padding: 0 var(--screen-padding)\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAsCI,OAAO,cAAC,CAAC,AACL,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,IAAI,CACT,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC;IACpC,CAAC\"}"
-};
-
-const List = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Organizations = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let organizations = [];
 
 	onMount(async () => {
@@ -1794,27 +1776,47 @@ const List = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 		organizations = new Array(5).fill(orgs).reduce((a, o) => a.concat(...o), []);
 	});
 
-	$$result.css.add(css$o);
+	return `${validate_component(ListItems, "ListItems").$$render($$result, { items: organizations }, {}, {})}`;
+});
+
+/* src/routes/lists/_layout.svelte generated by Svelte v3.16.7 */
+
+const css$n = {
+	code: ".search.svelte-1vo7cwi.svelte-1vo7cwi{position:sticky;top:47px;box-shadow:var(--shadow-primary)}.list-wrap.svelte-1vo7cwi.svelte-1vo7cwi{flex:1 1 auto;padding:0 var(--screen-padding)\n\t}nav.svelte-1vo7cwi ul.svelte-1vo7cwi,nav.svelte-1vo7cwi li.svelte-1vo7cwi{display:flex;align-self:stretch;align-items:stretch;justify-content:stretch}li.svelte-1vo7cwi.svelte-1vo7cwi{flex:1 1 0}li.svelte-1vo7cwi a.svelte-1vo7cwi{flex:1 1 0;align-self:stretch;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px 10px}li.svelte-1vo7cwi a.svelte-1vo7cwi:hover,li.svelte-1vo7cwi a.selected.svelte-1vo7cwi{background-color:rgba(var(--color-black), .1)}",
+	map: "{\"version\":3,\"file\":\"_layout.svelte\",\"sources\":[\"_layout.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n\\t<title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n<script>\\n\\timport { SearchLine, Footer } from '../../layouts'\\n\\timport CharitiesList from './index.svelte'\\n\\timport OrganizationsList from './organizations/index.svelte'\\n\\n\\texport let segment\\n</script>\\n\\n<div class=\\\"search theme-bg container\\\">\\n\\t<br>\\n\\n\\t<SearchLine/>\\n\\n\\t<nav>\\n\\t\\t<ul>\\n\\t\\t\\t<li><a rel=prefetch href='lists' class:selected='{segment !== \\\"organizations\\\"}'>list</a></li>\\n\\t\\t\\t<li><a rel=prefetch href='lists/organizations' class:selected='{segment === \\\"organizations\\\"}'>organizations</a></li>\\n\\t\\t</ul>\\n\\t</nav>\\n</div>\\n\\n<div class=\\\"list-wrap\\\">\\n\\t<br>\\n\\n\\t{#if segment === 'organizations'}\\n\\t\\t<OrganizationsList/>\\n\\t{:else}\\n\\t\\t<CharitiesList/>\\n\\t{/if}\\n\\n\\t<br>\\n\\t<br>\\n</div>\\n\\n<Footer/>\\n\\n<style>\\n\\t.search {\\n\\t\\tposition: sticky;\\n\\t\\ttop: 47px;\\n\\t\\tbox-shadow: var(--shadow-primary);\\n\\t}\\n\\n\\t.list-wrap {\\n\\t\\tflex: 1 1 auto;\\n\\t\\tpadding: 0 var(--screen-padding)\\n\\t}\\n\\n\\tnav ul, nav li {\\n\\t\\tdisplay: flex;\\n\\t\\talign-self: stretch;\\n\\t\\talign-items: stretch;\\n\\t\\tjustify-content: stretch;\\n\\t}\\n\\n\\tli {\\n\\t\\tflex: 1 1 0;\\n\\t}\\n\\n\\tli a {\\n\\t\\tflex: 1 1 0;\\n\\t\\talign-self: stretch;\\n\\t\\tdisplay: flex;\\n\\t\\talign-items: center;\\n\\t\\tjustify-content: center;\\n\\t\\ttext-align: center;\\n\\t\\tpadding: 20px 10px;\\n\\t}\\n\\n\\tli a:hover, li a.selected {\\n\\t\\tbackground-color: rgba(var(--color-black), .1);\\n\\t}\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAyCC,OAAO,8BAAC,CAAC,AACR,QAAQ,CAAE,MAAM,CAChB,GAAG,CAAE,IAAI,CACT,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAClC,CAAC,AAED,UAAU,8BAAC,CAAC,AACX,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC;CACjC,CAAC,AAED,kBAAG,CAAC,iBAAE,CAAE,kBAAG,CAAC,EAAE,eAAC,CAAC,AACf,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CACpB,eAAe,CAAE,OAAO,AACzB,CAAC,AAED,EAAE,8BAAC,CAAC,AACH,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,AACZ,CAAC,AAED,iBAAE,CAAC,CAAC,eAAC,CAAC,AACL,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CACX,UAAU,CAAE,OAAO,CACnB,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,MAAM,CACnB,eAAe,CAAE,MAAM,CACvB,UAAU,CAAE,MAAM,CAClB,OAAO,CAAE,IAAI,CAAC,IAAI,AACnB,CAAC,AAED,iBAAE,CAAC,gBAAC,MAAM,CAAE,iBAAE,CAAC,CAAC,SAAS,eAAC,CAAC,AAC1B,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,EAAE,CAAC,AAC/C,CAAC\"}"
+};
+
+const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { segment } = $$props;
+	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
+	$$result.css.add(css$n);
 
 	return `${($$result.head += `<title>Charitify - is the application for helping those in need.</title>`, "")}
 
 
 
-<div class="${"search theme-bg container svelte-krioku"}">
-    <br>
+<div class="${"search theme-bg container svelte-1vo7cwi"}">
+	<br>
 
-    ${validate_component(SearchLine, "SearchLine").$$render($$result, {}, {}, {})}
+	${validate_component(SearchLine, "SearchLine").$$render($$result, {}, {}, {})}
 
-    <br>
+	<nav class="${"svelte-1vo7cwi"}">
+		<ul class="${"svelte-1vo7cwi"}">
+			<li class="${"svelte-1vo7cwi"}"><a rel="${"prefetch"}" href="${"lists"}" class="${["svelte-1vo7cwi", segment !== "organizations" ? "selected" : ""].join(" ").trim()}">list</a></li>
+			<li class="${"svelte-1vo7cwi"}"><a rel="${"prefetch"}" href="${"lists/organizations"}" class="${["svelte-1vo7cwi", segment === "organizations" ? "selected" : ""].join(" ").trim()}">organizations</a></li>
+		</ul>
+	</nav>
 </div>
 
-<div class="${"list-wrap svelte-krioku"}">
-    <br>
+<div class="${"list-wrap svelte-1vo7cwi"}">
+	<br>
 
-    ${validate_component(ListItems, "ListItems").$$render($$result, { items: organizations }, {}, {})}
+	${segment === "organizations"
+	? `${validate_component(Organizations, "OrganizationsList").$$render($$result, {}, {}, {})}`
+	: `${validate_component(Lists, "CharitiesList").$$render($$result, {}, {}, {})}`}
 
-    <br>
-    <br>
+	<br>
+	<br>
 </div>
 
 ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
@@ -1864,7 +1866,7 @@ const Icons = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 /* src/routes/_layout.svelte generated by Svelte v3.16.7 */
 
-const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Layout$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { segment } = $$props;
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
 
@@ -1879,46 +1881,31 @@ ${validate_component(Icons, "Icons").$$render($$result, {}, {}, {})}
 
 /* src/routes/_error.svelte generated by Svelte v3.16.7 */
 
-const css$p = {
-	code: "h1.svelte-8od9u6,p.svelte-8od9u6{margin:0 auto}h1.svelte-8od9u6{font-size:2.8em;font-weight:700;margin:0 0 0.5em 0}p.svelte-8od9u6{margin:1em auto}@media(min-width: 480px){h1.svelte-8od9u6{font-size:4em}}",
-	map: "{\"version\":3,\"file\":\"_error.svelte\",\"sources\":[\"_error.svelte\"],\"sourcesContent\":[\"<script>\\n\\texport let status;\\n\\texport let error;\\n\\n\\tconst dev = undefined === 'development';\\n</script>\\n\\n<style>\\n\\th1, p {\\n\\t\\tmargin: 0 auto;\\n\\t}\\n\\n\\th1 {\\n\\t\\tfont-size: 2.8em;\\n\\t\\tfont-weight: 700;\\n\\t\\tmargin: 0 0 0.5em 0;\\n\\t}\\n\\n\\tp {\\n\\t\\tmargin: 1em auto;\\n\\t}\\n\\n\\t@media (min-width: 480px) {\\n\\t\\th1 {\\n\\t\\t\\tfont-size: 4em;\\n\\t\\t}\\n\\t}\\n</style>\\n\\n<svelte:head>\\n\\t<title>{status}</title>\\n</svelte:head>\\n\\n<h1>{status}</h1>\\n\\n<p>{error.message}</p>\\n\\n{#if dev && error.stack}\\n\\t<pre>{error.stack}</pre>\\n{/if}\\n\"],\"names\":[],\"mappings\":\"AAQC,gBAAE,CAAE,CAAC,cAAC,CAAC,AACN,MAAM,CAAE,CAAC,CAAC,IAAI,AACf,CAAC,AAED,EAAE,cAAC,CAAC,AACH,SAAS,CAAE,KAAK,CAChB,WAAW,CAAE,GAAG,CAChB,MAAM,CAAE,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CAAC,AACpB,CAAC,AAED,CAAC,cAAC,CAAC,AACF,MAAM,CAAE,GAAG,CAAC,IAAI,AACjB,CAAC,AAED,MAAM,AAAC,YAAY,KAAK,CAAC,AAAC,CAAC,AAC1B,EAAE,cAAC,CAAC,AACH,SAAS,CAAE,GAAG,AACf,CAAC,AACF,CAAC\"}"
-};
-
 const Error$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { status } = $$props;
 	let { error } = $$props;
 	if ($$props.status === void 0 && $$bindings.status && status !== void 0) $$bindings.status(status);
 	if ($$props.error === void 0 && $$bindings.error && error !== void 0) $$bindings.error(error);
-	$$result.css.add(css$p);
 
-	return `${($$result.head += `<title>${escape(status)}</title>`, "")}
+	return `${($$result.head += `<title>Error: ${escape(status)}</title>`, "")}
 
-<h1 class="${"svelte-8od9u6"}">${escape(status)}</h1>
-
-<p class="${"svelte-8od9u6"}">${escape(error.message)}</p>
-
+<br>
+<br>
+<br>
+<br>
+<h1 class="${"text-center"}">Error: ${escape(status)}</h1>
+<br>
+<p class="${"text-center"}">Reason: ${escape(error.message)}</p>
+<br>
+<br>
 ${ ``}`;
 });
 
 // This file is generated by Sapper — do not edit it!
 
-const d = decodeURIComponent;
-
 const manifest = {
 	server_routes: [
-		{
-			// blog/index.json.js
-			pattern: /^\/blog.json$/,
-			handlers: route_0,
-			params: () => ({})
-		},
-
-		{
-			// blog/[slug].json.js
-			pattern: /^\/blog\/([^\/]+?).json$/,
-			handlers: route_1,
-			params: match => ({ slug: d(match[1]) })
-		}
+		
 	],
 
 	pages: [
@@ -1926,7 +1913,15 @@ const manifest = {
 			// index.svelte
 			pattern: /^\/$/,
 			parts: [
-				{ name: "lists.svelte", file: "lists.svelte.svelte", component: Routes }
+				{ name: "index", file: "index.svelte", component: Routes }
+			]
+		},
+
+		{
+			// organization.svelte
+			pattern: /^\/organization\/?$/,
+			parts: [
+				{ name: "organization", file: "organization.svelte", component: Organization }
 			]
 		},
 
@@ -1939,27 +1934,20 @@ const manifest = {
 		},
 
 		{
-			// blog/index.svelte
-			pattern: /^\/blog\/?$/,
+			// lists/index.svelte
+			pattern: /^\/lists\/?$/,
 			parts: [
-				{ name: "blog", file: "blog/index.svelte", component: Blog, preload: preload }
+				{ name: "lists__layout", file: "lists/_layout.svelte", component: Layout },
+				{ name: "lists", file: "lists/index.svelte", component: Lists }
 			]
 		},
 
 		{
-			// blog/[slug].svelte
-			pattern: /^\/blog\/([^\/]+?)\/?$/,
+			// lists/organizations/index.svelte
+			pattern: /^\/lists\/organizations\/?$/,
 			parts: [
-				null,
-				{ name: "blog_$slug", file: "blog/[slug].svelte", component: U5Bslugu5D, preload: preload$1, params: match => ({ slug: d(match[1]) }) }
-			]
-		},
-
-		{
-			// list.svelte
-			pattern: /^\/list\/?$/,
-			parts: [
-				{ name: "organizations.svelte", file: "organizations.svelte.svelte", component: List }
+				{ name: "lists__layout", file: "lists/_layout.svelte", component: Layout },
+				{ name: "lists_organizations", file: "lists/organizations/index.svelte", component: Organizations }
 			]
 		},
 
@@ -1972,7 +1960,7 @@ const manifest = {
 		}
 	],
 
-	root: Layout,
+	root: Layout$1,
 	root_preload: () => {},
 	error: Error$1
 };
@@ -2042,6 +2030,7 @@ const App = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { segments } = $$props;
 	let { level0 } = $$props;
 	let { level1 = null } = $$props;
+	let { level2 = null } = $$props;
 	setContext(CONTEXT_KEY, stores);
 	if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0) $$bindings.stores(stores);
 	if ($$props.error === void 0 && $$bindings.error && error !== void 0) $$bindings.error(error);
@@ -2049,15 +2038,22 @@ const App = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.segments === void 0 && $$bindings.segments && segments !== void 0) $$bindings.segments(segments);
 	if ($$props.level0 === void 0 && $$bindings.level0 && level0 !== void 0) $$bindings.level0(level0);
 	if ($$props.level1 === void 0 && $$bindings.level1 && level1 !== void 0) $$bindings.level1(level1);
+	if ($$props.level2 === void 0 && $$bindings.level2 && level2 !== void 0) $$bindings.level2(level2);
 
 	return `
 
 
-${validate_component(Layout, "Layout").$$render($$result, Object.assign({ segment: segments[0] }, level0.props), {}, {
+${validate_component(Layout$1, "Layout").$$render($$result, Object.assign({ segment: segments[0] }, level0.props), {}, {
 		default: () => `
 	${error
 		? `${validate_component(Error$1, "Error").$$render($$result, { error, status }, {}, {})}`
-		: `${validate_component(level1.component || missing_component, "svelte:component").$$render($$result, Object.assign(level1.props), {}, {})}`}
+		: `${validate_component(level1.component || missing_component, "svelte:component").$$render($$result, Object.assign({ segment: segments[1] }, level1.props), {}, {
+				default: () => `
+			${level2
+				? `${validate_component(level2.component || missing_component, "svelte:component").$$render($$result, Object.assign(level2.props), {}, {})}`
+				: ``}
+		`
+			})}`}
 `
 	})}`;
 });
@@ -3510,7 +3506,7 @@ const HeadersIteratorPrototype = Object.setPrototypeOf({
 		var _INTERNAL = this[INTERNAL];
 		const target = _INTERNAL.target,
 		      kind = _INTERNAL.kind,
-		      index = _INTERNAL.lists;
+		      index = _INTERNAL.index;
 
 		const values = getHeaders(target, kind);
 		const len = values.length;
@@ -4559,7 +4555,7 @@ mime_raw.split('\n').forEach((row) => {
 	});
 });
 
-function lookup$1(file) {
+function lookup(file) {
 	const match = /\.([^\.]+)$/.exec(file);
 	return match && map.get(match[1]);
 }
@@ -4667,7 +4663,7 @@ function serve({ prefix, pathname, cache_control }
 
 	return (req, res, next) => {
 		if (filter(req)) {
-			const type = lookup$1(req.path);
+			const type = lookup(req.path);
 
 			try {
 				const file = decodeURIComponent(req.path.slice(1));
