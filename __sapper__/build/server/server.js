@@ -1493,7 +1493,7 @@ class APIService {
 
   async requestInterceptor(...args) {
     if (typeof args[0] === 'string') { // If URL then concat BASE_PATH.
-      args[0] = `${this._base_path}${args[0]}`;
+      args[0] = `${this._base_path}/${args[0]}`;
     }
     return [...args]
   }
