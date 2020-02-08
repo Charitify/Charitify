@@ -45,15 +45,6 @@
 
 <section class="container">
 
-    <section>
-        <br>
-        <TitleSubTitle
-            title={charity.title}
-            subtitle={charity.description}
-        />
-        <br>
-    </section>
-
     <section class="top">
         <div class="pics-wrap">
             <Carousel items={carousel}/>
@@ -73,6 +64,16 @@
 
         <Rate/>
     </section>
+
+    <section>
+        <br>
+        <TitleSubTitle
+                title={charity.title}
+                subtitle={charity.description}
+        />
+        <br>
+    </section>
+
 </section>
 
 <br>

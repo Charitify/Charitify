@@ -4,18 +4,18 @@
     import { TitleSubTitle, AvatarAndName, DonatingGroup, CharityCards, Footer } from '../layouts'
     import { Rate, Progress, Carousel } from '../components'
 
-    let charity = {}
+    let organization = {}
 
-    $: carousel = (charity.src || []).map(src => ({ src }))
+    $: carousel = (organization.src || []).map(src => ({ src }))
 
     onMount(async () => {
         await new Promise(r => setTimeout(r, 2000))
-        charity = await api.getCharity(1)
+        organization = await api.getOrganization(1)
     })
 </script>
 
 <svelte:head>
-    <title>Charitify - Charity page and donate.</title>
+    <title>Charitify - Organization page.</title>
 </svelte:head>
 
 <style>
@@ -48,8 +48,8 @@
     <section>
         <br>
         <TitleSubTitle
-            title={charity.title}
-            subtitle={charity.description}
+            title={organization.title}
+            subtitle={organization.description}
         />
         <br>
     </section>
@@ -66,9 +66,9 @@
 
     <section class="rate-section">
         <AvatarAndName
-                src={charity.orgHeadSrc}
-                title={charity.orgHead}
-                subtitle={charity.organization}
+                src={organization.orgHeadSrc}
+                title={organization.orgHead}
+                subtitle={organization.title}
         />
 
         <Rate/>
