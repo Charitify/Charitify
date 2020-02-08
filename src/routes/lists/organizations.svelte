@@ -5,7 +5,7 @@
 <script>
     import { onMount } from 'svelte'
     import { api } from '../../services'
-    import { ListItems } from '../../layouts'
+    import { ListItems, ListsLayout } from '../../layouts'
 
     let organizations = []
 
@@ -16,7 +16,9 @@
     })
 </script>
 
-<ListItems items={organizations}/>
+<ListsLayout>
+    <ListItems items={organizations}/>
+</ListsLayout>
 
 <style>
 </style>
