@@ -4,8 +4,6 @@
 
 <script>
 	import { SearchLine, Footer } from '../../layouts'
-	import CharitiesList from './index.svelte'
-	import OrganizationsList from './organizations/index.svelte'
 
 	export let segment
 </script>
@@ -17,7 +15,7 @@
 
 	<nav>
 		<ul>
-			<li><a rel=prefetch href='lists' class:selected='{segment !== "organizations"}'>charities</a></li>
+			<li><a rel=prefetch href='lists/charities' class:selected='{segment === "charities"}'>charities</a></li>
 			<li><a rel=prefetch href='lists/organizations' class:selected='{segment === "organizations"}'>organizations</a></li>
 		</ul>
 	</nav>
@@ -26,11 +24,7 @@
 <div class="list-wrap">
 	<br>
 
-	{#if segment === 'organizations'}
-		<OrganizationsList/>
-	{:else}
-		<CharitiesList/>
-	{/if}
+	<slot></slot>
 
 	<br>
 	<br>

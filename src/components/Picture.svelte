@@ -6,24 +6,37 @@
 
     export let src
     export let alt
+    export let srcBig = undefined
     export let id = undefined
     export let width = undefined
     export let height = undefined
 
-    let loading = true
+    let loadingSrc = true
+    let loadingSrcBig = true
     let isError = false
 
-    $: wrapClassProp = classnames('picture', $$props.class, { loading, isError })
+    $: wrapClassProp = classnames('picture', $$props.class, { loadingSrc, loadingSrcBig, isError })
 
-    function onLoad(e) {
-        loading = false
+    function onLoadSrc(e) {
+        loadingSrc = false
         dispatch('load', e)
     }
 
-    function onError(e) {
-        loading = false
+    function onErrorSrc(e) {
+        loadingSrc = false
         isError = true
         dispatch('error', e)
+    }
+
+    function onLoadSrcBig(e) {
+        loadingSrcBig = false
+        dispatch('loadBig', e)
+    }
+
+    function onErrorSrcBig(e) {
+        loadingSrcBig = false
+        isError = true
+        dispatch('errorBig', e)
     }
 </script>
 
@@ -34,11 +47,21 @@
             {src}
             {width}
             {height}
-            class="pic"
-            on:load={onLoad}
-            on:error={onError}
+            class="pic pic-1x"
+            on:load={onLoadSrc}
+            on:error={onErrorSrc}
     />
-
+    {#if srcBig && !loadingSrc}
+        <img
+                {alt}
+                {width}
+                {height}
+                src={srcBig}
+                class="pic pic-2x"
+                on:load={onLoadSrcBig}
+                on:error={onErrorSrcBig}
+        />
+    {/if}
     <figcaption>
         <slot></slot>
     </figcaption>
@@ -46,6 +69,7 @@
 
 <style>
     .picture {
+        position: relative;
         flex-grow: 1;
         align-self: stretch;
         display: inline-flex;
@@ -62,7 +86,16 @@
         transition: opacity .3s ease-in;
     }
 
-    .picture.loading .pic {
+    .picture .pic-2x {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .picture.loadingSrc .pic-1x,
+    .picture.loadingSrcBig .pic-2x {
         opacity: 0;
     }
 </style>

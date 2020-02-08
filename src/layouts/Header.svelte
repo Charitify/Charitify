@@ -19,7 +19,7 @@
     <ul>
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
         <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
-        <li><a rel=prefetch href='lists' class:selected='{segment === "lists"}'>lists</a></li>
+        <li><a rel=prefetch href='lists/charities' class:selected='{segment === "lists"}'>lists</a></li>
         <li><a rel=prefetch href='charity' class:selected='{segment === "charity"}'>charity</a></li>
         <li><a rel=prefetch href='organization' class:selected='{segment === "organization"}'>org</a></li>
     </ul>

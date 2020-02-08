@@ -45,6 +45,7 @@
      *
      * @type {number | {
      *     src: string,
+     *     srcBig: string,
      *     alt: string,
      *     onClick?: function,
      * }[]}
@@ -56,7 +57,7 @@
     {#each items as item}
         <li>
             <slot {item}>
-                <Picture src={item.src} alt={item.alt}/>
+                <Picture {...item}/>
             </slot>
         </li>
     {/each}

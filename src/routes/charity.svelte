@@ -6,7 +6,7 @@
 
     let charity = {}
 
-    $: carousel = (charity.src || []).map(src => ({ src }))
+    $: carousel = (charity.src || []).map((src, i) => ({ src, srcBig: (charity.src2x || [])[i] }))
 
     onMount(async () => {
         await new Promise(r => setTimeout(r, 2000))
