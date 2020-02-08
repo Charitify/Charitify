@@ -634,7 +634,7 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
 	if ($$props.min === void 0 && $$bindings.min && min !== void 0) $$bindings.min(min);
 	if ($$props.max === void 0 && $$bindings.max && max !== void 0) $$bindings.max(max);
-	if ($$props.list === void 0 && $$bindings.list && list !== void 0) $$bindings.list(list);
+	if ($$props.organizations === void 0 && $$bindings.organizations && list !== void 0) $$bindings.organizations(list);
 	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
 	if ($$props.readonly === void 0 && $$bindings.readonly && readonly !== void 0) $$bindings.readonly(readonly);
 	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
@@ -1959,7 +1959,7 @@ const manifest = {
 			// list.svelte
 			pattern: /^\/list\/?$/,
 			parts: [
-				{ name: "list", file: "list.svelte", component: List }
+				{ name: "organizations.svelte", file: "organizations.svelte.svelte", component: List }
 			]
 		},
 
