@@ -162,5 +162,13 @@ export class ApiClass extends APIService {
 export default new ApiClass({
   basePath: process.env.BACKEND_URL,
   responseInterceptor: res => (console.info('response -------\n', res), res),
-  errorInterceptor: rej => (console.warn('request error -------\n', rej), Promise.reject(rej)),
+  errorInterceptor: rej => {
+    console.warn('request error -------\n', rej)
+
+    if (rej && rej.error && rej.error.message === 'Failed to fetch') {
+      console.log('Lost internet connection')
+    }
+
+    throw rej
+  },
 })
