@@ -1,3 +1,7 @@
+<svelte:head>
+    <title>Charitify - is the application for helping those in need.</title>
+</svelte:head>
+
 <script>
     import { onMount } from 'svelte'
     import { api } from '../../services'

@@ -1927,7 +1927,7 @@ const manifest = {
 			// index.svelte
 			pattern: /^\/$/,
 			parts: [
-				{ name: "index", file: "index.svelte", component: Routes }
+				{ name: "_layout.svelte", file: "_layout.svelte.svelte", component: Routes }
 			]
 		},
 
@@ -3520,7 +3520,7 @@ const HeadersIteratorPrototype = Object.setPrototypeOf({
 		var _INTERNAL = this[INTERNAL];
 		const target = _INTERNAL.target,
 		      kind = _INTERNAL.kind,
-		      index = _INTERNAL.index;
+		      index = _INTERNAL._layout;
 
 		const values = getHeaders(target, kind);
 		const len = values.length;
