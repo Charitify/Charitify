@@ -5,15 +5,20 @@ import zlFetch from 'zl-fetch' // See: https://github.com/zellwk/zl-fetch
  * @description API URLs builders.
  */
 export const endpoints = {
-  RECENT_NEWS: () => `recent_news.json`,
+  USER: (id) => `user.json?id=${id}`,
+  USERS: () => `users.json`,
+
+  RECENT: (id) => `recent.json?id=${id}`,
+  RECENTS: () => `recents.json`,
+
+  COMMENT: (id) => `comment.json?id=${id}`,
+  COMMENTS: () => `comments.json`,
 
   CHARITY: (id) => `charity.json?id=${id}`,
   CHARITIES: () => `charities.json`,
-  CHARITY_COMMENTS: (id) => `charity_comments.json?id=${id}`,
 
   ORGANIZATION: (id) => `organization.json?id=${id}`,
   ORGANIZATIONS: () => `organizations.json`,
-  ORGANIZATION_COMMENTS: (id) => `$organization/comments.json?id=${id}`,
 }
 
 class APIService {
@@ -61,8 +66,13 @@ class APIService {
    * @param method {'get'|'put'|'post'|'delete'|'patch'}
    * @param args {*[]}
    */
-  async newRequest(method, ...args) {
-    return this.withInterceptors(this._adapter[method], ...args)
+  get newRequest() {
+    const methods = ['get', 'put', 'post', 'delete', 'patch']
+
+    return methods.reduce((acc, method) => {
+      acc[method] = this.withInterceptors.bind(this, this._adapter[method])
+      return acc
+    }, {})
   }
 
   async withInterceptors(caller, ...args) {
@@ -115,18 +125,98 @@ export class ApiClass extends APIService {
 
   /**
    *
+   * @description Users
+   */
+  getUser(id, params, config) {
+    return this.newRequest.get(endpoints.USER(id), params, config)
+  }
+
+  getUsers(params, config) {
+    return this.newRequest.get(endpoints.USERS(), params, config)
+  }
+
+  postUser(id, body, config) {
+    return this.newRequest.post(endpoints.USER(id), body, config)
+  }
+
+  putUser(id, body, config) {
+    return this.newRequest.put(endpoints.USER(id), body, config)
+  }
+
+  deleteUser(id, config) {
+    return this.newRequest.delete(endpoints.USER(id), config)
+  }
+
+  /**
+   *
+   * @description Recent
+   */
+  getRecent(id, params, config) {
+    return this.newRequest.get(endpoints.RECENT(id), params, config)
+  }
+
+  getRecents(params, config) {
+    return this.newRequest.get(endpoints.RECENTS(), params, config)
+  }
+
+  postRecent(id, body, config) {
+    return this.newRequest.post(endpoints.RECENT(id), body, config)
+  }
+
+  putRecent(id, body, config) {
+    return this.newRequest.put(endpoints.RECENT(id), body, config)
+  }
+
+  deleteRecent(id, config) {
+    return this.newRequest.delete(endpoints.RECENT(id), config)
+  }
+
+  /**
+   *
+   * @description Comments
+   */
+  getComment(id, params, config) {
+    return this.newRequest.get(endpoints.COMMENT(id), params, config)
+  }
+
+  getComments(params, config) {
+    return this.newRequest.get(endpoints.COMMENTS(), params, config)
+  }
+
+  postComment(id, body, config) {
+    return this.newRequest.post(endpoints.COMMENT(id), body, config)
+  }
+
+  putComment(id, body, config) {
+    return this.newRequest.put(endpoints.COMMENT(id), body, config)
+  }
+
+  deleteComment(id, config) {
+    return this.newRequest.delete(endpoints.COMMENT(id), config)
+  }
+
+  /**
+   *
    * @description Charity
    */
   getCharity(id, params, config) {
-    return this.newRequest('get', endpoints.CHARITY(id), params, config)
+    return this.newRequest.get(endpoints.CHARITY(id), params, config)
   }
 
   getCharities(params, config) {
-    return this.newRequest('get', endpoints.CHARITIES(), params, config)
+    return this.newRequest.get(endpoints.CHARITIES(), params, config)
   }
 
-  getCharityComments(id, params, config) {
-    return this.newRequest('get', endpoints.CHARITY_COMMENTS(id), params, config)
+  postCharity(id, body, config) {
+    return this.newRequest.post(endpoints.CHARITY(id), body, config)
+  }
+
+  putCharity(id, body, config) {
+    return this.newRequest.put(endpoints.CHARITY(id), body, config)
+  }
+
+  deleteCharity(id, config) {
+    return this.newRequest.delete(endpoints.CHARITY(id), config)
   }
 
   /**
@@ -134,23 +224,23 @@ export class ApiClass extends APIService {
    * @description Organization
    */
   getOrganization(id, params, config) {
-    return this.newRequest('get', endpoints.ORGANIZATION(id), params, config)
+    return this.newRequest.get(endpoints.ORGANIZATION(id), params, config)
   }
 
   getOrganizations(params, config) {
-    return this.newRequest('get', endpoints.ORGANIZATIONS(), params, config)
+    return this.newRequest.get(endpoints.ORGANIZATIONS(), params, config)
   }
 
-  getOrganizationComments(id, params, config) {
-    return this.newRequest('get', endpoints.ORGANIZATION_COMMENTS(id), params, config)
+  postOrganization(id, body, config) {
+    return this.newRequest.post(endpoints.ORGANIZATION(id), body, config)
   }
 
-  /**
-   *
-   * @description News
-   */
-  getRecentNews(params, config) {
-    return this.newRequest('get', endpoints.RECENT_NEWS(), params, config)
+  putOrganization(id, body, config) {
+    return this.newRequest.put(endpoints.ORGANIZATION(id), body, config)
+  }
+
+  deleteOrganization(id, config) {
+    return this.newRequest.delete(endpoints.ORGANIZATION(id), config)
   }
 
 }

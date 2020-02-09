@@ -3,7 +3,7 @@
     import { api } from '../services'
     import {
         Footer,
-        Comment,
+        Comments,
         CharityCards,
         TitleSubTitle,
         AvatarAndName,
@@ -121,51 +121,7 @@
     <h3 class="h2 text-right">Comments:</h3>
     <Divider size="16"/>
 
-    <Carousel amount="5">
-        <section style="overflow: hidden" class="container">
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tina Kandelaki"
-                    subtitle="ORG charity charitify"
-            >
-                <pre>
-                    I really hate this things.
-                    It looks awful. Will never ever enter here.
-                </pre>
-            </Comment>
-            <br>
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tinaramisimuss el-de-la Kandelakinuskas"
-                    subtitle="ORG charity charitify"
-            >
-                <pre>
-                     👍
-                </pre>
-            </Comment>
-            <br>
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tina Kandelaki"
-                    subtitle="ORG charity charitify"
-            >
-                <pre>
-                    Like
-                </pre>
-            </Comment>
-            <br>
-            <Comment
-                    src="https://placeimg.com/300/300/people"
-                    title="Tina Kandelaki"
-                    subtitle="Head of the organization with loooooooong-naaaaaamed charity"
-            >
-                 <pre>
-                     Don't listen him, hi's wrong. I think this is a good idea and we should continue.
-                     Anyway, I wish you luck.
-                </pre>
-            </Comment>
-        </section>
-    </Carousel>
+    <Comments/>
 
     <br>
     <br>

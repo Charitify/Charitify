@@ -1,7 +1,7 @@
 <script>
     import {
         Footer,
-        Comment,
+        Comments,
         CharityCards,
         ContentHolder,
         TitleSubTitle,
@@ -78,60 +78,7 @@
     <h3 class="h2 text-right">Comments:</h3>
     <Divider size="20"/>
 
-    <Carousel amount="4">
-        <ul style="display: flex; flex-wrap: wrap; overflow: hidden">
-            <li style="width: 50%">
-                <Comment
-                        src="https://placeimg.com/300/300/people"
-                        title="Tina Kandelaki"
-                        subtitle="ORG charity charitify"
-                >
-                    <pre>
-                        I really hate this things.
-                        It looks awful. Will never ever enter here.
-                    </pre>
-                </Comment>
-                <br>
-            </li>
-            <li style="width: 50%">
-                <Comment
-                        src="https://placeimg.com/300/300/people"
-                        title="Tinaramisimuss el-de-la Kandelakinuskas"
-                        subtitle="ORG charity charitify"
-                >
-                    <pre>
-                         👍
-                    </pre>
-                </Comment>
-                <br>
-            </li>
-            <li style="width: 50%">
-                <Comment
-                        src="https://placeimg.com/300/300/people"
-                        title="Tina Kandelaki"
-                        subtitle="ORG charity charitify"
-                >
-                    <pre>
-                        Like
-                    </pre>
-                </Comment>
-                <br>
-            </li>
-            <li style="width: 50%">
-                <Comment
-                        src="https://placeimg.com/300/300/people"
-                        title="Tina Kandelaki"
-                        subtitle="Head of the organization with loooooooong-naaaaaamed charity"
-                >
-                     <pre>
-                         Don't listen him, hi's wrong. I think this is a good idea and we should continue.
-                         Anyway, I wish you luck.
-                    </pre>
-                </Comment>
-                <br>
-            </li>
-        </ul>
-    </Carousel>
+    <Comments withFrom={false}/>
 
     <br>
     <br>

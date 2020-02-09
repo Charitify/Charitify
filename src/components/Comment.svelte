@@ -1,9 +1,11 @@
 <script>
-    import { Avatar } from '../components'
+    import Avatar from './Avatar.svelte'
 
     export let src = undefined
     export let title = undefined
     export let subtitle = undefined
+
+
 </script>
 
 <section>
@@ -17,13 +19,11 @@
 
         <br class="small">
 
-        <slot>
-            <pre>
-                A loooooooooong comment that has been
-                left by a very angry guy who complains upon
-                looooong comments.
-            </pre>
-        </slot>
+        <pre>
+            <slot>
+                 [No comment]
+            </slot>
+        </pre>
     </div>
 </section>
 

@@ -2,7 +2,7 @@ export * from './Map'
 
 export { default as Header } from './Header.svelte'
 export { default as Footer } from './Footer.svelte'
-export { default as Comment } from './Comment.svelte'
+export { default as Comments } from './Comments.svelte'
 export { default as ListItems } from './ListItems.svelte'
 export { default as SearchLine } from './SearchLine.svelte'
 export { default as ListsLayout } from './ListsLayout.svelte'
