@@ -83,6 +83,14 @@
     </section>
 
     <br>
+
+    {#if organization.id}
+        <p class="text-center">
+            <a class="btn success" href={`/charitify/map/${organization.id}`}>On the map</a>
+        </p>
+    {/if}
+
+    <br>
     <br>
     <br>
 

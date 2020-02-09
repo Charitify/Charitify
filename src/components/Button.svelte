@@ -124,66 +124,66 @@
 
     /* Success */
 
-    .btn.success {
+    :global(.btn).success {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-success));
         box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
-    .btn.success:focus {
+    :global(.btn).success:focus {
         background-color: rgba(var(--color-success), .85);
     }
 
-    .btn.success:hover {
+    :global(.btn).success:hover {
         transform: translateY(1px);
         box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
-    .btn.success:active {
+    :global(.btn).success:active {
         transform: translateY(2px);
         box-shadow: 0 1px rgba(var(--color-success-dark)), var(--shadow-secondary);
     }
 
     /* Warning */
 
-    .btn.warning {
+    :global(.btn).warning {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-warning));
         box-shadow: 0 2px rgba(var(--color-warning-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
-    .btn.warning:focus {
+    :global(.btn).warning:focus {
         background-color: rgba(var(--color-warning), .85);
     }
 
-    .btn.warning:hover {
+    :global(.btn).warning:hover {
         transform: translateY(1px);
         box-shadow: 0 2px rgba(var(--color-warning-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
-    .btn.warning:active {
+    :global(.btn).warning:active {
         transform: translateY(2px);
         box-shadow: 0 1px rgba(var(--color-warning-dark)), var(--shadow-secondary);
     }
 
     /* Danger */
 
-    .btn.danger {
+    :global(.btn).danger {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-danger));
         box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
-    .btn.danger:focus {
+    :global(.btn).danger:focus {
         background-color: rgba(var(--color-danger), .85);
     }
 
-    .btn.danger:hover {
+    :global(.btn).danger:hover {
         transform: translateY(1px);
         box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
-    .btn.danger:active {
+    :global(.btn).danger:active {
         transform: translateY(2px);
         box-shadow: 0 1px rgba(var(--color-danger-dark)), var(--shadow-secondary);
     }
@@ -194,15 +194,15 @@
             margin-bottom: 2px;
         }
 
-        .btn.success {
+        :global(.btn).success {
             box-shadow: 0 3px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
         }
 
-        .btn.warning {
+        :global(.btn).warning {
             box-shadow: 0 3px rgba(var(--color-warning-dark)), var(--shadow-secondary), var(--shadow-primary);
         }
 
-        .btn.danger {
+        :global(.btn).danger {
             box-shadow: 0 3px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
         }
     }
