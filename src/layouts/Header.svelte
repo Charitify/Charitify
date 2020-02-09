@@ -74,7 +74,7 @@
     }
 
     a {
-        padding: .8em 0.5em;
+        padding: .8em 0.2em;
     }
 
     .nav-actions {

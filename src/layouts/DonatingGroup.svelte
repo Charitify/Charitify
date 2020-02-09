@@ -4,13 +4,13 @@
 
 <ul>
     <li>
-        <Button is="success" on:click="{e => console.log(e)}">test1</Button>
+        <Button is="success" on:click="{e => console.log(e)}">50</Button>
     </li>
     <li>
-        <Button is="success" on:click="{e => console.log(e)}">test12</Button>
+        <Button is="success" on:click="{e => console.log(e)}">100</Button>
     </li>
     <li>
-        <Button is="success" on:click="{e => console.log(e)}">test123</Button>
+        <Button is="success" on:click="{e => console.log(e)}">200</Button>
     </li>
     <li>
         <br>
@@ -21,6 +21,7 @@
                 placeholder="Num"
                 autoselect
                 align="right"
+                value="1000"
         />
 
         <datalist id="sum-suggestions">
@@ -30,7 +31,7 @@
         </datalist>
     </li>
     <li>
-        <Button is="warning" on:click="{e => console.log(e)}">Submit</Button>
+        <Button is="warning" on:click="{e => console.log(e)}">Donate</Button>
     </li>
 </ul>
 

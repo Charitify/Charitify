@@ -1,8 +1,16 @@
 <script>
     import { onMount } from 'svelte'
     import { api } from '../services'
-    import { TitleSubTitle, AvatarAndName, DonatingGroup, CharityCards, Footer } from '../layouts'
-    import { Rate, Progress, Carousel } from '../components'
+    import {
+        Footer,
+        Comment,
+        CharityCards,
+        TitleSubTitle,
+        AvatarAndName,
+        DonatingGroup,
+        ContactsHolder,
+    } from '../layouts'
+    import { Rate, Progress, Carousel, Divider } from '../components'
 
     let charity = {}
 
@@ -74,31 +82,109 @@
         <br>
     </section>
 
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <Divider size="20"/>
+    <h3 class="h2 text-right">Comments:</h3>
+    <Divider size="16"/>
+
+    <Carousel amount="5">
+        <section style="overflow: hidden" class="container">
+            <Comment
+                    src="https://placeimg.com/300/300/people"
+                    title="Tina Kandelaki"
+                    subtitle="ORG charity charitify"
+            >
+                <pre>
+                    I really hate this things.
+                    It looks awful. Will never ever enter here.
+                </pre>
+            </Comment>
+            <br>
+            <Comment
+                    src="https://placeimg.com/300/300/people"
+                    title="Tinaramisimuss el-de-la Kandelakinuskas"
+                    subtitle="ORG charity charitify"
+            >
+                <pre>
+                     👍
+                </pre>
+            </Comment>
+            <br>
+            <Comment
+                    src="https://placeimg.com/300/300/people"
+                    title="Tina Kandelaki"
+                    subtitle="ORG charity charitify"
+            >
+                <pre>
+                    Like
+                </pre>
+            </Comment>
+            <br>
+            <Comment
+                    src="https://placeimg.com/300/300/people"
+                    title="Tina Kandelaki"
+                    subtitle="Head of the organization with loooooooong-naaaaaamed charity"
+            >
+                 <pre>
+                     Don't listen him, hi's wrong. I think this is a good idea and we should continue.
+                     Anyway, I wish you luck.
+                </pre>
+            </Comment>
+        </section>
+    </Carousel>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <Divider size="16"/>
+    <h3 class="h2 text-right">Other charities of the organization:</h3>
+    <Divider size="20"/>
+    <br>
+    <Carousel amount="5">
+        <CharityCards amount="2"/>
+    </Carousel>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <ContactsHolder/>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <Divider size="16"/>
+    <h3 class="h2 text-right">Similar of the organization:</h3>
+    <Divider size="20"/>
+    <br>
+    <Carousel amount="5">
+        <CharityCards amount="2"/>
+    </Carousel>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
 </section>
-
-<br>
-<br>
-<br>
-
-<div class="container">
-    <CharityCards/>
-</div>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-
-<div class="container">
-    <CharityCards/>
-</div>
-
-<br>
-<br>
-<br>
-<br>
-<br>
 
 <Footer/>
 

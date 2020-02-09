@@ -42,16 +42,19 @@
         overflow: hidden;
     }
 
+
     span {
         flex: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         overflow: hidden;
         padding: 0 8px;
     }
 
     span h4,
     span sub {
-        display: inline-block;
-        line-height: 1;
+        line-height: 1.4;
         max-width: 100%;
         overflow: hidden;
         white-space: nowrap;
