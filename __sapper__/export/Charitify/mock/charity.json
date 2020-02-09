@@ -1,19 +1,15 @@
 {
-  "src": [
+  "id": "id",
+  "avatars": [
     "https://placeimg.com/30/30/tech",
     "https://placeimg.com/30/30/people",
     "https://placeimg.com/30/30/any"
   ],
-  "src2x": [
-    "https://placeimg.com/3000/3000/tech",
-    "https://placeimg.com/3000/3000/people",
-    "https://placeimg.com/3000/3000/any"
-  ],
   "title": "Short-named charity",
   "description": "Description of an charity that explains the major purpose of the current charity and also makes space more filled out by the long text inside.",
   "percent": 25,
-  "orgHead": "Tinaramisimuss el-de-la Kandelakinuskas",
-  "orgHeadSrc": "https://placeimg.com/30/30/people",
+  "org_head": "Tinaramisimuss el-de-la Kandelakinuskas",
+  "org_head_avatar": "https://placeimg.com/30/30/people",
   "organization": "ORG of charity",
   "documents": [
     "https://placeimg.com/300/300/tech",
@@ -25,9 +21,13 @@
     "https://placeimg.com/30/30/people",
     "https://placeimg.com/30/30/any"
   ],
-  "photos2x": [
-    "https://placeimg.com/300/300/tech",
-    "https://placeimg.com/300/300/people",
-    "https://placeimg.com/300/300/any"
-  ]
+  "location": {
+    "lat": 48.9226,
+    "lng": 24.7111,
+    "country": "Ukraine",
+    "city": "Ivano-Frankivsk",
+    "address": "Stusa 1"
+  },
+  "created_at": "2020-02-09T12:30:55.596Z",
+  "tags": ["org", "animals", "help", "need", "other looooooooong tag"]
 }
