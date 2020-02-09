@@ -66,7 +66,7 @@
     .selected::after {
         position: absolute;
         content: "";
-        width: calc(100% - 1em);
+        width: calc(100% - 0.4em);
         height: 2px;
         background-color: rgb(var(--color-danger));
         display: block;
@@ -74,7 +74,7 @@
     }
 
     a {
-        padding: .8em 0.2em;
+        padding: 0.8em 0.2em;
     }
 
     .nav-actions {
