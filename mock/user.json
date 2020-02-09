@@ -1,0 +1,19 @@
+{
+  "id": "id",
+  "username": "tina",
+  "full_name": "Tina Kandelaki",
+  "sex": "male",
+  "birth": "2000-02-09T12:30:55.596Z",
+  "email": "some@email.maybe",
+  "tel": "+380959595959",
+  "created_at": "2020-02-09T12:30:55.596Z",
+  "location": {
+    "lat": 48.9226,
+    "lng": 24.7111,
+    "country": "Ukraine",
+    "city": "Ivano-Frankivsk",
+    "address": "Stusa 1"
+  },
+  "role": "GUEST|USER|MODERATOR|ADMIN",
+  "prefer_field_name": "username"
+}
