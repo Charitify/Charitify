@@ -6,7 +6,7 @@
 
     let charity = {}
 
-    $: carousel = (charity.src || []).map((src, i) => ({ src, srcBig: (charity.src2x || [])[i] }))
+    $: carousel = (charity.avarars || []).map(src => ({ src }))
 
     onMount(async () => {
         await new Promise(r => setTimeout(r, 2000))
@@ -57,8 +57,8 @@
 
     <section class="rate-section">
         <AvatarAndName
-                src={charity.orgHeadSrc}
-                title={charity.orgHead}
+                src={charity.org_head_avatar}
+                title={charity.org_head}
                 subtitle={charity.organization}
         />
 

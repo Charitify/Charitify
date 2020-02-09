@@ -2,8 +2,8 @@
     import { Avatar } from '../components'
 
     export let src = undefined
-    export let title = undefined
-    export let subtitle = undefined
+    export let title = 'incognito'
+    export let subtitle = ''
 </script>
 
 <section>
@@ -26,6 +26,9 @@
     }
 
     span {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         overflow: hidden;
         padding: 0 8px;
     }

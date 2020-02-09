@@ -8,8 +8,8 @@
     <section class="item container">
         <br>
         <AvatarAndName
-                src={item.orgHeadSrc}
-                title={item.orgHead}
+                src={item.org_head_avatar}
+                title={item.org_head}
                 subtitle={item.organization}
         />
         <br>
