@@ -35,14 +35,17 @@
 
 <style>
     .search {
-        position: sticky;
-        top: 47px;
+        flex: none;
+        position: relative;
         box-shadow: var(--shadow-primary);
     }
 
     .list-wrap {
-        flex: 1 1 auto;
-        padding: 0 var(--screen-padding)
+        flex: 1 1 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 0 var(--screen-padding);
+        box-shadow: inset 0 -100px 2000px rgba(var(--color-black), .5);
     }
 
     nav ul, nav li {

@@ -75,8 +75,13 @@
         margin-bottom: 2px;
         box-shadow: var(--shadow-primary);
         border-radius: var(--border-radius);
-        -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    ul::-webkit-scrollbar {
+        display: none;
     }
 
     li {
