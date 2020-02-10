@@ -1,15 +1,32 @@
 <script>
-
+    import { Button } from '../components'
 </script>
 
 <footer>
-    <p>© 2019 - {new Date().getFullYear()}</p>
+    <p>© {new Date().getFullYear()}</p>
+    <ul>
+        <li>
+            <Button size="small" is="success">Action</Button>
+        </li>
+    </ul>
 </footer>
 
 <style>
     footer {
-        padding: calc(var(--screen-padding) * 2) var(--screen-padding);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--screen-padding);
         box-shadow: inset var(--shadow-primary);
         background-color: rgba(var(--theme-bg-color));
+    }
+
+    ul {
+        display: flex;
+        margin: -3px;
+    }
+
+    li {
+        padding: 3px;
     }
 </style>

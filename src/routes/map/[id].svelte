@@ -6,7 +6,7 @@
 </style>
 
 <script>
-    import { stores } from '@sapper/app';
+    import { stores, goto } from '@sapper/app';
     const { page } = stores();
     import { api } from '../../services'
     import { Map, MapMarker } from '../../layouts'
@@ -35,10 +35,14 @@
             map.fitBounds(area);
         }
     }
+
+    async function onMarkerClick(organization) {
+        goto(`organizations/${organization.id}`)
+    }
 </script>
 
 <Map on:ready={onCreate} {center}>
     {#each organizations as o}
-        <MapMarker lat={o.location.lat} lng={o.location.lng}/>
+        <MapMarker lat={o.location.lat} lng={o.location.lng} on:click={onMarkerClick.bind(null, o)}/>
     {/each}
 </Map>

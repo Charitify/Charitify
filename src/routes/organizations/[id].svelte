@@ -78,14 +78,14 @@
 
     <Progress value="65" size="big"/>
 
-    <section class="rate-section">
+    <a class="rate-section" href="users/me">
         <AvatarAndName
                 src={organization.org_head_avatar}
                 title={organization.org_head}
         />
 
         <Rate/>
-    </section>
+    </a>
 
     <br>
 

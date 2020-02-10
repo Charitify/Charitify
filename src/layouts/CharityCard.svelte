@@ -15,7 +15,7 @@
     })
 </script>
 
-<section class="card">
+<a class="card" href="charities/id">
     <div class="images-wrap">
         <Carousel items={images}/>
     </div>
@@ -31,7 +31,7 @@
     <footer>
         <AvatarAndName src={orgHeadSrc} title={orgHead} subtitle={organization}/>
     </footer>
-</section>
+</a>
 
 <style>
     .card {

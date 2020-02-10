@@ -8,7 +8,7 @@
 
 </script>
 
-<section>
+<a href="users/me">
     <Avatar src={src} alt={title} class="comment-ava"/>
 
     <div>
@@ -25,10 +25,10 @@
             </slot>
         </pre>
     </div>
-</section>
+</a>
 
 <style>
-    section {
+    a {
         width: 100%;
         flex-grow: 1;
         display: flex;
