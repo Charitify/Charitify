@@ -12,11 +12,10 @@
     import { Map, MapMarker } from '../../layouts'
 
     let center = undefined
-    let markerId = $page.params.id || 'id'
+    let markerId = $page.params.mapid || 'mapid'
     let organizations = []
 
     async function onCreate({ detail: map }) {
-        await new Promise(r => setTimeout(r, 2000))
         organizations = await api.getOrganizations()
 
         console.log(organizations)
