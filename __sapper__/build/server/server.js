@@ -2290,7 +2290,7 @@ const manifest = {
 			// index.svelte
 			pattern: /^\/$/,
 			parts: [
-				{ name: "index", file: "index.svelte", component: Routes }
+				{ name: "map.svelte", file: "map.svelte.svelte", component: Routes }
 			]
 		},
 
@@ -3801,7 +3801,7 @@ const HeadersIteratorPrototype = Object.setPrototypeOf({
 		var _INTERNAL = this[INTERNAL];
 		const target = _INTERNAL.target,
 		      kind = _INTERNAL.kind,
-		      index = _INTERNAL.index;
+		      index = _INTERNAL.map;
 
 		const values = getHeaders(target, kind);
 		const len = values.length;
@@ -4898,8 +4898,8 @@ function middleware(opts
 			cache_control: 'no-cache, no-store, must-revalidate'
 		}),
 
-		fs.existsSync(path.join(build_dir, 'service-worker.js.map')) && serve({
-			pathname: '/service-worker.js.map',
+		fs.existsSync(path.join(build_dir, 'map')) && serve({
+			pathname: 'map',
 			cache_control: 'no-cache, no-store, must-revalidate'
 		}),
 

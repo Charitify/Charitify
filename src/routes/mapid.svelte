@@ -8,8 +8,8 @@
 <script>
     import { stores } from '@sapper/app';
     const { page } = stores();
-    import { api } from '../../services'
-    import { Map, MapMarker } from '../../layouts'
+    import { api } from '../services'
+    import { Map, MapMarker } from '../layouts'
 
     let center = undefined
     let markerId = $page.params.mapid || 'mapid'
