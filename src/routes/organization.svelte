@@ -86,7 +86,7 @@
 
     {#if organization.id}
         <p class="text-center">
-            <a class="btn success" href={`/charitify/mapid`}>On the map</a>
+            <a class="btn success" href={`map/${organization.id}`}>On the map</a>
         </p>
     {/if}
 
