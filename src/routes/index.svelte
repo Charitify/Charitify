@@ -30,35 +30,74 @@
     <title>Charitify - list of charities you can donate.</title>
 </svelte:head>
 
-<div class="top-pic">
-    <Carousel/>
-</div>
+<section class="scroll-box">
 
-<Progress borderRadius="0 0 8px 8px" value="30"/>
+    <div class="top-pic">
+        <Carousel/>
+    </div>
 
-<p>These guys rise a pound of vegetables. They like vegetables and long text under photos.</p>
+    <Progress borderRadius="0 0 8px 8px" value="30"/>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<section class="container">
-
-    <TitleSubTitle
-            title="Charitify"
-            subtitle="Charity application for helping those in need"
-    />
+    <p>These guys rise a pound of vegetables. They like vegetables and long text under photos.</p>
 
     <br>
     <br>
     <br>
     <br>
     <br>
+    <section class="container">
 
-    <Carousel amount="2">
-        <CharityCards amount="2" listName="Nearest to you:"/>
-    </Carousel>
+        <TitleSubTitle
+                title="Charitify"
+                subtitle="Charity application for helping those in need"
+        />
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <Carousel amount="2">
+            <CharityCards amount="2" listName="Nearest to you:"/>
+        </Carousel>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <ContentHolder/>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <Divider size="16"/>
+        <h3 class="h2 text-right">Comments:</h3>
+        <Divider size="20"/>
+
+        <Comments withFrom={false}/>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <ContentHolder/>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <ListOfFeatures/>
+    </section>
 
     <br>
     <br>
@@ -66,41 +105,6 @@
     <br>
     <br>
 
-    <ContentHolder/>
+    <Footer/>
 
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-    <Divider size="16"/>
-    <h3 class="h2 text-right">Comments:</h3>
-    <Divider size="20"/>
-
-    <Comments withFrom={false}/>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-    <ContentHolder/>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-    <ListOfFeatures/>
 </section>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-
-<Footer/>

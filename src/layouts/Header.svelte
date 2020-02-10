@@ -16,7 +16,7 @@
 </script>
 
 <nav class="theme-bg container">
-    <ul>
+    <ul class="nav-pages">
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
         <li><a rel=prefetch href='lists/charities' class:selected='{segment === "lists"}'>lists</a></li>
         <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
@@ -38,9 +38,9 @@
         </li>
 
         <li>
-            <Button on:click={changeTheme} auto size="small">
+            <a class="btn small" href="users/me">
                 <Avatar size="small" src="https://placeimg.com/300/300/people"/>
-            </Button>
+            </a>
         </li>
     </ul>
 </nav>
@@ -71,7 +71,7 @@
         bottom: -1px;
     }
 
-    a {
+    .nav-pages a {
         padding: 0.8em 0.5em;
     }
 
@@ -83,6 +83,10 @@
 
     .nav-actions li {
         padding: 3px;
+    }
+
+    .nav-actions a {
+        display: block;
     }
 
     .lang-select {
