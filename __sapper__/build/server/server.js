@@ -405,7 +405,7 @@ const Icon = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
 	if ($$props.rotate === void 0 && $$bindings.rotate && rotate !== void 0) $$bindings.rotate(rotate);
 	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
-	if ($$props.mapid === void 0 && $$bindings.mapid && id !== void 0) $$bindings.mapid(id);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	$$result.css.add(css$1);
@@ -462,7 +462,7 @@ const Form = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let ariaLabelProp = ariaLabel || title;
 	let autocompleteProp = autocomplete ? "on" : "off";
 	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
-	if ($$props.mapid === void 0 && $$bindings.mapid && id !== void 0) $$bindings.mapid(id);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	if ($$props.autocomplete === void 0 && $$bindings.autocomplete && autocomplete !== void 0) $$bindings.autocomplete(autocomplete);
@@ -516,7 +516,7 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
 	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
 	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
-	if ($$props.mapid === void 0 && $$bindings.mapid && id !== void 0) $$bindings.mapid(id);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.align === void 0 && $$bindings.align && align !== void 0) $$bindings.align(align);
 	if ($$props.maxlength === void 0 && $$bindings.maxlength && maxlength !== void 0) $$bindings.maxlength(maxlength);
 	if ($$props.rows === void 0 && $$bindings.rows && rows !== void 0) $$bindings.rows(rows);
@@ -610,7 +610,7 @@ const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
 	if ($$props.alt === void 0 && $$bindings.alt && alt !== void 0) $$bindings.alt(alt);
 	if ($$props.srcBig === void 0 && $$bindings.srcBig && srcBig !== void 0) $$bindings.srcBig(srcBig);
-	if ($$props.mapid === void 0 && $$bindings.mapid && id !== void 0) $$bindings.mapid(id);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
 	if ($$props.height === void 0 && $$bindings.height && height !== void 0) $$bindings.height(height);
 	$$result.css.add(css$4);
@@ -672,7 +672,7 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	let ariaLabelProp = ariaLabel || title;
 
 	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
-	if ($$props.mapid === void 0 && $$bindings.mapid && id !== void 0) $$bindings.mapid(id);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.href === void 0 && $$bindings.href && href !== void 0) $$bindings.href(href);
 	if ($$props.auto === void 0 && $$bindings.auto && auto !== void 0) $$bindings.auto(auto);
 	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
@@ -793,7 +793,7 @@ const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 		);
 	});
 
-	if ($$props.mapid === void 0 && $$bindings.mapid && id !== void 0) $$bindings.mapid(id);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
 	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
@@ -1833,9 +1833,9 @@ const Organization = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
     <br>
 
-    ${organization.mapid
+    ${organization.id
 	? `<p class="${"text-center"}">
-            <a class="${"btn success"}"${add_attribute("href", `/charitify/map/${organization.mapid}`, 0)}>On the map</a>
+            <a class="${"btn success"}"${add_attribute("href", `/charitify/map/${organization.id}`, 0)}>On the map</a>
         </p>`
 	: ``}
 
@@ -2253,14 +2253,14 @@ ${validate_component(Map$1, "Map").$$render($$result, {}, {}, {
 	})}`;
 });
 
-/* src/routes/map/id.svelte generated by Svelte v3.18.1 */
+/* src/routes/map/mapid.svelte generated by Svelte v3.18.1 */
 
-const Id = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Mapid = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let $page;
 	const { page } = stores$1();
 	$page = get_store_value(page);
 	let center = undefined;
-	let markerId = $page.params.mapid || "mapid.svelte";
+	let markerId = $page.params.mapid || "mapid";
 	let organizations = [];
 
 	$page = get_store_value(page);
@@ -2337,11 +2337,11 @@ const manifest = {
 		},
 
 		{
-			// map/id.svelte
-			pattern: /^\/map\/id\/?$/,
+			// map/mapid.svelte
+			pattern: /^\/map\/mapid\/?$/,
 			parts: [
 				null,
-				{ name: "map_id", file: "map/id.svelte", component: Id }
+				{ name: "map_mapid", file: "map/mapid.svelte", component: Mapid }
 			]
 		}
 	],
