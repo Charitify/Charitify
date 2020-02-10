@@ -1,6 +1,8 @@
 <script>
+    import { stores } from '@sapper/app';
+    const { page } = stores();
     import { onMount } from 'svelte'
-    import { api } from '../services'
+    import { api } from '../../services'
     import {
         Footer,
         Comments,
@@ -8,23 +10,25 @@
         TitleSubTitle,
         AvatarAndName,
         DonatingGroup,
-        ContentHolder,
         ContactsHolder,
-    } from '../layouts'
-    import { Rate, Progress, Carousel, Divider } from '../components'
+    } from '../../layouts'
+    import { Rate, Progress, Carousel, Divider } from '../../components'
 
-    let organization = {}
+    let charityId = $page.params.id
+    let charity = {}
 
-    $: carousel = (organization.avatars || []).map(src => ({ src }))
+    $: carousel = (charity.avarars || []).map(src => ({ src }))
 
     onMount(async () => {
         await new Promise(r => setTimeout(r, 2000))
-        organization = await api.getOrganization(1)
+        charity = await api.getCharity(1)
     })
+
+    $: console.log(charityId)
 </script>
 
 <svelte:head>
-    <title>Charitify - Organization page.</title>
+    <title>Charitify - Charity page and donate.</title>
 </svelte:head>
 
 <style>
@@ -54,15 +58,6 @@
 
 <section class="container">
 
-    <section>
-        <br>
-        <TitleSubTitle
-                title={organization.title}
-                subtitle={organization.description}
-        />
-        <br>
-    </section>
-
     <section class="top">
         <div class="pics-wrap">
             <Carousel items={carousel}/>
@@ -73,29 +68,39 @@
 
     <Progress value="65" size="big"/>
 
-    <section class="rate-section">
+    <a class="rate-section" href={`organizations/${charity.org_id}`}>
         <AvatarAndName
-                src={organization.org_head_avatar}
-                title={organization.org_head}
+                src={charity.org_head_avatar}
+                title={charity.org_head}
+                subtitle={charity.organization}
         />
 
         <Rate/>
+    </a>
+
+    <section>
+        <br>
+        <TitleSubTitle
+                title={charity.title}
+                subtitle={charity.description}
+        />
+        <br>
     </section>
 
     <br>
-
-    {#if organization.id}
-        <p class="text-center">
-            <a class="btn success" href={`map/${organization.id}`}>On the map</a>
-        </p>
-    {/if}
-
+    <br>
     <br>
     <br>
     <br>
 
-    <ContentHolder/>
+    <Divider size="20"/>
+    <h3 class="h2 text-right">Comments:</h3>
+    <Divider size="16"/>
 
+    <Comments/>
+
+    <br>
+    <br>
     <br>
     <br>
     <br>
@@ -103,14 +108,15 @@
     <br>
 
     <Divider size="16"/>
-    <h3 class="h2 text-right">Charities of the organization:</h3>
+    <h3 class="h2 text-right">Other charities of the organization:</h3>
     <Divider size="20"/>
     <br>
     <Carousel amount="5">
         <CharityCards amount="2"/>
     </Carousel>
 
-
+    <br>
+    <br>
     <br>
     <br>
     <br>
@@ -125,11 +131,13 @@
     <br>
     <br>
 
-    <Divider size="20"/>
-    <h3 class="h2 text-right">Comments:</h3>
     <Divider size="16"/>
-
-    <Comments/>
+    <h3 class="h2 text-right">Similar of the organization:</h3>
+    <Divider size="20"/>
+    <br>
+    <Carousel amount="5">
+        <CharityCards amount="2"/>
+    </Carousel>
 
     <br>
     <br>

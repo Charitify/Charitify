@@ -17,7 +17,7 @@
 </script>
 
 <ListsLayout>
-    <ListItems items={organizations}/>
+    <ListItems items={organizations} basePath="organizations"/>
 </ListsLayout>
 
 <style>

@@ -2,10 +2,11 @@
     import AvatarAndName from './AvatarAndName.svelte'
 
     export let items = []
+    export let basePath = ''
 </script>
 
 {#each items as item}
-    <section class="item container">
+    <a class="item container" href={`${basePath}/${item.id}`}>
         <br>
         <AvatarAndName
                 src={item.org_head_avatar}
@@ -13,7 +14,7 @@
                 subtitle={item.organization}
         />
         <br>
-    </section>
+    </a>
     <br>
 {:else}
     <section class="item container">
@@ -23,6 +24,7 @@
 
 <style>
     .item {
+        display: block;
         flex: 1 1 auto;
         box-shadow: var(--shadow-primary);
         border-radius: var(--border-radius);

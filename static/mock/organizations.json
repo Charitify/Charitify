@@ -1,6 +1,6 @@
 [
   {
-    "id": "mapid",
+    "id": "id",
     "avatars": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -25,7 +25,7 @@
   },
 
   {
-    "id": "mapid",
+    "id": "id",
     "avatar": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -50,7 +50,7 @@
   },
 
   {
-    "id": "mapid",
+    "id": "id",
     "src": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -75,7 +75,7 @@
   },
 
   {
-    "id": "mapid",
+    "id": "id",
     "avatar": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -100,7 +100,7 @@
   },
 
   {
-    "id": "mapid",
+    "id": "id",
     "avatar": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",

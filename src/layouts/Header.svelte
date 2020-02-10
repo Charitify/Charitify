@@ -18,10 +18,8 @@
 <nav class="theme-bg container">
     <ul>
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
-        <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
         <li><a rel=prefetch href='lists/charities' class:selected='{segment === "lists"}'>lists</a></li>
-        <li><a rel=prefetch href='charity' class:selected='{segment === "charity"}'>charity</a></li>
-        <li><a rel=prefetch href='organization' class:selected='{segment === "organization"}'>org</a></li>
+        <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
     </ul>
 
     <ul class="nav-actions">
@@ -66,7 +64,7 @@
     .selected::after {
         position: absolute;
         content: "";
-        width: calc(100% - 0.4em);
+        width: calc(100% - 1em);
         height: 2px;
         background-color: rgb(var(--color-danger));
         display: block;
@@ -74,7 +72,7 @@
     }
 
     a {
-        padding: 0.8em 0.2em;
+        padding: 0.8em 0.5em;
     }
 
     .nav-actions {
