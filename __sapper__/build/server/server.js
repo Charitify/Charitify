@@ -1448,7 +1448,7 @@ const CharityCard = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 const css$i = {
 	code: "section.svelte-1hdqh35.svelte-1hdqh35{flex-grow:1;align-self:stretch;max-width:100%;padding:0 10px}.cards.svelte-1hdqh35.svelte-1hdqh35{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;padding:var(--screen-padding) 0;margin:calc(var(--screen-padding) * -3) calc(var(--screen-padding) * -1)}.cards.svelte-1hdqh35 li.svelte-1hdqh35{display:flex;justify-content:stretch;width:50%;overflow:hidden;padding:calc(var(--screen-padding) * 3) var(--screen-padding)}.cards.svelte-1hdqh35 li.svelte-1hdqh35:hover{background-color:rgba(0, 0, 0, .1)\n    }",
-	map: "{\"version\":3,\"file\":\"CharityCards.svelte\",\"sources\":[\"CharityCards.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Divider } from '../components'\\n    import CharityCard from '../layouts/CharityCard.svelte'\\n\\n    export let listName\\n    export let amount = 2\\n\\n    $: cards = [\\n        {\\n            src: 'https://placeimg.com/300/300/tech',\\n            title: 'This person needs your help',\\n            percent: 45,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'Head of the organization with loooooooong-naaaaaamed charity',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/arch',\\n            title: 'Another person who needs your quick help',\\n            percent: 65,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'Head of another organization',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/any',\\n            title: 'The person with the longest name is also wait for you',\\n            percent: 5,\\n            orgHead: 'Tinaramisimuss el-de-la Kandelakinuskas',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG of charity',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/nature',\\n            title: 'Needs',\\n            percent: 95,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG giant charity organization of big Charitify company',\\n        },\\n    ].slice(Number.isFinite(+amount) ? +amount : 0)\\n\\n    $: images = cards.index(card => ({\\n        src: [card.src, card.src, card.src],\\n        alt: card.title,\\n    }))\\n</script>\\n\\n<section>\\n    {#if listName}\\n        <Divider size=\\\"16\\\"/>\\n        <h3 class=\\\"h2 text-right\\\">{listName}</h3>\\n        <Divider size=\\\"20\\\"/>\\n        <br>\\n    {/if}\\n    <ul class=\\\"cards\\\">\\n        {#each cards as card}\\n            <li>\\n                <CharityCard {...card}/>\\n            </li>\\n        {/each}\\n    </ul>\\n</section>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n        align-self: stretch;\\n        max-width: 100%;\\n        padding: 0 10px;\\n    }\\n\\n    .cards {\\n        display: flex;\\n        flex-wrap: wrap;\\n        align-items: flex-start;\\n        justify-content: center;\\n        padding: var(--screen-padding) 0;\\n        margin: calc(var(--screen-padding) * -3) calc(var(--screen-padding) * -1);\\n    }\\n\\n    .cards li {\\n        display: flex;\\n        justify-content: stretch;\\n        width: 50%;\\n        overflow: hidden;\\n        padding: calc(var(--screen-padding) * 3) var(--screen-padding);\\n    }\\n\\n    .cards li:hover {\\n        background-color: rgba(0, 0, 0, .1)\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAiEI,OAAO,8BAAC,CAAC,AACL,SAAS,CAAE,CAAC,CACZ,UAAU,CAAE,OAAO,CACnB,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,CAAC,CAAC,IAAI,AACnB,CAAC,AAED,MAAM,8BAAC,CAAC,AACJ,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,IAAI,CACf,WAAW,CAAE,UAAU,CACvB,eAAe,CAAE,MAAM,CACvB,OAAO,CAAE,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAChC,MAAM,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,AAC7E,CAAC,AAED,qBAAM,CAAC,EAAE,eAAC,CAAC,AACP,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,OAAO,CACxB,KAAK,CAAE,GAAG,CACV,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,AAClE,CAAC,AAED,qBAAM,CAAC,iBAAE,MAAM,AAAC,CAAC,AACb,gBAAgB,CAAE,KAAK,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC;IACvC,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"CharityCards.svelte\",\"sources\":[\"CharityCards.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Divider } from '../components'\\n    import CharityCard from '../layouts/CharityCard.svelte'\\n\\n    export let listName\\n    export let amount = 2\\n\\n    $: cards = [\\n        {\\n            src: 'https://placeimg.com/300/300/tech',\\n            title: 'This person needs your help',\\n            percent: 45,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'Head of the organization with loooooooong-naaaaaamed charity',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/arch',\\n            title: 'Another person who needs your quick help',\\n            percent: 65,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'Head of another organization',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/any',\\n            title: 'The person with the longest name is also wait for you',\\n            percent: 5,\\n            orgHead: 'Tinaramisimuss el-de-la Kandelakinuskas',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG of charity',\\n        },\\n        {\\n            src: 'https://placeimg.com/300/300/nature',\\n            title: 'Needs',\\n            percent: 95,\\n            orgHead: 'Tina Kandelaki',\\n            orgHeadSrc: 'https://placeimg.com/300/300/people',\\n            organization: 'ORG giant charity organization of big Charitify company',\\n        },\\n    ].slice(Number.isFinite(+amount) ? +amount : 0)\\n\\n    $: images = cards.map(card => ({\\n        src: [card.src, card.src, card.src],\\n        alt: card.title,\\n    }))\\n</script>\\n\\n<section>\\n    {#if listName}\\n        <Divider size=\\\"16\\\"/>\\n        <h3 class=\\\"h2 text-right\\\">{listName}</h3>\\n        <Divider size=\\\"20\\\"/>\\n        <br>\\n    {/if}\\n    <ul class=\\\"cards\\\">\\n        {#each cards as card}\\n            <li>\\n                <CharityCard {...card}/>\\n            </li>\\n        {/each}\\n    </ul>\\n</section>\\n\\n<style>\\n    section {\\n        flex-grow: 1;\\n        align-self: stretch;\\n        max-width: 100%;\\n        padding: 0 10px;\\n    }\\n\\n    .cards {\\n        display: flex;\\n        flex-wrap: wrap;\\n        align-items: flex-start;\\n        justify-content: center;\\n        padding: var(--screen-padding) 0;\\n        margin: calc(var(--screen-padding) * -3) calc(var(--screen-padding) * -1);\\n    }\\n\\n    .cards li {\\n        display: flex;\\n        justify-content: stretch;\\n        width: 50%;\\n        overflow: hidden;\\n        padding: calc(var(--screen-padding) * 3) var(--screen-padding);\\n    }\\n\\n    .cards li:hover {\\n        background-color: rgba(0, 0, 0, .1)\\n    }\\n</style>\\n\"],\"names\":[],\"mappings\":\"AAiEI,OAAO,8BAAC,CAAC,AACL,SAAS,CAAE,CAAC,CACZ,UAAU,CAAE,OAAO,CACnB,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,CAAC,CAAC,IAAI,AACnB,CAAC,AAED,MAAM,8BAAC,CAAC,AACJ,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,IAAI,CACf,WAAW,CAAE,UAAU,CACvB,eAAe,CAAE,MAAM,CACvB,OAAO,CAAE,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAChC,MAAM,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,AAC7E,CAAC,AAED,qBAAM,CAAC,EAAE,eAAC,CAAC,AACP,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,OAAO,CACxB,KAAK,CAAE,GAAG,CACV,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,AAClE,CAAC,AAED,qBAAM,CAAC,iBAAE,MAAM,AAAC,CAAC,AACb,gBAAgB,CAAE,KAAK,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC;IACvC,CAAC\"}"
 };
 
 const CharityCards = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1773,7 +1773,7 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 
 const css$n = {
 	code: ".top.svelte-uz5elz{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.pics-wrap.svelte-uz5elz{z-index:0;flex-grow:1;display:flex;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.rate-section.svelte-uz5elz{display:flex;align-items:flex-end;justify-content:space-between;padding:12px 0}",
-	map: "{\"version\":3,\"file\":\"organization.svelte\",\"sources\":[\"organization.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import {\\n        Footer,\\n        Comments,\\n        CharityCards,\\n        TitleSubTitle,\\n        AvatarAndName,\\n        DonatingGroup,\\n        ContentHolder,\\n        ContactsHolder,\\n    } from '../layouts'\\n    import { Rate, Progress, Carousel, Divider } from '../components'\\n\\n    let organization = {}\\n\\n    $: carousel = (organization.avatars || []).map(src => ({ src }))\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        organization = await api.getOrganization(1)\\n    })\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Organization page.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n    <section>\\n        <br>\\n        <TitleSubTitle\\n                title={organization.title}\\n                subtitle={organization.description}\\n        />\\n        <br>\\n    </section>\\n\\n    <section class=\\\"top\\\">\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel items={carousel}/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src={organization.org_head_avatar}\\n                title={organization.org_head}\\n        />\\n\\n        <Rate/>\\n    </section>\\n\\n    <br>\\n\\n    {#if organization.id}\\n        <p class=\\\"text-center\\\">\\n            <a class=\\\"btn success\\\" href={`/charitify/mapid`}>On the map</a>\\n        </p>\\n    {/if}\\n\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContentHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"16\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Charities of the organization:</h3>\\n    <Divider size=\\\"20\\\"/>\\n    <br>\\n    <Carousel amount=\\\"5\\\">\\n        <CharityCards amount=\\\"2\\\"/>\\n    </Carousel>\\n\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContactsHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"20\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Comments:</h3>\\n    <Divider size=\\\"16\\\"/>\\n\\n    <Comments/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n</section>\\n\\n<Footer/>\\n\\n\"],\"names\":[],\"mappings\":\"AA8BI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"organization.svelte\",\"sources\":[\"organization.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import {\\n        Footer,\\n        Comments,\\n        CharityCards,\\n        TitleSubTitle,\\n        AvatarAndName,\\n        DonatingGroup,\\n        ContentHolder,\\n        ContactsHolder,\\n    } from '../layouts'\\n    import { Rate, Progress, Carousel, Divider } from '../components'\\n\\n    let organization = {}\\n\\n    $: carousel = (organization.avatars || []).map(src => ({ src }))\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        organization = await api.getOrganization(1)\\n    })\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Organization page.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n    <section>\\n        <br>\\n        <TitleSubTitle\\n                title={organization.title}\\n                subtitle={organization.description}\\n        />\\n        <br>\\n    </section>\\n\\n    <section class=\\\"top\\\">\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel items={carousel}/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src={organization.org_head_avatar}\\n                title={organization.org_head}\\n        />\\n\\n        <Rate/>\\n    </section>\\n\\n    <br>\\n\\n    {#if organization.id}\\n        <p class=\\\"text-center\\\">\\n            <a class=\\\"btn success\\\" href={`map/${organization.id}`}>On the map</a>\\n        </p>\\n    {/if}\\n\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContentHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"16\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Charities of the organization:</h3>\\n    <Divider size=\\\"20\\\"/>\\n    <br>\\n    <Carousel amount=\\\"5\\\">\\n        <CharityCards amount=\\\"2\\\"/>\\n    </Carousel>\\n\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContactsHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"20\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Comments:</h3>\\n    <Divider size=\\\"16\\\"/>\\n\\n    <Comments/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n</section>\\n\\n<Footer/>\\n\\n\"],\"names\":[],\"mappings\":\"AA8BI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
 };
 
 const Organization = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1835,7 +1835,7 @@ const Organization = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
     ${organization.id
 	? `<p class="${"text-center"}">
-            <a class="${"btn success"}"${add_attribute("href", `/charitify/mapid`, 0)}>On the map</a>
+            <a class="${"btn success"}"${add_attribute("href", `map/${organization.id}`, 0)}>On the map</a>
         </p>`
 	: ``}
 
@@ -2226,32 +2226,7 @@ stores.session.subscribe(async value => {
 
 const stores$1 = () => getContext(CONTEXT_KEY);
 
-/* src/routes/mapid.svelte generated by Svelte v3.18.1 */
-
-const Mapid = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let $page;
-	const { page } = stores$1();
-	$page = get_store_value(page);
-	let center = undefined;
-	let markerId = $page.params.mapid || "mapid";
-	let organizations = [];
-
-	$page = get_store_value(page);
-
-	return `${($$result.head += `${($$result.title = `<title>Charitify - Map of organizations.</title>`, "")}`, "")}
-
-
-
-
-
-${validate_component(Map$1, "Map").$$render($$result, { center }, {}, {
-		default: () => `
-    ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
-`
-	})}`;
-});
-
-/* src/routes/map.svelte generated by Svelte v3.18.1 */
+/* src/routes/map/index.svelte generated by Svelte v3.18.1 */
 
 const Map_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let $page;
@@ -2278,7 +2253,34 @@ ${validate_component(Map$1, "Map").$$render($$result, {}, {}, {
 	})}`;
 });
 
+/* src/routes/map/[id].svelte generated by Svelte v3.18.1 */
+
+const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let $page;
+	const { page } = stores$1();
+	$page = get_store_value(page);
+	let center = undefined;
+	let markerId = $page.params.id;
+	let organizations = [];
+
+	$page = get_store_value(page);
+
+	return `${($$result.head += `${($$result.title = `<title>Charitify - Map of organizations.</title>`, "")}`, "")}
+
+
+
+
+
+${validate_component(Map$1, "Map").$$render($$result, { center }, {}, {
+		default: () => `
+    ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
+`
+	})}`;
+});
+
 // This file is generated by Sapper — do not edit it!
+
+const d = decodeURIComponent;
 
 const manifest = {
 	server_routes: [
@@ -2329,18 +2331,19 @@ const manifest = {
 		},
 
 		{
-			// mapid.svelte
-			pattern: /^\/mapid\/?$/,
+			// map/index.svelte
+			pattern: /^\/map\/?$/,
 			parts: [
-				{ name: "mapid", file: "mapid.svelte", component: Mapid }
+				{ name: "map", file: "map/index.svelte", component: Map_1 }
 			]
 		},
 
 		{
-			// map.svelte
-			pattern: /^\/map\/?$/,
+			// map/[id].svelte
+			pattern: /^\/map\/([^\/]+?)\/?$/,
 			parts: [
-				{ name: "index.svelte", file: "index.svelte.svelte", component: Map_1 }
+				null,
+				{ name: "map_$id", file: "map/[id].svelte", component: U5Bidu5D, params: match => ({ id: d(match[1]) }) }
 			]
 		}
 	],
@@ -2714,7 +2717,7 @@ function devalue(value) {
             case 'Date':
                 return "new Date(" + thing.getTime() + ")";
             case 'Array':
-                var members = thing.index(function (v, i) { return i in thing ? stringify(v) : ''; });
+                var members = thing.map(function (v, i) { return i in thing ? stringify(v) : ''; });
                 var tail = thing.length === 0 || (thing.length - 1 in thing) ? '' : ',';
                 return "[" + members.join(',') + tail + "]";
             case 'Set':
@@ -3540,7 +3543,7 @@ function find(map, name) {
 	return undefined;
 }
 
-const MAP = Symbol('index.svelte');
+const MAP = Symbol('map');
 class Headers {
 	/**
   * Headers class
@@ -4536,14 +4539,14 @@ function get_page_handler(
 			// TODO add dependencies and CSS
 			const link = preloaded_chunks
 				.filter(file => file && !file.match(/\.map$/))
-				.index(file => `<${req.baseUrl}/client/${file}>;rel="modulepreload"`)
+				.map(file => `<${req.baseUrl}/client/${file}>;rel="modulepreload"`)
 				.join(', ');
 
 			res.setHeader('Link', link);
 		} else {
 			const link = preloaded_chunks
 				.filter(file => file && !file.match(/\.map$/))
-				.index((file) => {
+				.map((file) => {
 					const as = /\.css$/.test(file) ? 'style' : 'script';
 					return `<${req.baseUrl}/client/${file}>;rel="preload";as="${as}"`;
 				})
@@ -4625,7 +4628,7 @@ function get_page_handler(
 
 			let toPreload = [root_preloaded];
 			if (!is_service_worker_index) {
-				toPreload = toPreload.concat(page.parts.index(part => {
+				toPreload = toPreload.concat(page.parts.map(part => {
 					if (!part) return null;
 
 					// the deepest level is used below, to initialise the store
@@ -4897,8 +4900,8 @@ function middleware(opts
 			cache_control: 'no-cache, no-store, must-revalidate'
 		}),
 
-		fs.existsSync(path.join(build_dir, 'index.svelte')) && serve({
-			pathname: 'index.svelte',
+		fs.existsSync(path.join(build_dir, 'service-worker.js.map')) && serve({
+			pathname: '/service-worker.js.map',
 			cache_control: 'no-cache, no-store, must-revalidate'
 		}),
 
