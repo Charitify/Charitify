@@ -1773,7 +1773,7 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 
 const css$n = {
 	code: ".top.svelte-uz5elz{display:flex;margin-bottom:calc(var(--screen-padding) * 1.5);margin-top:var(--screen-padding)}.pics-wrap.svelte-uz5elz{z-index:0;flex-grow:1;display:flex;overflow:hidden;margin-bottom:2px;border-radius:var(--border-radius);box-shadow:var(--shadow-primary)}.rate-section.svelte-uz5elz{display:flex;align-items:flex-end;justify-content:space-between;padding:12px 0}",
-	map: "{\"version\":3,\"file\":\"organization.svelte\",\"sources\":[\"organization.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import {\\n        Footer,\\n        Comments,\\n        CharityCards,\\n        TitleSubTitle,\\n        AvatarAndName,\\n        DonatingGroup,\\n        ContentHolder,\\n        ContactsHolder,\\n    } from '../layouts'\\n    import { Rate, Progress, Carousel, Divider } from '../components'\\n\\n    let organization = {}\\n\\n    $: carousel = (organization.avatars || []).map(src => ({ src }))\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        organization = await api.getOrganization(1)\\n    })\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Organization page.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n    <section>\\n        <br>\\n        <TitleSubTitle\\n                title={organization.title}\\n                subtitle={organization.description}\\n        />\\n        <br>\\n    </section>\\n\\n    <section class=\\\"top\\\">\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel items={carousel}/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src={organization.org_head_avatar}\\n                title={organization.org_head}\\n        />\\n\\n        <Rate/>\\n    </section>\\n\\n    <br>\\n\\n    {#if organization.id}\\n        <p class=\\\"text-center\\\">\\n            <a class=\\\"btn success\\\" href={`/charitify/map/${organization.id}`}>On the map</a>\\n        </p>\\n    {/if}\\n\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContentHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"16\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Charities of the organization:</h3>\\n    <Divider size=\\\"20\\\"/>\\n    <br>\\n    <Carousel amount=\\\"5\\\">\\n        <CharityCards amount=\\\"2\\\"/>\\n    </Carousel>\\n\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContactsHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"20\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Comments:</h3>\\n    <Divider size=\\\"16\\\"/>\\n\\n    <Comments/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n</section>\\n\\n<Footer/>\\n\\n\"],\"names\":[],\"mappings\":\"AA8BI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"organization.svelte\",\"sources\":[\"organization.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '../services'\\n    import {\\n        Footer,\\n        Comments,\\n        CharityCards,\\n        TitleSubTitle,\\n        AvatarAndName,\\n        DonatingGroup,\\n        ContentHolder,\\n        ContactsHolder,\\n    } from '../layouts'\\n    import { Rate, Progress, Carousel, Divider } from '../components'\\n\\n    let organization = {}\\n\\n    $: carousel = (organization.avatars || []).map(src => ({ src }))\\n\\n    onMount(async () => {\\n        await new Promise(r => setTimeout(r, 2000))\\n        organization = await api.getOrganization(1)\\n    })\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Organization page.</title>\\n</svelte:head>\\n\\n<style>\\n    .top {\\n        display: flex;\\n        margin-bottom: calc(var(--screen-padding) * 1.5);\\n        margin-top: var(--screen-padding);\\n    }\\n\\n    .pics-wrap {\\n        z-index: 0;\\n        flex-grow: 1;\\n        display: flex;\\n        overflow: hidden;\\n        margin-bottom: 2px;\\n        border-radius: var(--border-radius);\\n        box-shadow: var(--shadow-primary);\\n    }\\n\\n    .rate-section {\\n        display: flex;\\n        align-items: flex-end;\\n        justify-content: space-between;\\n        padding: 12px 0;\\n    }\\n</style>\\n\\n<section class=\\\"container\\\">\\n\\n    <section>\\n        <br>\\n        <TitleSubTitle\\n                title={organization.title}\\n                subtitle={organization.description}\\n        />\\n        <br>\\n    </section>\\n\\n    <section class=\\\"top\\\">\\n        <div class=\\\"pics-wrap\\\">\\n            <Carousel items={carousel}/>\\n        </div>\\n\\n        <DonatingGroup/>\\n    </section>\\n\\n    <Progress value=\\\"65\\\" size=\\\"big\\\"/>\\n\\n    <section class=\\\"rate-section\\\">\\n        <AvatarAndName\\n                src={organization.org_head_avatar}\\n                title={organization.org_head}\\n        />\\n\\n        <Rate/>\\n    </section>\\n\\n    <br>\\n\\n    {#if organization.id}\\n        <p class=\\\"text-center\\\">\\n            <a class=\\\"btn success\\\" href={`/charitify/mapid`}>On the map</a>\\n        </p>\\n    {/if}\\n\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContentHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"16\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Charities of the organization:</h3>\\n    <Divider size=\\\"20\\\"/>\\n    <br>\\n    <Carousel amount=\\\"5\\\">\\n        <CharityCards amount=\\\"2\\\"/>\\n    </Carousel>\\n\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <ContactsHolder/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Divider size=\\\"20\\\"/>\\n    <h3 class=\\\"h2 text-right\\\">Comments:</h3>\\n    <Divider size=\\\"16\\\"/>\\n\\n    <Comments/>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n</section>\\n\\n<Footer/>\\n\\n\"],\"names\":[],\"mappings\":\"AA8BI,IAAI,cAAC,CAAC,AACF,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAChD,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,UAAU,cAAC,CAAC,AACR,OAAO,CAAE,CAAC,CACV,SAAS,CAAE,CAAC,CACZ,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AACrC,CAAC,AAED,aAAa,cAAC,CAAC,AACX,OAAO,CAAE,IAAI,CACb,WAAW,CAAE,QAAQ,CACrB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,CAAC,AACnB,CAAC\"}"
 };
 
 const Organization = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1835,7 +1835,7 @@ const Organization = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
     ${organization.id
 	? `<p class="${"text-center"}">
-            <a class="${"btn success"}"${add_attribute("href", `/charitify/map/${organization.id}`, 0)}>On the map</a>
+            <a class="${"btn success"}"${add_attribute("href", `/charitify/mapid`, 0)}>On the map</a>
         </p>`
 	: ``}
 
@@ -2226,7 +2226,32 @@ stores.session.subscribe(async value => {
 
 const stores$1 = () => getContext(CONTEXT_KEY);
 
-/* src/routes/map/index.svelte generated by Svelte v3.18.1 */
+/* src/routes/mapid.svelte generated by Svelte v3.18.1 */
+
+const Mapid = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let $page;
+	const { page } = stores$1();
+	$page = get_store_value(page);
+	let center = undefined;
+	let markerId = $page.params.mapid || "mapid";
+	let organizations = [];
+
+	$page = get_store_value(page);
+
+	return `${($$result.head += `${($$result.title = `<title>Charitify - Map of organizations.</title>`, "")}`, "")}
+
+
+
+
+
+${validate_component(Map$1, "Map").$$render($$result, { center }, {}, {
+		default: () => `
+    ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
+`
+	})}`;
+});
+
+/* src/routes/map.svelte generated by Svelte v3.18.1 */
 
 const Map_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let $page;
@@ -2253,31 +2278,6 @@ ${validate_component(Map$1, "Map").$$render($$result, {}, {}, {
 	})}`;
 });
 
-/* src/routes/map/mapid.svelte generated by Svelte v3.18.1 */
-
-const Mapid = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let $page;
-	const { page } = stores$1();
-	$page = get_store_value(page);
-	let center = undefined;
-	let markerId = $page.params.mapid || "mapid";
-	let organizations = [];
-
-	$page = get_store_value(page);
-
-	return `${($$result.head += `${($$result.title = `<title>Charitify - Map of organizations.</title>`, "")}`, "")}
-
-
-
-
-
-${validate_component(Map$1, "Map").$$render($$result, { center }, {}, {
-		default: () => `
-    ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
-`
-	})}`;
-});
-
 // This file is generated by Sapper — do not edit it!
 
 const manifest = {
@@ -2290,7 +2290,7 @@ const manifest = {
 			// index.svelte
 			pattern: /^\/$/,
 			parts: [
-				{ name: "map.svelte", file: "map.svelte.svelte", component: Routes }
+				{ name: "index", file: "index.svelte", component: Routes }
 			]
 		},
 
@@ -2329,19 +2329,18 @@ const manifest = {
 		},
 
 		{
-			// map/index.svelte
-			pattern: /^\/map\/?$/,
+			// mapid.svelte
+			pattern: /^\/mapid\/?$/,
 			parts: [
-				{ name: "map", file: "map/index.svelte", component: Map_1 }
+				{ name: "mapid", file: "mapid.svelte", component: Mapid }
 			]
 		},
 
 		{
-			// map/mapid.svelte
-			pattern: /^\/map\/mapid\/?$/,
+			// map.svelte
+			pattern: /^\/map\/?$/,
 			parts: [
-				null,
-				{ name: "map_mapid", file: "map/mapid.svelte", component: Mapid }
+				{ name: "map", file: "map.svelte", component: Map_1 }
 			]
 		}
 	],
@@ -3801,7 +3800,7 @@ const HeadersIteratorPrototype = Object.setPrototypeOf({
 		var _INTERNAL = this[INTERNAL];
 		const target = _INTERNAL.target,
 		      kind = _INTERNAL.kind,
-		      index = _INTERNAL.map;
+		      index = _INTERNAL.index;
 
 		const values = getHeaders(target, kind);
 		const len = values.length;
@@ -4898,8 +4897,8 @@ function middleware(opts
 			cache_control: 'no-cache, no-store, must-revalidate'
 		}),
 
-		fs.existsSync(path.join(build_dir, 'map')) && serve({
-			pathname: 'map',
+		fs.existsSync(path.join(build_dir, 'service-worker.js.map')) && serve({
+			pathname: '/service-worker.js.map',
 			cache_control: 'no-cache, no-store, must-revalidate'
 		}),
 
