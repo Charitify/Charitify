@@ -12,7 +12,7 @@
     import { Map, MapMarker } from '../../layouts'
 
     let center = undefined
-    let markerId = $page.params.id
+    let markerId = $page.params.id || 'id'
     let organizations = []
 
     async function onCreate({ detail: map }) {
