@@ -1,5 +1,6 @@
 [
   {
+    "id": "id",
     "avatars": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -8,6 +9,7 @@
     "title": "Short-named charity",
     "description": "Description of an charity that explains the major purpose of the current charity and also makes space more filled out by the long text inside",
     "percent": 95,
+    "org_id": "id",
     "org_head": "Tina Kandelaki",
     "org_head_avatar": "https://placeimg.com/30/30/people",
     "organization": "ORG of charity",
@@ -33,6 +35,7 @@
   },
 
   {
+    "id": "id",
     "avatars": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -41,6 +44,7 @@
     "title": "Short-named charity",
     "description": "Short description of an charity",
     "percent": 5,
+    "org_id": "id",
     "org_head": "Tinaramisimuss el-de-la Kandelakinuskas",
     "org_head_avatar": "https://placeimg.com/30/30/people",
     "organization": "ORG giant charity organization of big Charitify company",
@@ -66,6 +70,7 @@
   },
 
   {
+    "id": "id",
     "avatars": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -74,6 +79,7 @@
     "title": "Short-named charity",
     "description": "Description of an charity that explains the major purpose of the current charity",
     "percent": 50,
+    "org_id": "id",
     "org_head": "Tinaramisimuss el-de-la Kandelakinuskas",
     "org_head_avatar": "https://placeimg.com/30/30/people",
     "organization": "ORG of charity",
@@ -99,6 +105,7 @@
   },
 
   {
+    "id": "id",
     "avatars": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -107,6 +114,7 @@
     "title": "Short-named charity",
     "description": "Description of an charity that explains the major purpose of the current charity and also makes space more filled out by the long text inside",
     "percent": 54,
+    "org_id": "id",
     "org_head": "Tina Kandelaki",
     "org_head_avatar": "https://placeimg.com/30/30/people",
     "organization": "ORG of charity",
@@ -132,6 +140,7 @@
   },
 
   {
+    "id": "id",
     "avatars": [
       "https://placeimg.com/30/30/tech",
       "https://placeimg.com/30/30/people",
@@ -140,6 +149,7 @@
     "title": "Short-named charity",
     "description": "Description of an charity that explains the major purpose of the current charity and also makes space more filled out by the long text inside",
     "percent": 21,
+    "org_id": "id",
     "org_head": "Tina Kandelaki",
     "org_head_avatar": "https://placeimg.com/30/30/people",
     "organization": "ORG giant charity organization of big Charitify company",

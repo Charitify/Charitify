@@ -8,6 +8,7 @@
   "title": "Short-named charity",
   "description": "Description of an charity that explains the major purpose of the current charity and also makes space more filled out by the long text inside.",
   "percent": 25,
+  "org_id": "id",
   "org_head": "Tinaramisimuss el-de-la Kandelakinuskas",
   "org_head_avatar": "https://placeimg.com/30/30/people",
   "organization": "ORG of charity",
