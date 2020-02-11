@@ -1,5 +1,5 @@
 <script>
-    import { Input, Picture } from '../../components'
+    import { Input, Picture, Button } from '../../components'
 
     const inputs = [
         {
@@ -31,6 +31,21 @@
     <div class="user-avatar">
         <Picture src="https://placeimg.com/100/100/people" alt="user avatar"/>
     </div>
+    <br>
+    <br>
+    <section style="display: flex; flex-direction: row">
+        <Button is="success" auto>success</Button>
+        &nbsp;
+        &nbsp;
+        <Button is="warning" auto>warning</Button>
+        &nbsp;
+        &nbsp;
+        <Button is="danger" auto>danger</Button>
+        &nbsp;
+        &nbsp;
+        <Button is="info" auto>info</Button>
+    </section>
+    <br>
     <br>
     <ul>
         {#each inputs as inp}
