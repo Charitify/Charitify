@@ -39,7 +39,7 @@
 
         <li>
             <a class="btn small" href="users/me">
-                <Avatar size="small" src="https://placeimg.com/300/300/people"/>
+                <Avatar size="small" src="https://placeimg.com/30/30/people"/>
             </a>
         </li>
     </ul>

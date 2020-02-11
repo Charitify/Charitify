@@ -1,5 +1,5 @@
 <script>
-    import { Input } from '../../components'
+    import { Input, Picture } from '../../components'
 
     const inputs = [
         {
@@ -28,7 +28,9 @@
 
 <section class="container">
     <br>
-    <div class="user-avatar">+</div>
+    <div class="user-avatar">
+        <Picture src="https://placeimg.com/100/100/people" alt="user avatar"/>
+    </div>
     <br>
     <ul>
         {#each inputs as inp}

@@ -94,8 +94,8 @@
         height: 100%;
     }
 
-    .picture.loadingSrc .pic-1x,
-    .picture.loadingSrcBig .pic-2x {
-        opacity: 0;
-    }
+    /*.picture.loadingSrc .pic-1x,*/
+    /*.picture.loadingSrcBig .pic-2x {*/
+    /*    opacity: 0;*/
+    /*}*/
 </style>

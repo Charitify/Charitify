@@ -37,7 +37,7 @@
     ]
 
     const imagesDefault = cards.map(card => ({
-        src: [card.src, card.src, card.src],
+        src: card.src,
         alt: card.title,
     }))
 
