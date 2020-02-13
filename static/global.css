@@ -352,6 +352,15 @@ pre {
     word-break: break-word;
 }
 
+s {
+    display: inline-block;
+    text-decoration: inherit;
+}
+
+s:after {
+    content:
+}
+
 br {
     display: block;
     height: 0;

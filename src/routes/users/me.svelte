@@ -1,5 +1,5 @@
 <script>
-    import { Input, Picture, Button } from '../../components'
+    import { Input, Picture, Button, Space } from '../../components'
 
     const inputs = [
         {
@@ -35,14 +35,11 @@
     <br>
     <section style="display: flex; flex-direction: row">
         <Button is="success" auto>success</Button>
-        &nbsp;
-        &nbsp;
+        <Space size="2"/>
         <Button is="warning" auto>warning</Button>
-        &nbsp;
-        &nbsp;
+        <Space size="2"/>
         <Button is="danger" auto>danger</Button>
-        &nbsp;
-        &nbsp;
+        <Space size="2"/>
         <Button is="info" auto>info</Button>
     </section>
     <br>
