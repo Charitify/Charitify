@@ -24,6 +24,8 @@
             placeholder: 'location (autocomplete)',
         },
     ]
+
+    const USERNAME = 'bublikus.script'
 </script>
 
 <section class="container">
@@ -42,6 +44,12 @@
         <Space size="2"/>
         <Button is="info" auto>info</Button>
     </section>
+    <br>
+    <br>
+    <a href={`https://instagram.com/${USERNAME}/`}>Link to Instagram Page</a>
+    <br>
+    <br>
+    <a href={`instagram://user?username=${USERNAME}`}>Link to Instagram Profile</a>
     <br>
     <br>
     <ul>
