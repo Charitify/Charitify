@@ -351,7 +351,7 @@ s {
 }
 
 s:after {
-    content: ' ';
+    content: '\00a0';
 }
 
 br {
@@ -474,6 +474,71 @@ button:not([class]):focus {
     text-align: justify;
 }
 
+/* ----------=========( Flex )=========----------- */
+
+.flex {
+    display: flex;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.flex-columns {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-justify-between  {
+    justify-content: space-between;
+}
+
+.flex-justify-center  {
+    justify-content: center;
+}
+
+.flex-justify-start  {
+    justify-content: flex-start;
+}
+
+.flex-justify-end  {
+    justify-content: flex-end;
+}
+
+.flex-justify-around  {
+    justify-content: space-around;
+}
+
+.flex-justify-stretch  {
+    justify-content: stretch;
+}
+
+.flex-align-center  {
+    align-items: center;
+}
+
+.flex-align-start  {
+    align-items: flex-start;
+}
+
+.flex-align-end  {
+    align-items: flex-end;
+}
+
+.flex-align-stretch  {
+    align-items: stretch;
+}
+
+.flex-wrap  {
+    flex-wrap: wrap;
+}
+
+.flex-nowrap  {
+    flex-wrap: nowrap;
+}
 
 /* ----------=========( Text color )=========----------- */
 .text-success {
