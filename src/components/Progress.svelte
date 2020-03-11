@@ -18,7 +18,7 @@
 
     onMount(() => {
         // Make loading progress effect on mount component.
-        setTimeout(() => val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0, 0)
+        requestAnimationFrame(() => val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0, 0)
     })
 
     function getBorderRadius(borders, defaults = '99999px') {
@@ -39,7 +39,7 @@
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow={val}
-        style={`${getBorderRadius(borderRadius)}`}
+        style={getBorderRadius(borderRadius)}
 >
     <div class="progress-inner-frame">
         <div class="progress-core" style={`width:${val}%`}></div>
@@ -47,24 +47,9 @@
 </div>
 
 <style>
-    .progress {
-        --progress-height: 20px;
-        --progress-padding-point: 3;
-    }
-
-    .progress.small {
-        --progress-height: 15px;
-        --progress-padding-point: 3;
-    }
-
     .progress.medium {
-        --progress-height: 20px;
-        --progress-padding-point: 3.5;
-    }
-
-    .progress.big {
-        --progress-height: 30px;
-        --progress-padding-point: 4;
+        --progress-height: 10px;
+        --progress-padding-point: 1px;
     }
 
     .progress {
@@ -72,26 +57,33 @@
         width: 100%;
         border-radius: 9999px;
         height: var(--progress-height);
-        background-color: rgba(var(--theme-bg-color));
-        padding: calc(var(--progress-height) / var(--progress-padding-point));
-        box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
     }
 
     .progress-inner-frame {
+        position: relative;
         display: flex;
         width: 100%;
         height: 100%;
-        overflow: hidden;
         border-radius: 9999px;
+        overflow: hidden;
+        padding: var(--progress-padding-point) 0;
+        background-color: rgba(var(--color-black), .1);
+        background-clip: content-box;
     }
 
     .progress-core {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
         flex: none;
         align-self: stretch;
         transition: 1s ease-in-out;
-        margin-bottom: 2px;
-        box-shadow: var(--shadow-primary);
-        border-radius: var(--border-radius);
+        border-radius: 9999px;
+        background-color: rgba(var(--color-info));
+    }
+
+    .progress[aria-valuenow="100"] .progress-core {
         background-color: rgba(var(--color-success));
     }
 </style>

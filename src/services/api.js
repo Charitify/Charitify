@@ -14,10 +14,10 @@ export const endpoints = {
   COMMENT: (id) => `comment.json?id=${id}`,
   COMMENTS: () => `comments.json`,
 
-  CHARITY: (id) => `charity.json?id=${id}`,
-  CHARITIES: () => `charities.json`,
+  FUND: (id) => `charity.json?id=${id}`,
+  FUNDS: () => `charities.json`,
 
-  ORGANIZATION: (id) => `organization.json?id=${id}`,
+  ORGANIZATION: (id) => `organizations.json/?id=${id}`,
   ORGANIZATIONS: () => `organizations.json`,
 }
 
@@ -54,7 +54,7 @@ class APIService {
   constructor(config = {}) {
     this._adapter = config.adapter || zlFetch
 
-    this._base_path = config.basePath ? `${config.basePath}/` : ''
+    this._base_path = config.basePath ? config.basePath.replace(/\/$/, '') : ''
 
     this._requestInterceptor = config.requestInterceptor || (async (...args) => args)
     this._responseInterceptor = config.responseInterceptor || (async (...args) => args)
@@ -197,26 +197,26 @@ export class ApiClass extends APIService {
 
   /**
    *
-   * @description Charity
+   * @description Fund
    */
-  getCharity(id, params, config) {
-    return this.newRequest.get(endpoints.CHARITY(id), params, config)
+  getFund(id, params, config) {
+    return this.newRequest.get(endpoints.FUND(id), params, config)
   }
 
-  getCharities(params, config) {
-    return this.newRequest.get(endpoints.CHARITIES(), params, config)
+  getFunds(params, config) {
+    return this.newRequest.get(endpoints.FUNDS(), params, config)
   }
 
-  postCharity(id, body, config) {
-    return this.newRequest.post(endpoints.CHARITY(id), body, config)
+  postFund(id, body, config) {
+    return this.newRequest.post(endpoints.FUND(id), body, config)
   }
 
-  putCharity(id, body, config) {
-    return this.newRequest.put(endpoints.CHARITY(id), body, config)
+  putFund(id, body, config) {
+    return this.newRequest.put(endpoints.FUND(id), body, config)
   }
 
-  deleteCharity(id, config) {
-    return this.newRequest.delete(endpoints.CHARITY(id), config)
+  deleteFund(id, config) {
+    return this.newRequest.delete(endpoints.FUND(id), config)
   }
 
   /**

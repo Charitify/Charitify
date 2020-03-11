@@ -59,11 +59,6 @@
         stroke: rgb(var(--color-success));
     }
 
-    .warning, .warning * {
-        fill: rgb(var(--color-warning));
-        stroke: rgb(var(--color-warning));
-    }
-
     .danger, .danger * {
         fill: rgb(var(--color-danger));
         stroke: rgb(var(--color-danger));
@@ -75,12 +70,12 @@
     }
 
     .light, .light * {
-        fill: var(--color-light-1);
-        stroke: var(--color-light-1);
+        fill: rgb(var(--color-white));
+        stroke: rgb(var(--color-white));
     }
 
     .dark, .dark * {
-        fill: var(--color-dark-1);
-        stroke: var(--color-dark-1);
+        fill: rgb(var(--color-black));
+        stroke: rgb(var(--color-black));
     }
 </style>

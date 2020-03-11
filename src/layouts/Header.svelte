@@ -15,10 +15,10 @@
     }
 </script>
 
-<nav class="theme-bg container">
+<nav class="container">
     <ul class="nav-pages">
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
-        <li><a rel=prefetch href='lists/charities' class:selected='{segment === "lists"}'>lists</a></li>
+        <li><a rel=prefetch href='lists/funds' class:selected='{segment === "lists"}'>lists</a></li>
         <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
     </ul>
 
@@ -33,13 +33,13 @@
 
         <li>
             <Button on:click={changeTheme} auto size="small">
-                <Icon type="moon" class="theme-svg-fill"/>
+                <Icon type="moon" class="theme-svg-fill-opposite" is="light"/>
             </Button>
         </li>
 
         <li>
             <a class="btn small" href="users/me">
-                <Avatar size="small" src="https://placeimg.com/30/30/people"/>
+                <Avatar size="small" src="https://placeimg.com/30/30/people" alt="avatar"/>
             </a>
         </li>
     </ul>
@@ -51,9 +51,11 @@
         top: 0;
         z-index: 10;
         display: flex;
+        color: rgba(var(--color-font-light));
         justify-content: space-between;
         box-shadow: var(--shadow-secondary);
         border-bottom: 1px solid rgba(var(--color-danger), .1);
+        background-color: rgba(var(--color-dark-second));
     }
 
     .selected {
@@ -92,6 +94,7 @@
     .lang-select {
         padding: 5px;
         background-color: transparent;
+        color: rgba(var(--color-font-light));
     }
 
     .lang-select:hover,

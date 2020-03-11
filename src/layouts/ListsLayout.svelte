@@ -16,7 +16,7 @@
 
     <nav>
         <ul>
-            <li><a rel=prefetch href='lists/charities' class:selected='{segment === "charities"}'>charities</a></li>
+            <li><a rel=prefetch href='lists/funds' class:selected='{segment === "charities"}'>funds</a></li>
             <li><a rel=prefetch href='lists/organizations' class:selected='{segment === "organizations"}'>organizations</a></li>
         </ul>
     </nav>

@@ -1,6 +1,7 @@
 export { default as Icon } from './Icon.svelte'
 export { default as Rate } from './Rate.svelte'
 export { default as Form } from './Form.svelte'
+export { default as Card } from './Card.svelte'
 export { default as Space } from './Space.svelte'
 export { default as Input } from './Input.svelte'
 export { default as Avatar } from './Avatar.svelte'

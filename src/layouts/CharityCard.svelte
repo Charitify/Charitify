@@ -15,7 +15,7 @@
     })
 </script>
 
-<a class="card" href="charities/id">
+<a class="card" href="funds/id">
     <div class="images-wrap">
         <Carousel items={images}/>
     </div>
