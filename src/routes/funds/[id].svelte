@@ -102,5 +102,3 @@
 
 </section>
 
-<Footer/>
-
