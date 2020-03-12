@@ -19,7 +19,6 @@
         display: flex;
         border-radius: 50%;
         overflow: hidden;
-        max-width: 100%;
     }
 
     .small {
