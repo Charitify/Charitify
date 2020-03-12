@@ -1,6 +1,7 @@
 <script>
-    import { stores } from '@sapper/app';
-    const { page } = stores();
+    import { stores } from '@sapper/app'
+
+    const { page } = stores()
     import { onMount } from 'svelte'
     import { api } from '../../services'
     import {
@@ -11,9 +12,9 @@
         AvatarAndName,
         DonatingGroup,
         ContactsHolder,
-            TrustButton,
+        TrustButton,
     } from '../../layouts'
-    import { Button, Progress, Carousel, Divider, Card, Icon } from '../../components'
+    import { Button, Progress, Carousel, Divider, Card, Icon, Avatar } from '../../components'
 
     let charityId = $page.params.id
 
@@ -28,7 +29,7 @@
     let active = false
 
     async function onClick() {
-      active = !active
+        active = !active
     }
 </script>
 
@@ -42,6 +43,10 @@
         display: flex;
         margin-bottom: calc(var(--screen-padding) * 1.5);
         margin-top: var(--screen-padding);
+    }
+
+    table td:first-child {
+        font-weight: bold;
     }
 </style>
 
@@ -63,7 +68,7 @@
         <br>
         <br class="small">
 
-        <h2>Save dogs together</h2>
+        <h1>Save dogs together</h1>
         <br class="small">
         <h4 style="color: rgba(var(--color-black), .7)">Racing money for charity</h4>
 
@@ -84,22 +89,22 @@
 
     <br>
 
-        <p class="container flex flex-justify-between flex-align-center">
+    <p class="container flex flex-justify-between flex-align-center">
             <span class="flex flex-align-center">
                 <Icon is="danger" type="heart-filled"/>
                 <s></s>
                 23
             </span>
-            <span class="flex flex-align-center">
+        <span class="flex flex-align-center">
                 <Icon is="dark" type="eye"/>
                 <s></s>
                 120
             </span>
-        </p>
+    </p>
 
     <br class="big">
 
-    <h2>Save dogs together</h2>
+    <h1>Save dogs together</h1>
     <br>
     <p>
         But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and
@@ -126,12 +131,103 @@
     <Card class="container">
         <br class="big">
 
-        Content about animal
+        <div class="flex flex-column flex-align-center">
+            <Avatar size="big" src="https://placeimg.com/300/300/animal"/>
+
+            <br class="big">
+
+            <h1>Volter</h1>
+            <br class="tiny">
+            <p>Jack Russell Terrier</p>
+        </div>
+
+        <br class="big">
+
+        <p class="h1">Сharacter of pet</p>
+        <br class="tiny">
+        <p>Very playfull and cute dog. And must explain to you how all this mistaken idea of </p>
+
+        <br class="big">
+
+        <p class="h1">History of pet</p>
+        <br class="tiny">
+        <table>
+            <tbody>
+            <tr>
+                <td>01.02.2019</td>
+                <td>—</td>
+                <td>His first Happy Birthday</td>
+            </tr>
+            <tr>
+                <td>05.02.2019</td>
+                <td>—</td>
+                <td>We got him from the owners at the shelter</td>
+            </tr>
+            <tr>
+                <td>07.03.2019</td>
+                <td>—</td>
+                <td>We do a vaccination for him from fleas</td>
+            </tr>
+            <tr>
+                <td>23.06.2019</td>
+                <td>—</td>
+                <td>We do anouter vaccination</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <br class="big">
+
+        <p class="h1">Vaccination</p>
+        <br>
+        <ul class="flex flex-column">
+            <li>
+                <span class="flex flex-align-center">
+                    <Icon is="primary" type="checked-circle"/> <s></s> From something
+                </span>
+            </li>
+            <li>
+                <br>
+                <span class="flex flex-align-center">
+                    <Icon is="primary" type="checked-circle"/> <s></s> From something else
+                </span>
+            </li>
+            <li>
+                <br>
+                <span class="flex flex-align-center">
+                    <Icon is="danger" type="cancel-circle"/> <s></s> From another
+                </span>
+            </li>
+        </ul>
 
         <br class="big">
     </Card>
 
     <br class="big">
+    <br class="big">
+
+    <p class="h1">Last donates</p>
+
+    <br class="big">
+    <br class="big">
+
+    <p class="h1">Documents</p>
+
+    <br class="big">
+    <br class="big">
+
+    <p class="h1">Videos about pet</p>
+
+    <br class="big">
+    <br class="big">
+
+    <p class="h1">Contacts</p>
+
+    <br class="big">
+    <br class="big">
+
+    <p class="h1">Comments </p>
+
     <br class="big">
     <br class="big">
     <br class="big">

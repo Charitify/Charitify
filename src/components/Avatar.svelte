@@ -4,7 +4,7 @@
 
     export let src
     export let alt
-    export let size = 'medium' // small|medium|big
+    export let size = null // small|medium|big
 
     $: classProp = classnames('ava', size, $$props.class)
 </script>
@@ -19,7 +19,7 @@
         display: flex;
         border-radius: 50%;
         overflow: hidden;
-        box-shadow: var(--shadow-primary);
+        max-width: 100%;
     }
 
     .small {
@@ -31,7 +31,7 @@
         height: 35px;
     }
     .big {
-        width: 45px;
-        height: 45px;
+        width: 130px;
+        height: 130px;
     }
 </style>
