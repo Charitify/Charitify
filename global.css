@@ -478,13 +478,14 @@ button:not([class]):focus {
 }
 
 /* ----------=========( Text align )=========----------- */
-.scroll-center {
-    scroll-snap-type: both mandatory;
+.scroll-x-center {
+    scroll-snap-type: x mandatory;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
 }
 
-.scroll-center > * {
+.scroll-x-center > * {
+    scroll-snap-stop: always;
     scroll-snap-align: center;
 }
 
@@ -506,6 +507,14 @@ button:not([class]):focus {
 }
 
 /* ----------=========( Flex )=========----------- */
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-self-stretch {
+    align-self: stretch;
+}
 
 .flex {
     display: flex;
