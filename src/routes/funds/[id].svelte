@@ -11,6 +11,7 @@
         AvatarAndName,
         DonatingGroup,
         ContactsHolder,
+            TrustButton,
     } from '../../layouts'
     import { Button, Progress, Carousel, Divider, Card, Icon } from '../../components'
 
@@ -23,6 +24,12 @@
     onMount(async () => {
         charity = await api.getFund(1)
     })
+
+    let active = false
+
+    async function onClick() {
+      active = !active
+    }
 </script>
 
 <svelte:head>
@@ -99,6 +106,38 @@
         I will give you a complete account of the system, and expound the actual teachings I must explain to you how
         all this mistaken idea of denouncing pleasure and praising pain was born and I will give
     </p>
+
+    <br>
+    <br>
+    <br>
+
+    <section class="flex flex-column flex-align-center flex-justify-center">
+        <div style="width: 100px; max-width: 100%">
+            <TrustButton isActive={active} on:click={onClick}/>
+        </div>
+        <br class="small">
+        <p class="h2">I trust</p>
+    </section>
+
+    <br>
+    <br>
+    <br>
+
+    <Card class="container">
+        <br class="big">
+
+        Content about animal
+
+        <br class="big">
+    </Card>
+
+    <br class="big">
+    <br class="big">
+    <br class="big">
+    <br class="big">
+    <br class="big">
+    <br class="big">
+    <br class="big">
 
 </section>
 

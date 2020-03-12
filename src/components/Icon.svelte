@@ -14,7 +14,7 @@
     let ariaLabelProp = ariaLabel || title
     let styleProp = toCSSString({ transform: !!rotate ? `rotateZ(${rotate}deg)` : null, ...style })
 
-    $:  classProp = classnames('ico', is, size, $$props.class)
+    $: classProp = classnames('ico', is, size, $$props.class)
 </script>
 
 <svg
