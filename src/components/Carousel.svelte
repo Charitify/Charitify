@@ -53,7 +53,7 @@
     export let items = imagesDefault
 </script>
 
-<ul aria-label="carousel">
+<ul aria-label="carousel" class="scroll-center">
     {#each items as item}
         <li>
             <slot {item}>
@@ -74,9 +74,6 @@
         overflow-x: auto;
         margin-bottom: 2px;
         border-radius: var(--border-radius-big);
-        scroll-snap-type: x mandatory;
-        -ms-overflow-style: none;
-        -webkit-overflow-scrolling: touch;
     }
 
     ul::-webkit-scrollbar {
@@ -89,6 +86,5 @@
         display: flex;
         align-items: stretch;
         justify-content: stretch;
-        scroll-snap-align: center;
     }
 </style>

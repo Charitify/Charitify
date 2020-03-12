@@ -22,12 +22,12 @@
     }
 
     .small {
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
     }
     .medium {
-        width: 35px;
-        height: 35px;
+        width: 60px;
+        height: 60px;
     }
     .big {
         width: 130px;

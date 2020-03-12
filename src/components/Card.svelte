@@ -10,6 +10,7 @@
 
 <style>
     .card {
+        width: 100%;
         box-shadow: var(--shadow-secondary);
         border-radius: var(--border-radius-big);
         background-color: rgba(var(--color-white));

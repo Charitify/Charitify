@@ -13,6 +13,7 @@
         DonatingGroup,
         ContactsHolder,
         TrustButton,
+        DonatorsList,
     } from '../../layouts'
     import { Button, Progress, Carousel, Divider, Card, Icon, Avatar } from '../../components'
 
@@ -207,6 +208,10 @@
     <br class="big">
 
     <p class="h1">Last donates</p>
+
+    <div class="full-container">
+        <DonatorsList/>
+    </div>
 
     <br class="big">
     <br class="big">
