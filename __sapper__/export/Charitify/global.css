@@ -357,8 +357,12 @@ s:after {
 br {
     display: block;
     height: 0;
-    content: '';
+    content: '\00a0';
     box-sizing: content-box;
+}
+
+br.tiny {
+    padding: calc(1em * .29 / 2) 0; /* 4px */
 }
 
 br.small {
@@ -373,10 +377,6 @@ br.big {
     padding: calc(1em * 2.28 / 2) 0; /* 32px */
 }
 
-main.page {
-    position: absolute;
-    width: 100%;
-}
 
 
 /* ---------------------===================( Global Theme )===================--------------------- */
@@ -457,6 +457,14 @@ button:not([class]):focus {
     visibility: hidden !important; /* One of the good use cases of !important */
 }
 
+.full-absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 /* ----------=========( Text align )=========----------- */
 .text-center {
     text-align: center;
@@ -484,7 +492,7 @@ button:not([class]):focus {
     display: inline-flex;
 }
 
-.flex-columns {
+.flex-column {
     flex-direction: column;
 }
 
