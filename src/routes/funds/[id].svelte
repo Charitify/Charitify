@@ -43,6 +43,9 @@
     table td:first-child {
         font-weight: bold;
     }
+    table td:last-child {
+        text-align: justify;
+    }
 </style>
 
 <section class="container scroll-box theme-bg-color-secondary">
@@ -104,7 +107,7 @@
 
     <h1>Save dogs together</h1>
     <br>
-    <p>
+    <p style="text-align: justify">
         But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and
         I will give you a complete account of the system, and expound the actual teachings I must explain to you how
         all this mistaken idea of denouncing pleasure and praising pain was born and I will give
@@ -143,7 +146,9 @@
 
         <p class="h1">Сharacter of pet</p>
         <br class="tiny">
-        <p>Very playfull and cute dog. And must explain to you how all this mistaken idea of </p>
+        <p style="text-align: justify">
+            Very playfull and cute dog. And must explain to you how all this mistaken idea of
+        </p>
 
         <br class="big">
 
@@ -230,16 +235,32 @@
     <br class="big">
 
     <p class="h1">Contacts</p>
+    <br>
+    <ul style="list-style: disc outside none; padding-left: var(--screen-padding)">
+        <li>You can buy food for Volter</li>
+        <li>Visit Volter by yourself in our shelter</li>
+        <li>Buy vaccination for Volter</li>
+        <li>Help by other way</li>
+    </ul>
+    <br class="big">
+    <div class="flex">
+        <p class="flex flex-align-center">
+            <Icon is="dark" type="phone"/>
+            <s></s>
+            <s></s>
+            <span class="h2 text-bold">+38 (093) 205-43-92</span>
+        </p>
+    </div>
+    <p>Call us if you want to help our pet</p>
 
     <br class="big">
     <br class="big">
 
     <p class="h1">Comments </p>
+    <br>
+    <br class="small">
+    <Comments/>
 
-    <br class="big">
-    <br class="big">
-    <br class="big">
-    <br class="big">
     <br class="big">
     <br class="big">
 

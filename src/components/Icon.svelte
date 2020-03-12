@@ -39,18 +39,18 @@
 
     /* ------------=========( Size )=========------------ */
     .small {
-        width: 15px;
-        height: 15px;
+        width: 18px;
+        height: 18px;
     }
 
     .medium {
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
     }
 
     .big {
-        width: 35px;
-        height: 35px;
+        width: 30px;
+        height: 30px;
     }
 
     /* ------------=========( Color )=========------------ */

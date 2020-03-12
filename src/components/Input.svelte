@@ -108,19 +108,10 @@
         width: 100%;
         flex: 1 1 0;
         color: inherit;
-        border-radius: var(--border-radius);
+        border-radius: var(--border-radius-small);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
-        border: 1px solid rgba(var(--color-black), .25);
-        background-color: rgba(var(--theme-bg-color));
-        box-shadow: inset var(--shadow-primary), var(--shadow-secondary-inset);
-    }
-
-    .inp:focus {
-        border-color: rgb(var(--color-success));
-    }
-
-    .inp:invalid, .inp.invalid {
-        border-color: rgb(var(--color-danger));
+        background-color: rgba(var(--color-white));
+        box-shadow: var(--shadow-field-inset)
     }
 </style>

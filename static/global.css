@@ -69,8 +69,7 @@
     --shadow-primary: 0px 0px 10px rgba(var(--color-black), 0.25);
     --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.1);
     --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.04);
-
-
+    --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.17);
 
     /* -----------========( Font )=========----------- */
 
@@ -151,7 +150,6 @@ img {
     display: inline-block;
 }
 
-li,
 figure {
     display: inline-block;
 }
@@ -162,6 +160,10 @@ ol {
     margin: 0;
     padding: 0;
     list-style: none;
+}
+
+li {
+    display: list-item;
 }
 
 /* Reset default button styles */
@@ -197,7 +199,7 @@ h1, h2, h3, h4, h5, h6 {
 input,
 select,
 textarea {
-    padding: 10px 15px;
+    padding: 14px 15px;
     border: none;
     resize: none;
     cursor: text;

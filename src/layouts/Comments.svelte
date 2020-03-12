@@ -1,46 +1,44 @@
 <script>
     import { onMount } from 'svelte'
     import { api } from '../services'
-    import { Comment, Carousel, Form, Input, Button } from '../components'
+    import { Comment, Form, Input, Button } from '../components'
 
     export let withForm = true
 
-    let commentsGroup = []
+    let comments = []
 
     onMount(async () => {
-        await new Promise(r => setTimeout(r, 1000))
-        const comments = await api.getComments()
-        commentsGroup = new Array(15).fill(comments).reduce((a, o) => a.concat([o]), [])
-        console.log(commentsGroup)
+        comments = await api.getComments()
     })
 </script>
 
 <section class="comments">
-    <Carousel items={commentsGroup} let:item={comments}>
-        <div class="comments-wrap">
-            {#each comments as comment}
+    <ul class="comments-wrap">
+        {#each comments as comment}
+            <li>
                 <Comment
                         src={comment.avatar}
                         title={comment.author}
-                        subtitle={new Date(comment.created_at).toLocaleString()}
+                        date={new Date(comment.created_at).toLocaleDateString()}
+                        amount={comment.likes}
                 >
                     {comment.comment}
                 </Comment>
-                <br>
-            {/each}
-        </div>
-    </Carousel>
+            </li>
+        {/each}
+    </ul>
 
     {#if withForm}
+        <br class="big">
         <div class="comments-form">
             <Form>
-                <Input type="textarea" rows="2"/>
+                <Input type="textarea" rows="1" class="comment-field" placeholder="Leave your comment here"/>
             </Form>
-            <div class="text-right">
-                <Button type="submit" is="success" auto>
-                    <span>Send</span>
-                </Button>
-            </div>
+<!--            <div class="text-right">-->
+<!--                <Button type="submit" is="success" auto>-->
+<!--                    <span>Send</span>-->
+<!--                </Button>-->
+<!--            </div>-->
         </div>
     {/if}
 </section>
@@ -54,17 +52,21 @@
         overflow-x: hidden;
         align-self: stretch;
         flex-direction: column;
-        box-shadow: inset var(--shadow-secondary-inset);
     }
 
     .comments-form {
         flex: none;
-        padding: calc(var(--screen-padding) * 2) var(--screen-padding);
     }
 
     .comments-wrap {
+        width: 100%;
         overflow: hidden;
-        padding: var(--screen-padding);
+        margin: -5px 0;
+    }
+
+    .comments-wrap li {
+        width: 100%;
+        padding: 5px 0;
     }
 
     span {

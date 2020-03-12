@@ -16,7 +16,7 @@
 </script>
 
 <nav class="container">
-    <ul class="nav-pages">
+    <ul class="nav-pages flex">
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
         <li><a rel=prefetch href='lists/funds' class:selected='{segment === "lists"}'>lists</a></li>
         <li><a href='map' class:selected='{segment === "map"}'>map</a></li>

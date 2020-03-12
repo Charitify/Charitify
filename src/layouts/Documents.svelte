@@ -37,6 +37,7 @@
         height: 180px;
         width: 126px;
         padding: 0 5px;
+        box-sizing: content-box;
     }
 
     li:first-child {

@@ -1,69 +1,59 @@
 <script>
+    import { classnames } from '../utils'
+    import Icon from './Icon.svelte'
+    import Card from './Card.svelte'
     import Avatar from './Avatar.svelte'
 
     export let src = undefined
+    export let date = undefined
     export let title = undefined
-    export let subtitle = undefined
+    export let amount = undefined
 
-
+    $: classProp = classnames($$props.class)
 </script>
 
-<a href="users/me">
-    <Avatar src={src} alt={title} class="comment-ava"/>
+<Card class={classProp}>
+    <section class="comment flex flex-align-start" style="padding: 20px">
 
-    <div>
-        <span>
-            <h4>{title}</h4>
-            <sub>{subtitle}</sub>
-        </span>
+        <Avatar src={src} alt={title} size="medium" class="comment-ava"/>
 
-        <br class="small">
+        <s></s>
+        <s></s>
+        <s></s>
+        <s></s>
 
-        <pre>
-            <slot>
-                 [No comment]
-            </slot>
-        </pre>
-    </div>
-</a>
+        <div class="flex flex-column flex-1" style="overflow: hidden">
+            <h3 class="text-ellipsis">{ title }</h3>
+
+            <br class="tiny">
+
+            <pre class="h5" style="line-height: 1.46">
+                <slot>
+                     [No comment]
+                </slot>
+            </pre>
+
+            <br class="small">
+
+            <p class="flex flex-align-center flex-justify-between">
+                <span class="h5" style="rgba(var(--color-black), .3)">{ date }</span>
+                <span class="h5">Reply</span>
+                <span class="h5 flex flex-align-center">
+                    <span style={`opacity: ${amount > 2 ? 1 : .6}`}>
+                        <Icon type="heart-filled" is="danger" size="small"/>
+                    </span>
+                    <s></s>
+                    <span>{ amount }</span>
+                    <s></s>
+                    <s></s>
+                    <s></s>
+                    <s></s>
+                </span>
+            </p>
+        </div>
+
+    </section>
+</Card>
 
 <style>
-    a {
-        width: 100%;
-        flex-grow: 1;
-        display: flex;
-        align-self: stretch;
-        align-items: flex-start;
-    }
-
-    div {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-
-    span {
-        flex: none;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        overflow: hidden;
-        padding: 0 8px;
-    }
-
-    span h4,
-    span sub {
-        line-height: 1.4;
-        max-width: 100%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-    pre {
-        padding: 0 8px;
-        font-size: .825em;
-        line-height: 1.2;
-    }
 </style>
