@@ -478,13 +478,13 @@ button:not([class]):focus {
 }
 
 /* ----------=========( Text align )=========----------- */
-.scroll-center {
+.scroll-x-center {
     scroll-snap-type: both mandatory;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
 }
 
-.scroll-center > * {
+.scroll-x-center > * {
     scroll-snap-align: center;
 }
 

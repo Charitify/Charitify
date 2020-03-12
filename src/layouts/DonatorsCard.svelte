@@ -10,7 +10,7 @@
             {#each items as item}
                 {#if item.title && item.src}
                     <li>
-                        <Avatar src={item.src} size="medium"/>
+                        <Avatar src={item.src} size="medium" alt={item.subtitle}/>
                         <s></s>
                         <s></s>
                         <s></s>

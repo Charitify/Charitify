@@ -6,6 +6,7 @@
 
     export let src
     export let alt
+    export let size = 'cover'
     export let srcBig = undefined
     export let id = undefined
     export let width = undefined
@@ -15,7 +16,7 @@
     let loadingSrcBig = true
     let isError = false
 
-    $: wrapClassProp = classnames('picture', $$props.class, { loadingSrc, loadingSrcBig, isError })
+    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrc, loadingSrcBig, isError })
 
     function onLoadSrc(e) {
         loadingSrc = false
@@ -78,10 +79,17 @@
         justify-content: stretch;
     }
 
+    .picture.cover .pic {
+        object-fit: cover;
+    }
+
+    .picture.contain .pic {
+        object-fit: contain;
+    }
+
     .picture .pic {
         flex-grow: 1;
         align-self: stretch;
-        object-fit: cover;
         object-position: center;
         transition: opacity .3s ease-in;
     }

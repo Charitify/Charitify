@@ -1,21 +1,20 @@
 <script>
-    import DonatorsCard from './DonatorsCard.svelte'
+    import { Picture, Card } from '../components'
 
     const cardSample = {
         src: 'https://placeimg.com/300/300/people',
-        title: '10грн',
-        subtitle: 'Tina Kandelaki de-junior de-junior',
+        alt: '10грн',
     }
 
     const all = new Array(5).fill(cardSample)
-
-    const grouped = all.map(one => new Array(3).fill(one))
 </script>
 
 <ul class="scroll-x-center">
-    {#each grouped as cards}
+    {#each all as img}
         <li>
-            <DonatorsCard items={cards} />
+            <Card class="flex">
+                <Picture {...img} size="contain"/>
+            </Card>
         </li>
     {/each}
 </ul>
@@ -24,7 +23,6 @@
     ul {
         width: 100%;
         display: flex;
-        flex-direction: row-reverse;
         align-items: flex-start;
         max-width: 100%;
         overflow-y: hidden;
@@ -33,16 +31,19 @@
     }
 
     li {
+        flex: none;
+        display: flex;
         align-self: stretch;
-        width: 300px;
+        height: 180px;
+        width: 126px;
         padding: 0 5px;
     }
 
-    li:last-child {
+    li:first-child {
         padding-left: 15px;
     }
 
-    li:first-child {
+    li:last-child {
         padding-right: 15px;
     }
 </style>

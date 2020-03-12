@@ -53,7 +53,7 @@
     export let items = imagesDefault
 </script>
 
-<ul aria-label="carousel" class="scroll-center">
+<ul aria-label="carousel" class="scroll-x-center">
     {#each items as item}
         <li>
             <slot {item}>

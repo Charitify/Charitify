@@ -14,6 +14,7 @@
         ContactsHolder,
         TrustButton,
         DonatorsList,
+        Documents,
     } from '../../layouts'
     import { Button, Progress, Carousel, Divider, Card, Icon, Avatar } from '../../components'
 
@@ -39,13 +40,6 @@
 </svelte:head>
 
 <style>
-    .top {
-        height: 200px;
-        display: flex;
-        margin-bottom: calc(var(--screen-padding) * 1.5);
-        margin-top: var(--screen-padding);
-    }
-
     table td:first-child {
         font-weight: bold;
     }
@@ -54,10 +48,13 @@
 <section class="container scroll-box theme-bg-color-secondary">
 
     <br>
+    <br>
 
-    <section class="top">
+    <section class="flex" style="height: 200px">
         <Carousel items={carousel}/>
     </section>
+
+    <br>
 
     <Button class="white">
         OrgAva
@@ -208,7 +205,6 @@
     <br class="big">
 
     <p class="h1">Last donates</p>
-
     <div class="full-container">
         <DonatorsList/>
     </div>
@@ -217,11 +213,18 @@
     <br class="big">
 
     <p class="h1">Documents</p>
+    <div class="full-container">
+        <Documents/>
+    </div>
 
     <br class="big">
     <br class="big">
 
     <p class="h1">Videos about pet</p>
+    <br>
+    <section class="flex" style="height: 200px">
+        <Carousel items={carousel}/>
+    </section>
 
     <br class="big">
     <br class="big">
