@@ -472,6 +472,22 @@ button:not([class]):focus {
     bottom: 0;
 }
 
+.full-container {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+
+/* ----------=========( Text align )=========----------- */
+.scroll-center {
+    scroll-snap-type: both mandatory;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scroll-center > * {
+    scroll-snap-align: center;
+}
+
 /* ----------=========( Text align )=========----------- */
 .text-center {
     text-align: center;
@@ -555,6 +571,19 @@ button:not([class]):focus {
     flex-wrap: nowrap;
 }
 
+/* ----------=========( Text )=========----------- */
+.text-bold {
+    font-weight: bold;
+}
+
+.text-ellipsis {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 /* ----------=========( Text color )=========----------- */
 .text-success {
     color: rgb(var(--color-success));
@@ -574,10 +603,6 @@ button:not([class]):focus {
 
 .text-black {
     color: rgb(var(--color-black));
-}
-
-.text-bold {
-    font-weight: bold;
 }
 
 /* ----------=========( Background color )=========----------- */
