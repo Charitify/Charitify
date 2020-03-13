@@ -3,7 +3,7 @@
 
     export let type
     export let is // primary|warning|danger|light|dark
-    export let size = 'medium' // small|medium|big
+    export let size = null // small|medium|big
     export let rotate = 0
     export let style = undefined
     export let id = undefined
@@ -30,6 +30,8 @@
 <style>
     svg {
         display: inherit;
+        flex-grow: 1;
+        align-self: stretch;
     }
 
     svg, svg * {
@@ -41,16 +43,22 @@
     .small {
         width: 18px;
         height: 18px;
+        flex: none;
+        align-self: auto;
     }
 
     .medium {
         width: 24px;
         height: 24px;
+        flex: none;
+        align-self: auto;
     }
 
     .big {
         width: 30px;
         height: 30px;
+        flex: none;
+        align-self: auto;
     }
 
     /* ------------=========( Color )=========------------ */

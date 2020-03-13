@@ -16,7 +16,7 @@
         DonatorsList,
         Documents,
     } from '../../layouts'
-    import { Button, Progress, Carousel, Divider, Card, Icon, Avatar } from '../../components'
+    import { Button, Picture, Progress, Carousel, Divider, Card, Icon, Avatar } from '../../components'
 
     let charityId = $page.params.id
 
@@ -40,11 +40,11 @@
 </svelte:head>
 
 <style>
-    table td:first-child {
-        font-weight: bold;
+    table tr:not(:last-child) td {
+        padding-bottom: 16px;
     }
     table td:last-child {
-        text-align: justify;
+        font-weight: 300;
     }
 </style>
 
@@ -60,7 +60,19 @@
     <br>
 
     <Button class="white">
-        OrgAva
+        <div class="flex flex-align-center flex-justify-start full-width">
+            <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
+                <Picture
+                        src="http://dktb.if.ua/images/plg_jdvthumbs/thumb-photo-1__large-50bd9294dec9a8f834586c1c81c86f98.jpg"
+                        size="contain"
+                        alt="logo"
+                />
+            </div>
+            <s></s>
+            <s></s>
+            <s></s>
+            <h3>"Дім Сірка"</h3>
+        </div>
     </Button>
 
     <br>
@@ -69,48 +81,74 @@
         <br>
         <br class="small">
 
-        <h1>Save dogs together</h1>
+        <h2>Збережемо тварин разом</h2>
         <br class="small">
-        <h4 style="color: rgba(var(--color-black), .7)">Racing money for charity</h4>
+        <h3 class="font-w-normal" style="color: rgba(var(--color-black), .7)">Збір грошей на допомогу безпритульним тваринам</h3>
 
         <br>
         <br class="small">
 
-        <p>
-            <span class="h1">600$</span>
-            <span class="h3"> / 1150$</span>
+        <p class="font-secondary">
+            <span class="h1">3500грн</span>
+            <span class="h3"> / 20000грн</span>
         </p>
 
         <br>
 
-        <Progress value="60"/>
+        <Progress value={Math.floor(3500 / 20000 * 100)}/>
 
         <br class="big">
     </Card>
 
+    <br class="small">
     <br>
 
     <p class="container flex flex-justify-between flex-align-center">
-            <span class="flex flex-align-center">
-                <Icon is="danger" type="heart-filled"/>
-                <s></s>
-                23
-            </span>
         <span class="flex flex-align-center">
-                <Icon is="dark" type="eye"/>
-                <s></s>
-                120
-            </span>
+            <Icon is="danger" type="heart-filled" size="medium"/>
+            <s></s>
+            1
+        </span>
+        <span class="flex flex-align-center">
+            <Icon is="dark" type="eye" size="medium"/>
+            <s></s>
+            13
+        </span>
     </p>
 
     <br class="big">
 
-    <h1>Save dogs together</h1>
+    <h2>Збережемо тварин разом</h2>
+    <br class="small">
+    <pre class="font-w-300">
+        Терміново шукаємо добрі руки 🤲🥰
+        Бадді підкинули під кафе біля самої траси!
+        Біля нього були тільки залишки черствого хліба... 💔
+        За що можна було покинути малюка напризволяще? 🥺
+        В чому він міг провинитися? Йому всього 2 місяці.
+        Зараз буде проходити обробку від паразитів та вакцинацію 💉
+    </pre>
+
     <br>
-    <p style="text-align: justify">
-        But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and
-        I will give you a complete account of the system, and expound the actual teachings I must explain to you how
-        all this mistaken idea of denouncing pleasure and praising pain was born and I will give
+
+    <p class="flex">
+        <span class="flex flex-align-center">
+            <Icon is="dark" type="share" size="medium"/>
+            <s></s>
+            <s></s>
+            <p class="font-w-500">Поділитись</p>
+        </span>
+        <s></s>
+        <s></s>
+        <s></s>
+        <s></s>
+        <s></s>
+        <span class="flex flex-align-center">
+            <Icon is="dark" type="link" size="medium"/>
+            <s></s>
+            <s></s>
+            <p class="font-w-500">Скопіювати</p>
+        </span>
     </p>
 
     <br>
@@ -122,9 +160,10 @@
             <TrustButton isActive={active} on:click={onClick}/>
         </div>
         <br class="small">
-        <p class="h2">I trust</p>
+        <h2>Я Довіряю</h2>
     </section>
 
+    <br>
     <br>
     <br>
     <br>
@@ -135,70 +174,110 @@
         <div class="flex flex-column flex-align-center">
             <Avatar size="big" src="https://placeimg.com/300/300/animal"/>
 
-            <br class="big">
+            <br class="tiny">
+            <br>
 
-            <h1>Volter</h1>
+            <h2>Волтер</h2>
             <br class="tiny">
             <p>Jack Russell Terrier</p>
         </div>
 
         <br class="big">
 
-        <p class="h1">Сharacter of pet</p>
-        <br class="tiny">
-        <p style="text-align: justify">
-            Very playfull and cute dog. And must explain to you how all this mistaken idea of
+        <section class="flex flex-justify-between">
+            <div class="flex flex-center relative" style="width: 90px; height: 90px">
+                <Icon type="polygon" is="primary"/>
+                <div class="text-white text-center absolute">
+                    <h4 class="h1">3</h4>
+                    <h4 style="margin-top: -8px">Роки</h4>
+                </div>
+            </div>
+
+            <div class="flex flex-center relative" style="width: 90px; height: 90px">
+                <Icon type="polygon" is="info"/>
+                <div class="absolute flex" style="width: 44px; height: 44px">
+                     <Icon type="male" is="light"/>
+                </div>
+            </div>
+
+            <div class="flex flex-center relative" style="width: 90px; height: 90px; opacity: .3">
+                <Icon type="polygon" is="primary"/>
+                <div class="absolute flex flex-column flex-center">
+                    <Icon type="cancel-circle" is="light" size="big"/>
+                    <span class="text-white text-center h5">Cтерилізація</span>
+                </div>
+            </div>
+        </section>
+
+        <br class="big">
+        <br class="small">
+
+        <h2>Характер Волтера: 😃</h2>
+        <br class="small">
+        <p>
+            Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми
         </p>
 
         <br class="big">
 
-        <p class="h1">History of pet</p>
-        <br class="tiny">
+        <h2>Життя Волтера</h2>
+        <br class="small">
         <table>
             <tbody>
             <tr>
                 <td>01.02.2019</td>
                 <td>—</td>
-                <td>His first Happy Birthday</td>
+                <td>Його перший день народження</td>
             </tr>
             <tr>
                 <td>05.02.2019</td>
                 <td>—</td>
-                <td>We got him from the owners at the shelter</td>
+                <td>Ми приютили його з вулиці</td>
             </tr>
             <tr>
                 <td>07.03.2019</td>
                 <td>—</td>
-                <td>We do a vaccination for him from fleas</td>
+                <td>Зробили вакцинацію проти бліх</td>
             </tr>
             <tr>
                 <td>23.06.2019</td>
                 <td>—</td>
-                <td>We do anouter vaccination</td>
+                <td>Знайшов для себе улюблену іграшку</td>
             </tr>
             </tbody>
         </table>
 
-        <br class="big">
-
-        <p class="h1">Vaccination</p>
         <br>
-        <ul class="flex flex-column">
+        <br>
+        <br>
+
+        <h2>Вакцинації</h2>
+        <br>
+        <ul class="flex flex-column text-left">
             <li>
-                <span class="flex flex-align-center">
-                    <Icon is="primary" type="checked-circle"/> <s></s> From something
+                <span class="flex flex-align-center font-w-300">
+                    <Icon is="primary" type="checked-circle" size="small"/>
+                    <s></s>
+                    <s></s>
+                    Від бліх
                 </span>
             </li>
             <li>
                 <br>
-                <span class="flex flex-align-center">
-                    <Icon is="primary" type="checked-circle"/> <s></s> From something else
+                <span class="flex flex-align-center font-w-300">
+                    <Icon is="primary" type="checked-circle" size="small"/>
+                    <s></s>
+                    <s></s>
+                    Від паразитів
                 </span>
             </li>
             <li>
                 <br>
-                <span class="flex flex-align-center">
-                    <Icon is="danger" type="cancel-circle"/> <s></s> From another
+                <span class="flex flex-align-center font-w-300">
+                    <Icon is="danger" type="cancel-circle" size="small"/>
+                    <s></s>
+                    <s></s>
+                    Від грибків
                 </span>
             </li>
         </ul>
@@ -209,7 +288,8 @@
     <br class="big">
     <br class="big">
 
-    <p class="h1">Last donates</p>
+    <h2>Наші піклувальники</h2>
+    <br class="small">
     <div class="full-container">
         <DonatorsList/>
     </div>
@@ -217,7 +297,7 @@
     <br class="big">
     <br class="big">
 
-    <p class="h1">Documents</p>
+    <h2>Документи</h2>
     <div class="full-container">
         <Documents/>
     </div>
@@ -225,7 +305,7 @@
     <br class="big">
     <br class="big">
 
-    <p class="h1">Videos about pet</p>
+    <h2>Відео про Волтера</h2>
     <br>
     <section class="flex" style="height: 200px">
         <Carousel items={carousel}/>
@@ -234,33 +314,36 @@
     <br class="big">
     <br class="big">
 
-    <p class="h1">Contacts</p>
+    <h2>Контакти</h2>
     <br>
-    <ul style="list-style: disc outside none; padding-left: var(--screen-padding)">
-        <li>You can buy food for Volter</li>
-        <li>Visit Volter by yourself in our shelter</li>
-        <li>Buy vaccination for Volter</li>
-        <li>Help by other way</li>
+    <ul style="list-style: disc outside none; padding-left: var(--screen-padding)" class="h3 font-w-500 font-secondary">
+        <li style="padding-bottom: 4px">Ви пожете купити йому поїсти</li>
+        <li style="padding-bottom: 4px">Можете особисто відвідати його у нас</li>
+        <li style="padding-bottom: 4px">Купити вакцінацію для Волтера</li>
+        <li style="padding-bottom: 4px">Допомогти любим інщим способом</li>
     </ul>
     <br class="big">
     <div class="flex">
-        <p class="flex flex-align-center">
-            <Icon is="dark" type="phone"/>
+        <div class="flex flex-align-center font-secondary">
+            <Icon size="medium" is="dark" type="phone"/>
             <s></s>
             <s></s>
-            <span class="h2 text-bold">+38 (093) 205-43-92</span>
-        </p>
+            <h2>+38 (093) 205-43-92</h2>
+        </div>
     </div>
-    <p>Call us if you want to help our pet</p>
-
-    <br class="big">
-    <br class="big">
-
-    <p class="h1">Comments </p>
-    <br>
     <br class="small">
-    <Comments/>
+    <p class="font-w-300">Подзвоніть нам, якщо хочете допомогти Волтеру</p>
 
+    <br class="big">
+    <br class="big">
+
+    <h2>Коментарі</h2>
+    <br class="small">
+    <div class="full-container">
+        <Comments/>
+    </div>
+
+    <br class="big">
     <br class="big">
     <br class="big">
 

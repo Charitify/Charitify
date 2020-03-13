@@ -78,7 +78,6 @@
         max-width: 100%;
         user-select: none;
         padding: 5px 15px;
-        margin-bottom: 3px;
         font-weight: bold;
         text-align: center;
         align-items: center;
@@ -86,7 +85,6 @@
         justify-content: center;
         border-radius: var(--border-radius-medium);
         color: rgba(var(--theme-font-color));
-        text-shadow: 1px 1px rgba(var(--color-black), .3);
     }
 
     :global(.btn.small) {
@@ -112,17 +110,14 @@
     }
 
     :global(.btn:hover) {
-        box-shadow: 0 2px rgba(var(--color-black), 0.2);
         background-color: rgba(var(--color-black), 0.1);
     }
 
     :global(.btn:active) {
-        transform: translateY(1px);
-        box-shadow: 0 1px rgba(var(--color-black), 0.2);
         background-color: rgba(var(--color-black), 0.1);
     }
 
-    /* Success */
+    /* White */
 
     :global(.btn).white {
         color: rgba(var(--color-font-dark));
@@ -146,7 +141,6 @@
     :global(.btn).success {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-success));
-        box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     :global(.btn).success:focus {
@@ -155,12 +149,12 @@
 
     :global(.btn).success:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
+        box-shadow: var(--shadow-primary);
     }
 
     :global(.btn).success:active {
         transform: translateY(2px);
-        box-shadow: 0 1px rgba(var(--color-success-dark)), var(--shadow-secondary);
+        box-shadow: var(--shadow-primary);
     }
 
     /* Danger */
@@ -168,7 +162,6 @@
     :global(.btn).danger {
         color: rgba(var(--color-font-light));
         background-color: rgba(var(--color-danger));
-        box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
     }
 
     :global(.btn).danger:focus {
@@ -177,30 +170,11 @@
 
     :global(.btn).danger:hover {
         transform: translateY(1px);
-        box-shadow: 0 2px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
+        box-shadow: var(--shadow-primary);
     }
 
     :global(.btn).danger:active {
         transform: translateY(2px);
-        box-shadow: 0 1px rgba(var(--color-danger-dark)), var(--shadow-secondary);
-    }
-
-
-    @media screen and (min-width: 769px) {
-        :global(.btn) {
-            margin-bottom: 2px;
-        }
-
-        :global(.btn).success {
-            box-shadow: 0 3px rgba(var(--color-success-dark)), var(--shadow-secondary), var(--shadow-primary);
-        }
-
-        :global(.btn).warning {
-            box-shadow: 0 3px rgba(var(--color-warning-dark)), var(--shadow-secondary), var(--shadow-primary);
-        }
-
-        :global(.btn).danger {
-            box-shadow: 0 3px rgba(var(--color-danger-dark)), var(--shadow-secondary), var(--shadow-primary);
-        }
+        box-shadow: var(--shadow-primary);
     }
 </style>

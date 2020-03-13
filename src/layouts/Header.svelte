@@ -33,7 +33,7 @@
 
         <li>
             <Button on:click={changeTheme} auto size="small">
-                <Icon type="moon" class="theme-svg-fill-opposite" is="light"/>
+                <Icon type="moon" size="medium" class="theme-svg-fill-opposite" is="light"/>
             </Button>
         </li>
 

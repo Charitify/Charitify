@@ -89,6 +89,7 @@
 
     .picture .pic {
         flex-grow: 1;
+        overflow: hidden;
         align-self: stretch;
         object-position: center;
         transition: opacity .3s ease-in;
