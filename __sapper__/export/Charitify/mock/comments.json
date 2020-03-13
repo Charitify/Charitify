@@ -3,59 +3,64 @@
     "id": "id",
     "author_id": "author_id",
     "author_name": "nicole_kidman",
-    "author": "Nicole Kidman",
+    "author": "Дивна дитина",
     "avatar": "https://placeimg.com/30/30/people",
     "created_at": "2020-02-06T09:50:59.178Z",
-    "comment": "I really hate this things.\nIt looks awful. Will never ever enter here.",
-    "likes": 3,
-    "reply_to": "author_id"
+    "comment": "Я не розумію цього. Чого світ такий жорсткий? Добре, що є люди, які роблять добрі справи!",
+    "likes": 2,
+    "reply_to": "",
+    "checked": false
   },
 
   {
     "id": "id",
     "author_id": "author_id",
-    "author_name": "tinaramisimuss_el-de-la_kandelakinuskas",
-    "author": "Tinaramisimuss el-de-la Kandelakinuskas",
+    "author_name": "nicole_kidman_1",
+    "author": "Добра людина",
     "avatar": "https://placeimg.com/30/30/people",
     "created_at": "2020-02-05T09:50:59.178Z",
     "comment": "👍",
     "likes": 0,
-    "reply_to": ""
+    "reply_to": "",
+    "checked": true
   },
 
   {
     "id": "id",
     "author_id": "author_id",
     "author_name": "nicole_kidman",
-    "author": "Nicole Kidman",
+    "author": "Валентина Петрівна",
     "avatar": "https://placeimg.com/30/30/people",
     "created_at": "2020-02-04T09:50:59.178Z",
-    "comment": "Like",
+    "comment": "Я вас, [% Дивна дитина %], підтримую.",
     "likes": 11,
-    "reply_to": "author_id"
+    "reply_to": "comment_id",
+    "checked": false
   },
 
   {
     "id": "id",
     "author_id": "author_id",
     "author_name": "nicole_kidman",
-    "author": "Nicole Kidman",
+    "author": "niki_123",
     "avatar": "https://placeimg.com/30/30/people",
     "created_at": "2020-01-03T09:50:59.178Z",
-    "comment": "I really hate this things.\nIt looks awful. Will never ever enter here.",
+    "comment": "+100грн",
     "likes": 2,
-    "reply_to": "author_id"
+    "reply_to": "",
+    "checked": false
   },
 
   {
     "id": "id",
     "author_id": "author_id",
     "author_name": "nicole_kidman",
-    "author": "Nicole Kidman",
+    "author": "Петро",
     "avatar": "https://placeimg.com/30/30/people",
     "created_at": "2020-01-31T09:50:59.178Z",
-    "comment": " Don't listen him, hi's wrong. I think this is a good idea and we should continue.\nAnyway, I wish you luck.",
-    "likes": 0,
-    "reply_to": ""
+    "comment": "Здоров'я!",
+    "likes": 3,
+    "reply_to": "",
+    "checked": false
   }
 ]
