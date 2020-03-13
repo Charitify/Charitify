@@ -78,8 +78,8 @@
     --font-size-max: 16;
 
     /* (1.6 (22.4px) for 14px/300px -> 2 (32px) for 16px/1600px) = https://grtcalculator.com */
-    --font-line-height-min: 1.6;
-    --font-line-height-max: 2;
+    --font-line-height-min: 1.46;
+    --font-line-height-max: 1.8;
 
     --content-width-min: 320;
     --content-width-max: 1600;
@@ -90,7 +90,8 @@
 
     /* The most readable online fonts: "1. Verdana, 2. Arial, 3. Courier" -> (https://www.awai.com/2011/10/the-best-fonts-to-use-in-print-online-and-email/) */
     /* Fonts supporting (https://www.cssfontstack.com/) */
-    --font-family: Verdana, Arial, Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    --font-family-primary: 'Roboto', sans-serif;
+    --font-family-secondary: 'Montserrat', sans-serif;
 
 
 
@@ -191,10 +192,6 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-weight: normal;
-}
-
 /* Inherit fonts for inputs and buttons, remove controls */
 input,
 select,
@@ -275,8 +272,8 @@ body {
     text-rendering: optimizeSpeed;
     font-size: var(--font-size);
     color: rgba(var(--theme-font-color));
-    font-family: var(--font-family);
     line-height: var(--font-line-height);
+    font-family: var(--font-family-primary);
     background-color: rgba(var(--theme-bg-color));
 }
 
@@ -296,24 +293,29 @@ body {
     justify-content: stretch;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    font-family: var(--font-family-secondary);
+}
+
 h1, .h1 {
-    font-size: 2em;
-    line-height: calc(var(--font-line-height) * 1.5);
+    font-size: 2.55em;
+    line-height: calc(var(--font-line-height) * 2.15);
 }
 
 h2, .h2 {
-    font-size: 1.5em;
-    line-height: calc(var(--font-line-height) * 1.3);
+    font-size: 1.7em;
+    line-height: calc(var(--font-line-height) * 1.4);
 }
 
 h3, .h3 {
-    font-size: 1.2em;
-    line-height: calc(var(--font-line-height) * 1.2);
+    font-size: 1.15em;
+    line-height: calc(var(--font-line-height) * 1.15);
 }
 
 h4, .h4, p, .p {
     font-size: 1em;
-    line-height: calc(var(--font-line-height) * 1.2);
+    line-height: calc(var(--font-line-height) * 1.15);
 }
 
 h5, .h5 {
@@ -436,23 +438,30 @@ button:not([class]):focus {
 
 /* ---------------------===================( Utils/Helpers )===================--------------------- */
 
+.underline {
+    text-decoration: underline;
+}
+
+/* ----------=========( Containers )=========----------- */
 .container {
     padding-left: var(--screen-padding);
     padding-right: var(--screen-padding);
 }
 
-.scroll-box {
-    flex: 1 1 0;
-    overflow-x: hidden;
-    overflow-y: auto;
+.full-container {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
 }
 
-/* Hide elements by "hidden" attribute */
+.full-width {
+    width: 100%;
+}
+
+/* ----------=========( Visibility )=========----------- */
 [hidden], .hidden {
-    display: none !important; /* One of the good use cases of !important */
+    display: none !important;
 }
 
-/* Hide elements by "zero" attribute */
 [zero], .zero {
     width: 0;
     height: 0;
@@ -461,11 +470,12 @@ button:not([class]):focus {
     overflow: hidden;
 }
 
-/* Hide elements by "invisible" attribute */
 [invisible], .invisible {
-    visibility: hidden !important; /* One of the good use cases of !important */
+    visibility: hidden !important;
 }
 
+
+/* ----------=========( Absolute )=========----------- */
 .full-absolute {
     position: absolute;
     top: 0;
@@ -474,12 +484,57 @@ button:not([class]):focus {
     bottom: 0;
 }
 
-.full-container {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+.absolute {
+    position: absolute;
 }
 
-/* ----------=========( Text align )=========----------- */
+.relative {
+    position: relative;
+}
+
+.absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ----------=========( Font )=========----------- */
+.font-primary {
+    font-family: var(--font-family-primary);
+}
+
+.font-secondary {
+    font-family: var(--font-family-secondary);
+}
+
+.font-w-300 {
+    font-weight: 300;
+}
+
+.font-w-400, .font-w-normal {
+    font-weight: 400;
+}
+
+.font-w-500 {
+    font-weight: 500;
+}
+
+.font-w-600 {
+    font-weight: 600;
+}
+
+.font-w-700 {
+    font-weight: 700;
+}
+
+/* ----------=========( Scroll box )=========----------- */
+.scroll-box {
+    flex: 1 1 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .scroll-x-center {
     scroll-snap-type: x mandatory;
     -ms-overflow-style: none;
@@ -512,6 +567,12 @@ button:not([class]):focus {
 
 .flex-1 {
     flex: 1;
+}
+
+.flex-center {
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
 }
 
 .flex-self-stretch {
