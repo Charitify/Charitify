@@ -25,6 +25,7 @@
     /* Multi */
 
     --color-success: 14, 163, 83;           /* #0ea353 - buttons */
+    --color-warning: 218, 160, 11;          /* #daa00b */
     --color-danger: 226, 43, 43;            /* #e22b2b - errors */
     --color-info: 56, 151, 240;             /* #3897f0 - accent */
 
@@ -567,6 +568,10 @@ button:not([class]):focus {
 
 .flex-1 {
     flex: 1;
+}
+
+.flex-none {
+    flex: none;
 }
 
 .flex-center {
