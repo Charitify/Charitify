@@ -58,7 +58,7 @@
     .donate-btn {
         position: fixed;
         left: 0;
-        bottom: 0;
+        bottom: -1px;
         display: flex;
         align-items: center;
         justify-content: center;
