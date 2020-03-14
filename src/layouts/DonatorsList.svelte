@@ -43,7 +43,7 @@
 
 <style>
     ul {
-        direction: rtl;
+        /*direction: rtl;*/
         width: 100%;
         display: flex;
         align-items: flex-start;
@@ -54,7 +54,7 @@
     }
 
     li {
-        direction: ltr;
+        /*direction: ltr;*/
         flex: none;
         align-self: stretch;
         width: 260px;

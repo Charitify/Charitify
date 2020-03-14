@@ -15,6 +15,7 @@
 
 <style>
     .ava {
+        position: relative;
         flex: none;
         display: flex;
         border-radius: 50%;
