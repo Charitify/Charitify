@@ -256,7 +256,7 @@ body.theme-dark {
 }
 
 html {
-    height: 100%;
+    /*height: 100%;*/
 }
 
 body {
@@ -287,10 +287,10 @@ body {
 
 #main {
     flex: 1 0 0;
-    display: flex;
-    flex-direction: column;
-    align-content: stretch;
-    justify-content: stretch;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*align-content: stretch;*/
+    /*justify-content: stretch;*/
 }
 
 h1, h2, h3, h4, h5, h6 {
