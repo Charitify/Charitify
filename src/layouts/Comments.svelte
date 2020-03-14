@@ -37,9 +37,10 @@
     {#if withForm}
         <br class="big">
         <div class="comments-form font-secondary h3">
-            <Form class="flex">
+            <Form class="flex" name="comment-form">
                 <Input
                         type="textarea"
+                        name="comment"
                         rows="1"
                         class="comment-field flex-self-stretch"
                         placeholder="Залиште свій коментар"

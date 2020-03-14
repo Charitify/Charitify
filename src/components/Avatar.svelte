@@ -9,7 +9,7 @@
     $: classProp = classnames('ava', size, $$props.class)
 </script>
 
-<div class={classProp} style="background-color: green">
+<div class={classProp}>
     <Picture {src} {alt}/>
 </div>
 

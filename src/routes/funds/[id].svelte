@@ -180,7 +180,7 @@
     <Card class="container">
         <br class="big">
 
-        <div class="flex flex-column flex-align-center" style="background-color: red">
+        <div class="flex flex-column flex-align-center">
             <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
 
             <br class="tiny">

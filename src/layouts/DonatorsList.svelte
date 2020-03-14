@@ -31,9 +31,15 @@
     ]
 
     const grouped = all.map(one => new Array(3).fill(one))
+
+    function scrollEnd(node) {
+        try {
+          node.scrollTo(node.scrollWidth, 0)
+        } catch (e) {}
+    }
 </script>
 
-<ul class="scroll-x-center">
+<ul class="scroll-x-center" use:scrollEnd>
     {#each grouped as cards}
         <li>
             <DonatorsCard items={cards}/>
@@ -43,7 +49,6 @@
 
 <style>
     ul {
-        /*direction: rtl;*/
         width: 100%;
         display: flex;
         align-items: flex-start;
@@ -54,18 +59,17 @@
     }
 
     li {
-        /*direction: ltr;*/
         flex: none;
         align-self: stretch;
         width: 260px;
         padding: 0 5px;
     }
 
-    li:last-child {
+    li:first-child {
         padding-left: 15px;
     }
 
-    li:first-child {
+    li:last-child {
         padding-right: 15px;
     }
 </style>
