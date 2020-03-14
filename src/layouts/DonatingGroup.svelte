@@ -1,51 +1,37 @@
 <script>
-    import { Input, Button } from '../components'
+    import { Button } from '../components'
 </script>
 
-<ul>
+<ul class="active font-secondary">
     <li>
-        <Button is="success" on:click="{e => console.log(e)}">50</Button>
+        <Button is="success" size="medium" on:click="{e => alert('Дякую! 🥰')}">Допомогти</Button>
+    </li>
+    <li style="flex: none">
+        <s></s>
+        <s></s>
+        <s></s>
     </li>
     <li>
-        <Button is="success" on:click="{e => console.log(e)}">100</Button>
-    </li>
-    <li>
-        <Button is="success" on:click="{e => console.log(e)}">200</Button>
-    </li>
-    <li>
-        <br>
-        <Input
-                type="number"
-                name="num"
-                list="sum-suggestions"
-                placeholder="Num"
-                autoselect
-                align="right"
-                value="1000"
-        />
-
-        <datalist id="sum-suggestions">
-            <option value="20">
-            <option value="500">
-            <option value="1000">
-        </datalist>
-    </li>
-    <li>
-        <Button is="warning" on:click="{e => console.log(e)}">Donate</Button>
+        <Button is="warning" size="medium" on:click="{e => alert('Дякую! 🥰')}">Поділитись</Button>
     </li>
 </ul>
 
 <style>
     ul {
+        position: fixed;
+        top: 50px;
+        left: 0;
+        width: 100%;
         flex: 0;
         display: flex;
-        flex-direction: column;
-        margin: calc(var(--screen-padding) * -1 / 2) 0;
-        padding: 0 0 0 var(--screen-padding);
+        z-index: 9;
+        padding: var(--screen-padding);
+        transition: .3s ease-in-out;
+        background-color: rgba(var(--theme-bg-color));
+        box-shadow: var(--shadow-primary);
     }
 
-    ul li {
-        flex: none;
-        margin: calc(var(--screen-padding) / 2) 0;
+    li {
+        flex: 1 1 0;
     }
 </style>

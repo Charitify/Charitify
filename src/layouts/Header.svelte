@@ -49,8 +49,10 @@
     nav {
         position: sticky;
         top: 0;
+        height: 50px;
         z-index: 10;
         display: flex;
+        align-items: center;
         color: rgba(var(--color-font-light));
         justify-content: space-between;
         box-shadow: var(--shadow-secondary);

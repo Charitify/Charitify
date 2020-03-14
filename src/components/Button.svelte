@@ -148,12 +148,29 @@
     }
 
     :global(.btn).success:hover {
-        transform: translateY(1px);
         box-shadow: var(--shadow-primary);
     }
 
     :global(.btn).success:active {
-        transform: translateY(2px);
+        box-shadow: var(--shadow-primary);
+    }
+
+    /* Warning */
+
+    :global(.btn).warning {
+        color: rgba(var(--color-font-light));
+        background-color: rgba(var(--color-warning));
+    }
+
+    :global(.btn).warning:focus {
+        background-color: rgba(var(--color-warning), .85);
+    }
+
+    :global(.btn).warning:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).warning:active {
         box-shadow: var(--shadow-primary);
     }
 
@@ -169,12 +186,10 @@
     }
 
     :global(.btn).danger:hover {
-        transform: translateY(1px);
         box-shadow: var(--shadow-primary);
     }
 
     :global(.btn).danger:active {
-        transform: translateY(2px);
         box-shadow: var(--shadow-primary);
     }
 </style>

@@ -9,6 +9,7 @@
         Documents,
         TrustButton,
         DonatorsList,
+        DonatingGroup,
     } from '../../layouts'
     import {
         Icon,
@@ -30,10 +31,13 @@
         charity = await api.getFund(1)
     })
 
+
     // Trust button
     let active = false
+    let isTopOneDonate = false
     async function onClick() {
         active = !active
+        isTopOneDonate = !isTopOneDonate
     }
 
     // Donate button
@@ -71,6 +75,7 @@
         line-height: 1.26;
         color: rgba(var(--color-white));
         padding: 20px;
+        z-index: 9;
         text-align: center;
         transition: .3s ease-in-out;
         transform: translateY(100%);
@@ -82,10 +87,32 @@
     }
 </style>
 
+
+{#if !isTopOneDonate}
+    <button type="button" class={classPropDonateBtn} on:click={onDonate}>
+        <Icon type="coin" size="big" is="light"/>
+        <s></s>
+        <s></s>
+        Допомогти
+    </button>
+{/if}
+
+{#if isTopOneDonate}
+    <DonatingGroup/>
+{/if}
+
 <section class="container scroll-box theme-bg-color-secondary">
 
     <br>
     <br>
+
+    {#if isTopOneDonate}
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    {/if}
 
     <section class="flex" style="height: 200px">
         <Carousel items={carousel}/>
@@ -109,6 +136,8 @@
             <h3>"Дім Сірка"</h3>
         </div>
     </Button>
+
+    <br>
 
     <br>
 
@@ -389,12 +418,5 @@
     <div class="full-container">
         <Footer/>
     </div>
+
 </section>
-
-<button type="button" class={classPropDonateBtn} on:click={onDonate}>
-    <Icon type="coin" size="big" is="light"/>
-    <s></s>
-    <s></s>
-    Допомогти
-</button>
-
