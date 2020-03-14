@@ -1,22 +1,25 @@
 <script>
     import { stores } from '@sapper/app'
-
-    const { page } = stores()
     import { onMount } from 'svelte'
     import { api } from '../../services'
     import {
         Footer,
         Comments,
-        CharityCards,
-        TitleSubTitle,
-        AvatarAndName,
-        DonatingGroup,
-        ContactsHolder,
+        Documents,
         TrustButton,
         DonatorsList,
-        Documents,
     } from '../../layouts'
-    import { Button, Picture, Progress, Carousel, Divider, Card, Icon, Avatar } from '../../components'
+    import {
+        Icon,
+        Card,
+        Avatar,
+        Button,
+        Picture,
+        Progress,
+        Carousel,
+    } from '../../components'
+
+    const { page } = stores()
 
     let charityId = $page.params.id
 
@@ -28,8 +31,8 @@
         charity = await api.getFund(1)
     })
 
+    // Trust button
     let active = false
-
     async function onClick() {
         active = !active
     }
@@ -43,6 +46,7 @@
     table tr:not(:last-child) td {
         padding-bottom: 16px;
     }
+
     table td:last-child {
         font-weight: 300;
     }
@@ -61,9 +65,10 @@
 
     <Button class="white">
         <div class="flex flex-align-center flex-justify-start full-width">
+            <s></s>
             <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
                 <Picture
-                        src="http://dktb.if.ua/images/plg_jdvthumbs/thumb-photo-1__large-50bd9294dec9a8f834586c1c81c86f98.jpg"
+                        src="./dimsirka.jpg"
                         size="contain"
                         alt="logo"
                 />
@@ -83,7 +88,8 @@
 
         <h2>Збережемо тварин разом</h2>
         <br class="small">
-        <h3 class="font-w-normal" style="color: rgba(var(--color-black), .7)">Збір грошей на допомогу безпритульним тваринам</h3>
+        <h3 class="font-w-normal" style="color: rgba(var(--color-black), .7)">Збір грошей на допомогу безпритульним
+            тваринам</h3>
 
         <br>
         <br class="small">
@@ -95,7 +101,8 @@
 
         <br>
 
-        <Progress value={Math.floor(3500 / 20000 * 100)}/>
+        <Progress value={Math.floor(3500
+        / 20000 * 100)}/>
 
         <br class="big">
     </Card>
@@ -107,12 +114,14 @@
         <span class="flex flex-align-center">
             <Icon is="danger" type="heart-filled" size="medium"/>
             <s></s>
-            1
+            <s></s>
+            <span class="font-secondary font-w-600 h3">1</span>
         </span>
         <span class="flex flex-align-center">
             <Icon is="dark" type="eye" size="medium"/>
             <s></s>
-            13
+            <s></s>
+            <span class="font-secondary font-w-600 h3">13</span>
         </span>
     </p>
 
@@ -129,26 +138,26 @@
         Зараз буде проходити обробку від паразитів та вакцинацію 💉
     </pre>
 
-    <br>
+    <br class="small">
 
     <p class="flex">
-        <span class="flex flex-align-center">
-            <Icon is="dark" type="share" size="medium"/>
-            <s></s>
-            <s></s>
-            <p class="font-w-500">Поділитись</p>
-        </span>
+    <Button class="flex flex-align-center" auto size="small">
+        <Icon is="dark" type="share" size="medium"/>
         <s></s>
         <s></s>
+        <p class="font-w-500">Поділитись</p>
+    </Button>
+    <s></s>
+    <s></s>
+    <s></s>
+    <s></s>
+    <s></s>
+    <Button class="flex flex-align-center" auto size="small">
+        <Icon is="dark" type="link" size="medium"/>
         <s></s>
         <s></s>
-        <s></s>
-        <span class="flex flex-align-center">
-            <Icon is="dark" type="link" size="medium"/>
-            <s></s>
-            <s></s>
-            <p class="font-w-500">Скопіювати</p>
-        </span>
+        <p class="font-w-500">Скопіювати</p>
+    </Button>
     </p>
 
     <br>
@@ -179,7 +188,7 @@
 
             <h2>Волтер</h2>
             <br class="tiny">
-            <p>Jack Russell Terrier</p>
+            <h4 class="font-w-500">Jack Russell Terrier</h4>
         </div>
 
         <br class="big">
@@ -196,7 +205,7 @@
             <div class="flex flex-center relative" style="width: 90px; height: 90px">
                 <Icon type="polygon" is="info"/>
                 <div class="absolute flex" style="width: 44px; height: 44px">
-                     <Icon type="male" is="light"/>
+                    <Icon type="male" is="light"/>
                 </div>
             </div>
 
@@ -214,7 +223,7 @@
 
         <h2>Характер Волтера: 😃</h2>
         <br class="small">
-        <p>
+        <p class="font-w-300">
             Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми
         </p>
 
@@ -347,5 +356,8 @@
     <br class="big">
     <br class="big">
 
+    <div class="full-container">
+        <Footer/>
+    </div>
 </section>
 

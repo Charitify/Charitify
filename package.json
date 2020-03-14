@@ -30,7 +30,9 @@
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^6.1.0",
     "@rollup/plugin-replace": "^2.3.1",
+    "autoprefixer": "^9.7.4",
     "gh-pages": "^2.2.0",
+    "node-sass": "^4.13.1",
     "npm-run-all": "^4.1.5",
     "rollup": "^1.31.0",
     "rollup-plugin-babel": "^4.0.2",
@@ -38,7 +40,8 @@
     "rollup-plugin-terser": "^5.2.0",
     "sapper": "^0.27.0",
     "sapper-environment": "^1.0.1",
-    "svelte": "^3.18.1"
+    "svelte": "^3.18.1",
+    "svelte-preprocess": "^3.5.0"
   },
   "repository": {
     "type": "git",

@@ -7,62 +7,46 @@
     export let src
     export let alt
     export let size = 'cover'
-    export let srcBig = undefined
     export let id = undefined
     export let width = undefined
     export let height = undefined
 
-    let loadingSrc = true
-    let loadingSrcBig = true
     let isError = false
+    let loadingSrc = true
 
-    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrc, loadingSrcBig, isError })
+    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrc, isError })
 
-    function onLoadSrc(e) {
-        loadingSrc = false
-        dispatch('load', e)
-    }
-
-    function onErrorSrc(e) {
-        loadingSrc = false
-        isError = true
-        dispatch('error', e)
-    }
-
-    function onLoadSrcBig(e) {
-        loadingSrcBig = false
-        dispatch('loadBig', e)
-    }
-
-    function onErrorSrcBig(e) {
-        loadingSrcBig = false
-        isError = true
-        dispatch('errorBig', e)
+    function imgService(node) {
+        if (node.complete) {
+            isError = false
+            loadingSrc = false
+            dispatch('load', node)
+        } else {
+            node.onload = () => {
+                isError = false
+                loadingSrc = false
+                dispatch('load', node)
+            }
+            node.onerror = () => {
+                isError = true
+                loadingSrc = false
+                dispatch('error', node)
+            }
+        }
     }
 </script>
 
 <figure class={wrapClassProp}>
     <img
+            use:imgService
             {id}
             {alt}
             {src}
             {width}
             {height}
             class="pic pic-1x"
-            on:load={onLoadSrc}
-            on:error={onErrorSrc}
     />
-    {#if srcBig && !loadingSrc}
-        <img
-                {alt}
-                {width}
-                {height}
-                src={srcBig}
-                class="pic pic-2x"
-                on:load={onLoadSrcBig}
-                on:error={onErrorSrcBig}
-        />
-    {/if}
+
     <figcaption>
         <slot></slot>
     </figcaption>
@@ -77,14 +61,7 @@
         flex-direction: column;
         align-items: stretch;
         justify-content: stretch;
-    }
-
-    .picture.cover .pic {
-        object-fit: cover;
-    }
-
-    .picture.contain .pic {
-        object-fit: contain;
+        background-color: rgba(var(--color-black), .04);
     }
 
     .picture .pic {
@@ -95,16 +72,16 @@
         transition: opacity .3s ease-in;
     }
 
-    .picture .pic-2x {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+    .picture.cover .pic {
+        object-fit: cover;
     }
 
-    /*.picture.loadingSrc .pic-1x,*/
-    /*.picture.loadingSrcBig .pic-2x {*/
-    /*    opacity: 0;*/
-    /*}*/
+    .picture.contain .pic {
+        object-fit: contain;
+    }
+
+    .picture.isError .pic-1x,
+    .picture.loadingSrc .pic-1x {
+        opacity: 0;
+    }
 </style>

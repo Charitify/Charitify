@@ -9,7 +9,7 @@
     export let href = undefined
     export let auto = false
     export let type = 'button'
-    export let size = 'medium'
+    export let size = undefined
     export let title = undefined
     export let htmlFor = undefined
     export let disabled = false
@@ -70,6 +70,7 @@
 <style>
     .btn:not(.auto) {
         width: 100%;
+        padding: 5px 15px;
     }
 
     :global(.btn) {
@@ -77,14 +78,13 @@
         cursor: pointer;
         max-width: 100%;
         user-select: none;
-        padding: 5px 15px;
         font-weight: bold;
         text-align: center;
         align-items: center;
         display: inline-flex;
         justify-content: center;
-        border-radius: var(--border-radius-medium);
         color: rgba(var(--theme-font-color));
+        border-radius: var(--border-radius-medium);
     }
 
     :global(.btn.small) {

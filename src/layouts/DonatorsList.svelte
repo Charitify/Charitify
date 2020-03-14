@@ -54,8 +54,9 @@
     }
 
     li {
+        flex: none;
         align-self: stretch;
-        width: 240px;
+        width: 260px;
         padding: 0 5px;
     }
 

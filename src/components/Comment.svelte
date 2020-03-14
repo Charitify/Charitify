@@ -51,12 +51,14 @@
                 <span class="h5" style="rgba(var(--color-black), .3)">{ date }</span>
                 <span class="h5">Відповісти</span>
                 <span class="h5 flex flex-align-center">
-                    <span style={`opacity: ${amount > 2 ? 1 : .6}`}>
+                    <span style={`opacity: ${amount > 2 ? 1 : .5}`}>
                         <Icon type="heart-filled" is="danger" size="small"/>
                     </span>
                     <s></s>
                     <s></s>
-                    <h4>{ amount }</h4>
+                    {#if amount}
+                        <h4>{ amount }</h4>
+                    {/if}
                     <s></s>
                     <s></s>
                     <s></s>
