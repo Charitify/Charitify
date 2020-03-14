@@ -1,0 +1,2 @@
+table.svelte-1vl0w8u tr:not(:last-child) td.svelte-1vl0w8u{padding-bottom:16px}table.svelte-1vl0w8u td.svelte-1vl0w8u:last-child{font-weight:300}.donate-btn.svelte-1vl0w8u.svelte-1vl0w8u{position:fixed;left:0;bottom:0;display:flex;align-items:center;justify-content:center;width:100%;font-weight:600;font-size:1.85em;line-height:1.26;color:rgba(var(--color-white));padding:20px;text-align:center;transition:.3s ease-in-out;transform:translateY(100%);background-color:rgba(var(--color-success))}.donate-btn.active.svelte-1vl0w8u.svelte-1vl0w8u{transform:none
+    }
