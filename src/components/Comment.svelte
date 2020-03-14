@@ -17,7 +17,7 @@
     <section class="comment flex flex-align-start" style="padding: 20px">
 
         <div class="flex relative">
-            <Avatar src={src} alt={title} size="medium" class="comment-ava"/>
+            <Avatar src={src} alt={title} size="medium"/>
 
             {#if checked}
             <div class="absolute flex" style="top: -1px; right: -1px; width: 20px; height: 20px; overflow: hidden">

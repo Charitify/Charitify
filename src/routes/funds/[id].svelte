@@ -68,7 +68,7 @@
             <s></s>
             <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
                 <Picture
-                        src="./dimsirka.jpg"
+                        src="./assets/dimsirka.jpg"
                         size="contain"
                         alt="logo"
                 />
@@ -180,8 +180,8 @@
     <Card class="container">
         <br class="big">
 
-        <div class="flex flex-column flex-align-center">
-            <Avatar size="big" src="https://placeimg.com/300/300/animal"/>
+        <div class="flex flex-column flex-align-center" style="background-color: red">
+            <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
 
             <br class="tiny">
             <br>

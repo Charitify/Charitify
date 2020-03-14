@@ -43,9 +43,9 @@
 
 <style>
     ul {
+        direction: rtl;
         width: 100%;
         display: flex;
-        flex-direction: row-reverse;
         align-items: flex-start;
         max-width: 100%;
         overflow-y: hidden;
@@ -54,6 +54,7 @@
     }
 
     li {
+        direction: ltr;
         flex: none;
         align-self: stretch;
         width: 260px;
