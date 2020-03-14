@@ -2,6 +2,7 @@
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
     import { api } from '../../services'
+    import { classnames } from '../../utils'
     import {
         Footer,
         Comments,
@@ -20,13 +21,11 @@
     } from '../../components'
 
     const { page } = stores()
-
     let charityId = $page.params.id
 
+    // Entity
     let charity = {}
-
     $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))
-
     onMount(async () => {
         charity = await api.getFund(1)
     })
@@ -36,6 +35,11 @@
     async function onClick() {
         active = !active
     }
+
+    // Donate button
+    let activeDonateBtn = false
+    onMount(() => setTimeout(() => activeDonateBtn = true, 500))
+    $: classPropDonateBtn = classnames('donate-btn', { active: activeDonateBtn })
 </script>
 
 <svelte:head>
@@ -49,6 +53,29 @@
 
     table td:last-child {
         font-weight: 300;
+    }
+
+    .donate-btn {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        font-weight: 600;
+        font-size: 1.85em;
+        line-height: 1.26;
+        color: rgba(var(--color-white));
+        padding: 20px;
+        text-align: center;
+        transition: .3s ease-in-out;
+        transform: translateY(100%);
+        background-color: rgba(var(--color-success));
+    }
+
+    .donate-btn.active {
+        transform: none
     }
 </style>
 
@@ -360,4 +387,11 @@
         <Footer/>
     </div>
 </section>
+
+<button type="button" class={classPropDonateBtn}>
+    <Icon type="coin" size="big" is="light"/>
+    <s></s>
+    <s></s>
+    Допомогти
+</button>
 
