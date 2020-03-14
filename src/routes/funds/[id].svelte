@@ -40,6 +40,9 @@
     let activeDonateBtn = false
     onMount(() => setTimeout(() => activeDonateBtn = true, 500))
     $: classPropDonateBtn = classnames('donate-btn', { active: activeDonateBtn })
+    function onDonate() {
+        alert('Дякую! 🥰')
+    }
 </script>
 
 <svelte:head>
@@ -388,7 +391,7 @@
     </div>
 </section>
 
-<button type="button" class={classPropDonateBtn}>
+<button type="button" class={classPropDonateBtn} on:click={onDonate}>
     <Icon type="coin" size="big" is="light"/>
     <s></s>
     <s></s>
