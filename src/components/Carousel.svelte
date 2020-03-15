@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
+    import { waitUntil } from '../utils'
     import Picture from './Picture.svelte'
 
     const dispatch = createEventDispatcher()
@@ -17,7 +18,7 @@
     export let dots = true
     export let initIndex = 0
 
-    let activeDot = initIndex
+    $: activeDot = initIndex
 
     function carousel(node) {
         initScrollPosition(node)
@@ -40,7 +41,12 @@
 
     function initScrollPosition(parent) {
         const { width } = parent.getBoundingClientRect()
-        parent.scrollLeft = width * activeDot
+        waitUntil(() => {
+            parent.scrollLeft = width * activeDot
+            if (parent.scrollLeft !== width * activeDot) {
+              throw new Error('Not set.')
+            }
+        }, { interval: 50 })
     }
 
     function onClick(item, index, e) {
@@ -84,6 +90,7 @@
         width: 100%;
         flex: none;
         display: flex;
+        overflow: hidden;
         align-self: stretch;
         align-items: stretch;
         justify-content: stretch;
@@ -93,14 +100,15 @@
         display: none;
     }
 
-    .carousel-inner {
+    .carousel .carousel-inner {
         overflow-y: hidden;
-        overflow-x: auto;
+        overflow-x: scroll;
+        white-space: nowrap;
     }
 
     .carousel-dots {
         position: absolute;
-        top: 10px;
+        top: 0;
         left: 0;
         width: 100%;
         display: flex;

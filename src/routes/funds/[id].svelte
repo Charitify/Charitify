@@ -19,6 +19,7 @@
         Picture,
         Progress,
         Carousel,
+        FancyBox,
     } from '../../components'
 
     const { page } = stores()
@@ -26,7 +27,7 @@
 
     // Entity
     let charity = {}
-    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo', onClick: console.log }))
+    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))
     onMount(async () => {
         charity = await api.getFund(1)
     })
@@ -47,6 +48,15 @@
     function onDonate() {
         alert('Дякую! 🥰')
     }
+
+    // Carousel & FancyBox
+    let propsBox = {}
+    function onCarouselClick({ detail }) {
+        propsBox = { initIndex: detail.index }
+    }
+
+    // Avatar fancy
+    let avatarFancy = false
 </script>
 
 <svelte:head>
@@ -115,7 +125,12 @@
     {/if}
 
     <section class="flex" style="height: 200px">
-        <Carousel items={carousel}/>
+        <FancyBox>
+            <Carousel items={carousel} on:click={onCarouselClick}/>
+            <div slot="box">
+                <Carousel {...propsBox} items={carousel}/>
+            </div>
+        </FancyBox>
     </section>
 
     <br>
@@ -240,7 +255,12 @@
         <br class="big">
 
         <div class="flex flex-column flex-align-center">
-            <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
+            <FancyBox>
+                <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
+                <div slot="box">
+                    <Avatar src="https://placeimg.com/300/300/animal" alt="Волтер"/>
+                </div>
+            </FancyBox>
 
             <br class="tiny">
             <br>
