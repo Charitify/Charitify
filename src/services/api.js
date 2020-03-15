@@ -1,4 +1,5 @@
 import zlFetch from 'zl-fetch' // See: https://github.com/zellwk/zl-fetch
+import { setup } from '../config'
 
 /**
  *
@@ -250,7 +251,7 @@ export class ApiClass extends APIService {
  * @constructor {Config}
  */
 export default new ApiClass({
-  basePath: process.env.BACKEND_URL,
+  basePath: setup.BACKEND_URL,
   responseInterceptor: res => (console.info('response -------\n', res), res),
   errorInterceptor: rej => {
     console.warn('request error -------\n', rej)

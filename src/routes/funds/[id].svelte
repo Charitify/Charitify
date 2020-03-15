@@ -26,7 +26,7 @@
 
     // Entity
     let charity = {}
-    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))
+    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo', onClick: console.log }))
     onMount(async () => {
         charity = await api.getFund(1)
     })

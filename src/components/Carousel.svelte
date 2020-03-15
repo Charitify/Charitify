@@ -1,45 +1,8 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
     import Picture from './Picture.svelte'
 
-    const cards = [
-        {
-            src: 'https://placeimg.com/300/300/tech',
-            title: 'The main title and short description.',
-            percent: 45,
-            orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
-        },
-        {
-            src: 'https://placeimg.com/300/300/arch',
-            title: 'Second bigger major card title line with a bit longer description.',
-            percent: 65,
-            orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
-        },
-        {
-            src: 'https://placeimg.com/300/300/any',
-            title: 'The main title and short description.',
-            percent: 5,
-            orgHead: 'Tinaramisimuss Kandelakinuskas',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG charity of Charitify.',
-        },
-        {
-            src: 'https://placeimg.com/300/300/nature',
-            title: 'The main title and short description.',
-            percent: 95,
-            orgHead: 'Tina Kandelaki',
-            orgHeadSrc: 'https://placeimg.com/300/300/people',
-            organization: 'ORG giant charity organization of big Charitify company.',
-        },
-    ]
-
-    const imagesDefault = cards.map(card => ({
-        src: card.src,
-        alt: card.title,
-    }))
+    const dispatch = createEventDispatcher()
 
     /**
      *
@@ -50,41 +13,115 @@
      *     onClick?: function,
      * }[]}
      */
-    export let items = imagesDefault
+    export let items
+    export let dots = true
+    export let initIndex = 0
+
+    let activeDot = initIndex
+
+    function carousel(node) {
+        initScrollPosition(node)
+        node.addEventListener('scroll', onScroll)
+        return { destroy: () => node.removeEventListener('scroll', onScroll) }
+    }
+
+    function onScroll(e) {
+        try {
+            getActiveDot(e.target)
+        } catch (err) { console.warn('Carousel does not work.', err) }
+    }
+
+    function getActiveDot(parent) {
+        const { scrollLeft } = parent
+        const { width } = parent.getBoundingClientRect()
+        const newActiveDot = Math.round(scrollLeft / width)
+        if (activeDot !== newActiveDot) activeDot = newActiveDot
+    }
+
+    function initScrollPosition(parent) {
+        const { width } = parent.getBoundingClientRect()
+        parent.scrollLeft = width * activeDot
+    }
+
+    function onClick(item, index, e) {
+        dispatch('click', { item, index, e })
+        if (typeof item.onClick === 'function') item.onClick(item, index, e)
+    }
+
 </script>
 
-<ul aria-label="carousel" class="scroll-x-center">
-    {#each items as item}
-        <li>
-            <slot {item}>
-                <Picture {...item}/>
-            </slot>
-        </li>
-    {/each}
-</ul>
+<section aria-label="carousel" class="carousel">
+    <ul use:carousel class="carousel-inner scroll-x-center">
+        {#each items as item, i}
+            <li>
+                <button type="button" on:click={onClick.bind(null, item, i)}>
+                    <slot {item}>
+                        <Picture {...item}/>
+                    </slot>
+                </button>
+            </li>
+        {/each}
+    </ul>
+
+
+    {#if dots}
+        <ul class="carousel-dots">
+            {#each items as _item, i}
+                <li class={i === activeDot ? 'active' : ''}></li>
+            {/each}
+        </ul>
+    {/if}
+</section>
 
 <style>
-    ul {
+    .carousel {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--border-radius-big);
+    }
+
+    .carousel, .carousel-inner, .carousel-inner li, button {
         width: 100%;
+        flex: none;
         display: flex;
         align-self: stretch;
         align-items: stretch;
         justify-content: stretch;
-        overflow-y: hidden;
-        overflow-x: auto;
-        margin-bottom: 2px;
-        border-radius: var(--border-radius-big);
     }
 
-    ul::-webkit-scrollbar {
+    .carousel-inner::-webkit-scrollbar {
         display: none;
     }
 
-    li {
+    .carousel-inner {
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+
+    .carousel-dots {
+        position: absolute;
+        top: 10px;
+        left: 0;
         width: 100%;
-        flex: none;
         display: flex;
-        align-items: stretch;
-        justify-content: stretch;
+        align-items: center;
+        justify-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    .carousel-dots li {
+        position: relative;
+        width: 8px;
+        height: 8px;
+        margin: 5px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: rgba(var(--color-white));
+        box-shadow: var(--shadow-primary)
+    }
+
+    li.active {
+        transform: scale(1.5);
     }
 </style>

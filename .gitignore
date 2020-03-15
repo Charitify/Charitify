@@ -5,3 +5,8 @@
 yarn-error.log
 /cypress/screenshots/
 /__sapper__/dev/
+
+.env
+.env.dev
+.env.prod
+.env.example
