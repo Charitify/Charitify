@@ -255,12 +255,14 @@
         <br class="big">
 
         <div class="flex flex-column flex-align-center">
-            <FancyBox>
-                <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
-                <div slot="box">
-                    <Avatar src="https://placeimg.com/300/300/animal" alt="Волтер"/>
-                </div>
-            </FancyBox>
+            <span>
+                <FancyBox>
+                    <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
+                    <div slot="box">
+                        <Avatar src="https://placeimg.com/300/300/animal" alt="Волтер"/>
+                    </div>
+                </FancyBox>
+            </span>
 
             <br class="tiny">
             <br>

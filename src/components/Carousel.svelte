@@ -87,6 +87,7 @@
     }
 
     .carousel, .carousel-inner, .carousel-inner li, button {
+        position: relative;
         width: 100%;
         flex: none;
         display: flex;
