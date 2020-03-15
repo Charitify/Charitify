@@ -26,6 +26,7 @@
 
 <style>
     .fancy-box {
+        position: relative;
         width: 100%;
         flex: none;
         display: flex;

@@ -81,8 +81,6 @@
 
 <style>
     .carousel {
-        position: relative;
-        overflow: hidden;
         border-radius: var(--border-radius-big);
     }
 
