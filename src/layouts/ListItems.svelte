@@ -27,7 +27,7 @@
         display: block;
         flex: 1 1 auto;
         box-shadow: var(--shadow-primary);
-        border-radius: var(--border-radius);
+        border-radius: var(--border-radius-small);
         background-color: rgba(var(--theme-bg-color));
     }
 </style>

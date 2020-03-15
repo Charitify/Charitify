@@ -17,7 +17,7 @@
 </script>
 
 <ListsLayout>
-    <ListItems items={chariries} basePath="charities"/>
+    <ListItems items={chariries} basePath="funds"/>
 </ListsLayout>
 
 <style>
