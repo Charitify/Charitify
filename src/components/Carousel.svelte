@@ -14,7 +14,7 @@
      *     onClick?: function,
      * }[]}
      */
-    export let items
+    export let items = []
     export let dots = true
     export let initIndex = 0
 
