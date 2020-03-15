@@ -80,10 +80,6 @@
 </section>
 
 <style>
-    .carousel {
-        border-radius: var(--border-radius-big);
-    }
-
     .carousel, .carousel-inner, .carousel-inner li, button {
         position: relative;
         width: 100%;
@@ -95,6 +91,10 @@
         justify-content: stretch;
     }
 
+    .carousel {
+        border-radius: var(--border-radius-big);
+    }
+
     .carousel-inner::-webkit-scrollbar {
         display: none;
     }
@@ -102,7 +102,6 @@
     .carousel .carousel-inner {
         overflow-y: hidden;
         overflow-x: scroll;
-        white-space: nowrap;
     }
 
     .carousel-dots {
