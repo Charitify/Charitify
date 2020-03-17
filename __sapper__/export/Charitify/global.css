@@ -44,7 +44,7 @@
     --theme-svg-fill: var(--color-dark);
 
     --theme-bg-color: var(--color-light);
-    --theme-bg-color-secondary: var(--color-light-second);
+    --theme-color-secondary: var(--color-light-second);
 
     --theme-font-color: var(--color-font-dark);
     --theme-font-color-opposite: var(--color-font-light);
@@ -249,7 +249,7 @@ body.theme-light {
     --theme-svg-fill-opposite: var(--color-white);
     --theme-font-color: var(--color-font-dark);
     --theme-font-color-opposite: var(--color-font-light);
-    --theme-bg-color-secondary: var(--color-light-second);
+    --theme-color-secondary: var(--color-light-second);
 }
 
 body.theme-dark {
@@ -259,7 +259,7 @@ body.theme-dark {
     --theme-svg-fill-opposite: var(--color-black);
     --theme-font-color: var(--color-font-light);
     --theme-font-color-opposite: var(--color-font-dark);
-    --theme-bg-color-secondary: var(--color-dark-second);
+    --theme-color-secondary: var(--color-dark-second);
 }
 
 html {
@@ -411,7 +411,7 @@ b {
 }
 
 .theme-bg-color-secondary {
-    background-color: rgba(var(--theme-bg-color-secondary));
+    background-color: rgba(var(--theme-color-secondary));
 }
 
 .theme-svg-fill, .theme-svg-fill * {

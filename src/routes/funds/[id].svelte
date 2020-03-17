@@ -73,7 +73,7 @@
     .donate-btn {
         position: fixed;
         left: 0;
-        bottom: -1px;
+        bottom: env(safe-area-inset-bottom);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -190,7 +190,7 @@
             <span class="font-secondary font-w-600 h3">1</span>
         </span>
         <span class="flex flex-align-center">
-            <Icon is="dark" type="eye" size="medium"/>
+            <Icon type="eye" size="medium" class="theme-svg-fill"/>
             <s></s>
             <s></s>
             <span class="font-secondary font-w-600 h3">13</span>
@@ -214,7 +214,7 @@
 
     <p class="flex">
     <Button class="flex flex-align-center" auto size="small">
-        <Icon is="dark" type="share" size="medium"/>
+        <Icon type="share" size="medium" class="theme-svg-fill"/>
         <s></s>
         <s></s>
         <p class="font-w-500">Поділитись</p>
@@ -225,7 +225,7 @@
     <s></s>
     <s></s>
     <Button class="flex flex-align-center" auto size="small">
-        <Icon is="dark" type="link" size="medium"/>
+        <Icon type="link" size="medium" class="theme-svg-fill"/>
         <s></s>
         <s></s>
         <p class="font-w-500">Скопіювати</p>
@@ -386,6 +386,7 @@
     <br class="big">
 
     <h2>Документи</h2>
+    <br>
     <div class="full-container">
         <Documents/>
     </div>
@@ -413,7 +414,7 @@
     <br class="big">
     <div class="flex">
         <div class="flex flex-align-center font-secondary">
-            <Icon size="medium" is="dark" type="phone"/>
+            <Icon size="medium" type="phone" class="theme-svg-fill-opposite"/>
             <s></s>
             <s></s>
             <h2>+38 (093) 205-43-92</h2>

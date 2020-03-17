@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { waitUntil } from '../utils'
+    import { waitUntil, classnames } from '../utils'
     import Picture from './Picture.svelte'
 
     const dispatch = createEventDispatcher()
@@ -16,9 +16,11 @@
      */
     export let items = []
     export let dots = true
+    export let size = 'stretch'
     export let initIndex = 0
 
     $: activeDot = initIndex
+    $: classProp = classnames('carousel', size, $$props.class)
 
     function carousel(node) {
         initScrollPosition(node)
@@ -56,12 +58,12 @@
 
 </script>
 
-<section aria-label="carousel" class="carousel">
+<section aria-label="carousel" class={classProp}>
     <ul use:carousel class="carousel-inner scroll-x-center">
-        {#each items as item, i}
-            <li>
-                <button type="button" on:click={onClick.bind(null, item, i)}>
-                    <slot {item}>
+        {#each items as item, index}
+            <li class="fluid">
+                <button type="button" class="fluid" on:click={onClick.bind(null, item, index)}>
+                    <slot {item} {index}>
                         <Picture {...item}/>
                     </slot>
                 </button>
@@ -82,7 +84,6 @@
 <style>
     .carousel, .carousel-inner, .carousel-inner li, button {
         position: relative;
-        width: 100%;
         flex: none;
         display: flex;
         overflow: hidden;
@@ -91,7 +92,16 @@
         justify-content: stretch;
     }
 
+    .carousel.stretch .fluid {
+        width: 100%;
+    }
+
+    .carousel.auto .fluid {
+        width: auto;
+    }
+
     .carousel {
+        width: 100%;
         border-radius: var(--border-radius-big);
     }
 
@@ -100,6 +110,7 @@
     }
 
     .carousel .carousel-inner {
+        width: 100%;
         overflow-y: hidden;
         overflow-x: scroll;
     }
@@ -123,7 +134,7 @@
         margin: 5px;
         border-radius: 50%;
         overflow: hidden;
-        background-color: rgba(var(--color-white));
+        background-color: rgba(var(--theme-bg-color));
         box-shadow: var(--shadow-primary)
     }
 

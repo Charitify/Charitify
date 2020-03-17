@@ -1,6 +1,7 @@
 <script>
     import Card from '../Card.svelte'
     import Picture from '../Picture.svelte'
+    import Carousel from '../Carousel.svelte'
 
     const cardSample = {
         src: 'https://placeimg.com/300/300/people',
@@ -10,28 +11,16 @@
     const all = new Array(5).fill(cardSample)
 </script>
 
-<ul class="scroll-x-center">
-    {#each all as img}
-        <li>
-            <Card class="flex">
-                <Picture {...img} size="contain"/>
-            </Card>
-        </li>
-    {/each}
-</ul>
+<Carousel items={all} size="auto" dots={false} let:item={item} let:index={index}>
+    <div class={!index ? 'start' : index === all.length - 1 ? 'end' : ''}>
+        <Card class="flex">
+            <Picture {...item} size="contain"/>
+        </Card>
+    </div>
+</Carousel>
 
 <style>
-    ul {
-        width: 100%;
-        display: flex;
-        align-items: flex-start;
-        max-width: 100%;
-        overflow-y: hidden;
-        overflow-x: auto;
-        padding: var(--screen-padding) 0;
-    }
-
-    li {
+    div {
         flex: none;
         display: flex;
         align-self: stretch;
@@ -41,11 +30,11 @@
         box-sizing: content-box;
     }
 
-    li:first-child {
-        padding-left: 15px;
+    div.start {
+        padding-left: calc(var(--screen-padding) + 5px);
     }
 
-    li:last-child {
-        padding-right: 15px;
+    div.end {
+        padding-right:calc( var(--screen-padding) + 5px);
     }
 </style>

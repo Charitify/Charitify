@@ -67,7 +67,7 @@
         border-radius: 9999px;
         overflow: hidden;
         padding: var(--progress-padding-point) 0;
-        background-color: rgba(var(--color-black), .1);
+        background-color: rgba(var(--theme-color-primary-opposite), .1);
         background-clip: content-box;
     }
 
