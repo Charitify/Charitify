@@ -39,6 +39,8 @@
 
     /* -----------========( Current Theme )=========----------- */
 
+    --theme-color-primary: var(--color-white);
+
     --theme-svg-fill: var(--color-dark);
 
     --theme-bg-color: var(--color-light);
@@ -241,19 +243,23 @@ input::-webkit-inner-spin-button {
 /* ---------------------===================( Settings )===================--------------------- */
 
 body.theme-light {
+    --theme-color-primary: var(--color-white);
     --theme-bg-color: var(--color-light);
     --theme-svg-fill: var(--color-black);
     --theme-svg-fill-opposite: var(--color-white);
     --theme-font-color: var(--color-font-dark);
     --theme-font-color-opposite: var(--color-font-light);
+    --theme-bg-color-secondary: var(--color-light-second);
 }
 
 body.theme-dark {
+    --theme-color-primary: var(--color-black);
     --theme-bg-color: var(--color-dark);
     --theme-svg-fill: var(--color-white);
     --theme-svg-fill-opposite: var(--color-black);
     --theme-font-color: var(--color-font-light);
     --theme-font-color-opposite: var(--color-font-dark);
+    --theme-bg-color-secondary: var(--color-dark-second);
 }
 
 html {

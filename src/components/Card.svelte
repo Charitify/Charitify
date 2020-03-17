@@ -14,6 +14,6 @@
         overflow: hidden;
         box-shadow: var(--shadow-secondary);
         border-radius: var(--border-radius-big);
-        background-color: rgba(var(--color-white));
+        background-color: rgba(var(--theme-color-primary));
     }
 </style>

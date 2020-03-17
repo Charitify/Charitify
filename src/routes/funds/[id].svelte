@@ -160,7 +160,7 @@
 
         <h2>Збережемо тварин разом</h2>
         <br class="small">
-        <h3 class="font-w-normal" style="color: rgba(var(--color-black), .7)">Збір грошей на допомогу безпритульним
+        <h3 class="font-w-normal" style="opacity: .7">Збір грошей на допомогу безпритульним
             тваринам</h3>
 
         <br>

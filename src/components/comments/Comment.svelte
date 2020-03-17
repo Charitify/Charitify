@@ -49,7 +49,11 @@
 
             <p class="flex flex-align-center flex-justify-between">
                 <span class="h5" style="rgba(var(--color-black), .3)">{ date }</span>
+                <s></s>
+                <s></s>
                 <span class="h5">Відповісти</span>
+                <s></s>
+                <s></s>
                 <span class="h5 flex flex-align-center">
                     <span style={`opacity: ${amount > 2 ? 1 : .5}`}>
                         <Icon type="heart-filled" is="danger" size="small"/>
