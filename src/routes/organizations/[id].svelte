@@ -13,7 +13,6 @@
         CharityCards,
         TitleSubTitle,
         AvatarAndName,
-        DonatingGroup,
         ContentHolder,
         ContactsHolder,
     } from '../../components'
@@ -75,8 +74,6 @@
         <div class="pics-wrap">
             <Carousel items={carousel}/>
         </div>
-
-        <DonatingGroup/>
     </section>
 
     <Progress value="65" size="big"/>
