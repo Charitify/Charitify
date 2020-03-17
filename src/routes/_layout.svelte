@@ -1,5 +1,5 @@
 <script>
-	import { Header } from '../layouts';
+	import { Header } from '../components';
 	import Icons from './_icons.svelte';
 
 	export let segment;

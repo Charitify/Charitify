@@ -1,7 +1,11 @@
 <script>
     import { onMount } from 'svelte'
-    import { api } from '../services'
-    import { Comment, Form, Input, Button, Icon } from '../components'
+    import { api } from '../../services'
+    import Comment from './Comment.svelte'
+    import Icon from '../Icon.svelte'
+    import Form from '../Form.svelte'
+    import Input from '../fields/Input.svelte'
+    import Button from '../Button.svelte'
 
     export let withForm = true
 

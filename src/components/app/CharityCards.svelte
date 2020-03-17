@@ -1,6 +1,6 @@
 <script>
-    import { Divider } from '../components'
-    import CharityCard from '../layouts/CharityCard.svelte'
+    import Divider from '../Divider.svelte'
+    import CharityCard from './CharityCard.svelte'
 
     export let listName
     export let amount = 2

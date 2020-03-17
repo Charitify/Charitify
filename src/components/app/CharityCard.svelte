@@ -1,5 +1,7 @@
 <script>
-    import { Rate, Progress, Avatar, Carousel } from '../components'
+    import Rate from '../Rate.svelte'
+    import Carousel from '../Carousel.svelte'
+    import Progress from '../Progress.svelte'
     import AvatarAndName from './AvatarAndName.svelte'
 
     export let src = undefined

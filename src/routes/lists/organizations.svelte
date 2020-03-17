@@ -5,7 +5,7 @@
 <script>
     import { onMount } from 'svelte'
     import { api } from '../../services'
-    import { ListItems, ListsLayout } from '../../layouts'
+    import { ListItems, ListsLayout } from '../../components'
 
     let organizations = []
 

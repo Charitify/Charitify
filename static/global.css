@@ -276,6 +276,7 @@ body {
     line-height: var(--font-line-height);
     font-family: var(--font-family-primary);
     background-color: rgba(var(--theme-bg-color));
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 #sapper {

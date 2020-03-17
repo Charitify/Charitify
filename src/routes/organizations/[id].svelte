@@ -4,7 +4,11 @@
     import { onMount } from 'svelte'
     import { api } from '../../services'
     import {
+        Rate,
         Footer,
+        Divider,
+        Progress,
+        Carousel,
         Comments,
         CharityCards,
         TitleSubTitle,
@@ -12,8 +16,7 @@
         DonatingGroup,
         ContentHolder,
         ContactsHolder,
-    } from '../../layouts'
-    import { Rate, Progress, Carousel, Divider } from '../../components'
+    } from '../../components'
 
     let organizationId = $page.params.id
     let organization = {}

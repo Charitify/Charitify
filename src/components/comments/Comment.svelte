@@ -1,8 +1,8 @@
 <script>
-    import { classnames } from '../utils'
-    import Icon from './Icon.svelte'
-    import Card from './Card.svelte'
-    import Avatar from './Avatar.svelte'
+    import { classnames } from '../../utils'
+    import Icon from '../Icon.svelte'
+    import Card from '../Card.svelte'
+    import Avatar from '../Avatar.svelte'
 
     export let src = undefined
     export let date = undefined

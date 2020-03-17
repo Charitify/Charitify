@@ -1,5 +1,7 @@
 <script>
-    import { Card, Avatar, Icon } from '../components'
+    import Icon from '../Icon.svelte'
+    import Card from '../Card.svelte'
+    import Avatar from '../Avatar.svelte'
 
     export let items
 </script>

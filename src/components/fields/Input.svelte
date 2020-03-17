@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { classnames, toCSSString } from '../utils'
+    import { classnames, toCSSString } from '../../utils'
 
     const dispatch = createEventDispatcher()
 

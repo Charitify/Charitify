@@ -1,5 +1,5 @@
 <script>
-    import { Input } from '../components'
+    import Input from '../fields/Input.svelte'
 </script>
 
 <section class="search">

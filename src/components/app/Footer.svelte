@@ -1,5 +1,5 @@
 <script>
-    import { Button } from '../components'
+    import Button from '../Button.svelte'
 </script>
 
 <footer>

@@ -1,16 +1,14 @@
 <script>
     import {
         Footer,
+        Divider,
         Comments,
+        Progress,
+        Carousel,
         CharityCards,
         ContentHolder,
         TitleSubTitle,
         ListOfFeatures,
-    } from '../layouts'
-    import {
-        Divider,
-        Progress,
-        Carousel,
     } from '../components'
 </script>
 

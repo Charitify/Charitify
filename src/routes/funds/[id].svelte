@@ -4,22 +4,20 @@
     import { api } from '../../services'
     import { classnames } from '../../utils'
     import {
-        Footer,
-        Comments,
-        Documents,
-        TrustButton,
-        DonatorsList,
-        DonatingGroup,
-    } from '../../layouts'
-    import {
         Icon,
         Card,
         Avatar,
         Button,
+        Footer,
         Picture,
         Progress,
+        Comments,
         Carousel,
         FancyBox,
+        Documents,
+        TrustButton,
+        DonatorsList,
+        DonatingGroup,
     } from '../../components'
 
     const { page } = stores()

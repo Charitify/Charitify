@@ -1,5 +1,6 @@
 <script>
-    import { Picture, Card } from '../components'
+    import Card from '../Card.svelte'
+    import Picture from '../Picture.svelte'
 
     const cardSample = {
         src: 'https://placeimg.com/300/300/people',
