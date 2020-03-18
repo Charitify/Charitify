@@ -36,7 +36,10 @@
     <br>
     <br class="small">
 
-    <p class="h3 font-w-500 font-secondary underline text-center">All comments</p>
+    <p class="h3 font-w-500 font-secondary underline text-center">
+        <span>All comments</span>
+        <span class="font-w-600">⋁</span>
+    </p>
 
     {#if withForm}
         <br class="big">

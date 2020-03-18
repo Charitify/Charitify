@@ -74,6 +74,7 @@
     svg {
         width: 50%;
         height: 50%;
+        margin-top: 3px;
         max-width: calc(100% - 10px);
         max-height: calc(100% - 10px);
         fill: rgba(var(--color-danger));

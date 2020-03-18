@@ -31,10 +31,10 @@
     }
 
     div.start {
-        padding-left: calc(var(--screen-padding) + 5px);
+        padding-left: var(--screen-padding);
     }
 
     div.end {
-        padding-right:calc( var(--screen-padding) + 5px);
+        padding-right: var(--screen-padding);
     }
 </style>

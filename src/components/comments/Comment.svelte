@@ -47,14 +47,18 @@
 
             <br class="small">
 
-            <p class="flex flex-align-center flex-justify-between">
-                <span class="h5" style="rgba(var(--color-black), .3)">{ date }</span>
-                <s></s>
-                <s></s>
-                <span class="h5">Відповісти</span>
-                <s></s>
-                <s></s>
-                <span class="h5 flex flex-align-center">
+            <div class="flex flex-align-center flex-justify-between">
+                <p>
+                    <span class="h5" style="rgba(var(--color-black), .3)">{ date }</span>
+                    <s></s>
+                    <s></s>
+                    <s></s>
+                    <s></s>
+                    <span class="h5">Відповісти</span>
+                    <s></s>
+                    <s></s>
+                </p>
+                <span class="h5 flex flex-align-center" style="min-width: 4em">
                     <span style={`opacity: ${amount > 2 ? 1 : .5}`}>
                         <Icon type="heart-filled" is="danger" size="small"/>
                     </span>
@@ -63,12 +67,8 @@
                     {#if amount}
                         <h4>{ amount }</h4>
                     {/if}
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    <s></s>
                 </span>
-            </p>
+            </div>
         </div>
 
     </section>

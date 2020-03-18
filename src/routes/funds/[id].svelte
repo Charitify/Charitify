@@ -77,27 +77,33 @@
     </section>
 
     <br>
+    <br>
+    <br class="tiny">
 
     <Button class="white">
-        <div class="flex flex-align-center flex-justify-start full-width">
-            <s></s>
-            <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
-                <Picture
-                        src="./assets/dimsirka.jpg"
-                        size="contain"
-                        alt="logo"
-                />
+        <div class="flex flex-align-center flex-justify-between full-width">
+            <div class="flex flex-align-center">
+                <s></s>
+                <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
+                    <Picture
+                            src="./assets/dimsirka.jpg"
+                            size="contain"
+                            alt="logo"
+                    />
+                </div>
+                <s></s>
+                <s></s>
+                <s></s>
+                <h3>"Дім Сірка"</h3>
             </div>
-            <s></s>
-            <s></s>
-            <s></s>
-            <h3>"Дім Сірка"</h3>
+            <span style="font-size: 24px">
+               →
+            </span>
         </div>
     </Button>
 
     <br>
-
-    <br>
+    <br class="tiny">
 
     <Card class="container">
         <br>
@@ -112,8 +118,8 @@
         <br class="small">
 
         <p class="font-secondary">
-            <span class="h1">3500грн</span>
-            <span class="h3"> / 20000грн</span>
+            <span class="h1 font-w-500">₴ 3500</span>
+            <span class="h3"> / ₴ 20000</span>
         </p>
 
         <br>
@@ -217,8 +223,8 @@
 
         <br class="big">
 
-        <section class="flex flex-justify-between">
-            <div class="flex flex-center relative" style="width: 90px; height: 90px">
+        <section class="flex flex-justify-center">
+            <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
                 <Icon type="polygon" is="primary"/>
                 <div class="text-white text-center absolute">
                     <h4 class="h1">3</h4>
@@ -226,14 +232,14 @@
                 </div>
             </div>
 
-            <div class="flex flex-center relative" style="width: 90px; height: 90px">
+            <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
                 <Icon type="polygon" is="info"/>
                 <div class="absolute flex" style="width: 44px; height: 44px">
                     <Icon type="male" is="light"/>
                 </div>
             </div>
 
-            <div class="flex flex-center relative" style="width: 90px; height: 90px; opacity: .3">
+            <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em; opacity: .3">
                 <Icon type="polygon" is="primary"/>
                 <div class="absolute flex flex-column flex-center">
                     <Icon type="cancel-circle" is="light" size="big"/>
@@ -328,7 +334,7 @@
     </div>
 
     <br class="big">
-    <br class="big">
+    <br>
 
     <h2>Документи</h2>
     <br>

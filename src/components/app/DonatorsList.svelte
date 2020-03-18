@@ -4,28 +4,28 @@
     const all = [
         {
             src: 'https://placeimg.com/300/300/people',
-            title: '10грн',
+            title: '₴ 10',
             subtitle: 'Тіна Канделакі',
         },
         {
             src: 'https://placeimg.com/300/300/people',
-            title: '250грн',
+            title: '₴ 250',
             subtitle: 'Bruce Lee',
             checked: true,
         },
         {
             src: 'https://placeimg.com/300/300/people',
-            title: '1140грн',
+            title: '₴ 1140',
             subtitle: 'Leonardo DiCaprio junior',
         },
         {
             src: 'https://placeimg.com/300/300/people',
-            title: '50$',
+            title: '₴ 50',
             subtitle: 'Добра людина',
         },
         {
             src: 'https://placeimg.com/300/300/people',
-            title: '5$',
+            title: '₴ 5',
             subtitle: 'Добра людина',
         },
     ]
