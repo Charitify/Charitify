@@ -420,6 +420,10 @@ b {
     font-weight: bold;
 }
 
+table td {
+    vertical-align: baseline;
+}
+
 
 /* ---------------------===================( Global Theme )===================--------------------- */
 
@@ -564,6 +568,7 @@ button:not([class]):focus {
     flex: 1 1 0;
     overflow-x: hidden;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .scroll-x-center {
