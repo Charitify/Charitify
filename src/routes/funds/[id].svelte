@@ -327,7 +327,7 @@
     <br class="big">
     <br class="big">
 
-    <h2>Наші піклувальники</h2>
+    <h1>Наші піклувальники</h1>
     <br class="small">
     <div class="full-container">
         <DonatorsList/>
@@ -336,7 +336,7 @@
     <br class="big">
     <br>
 
-    <h2>Документи</h2>
+    <h1>Документи</h1>
     <br>
     <div class="full-container">
         <Documents/>
@@ -345,7 +345,7 @@
     <br class="big">
     <br class="big">
 
-    <h2>Відео про Волтера</h2>
+    <h1>Відео про Волтера</h1>
     <br>
     <section class="flex" style="height: 200px">
         <Carousel items={carousel}/>
@@ -354,7 +354,7 @@
     <br class="big">
     <br class="big">
 
-    <h2>Контакти</h2>
+    <h1>Контакти</h1>
     <br>
     <ul style="list-style: disc outside none; padding-left: var(--screen-padding)" class="h3 font-w-500 font-secondary">
         <li style="padding-bottom: 4px">Ви пожете купити йому поїсти</li>
@@ -377,7 +377,7 @@
     <br class="big">
     <br class="big">
 
-    <h2>Коментарі</h2>
+    <h1>Коментарі</h1>
     <br class="small">
     <div class="full-container">
         <Comments/>
