@@ -398,6 +398,10 @@ s:after {
     content: '\00a0';
 }
 
+s.small:after {
+    content: '\2009';
+}
+
 br {
     display: block;
     height: 0;
