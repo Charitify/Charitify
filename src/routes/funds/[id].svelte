@@ -161,26 +161,26 @@
         Зараз буде проходити обробку від паразитів та вакцинацію 💉
     </pre>
 
-    <br class="small">
+    <br>
 
     <p class="flex">
-    <Button class="flex flex-align-center" auto size="small">
-        <Icon type="share" size="medium" class="theme-svg-fill"/>
+        <Button class="flex flex-align-center" auto size="small">
+            <Icon type="share" size="medium" class="theme-svg-fill"/>
+            <s></s>
+            <s></s>
+            <p class="font-w-500">Поділитись</p>
+        </Button>
         <s></s>
         <s></s>
-        <p class="font-w-500">Поділитись</p>
-    </Button>
-    <s></s>
-    <s></s>
-    <s></s>
-    <s></s>
-    <s></s>
-    <Button class="flex flex-align-center" auto size="small">
-        <Icon type="link" size="medium" class="theme-svg-fill"/>
         <s></s>
         <s></s>
-        <p class="font-w-500">Скопіювати</p>
-    </Button>
+        <s></s>
+        <Button class="flex flex-align-center" auto size="small">
+            <Icon type="link" size="medium" class="theme-svg-fill"/>
+            <s></s>
+            <s></s>
+            <p class="font-w-500">Скопіювати</p>
+        </Button>
     </p>
 
     <br>
@@ -329,6 +329,7 @@
 
     <h1>Наші піклувальники</h1>
     <br class="small">
+    <br class="tiny">
     <div class="full-container">
         <DonatorsList/>
     </div>
@@ -338,6 +339,7 @@
 
     <h1>Документи</h1>
     <br>
+    <br class="tiny">
     <div class="full-container">
         <Documents/>
     </div>
@@ -347,6 +349,7 @@
 
     <h1>Відео про Волтера</h1>
     <br>
+    <br class="tiny">
     <section class="flex" style="height: 200px">
         <Carousel items={carousel}/>
     </section>
@@ -356,6 +359,7 @@
 
     <h1>Контакти</h1>
     <br>
+    <br class="tiny">
     <ul style="list-style: disc outside none; padding-left: var(--screen-padding)" class="h3 font-w-500 font-secondary">
         <li style="padding-bottom: 4px">Ви пожете купити йому поїсти</li>
         <li style="padding-bottom: 4px">Можете особисто відвідати його у нас</li>
@@ -379,6 +383,7 @@
 
     <h1>Коментарі</h1>
     <br class="small">
+    <br class="tiny">
     <div class="full-container">
         <Comments/>
     </div>

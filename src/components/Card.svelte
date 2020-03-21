@@ -4,7 +4,7 @@
     $: classProp = classnames('card', $$props.class)
 </script>
 
-<section class={classProp}>
+<section class={classProp} style={$$props.style}>
     <slot></slot>
 </section>
 
@@ -12,6 +12,7 @@
     .card {
         width: 100%;
         overflow: hidden;
+        position: relative;
         box-shadow: var(--shadow-secondary);
         border-radius: var(--border-radius-big);
         background-color: rgba(var(--theme-color-primary));

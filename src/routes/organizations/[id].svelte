@@ -1,148 +1,254 @@
 <script>
     import { stores } from '@sapper/app';
-    const { page } = stores();
     import { onMount } from 'svelte'
     import { api } from '../../services'
     import {
-        Rate,
+        Icon,
+        Card,
+        Avatar,
+        Button,
         Footer,
-        Divider,
+        Picture,
         Progress,
-        Carousel,
         Comments,
+        Carousel,
+        FancyBox,
+        Documents,
+        TrustButton,
+        DonatorsList,
         CharityCards,
-        TitleSubTitle,
-        AvatarAndName,
-        ContentHolder,
-        ContactsHolder,
+        DonationButton,
     } from '../../components'
 
+    const { page } = stores();
+
+    // Organization
     let organizationId = $page.params.id
     let organization = {}
-
-    $: carousel = (organization.avatars || []).map(src => ({ src }))
-
+    $: carousel = (organization.avatars || []).map(p => ({ src: p, alt: 'photo' }))
     onMount(async () => {
-        await new Promise(r => setTimeout(r, 2000))
         organization = await api.getOrganization(1)
     })
 
-    $: console.log(organizationId)
+    // Trust button
+    let active = false
+    async function onClick() {
+        active = !active
+    }
+
+    // Carousel & FancyBox
+    let propsBox = {}
+    function onCarouselClick({ detail }) {
+        propsBox = { initIndex: detail.index }
+    }
+
+    // Avatar fancy
+    let avatarFancy = false
 </script>
+
+<style>
+</style>
 
 <svelte:head>
     <title>Charitify - Organization page.</title>
 </svelte:head>
 
-<style>
-    .top {
-        display: flex;
-        margin-bottom: calc(var(--screen-padding) * 1.5);
-        margin-top: var(--screen-padding);
-    }
+<section class="container scroll-box theme-bg-color-secondary">
 
-    .pics-wrap {
-        z-index: 0;
-        flex-grow: 1;
-        display: flex;
-        overflow: hidden;
-        margin-bottom: 2px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-primary);
-    }
+    <br>
+    <br>
 
-    .rate-section {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        padding: 12px 0;
-    }
-</style>
-
-<section class="container scroll-box">
-
-    <section>
-        <br>
-        <TitleSubTitle
-                title={organization.title}
-                subtitle={organization.description}
-        />
-        <br>
-    </section>
-
-    <section class="top">
-        <div class="pics-wrap">
-            <Carousel items={carousel}/>
+    <Button class="white">
+        <div class="flex flex-align-center flex-justify-between full-width">
+            <div class="flex flex-align-center">
+                <s></s>
+                <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
+                    <Picture
+                            src="./assets/dimsirka.jpg"
+                            size="contain"
+                            alt="logo"
+                    />
+                </div>
+                <s></s>
+                <s></s>
+                <s></s>
+                <h3>"Дім Сірка"</h3>
+            </div>
         </div>
+    </Button>
+
+    <br>
+    <br class="tiny">
+
+    <section class="flex" style="height: 200px">
+        <FancyBox>
+            <Carousel items={carousel} on:click={onCarouselClick}/>
+            <div slot="box">
+                <Carousel {...propsBox} items={carousel}/>
+            </div>
+        </FancyBox>
     </section>
 
-    <Progress value="65" size="big"/>
-
-    <a class="rate-section" href="users/me">
-        <AvatarAndName
-                src={organization.org_head_avatar}
-                title={organization.org_head}
-        />
-
-        <Rate/>
-    </a>
-
+    <br class="big">
     <br>
+    <br class="small">
+    <br class="tiny">
 
-    {#if organization.id}
-        <p class="text-center">
-            <a class="btn success" href={`map/${organization.id}`}>On the map</a>
-        </p>
-    {/if}
+    <h2>Організація Добра</h2>
+    <br class="small">
+    <pre class="font-w-300">
+        Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків.
+        Пропонуємо вам відвідати наш притулок, який знаходиться у Львові, вул. Сахарова 3
+    </pre>
 
     <br>
-    <br>
+
+    <p class="container flex flex-justify-between flex-align-center">
+        <span class="flex flex-align-center">
+            <Icon is="danger" type="heart-filled" size="medium"/>
+            <s></s>
+            <s></s>
+            <span class="font-secondary font-w-600 h3">1</span>
+        </span>
+
+        <span class="flex">
+            <Button class="flex flex-align-center" auto size="small">
+                <Icon type="share" size="medium" class="theme-svg-fill"/>
+                <s></s>
+                <s></s>
+                <h3 class="font-w-600">Поділитись</h3>
+            </Button>
+        </span>
+
+        <span class="flex flex-align-center">
+            <Icon type="eye" size="medium" class="theme-svg-fill"/>
+            <s></s>
+            <s></s>
+            <span class="font-secondary font-w-600 h3">13</span>
+        </span>
+    </p>
+
+    <br class="big">
     <br>
 
-    <ContentHolder/>
+    <h1>Фонди тварин</h1>
+    <br>
+    <br class="tiny">
+    <div class="full-container">
+        <CharityCards/>
+    </div>
+
+    <br class="big">
+    <br>
+    <br class="small">
+    <br class="tiny">
+
+    <h1>Інші фонди</h1>
+    <br>
+    <br class="tiny">
+    <div class="full-container">
+        <CharityCards/>
+    </div>
+
+    <br class="big">
+    <br>
+    <br class="small">
+    <br class="tiny">
+
+    <h1>Про нас</h1>
+    <br class="small">
+    <pre class="font-w-300">
+        Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків.
+        Пропонуємо вам відвідати наш притулок, який знаходиться у Львові,
+        вул. Сахарова 3 Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків.
+    </pre>
 
     <br>
-    <br>
-    <br>
-    <br>
-    <br>
 
-    <Divider size="16"/>
-    <h3 class="h2 text-right">Charities of the organization:</h3>
-    <Divider size="20"/>
-    <br>
-    <Carousel amount="5">
-        <CharityCards amount="2"/>
-    </Carousel>
+    <p class="flex">
+        <Button class="flex flex-align-center" auto size="small">
+            <Icon type="share" size="medium" class="theme-svg-fill"/>
+            <s></s>
+            <s></s>
+        <p class="font-w-500">Поділитись</p>
+        </Button>
+        <s></s>
+        <s></s>
+        <s></s>
+        <s></s>
+        <s></s>
+        <Button class="flex flex-align-center" auto size="small">
+            <Icon type="link" size="medium" class="theme-svg-fill"/>
+            <s></s>
+            <s></s>
+            <p class="font-w-500">Скопіювати</p>
+        </Button>
+    </p>
 
+    <br class="big">
+    <br>
+    <br class="small">
+    <br class="tiny">
 
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+    <section class="flex flex-column flex-align-center flex-justify-center">
+        <div style="width: 100px; max-width: 100%">
+            <TrustButton isActive={active} on:click={onClick}/>
+        </div>
+        <br class="small">
+        <h2>Я Довіряю</h2>
+    </section>
 
-    <ContactsHolder/>
+    <br class="big">
+    <br>
+    <br class="tiny">
 
+    <h1>Останні новини</h1>
     <br>
-    <br>
-    <br>
-    <br>
-    <br>
+    <br class="tiny">
 
-    <Divider size="20"/>
-    <h3 class="h2 text-right">Comments:</h3>
-    <Divider size="16"/>
+    <br class="big">
+    <br>
+    <br class="tiny">
 
-    <Comments/>
+    <h1>Сертифікати</h1>
+    <br>
+    <br class="tiny">
+    <div class="full-container">
+        <Documents/>
+    </div>
 
+    <br class="big">
     <br>
+    <br class="small">
+
+    <h1>Відео про нас</h1>
     <br>
-    <br>
-    <br>
-    <br>
+    <br class="tiny">
+    <section class="flex" style="height: 200px">
+        <FancyBox>
+            <Carousel items={carousel} on:click={onCarouselClick}/>
+                <div slot="box">
+                    <Carousel {...propsBox} items={carousel}/>
+                </div>
+        </FancyBox>
+    </section>
+
+    <br class="big">
+    <br class="big">
+    <br class="small">
+
+    <h1>Коментарі</h1>
+    <br class="small">
+    <div class="full-container">
+        <Comments/>
+    </div>
+
+    <br class="big">
+    <br class="big">
+    <br class="big">
+
+    <div class="full-container">
+        <Footer/>
+    </div>
 
 </section>
-
-<Footer/>
-

@@ -61,12 +61,10 @@
 <section aria-label="carousel" class={classProp}>
     <ul use:carousel class="carousel-inner scroll-x-center">
         {#each items as item, index}
-            <li class="fluid">
-                <button type="button" class="fluid" on:click={onClick.bind(null, item, index)}>
-                    <slot {item} {index}>
-                        <Picture {...item}/>
-                    </slot>
-                </button>
+            <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
+                <slot {item} {index}>
+                    <Picture {...item}/>
+                </slot>
             </li>
         {/each}
     </ul>
@@ -82,11 +80,12 @@
 </section>
 
 <style>
-    .carousel, .carousel-inner, .carousel-inner li, button {
+    .carousel, .carousel-inner, .carousel-inner li {
         position: relative;
         flex: none;
         display: flex;
         overflow: hidden;
+        text-align: left;
         align-self: stretch;
         align-items: stretch;
         justify-content: stretch;

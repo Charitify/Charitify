@@ -89,8 +89,8 @@
 
     :global(.btn.small) {
         padding: 5px;
-        min-width: calc(var(--min-interactive-size) / 1.5);
-        min-height: calc(var(--min-interactive-size) / 1.5);
+        min-width: calc(var(--min-interactive-size) / 1.3);
+        min-height: calc(var(--min-interactive-size) / 1.3);
     }
 
     :global(.btn.medium) {
@@ -101,8 +101,8 @@
 
     :global(.btn.big) {
         padding: 5px 15px;
-        min-width: calc(var(--min-interactive-size) * 1.5);
-        min-height: calc(var(--min-interactive-size) * 1.5);
+        min-width: calc(var(--min-interactive-size) * 1.3);
+        min-height: calc(var(--min-interactive-size) * 1.3);
     }
 
     :global(.btn:focus) {

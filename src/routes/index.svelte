@@ -5,7 +5,6 @@
         Comments,
         Progress,
         Carousel,
-        CharityCards,
         ContentHolder,
         TitleSubTitle,
         ListOfFeatures,
@@ -49,16 +48,6 @@
                 title="Charitify"
                 subtitle="Charity application for helping those in need"
         />
-
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-
-        <Carousel amount="2">
-            <CharityCards amount="2" listName="Nearest to you:"/>
-        </Carousel>
 
         <br>
         <br>

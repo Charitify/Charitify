@@ -18,7 +18,7 @@ export const endpoints = {
   FUND: (id) => `charity.json?id=${id}`,
   FUNDS: () => `charities.json`,
 
-  ORGANIZATION: (id) => `organizations.json/?id=${id}`,
+  ORGANIZATION: (id) => `organization.json?id=${id}`,
   ORGANIZATIONS: () => `organizations.json`,
 }
 
