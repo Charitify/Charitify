@@ -352,7 +352,7 @@
 
 
     <h1>Коментарі</h1>
-    <Br size="20"/>
+    <Br size="5"/>
     <div class="full-container">
         <Comments/>
     </div>

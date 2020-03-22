@@ -287,13 +287,11 @@ body.theme-dark {
 }
 
 html {
-    display: flex;
-    width: 100%;
-    min-height: 100%;
+    height: 100vh;
 }
 
 body {
-    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-self: stretch;
