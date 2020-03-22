@@ -291,11 +291,6 @@ html {
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    align-self: stretch;
-    align-content: stretch;
-    justify-content: stretch;
     overflow-x: hidden;
     overflow-y: auto;
     text-align: left;
@@ -310,7 +305,6 @@ body {
 
 #sapper {
     min-height: 100vh;
-    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     align-content: stretch;
