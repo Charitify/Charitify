@@ -304,10 +304,11 @@ body {
 }
 
 #sapper {
-    display: flex;
+    /* min-height: 100vh; */
+    /* display: flex;
     flex-direction: column;
     align-content: stretch;
-    justify-content: stretch;
+    justify-content: stretch; */
 }
 
 #main {
