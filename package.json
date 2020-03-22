@@ -44,6 +44,7 @@
     "svelte": "^3.18.1",
     "svelte-preprocess": "^3.5.0"
   },
+  "browserslist": ["last 2 versions"],
   "repository": {
     "type": "git",
     "url": "git@github.com:Bublikus/Charitify.git"

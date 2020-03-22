@@ -22,7 +22,7 @@ const preprocess = sveltePreprocess({
     includePaths: ['src']
   },
   postcss: {
-    plugins: [require('autoprefixer')]
+    plugins: [require('autoprefixer')()]
   }
 })
 

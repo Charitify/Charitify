@@ -115,8 +115,7 @@
         </p>
         <Br size="20"/>
 
-        <Progress value={Math.floor(3500
-        / 20000 * 100)}/>
+        <Progress value={Math.floor(3500 / 20000 * 100)}/>
 
         <Br size="40"/>
     </Card>
