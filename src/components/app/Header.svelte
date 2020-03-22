@@ -1,14 +1,27 @@
 <script>
+    import { onMount } from 'svelte'
+    import { classnames } from '@utils'
+    import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
     import Button from '@components/Button.svelte'
     import Avatar from '@components/Avatar.svelte'
 
     export let segment
 
-    let isDarkTheme = false
-
     let value = 'ua'
 
+    let isHeaderVisible = true
+    let onScroll = null
+    $: classProp = classnames('container', { active: isHeaderVisible })
+    onMount(() => {
+        onScroll = (e) => requestAnimationFrame(function() {
+            if (e.deltaY < 0 && !isHeaderVisible || e.deltaY > 0 && isHeaderVisible) {
+                isHeaderVisible = !isHeaderVisible
+            }
+        })
+    })
+
+    let isDarkTheme = false
     function changeTheme() {
         isDarkTheme = !isDarkTheme
         document.body.classList.remove('theme-dark')
@@ -17,7 +30,8 @@
     }
 </script>
 
-<nav class="container">
+<svelte:window on:touchmove={onScroll} on:wheel={onScroll}/>
+<nav class={classProp}>
     <ul class="nav-pages flex">
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
         <li><a rel=prefetch href='lists/funds' class:selected='{segment === "lists"}'>lists</a></li>
@@ -49,17 +63,24 @@
 
 <style>
     nav {
-        position: sticky;
+        position: relative;
         top: 0;
+        width: 100%;
         height: 50px;
         z-index: 10;
         display: flex;
         align-items: center;
+        margin-top: -50px;
+        transition: .2s ease-in-out;
         color: rgba(var(--color-font-light));
         justify-content: space-between;
         box-shadow: var(--shadow-secondary);
         border-bottom: 1px solid rgba(var(--color-danger), .1);
         background-color: rgba(var(--color-dark-second));
+    }
+
+    nav.active {
+        margin-top: 0;
     }
 
     .selected {

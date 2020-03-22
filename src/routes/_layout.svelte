@@ -6,14 +6,13 @@
 </script>
 
 <style>
-
 </style>
-
-<Header {segment}/>
 
 <Icons/>
 
 <main id="main">
+	<Header {segment}/>
+	
 	<slot></slot>
 </main>
 
