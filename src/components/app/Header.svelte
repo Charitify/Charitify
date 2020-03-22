@@ -1,7 +1,6 @@
 <script>
     import { onMount } from 'svelte'
     import { classnames } from '@utils'
-    import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
     import Button from '@components/Button.svelte'
     import Avatar from '@components/Avatar.svelte'
@@ -16,7 +15,7 @@
     $: classProp = classnames('container', { active: isHeaderVisible })
     onMount(() => {
         onScroll = (e) => requestAnimationFrame(function() {
-            const currentY = e.touches[0].clientY;
+            const currentY = e.touches ? e.touches[0].clientY : 0;
             const deltaY = e.deltaY || (lastY - currentY)
             if (deltaY < 0 && !isHeaderVisible || deltaY > 0 && isHeaderVisible) {
                 isHeaderVisible = !isHeaderVisible

@@ -58,7 +58,7 @@
   <title>Charitify - Organization page.</title>
 </svelte:head>
 
-<section class="container scroll-box theme-bg-color-secondary">
+<section class="container theme-bg-color-secondary">
   <Br size="30" />
 
   <Button class="white">

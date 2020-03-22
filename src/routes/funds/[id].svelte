@@ -63,7 +63,7 @@
 
 <DonationButton/>
 
-<section class="container scroll-box theme-bg-color-secondary">
+<section class="container theme-bg-color-secondary">
     <Br size="30"/>
 
 

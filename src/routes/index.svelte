@@ -27,7 +27,7 @@
     <title>Charitify - list of charities you can donate.</title>
 </svelte:head>
 
-<section class="scroll-box">
+<section>
 
     <div class="top-pic">
         <Carousel/>
