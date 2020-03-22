@@ -1,3 +1,3 @@
 export { default as classnames } from 'classnames'
 
-export { default as _ } from './lodash'
+export * as _ from './lodash'
