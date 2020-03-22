@@ -314,6 +314,8 @@ body {
     flex-direction: column;
     align-content: stretch;
     justify-content: stretch;
+
+    --header-height: 50px;
 }
 
 #main {
