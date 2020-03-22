@@ -1,5 +1,5 @@
 <script>
-    import Carousel from '../Carousel.svelte'
+    import Carousel from '@components/Carousel.svelte'
     import CharityCard from './CharityCard.svelte'
 
     export let amount = 5
@@ -27,7 +27,7 @@
         height: 470px;
         width: 77vw;
         max-width: 350px;
-        padding: 0 5px;
+        padding: 15px 5px;
         box-sizing: content-box;
     }
 

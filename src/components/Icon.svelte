@@ -1,5 +1,5 @@
 <script>
-    import { classnames, toCSSString } from '../utils'
+    import { classnames, toCSSString } from '@utils'
 
     export let type
     export let is // primary|warning|danger|light|dark

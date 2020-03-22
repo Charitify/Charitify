@@ -8,7 +8,7 @@
         ContentHolder,
         TitleSubTitle,
         ListOfFeatures,
-    } from '../components'
+    } from '@components'
 </script>
 
 <style>

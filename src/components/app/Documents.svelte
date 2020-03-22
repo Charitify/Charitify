@@ -1,7 +1,7 @@
 <script>
-    import Card from '../Card.svelte'
-    import Picture from '../Picture.svelte'
-    import Carousel from '../Carousel.svelte'
+    import Card from '@components/Card.svelte'
+    import Picture from '@components/Picture.svelte'
+    import Carousel from '@components/Carousel.svelte'
 
     const cardSample = {
         src: 'https://placeimg.com/300/300/people',
@@ -26,7 +26,7 @@
         align-self: stretch;
         height: 180px;
         width: 126px;
-        padding: 0 5px;
+        padding: 15px 5px;
         box-sizing: content-box;
     }
 

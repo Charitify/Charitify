@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher, onMount } from 'svelte'
-    import { classnames, safeGet } from '../utils'
+    import { classnames, safeGet } from '@utils'
 
     const dispatch = createEventDispatcher()
 

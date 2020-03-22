@@ -1,5 +1,5 @@
 <script>
-    import { classnames } from '../utils'
+    import { classnames } from '@utils'
     import Picture from './Picture.svelte'
 
     export let src

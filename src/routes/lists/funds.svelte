@@ -4,8 +4,8 @@
 
 <script>
     import { onMount } from 'svelte'
-    import { api } from '../../services'
-    import { ListItems, ListsLayout } from '../../components'
+    import { api } from '@services'
+    import { ListItems, ListsLayout } from '@components'
 
     let chariries = []
 

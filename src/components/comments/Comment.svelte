@@ -1,8 +1,9 @@
 <script>
-    import { classnames } from '../../utils'
-    import Icon from '../Icon.svelte'
-    import Card from '../Card.svelte'
-    import Avatar from '../Avatar.svelte'
+    import { classnames } from '@utils'
+    import Br from '@components/Br.svelte'
+    import Icon from '@components/Icon.svelte'
+    import Card from '@components/Card.svelte'
+    import Avatar from '@components/Avatar.svelte'
 
     export let src = undefined
     export let date = undefined
@@ -37,7 +38,7 @@
         <div class="flex flex-column flex-1" style="overflow: hidden">
             <h3 class="text-ellipsis font-w-500">{ title }</h3>
 
-            <br class="tiny">
+            <Br size="5"/>
 
             <pre class="h4 font-w-300" style="line-height: 1.46;">
                 <slot>
@@ -45,20 +46,20 @@
                 </slot>
             </pre>
 
-            <br class="small">
+            <Br size="10"/>
 
             <div class="flex flex-align-center flex-justify-between">
                 <p>
-                    <span class="h5" style="rgba(var(--color-black), .3)">{ date }</span>
+                    <span class="h4" style="opacity: .3">{ date }</span>
                     <s></s>
                     <s></s>
                     <s></s>
                     <s></s>
-                    <span class="h5">Відповісти</span>
+                    <span class="h4" style="opacity: .7">Відповісти</span>
                     <s></s>
                     <s></s>
                 </p>
-                <span class="h5 flex flex-align-center" style="min-width: 4em">
+                <span class="h5 flex flex-align-center font-secondary" style="min-width: 4em">
                     <span style={`opacity: ${amount > 2 ? 1 : .5}`}>
                         <Icon type="heart-filled" is="danger" size="small"/>
                     </span>

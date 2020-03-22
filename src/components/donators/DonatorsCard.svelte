@@ -1,7 +1,7 @@
 <script>
-    import Icon from '../Icon.svelte'
-    import Card from '../Card.svelte'
-    import Avatar from '../Avatar.svelte'
+    import Icon from '@components/Icon.svelte'
+    import Card from '@components/Card.svelte'
+    import Avatar from '@components/Avatar.svelte'
 
     export let items
 </script>
@@ -47,6 +47,9 @@
     }
 
     li:not(:last-child) {
-        border-bottom: 1px dashed rgba(var(--color-black), 0.1);
+        background-image: linear-gradient(to right, rgba(var(--color-black), 0.1) 50%, rgba(var(--color-black), 0) 0%);
+        background-position: bottom;
+        background-size: 20px 1px;
+        background-repeat: repeat-x;
     }
 </style>

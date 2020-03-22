@@ -1,11 +1,13 @@
 <script>
     import { onMount } from 'svelte'
-    import { api } from '../../services'
+    import { api } from '@services'
+
+    import Br from '@components/Br.svelte'
+    import Icon from '@components/Icon.svelte'
+    import Form from '@components/Form.svelte'
+    import Input from '@components/fields/Input.svelte'
+    import Button from '@components/Button.svelte'
     import Comment from './Comment.svelte'
-    import Icon from '../Icon.svelte'
-    import Form from '../Form.svelte'
-    import Input from '../fields/Input.svelte'
-    import Button from '../Button.svelte'
 
     export let withForm = true
 
@@ -33,8 +35,7 @@
         {/each}
     </ul>
 
-    <br>
-    <br class="small">
+    <Br size="20"/>  
 
     <p class="h3 font-w-500 font-secondary underline text-center">
         <span>All comments</span>
@@ -42,7 +43,7 @@
     </p>
 
     {#if withForm}
-        <br class="big">
+        <Br size="40"/>  
         <div class="comments-form font-secondary h3">
             <Form class="flex" name="comment-form">
                 <Input

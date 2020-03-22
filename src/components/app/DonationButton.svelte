@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte'
-    import { classnames } from '../../utils'
-    import Icon from '../Icon.svelte'
+    import { classnames } from '@utils'
+    import Icon from '@components/Icon.svelte'
 
     let activeDonateBtn = false
 

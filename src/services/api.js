@@ -1,5 +1,5 @@
 import zlFetch from 'zl-fetch' // See: https://github.com/zellwk/zl-fetch
-import { setup } from '../config'
+import { setup } from '@config'
 
 /**
  *

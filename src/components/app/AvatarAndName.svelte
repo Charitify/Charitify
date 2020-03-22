@@ -1,5 +1,5 @@
 <script>
-    import Avatar from '../Avatar.svelte'
+    import Avatar from '@components/Avatar.svelte'
 
     export let src = undefined
     export let title = 'incognito'

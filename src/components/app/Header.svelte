@@ -1,7 +1,7 @@
 <script>
-    import Icon from '../Icon.svelte'
-    import Button from '../Button.svelte'
-    import Avatar from '../Avatar.svelte'
+    import Icon from '@components/Icon.svelte'
+    import Button from '@components/Button.svelte'
+    import Avatar from '@components/Avatar.svelte'
 
     export let segment
 

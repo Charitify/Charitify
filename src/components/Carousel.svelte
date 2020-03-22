@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { waitUntil, classnames } from '../utils'
+    import { waitUntil, classnames } from '@utils'
     import Picture from './Picture.svelte'
 
     const dispatch = createEventDispatcher()

@@ -1,8 +1,9 @@
 <script>
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
-    import { api } from '../../services'
+    import { api } from '@services'
     import {
+        Br,
         Icon,
         Card,
         Avatar,
@@ -17,7 +18,7 @@
         TrustButton,
         DonatorsList,
         DonationButton,
-    } from '../../components'
+    } from '@components'
 
     const { page } = stores()
     let charityId = $page.params.id
@@ -63,9 +64,8 @@
 <DonationButton/>
 
 <section class="container scroll-box theme-bg-color-secondary">
+    <Br size="30"/>
 
-    <br>
-    <br>
 
     <section class="flex" style="height: 200px">
         <FancyBox>
@@ -75,10 +75,8 @@
             </div>
         </FancyBox>
     </section>
+    <Br size="40"/>
 
-    <br>
-    <br>
-    <br class="tiny">
 
     <Button class="white">
         <div class="flex flex-align-center flex-justify-between full-width">
@@ -101,37 +99,29 @@
             </span>
         </div>
     </Button>
+    <Br size="20"/>
 
-    <br>
-    <br class="tiny">
 
     <Card class="container">
-        <br>
-        <br class="small">
+        <Br size="20"/>
 
         <h2>Збережемо тварин разом</h2>
-        <br class="small">
-        <h3 class="font-w-normal" style="opacity: .7">Збір грошей на допомогу безпритульним
-            тваринам</h3>
+        <h3 class="font-w-normal" style="opacity: .7">Збір грошей на допомогу безпритульним тваринам</h3>
 
-        <br>
-        <br class="small">
-
+        <Br size="25"/>
         <p class="font-secondary">
             <span class="h1 font-w-500">₴ 3500</span>
             <span class="h3"> / ₴ 20000</span>
         </p>
-
-        <br>
+        <Br size="20"/>
 
         <Progress value={Math.floor(3500
         / 20000 * 100)}/>
 
-        <br class="big">
+        <Br size="40"/>
     </Card>
+    <Br size="20"/>
 
-    <br class="small">
-    <br>
 
     <p class="container flex flex-justify-between flex-align-center">
         <span class="flex flex-align-center">
@@ -147,11 +137,11 @@
             <span class="font-secondary font-w-600 h3">13</span>
         </span>
     </p>
+    <Br size="50"/>
 
-    <br class="big">
 
     <h2>Збережемо тварин разом</h2>
-    <br class="small">
+    <Br size="10"/>
     <pre class="font-w-300">
         Терміново шукаємо добрі руки 🤲🥰
         Бадді підкинули під кафе біля самої траси!
@@ -160,8 +150,8 @@
         В чому він міг провинитися? Йому всього 2 місяці.
         Зараз буде проходити обробку від паразитів та вакцинацію 💉
     </pre>
+    <Br size="10"/>
 
-    <br>
 
     <p class="flex">
         <Button class="flex flex-align-center" auto size="small">
@@ -182,26 +172,21 @@
             <p class="font-w-500">Скопіювати</p>
         </Button>
     </p>
+    <Br size="45"/>
 
-    <br>
-    <br>
-    <br>
 
     <section class="flex flex-column flex-align-center flex-justify-center">
         <div style="width: 100px; max-width: 100%">
             <TrustButton isActive={active} on:click={onClick}/>
         </div>
-        <br class="small">
-        <h2>Я Довіряю</h2>
+        <Br size="10"/>
+        <h2>Я довіряю</h2>
     </section>
+    <Br size="60"/>
 
-    <br>
-    <br>
-    <br>
-    <br>
 
     <Card class="container">
-        <br class="big">
+        <Br size="30"/>
 
         <div class="flex flex-column flex-align-center">
             <span>
@@ -213,15 +198,13 @@
                 </FancyBox>
             </span>
 
-            <br class="tiny">
-            <br>
+            <Br size="20"/>
 
             <h2>Волтер</h2>
-            <br class="tiny">
-            <h4 class="font-w-500">Jack Russell Terrier</h4>
+            <Br size="5"/>
+            <h3 class="font-w-500" style="opacity: .7">Jack Russell Terrier</h3>
         </div>
-
-        <br class="big">
+        <Br size="35"/>
 
         <section class="flex flex-justify-center">
             <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
@@ -247,20 +230,17 @@
                 </div>
             </div>
         </section>
-
-        <br class="big">
-        <br class="small">
+        <Br size="40"/>
 
         <h2>Характер Волтера: 😃</h2>
-        <br class="small">
+        <Br size="10"/>
         <p class="font-w-300">
             Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми
         </p>
-
-        <br class="big">
+        <Br size="35"/>
 
         <h2>Життя Волтера</h2>
-        <br class="small">
+        <Br size="10"/>
         <table>
             <tbody>
             <tr>
@@ -285,35 +265,35 @@
             </tr>
             </tbody>
         </table>
-
-        <br>
-        <br>
-        <br>
+        <Br size="45"/>
 
         <h2>Вакцинації</h2>
-        <br>
+        <Br size="15"/>
         <ul class="flex flex-column text-left">
             <li>
                 <span class="flex flex-align-center font-w-300">
-                    <Icon is="primary" type="checked-circle" size="small"/>
+                    <Icon is="primary" type="checked-circle" size="medium"/>
+                    <s></s>
                     <s></s>
                     <s></s>
                     Від бліх
                 </span>
             </li>
             <li>
-                <br>
+                <Br size="10"/>
                 <span class="flex flex-align-center font-w-300">
-                    <Icon is="primary" type="checked-circle" size="small"/>
+                    <Icon is="primary" type="checked-circle" size="medium"/>
+                    <s></s>
                     <s></s>
                     <s></s>
                     Від паразитів
                 </span>
             </li>
             <li>
-                <br>
+                <Br size="10"/>
                 <span class="flex flex-align-center font-w-300">
-                    <Icon is="danger" type="cancel-circle" size="small"/>
+                    <Icon is="danger" type="cancel-circle" size="medium"/>
+                    <s></s>
                     <s></s>
                     <s></s>
                     Від грибків
@@ -321,52 +301,44 @@
             </li>
         </ul>
 
-        <br class="big">
+        <Br size="35"/>
     </Card>
+    <Br size="60"/>
 
-    <br class="big">
-    <br class="big">
 
     <h1>Наші піклувальники</h1>
-    <br class="small">
-    <br class="tiny">
+    <Br size="20"/>
     <div class="full-container">
         <DonatorsList/>
     </div>
+    <Br size="60"/>
 
-    <br class="big">
-    <br>
 
     <h1>Документи</h1>
-    <br>
-    <br class="tiny">
+    <Br size="5"/>
     <div class="full-container">
         <Documents/>
     </div>
+    <Br size="45"/> 
 
-    <br class="big">
-    <br class="big">
 
     <h1>Відео про Волтера</h1>
-    <br>
-    <br class="tiny">
+    <Br size="20"/>
     <section class="flex" style="height: 200px">
         <Carousel items={carousel}/>
     </section>
+    <Br size="60"/>
 
-    <br class="big">
-    <br class="big">
 
-    <h1>Контакти</h1>
-    <br>
-    <br class="tiny">
+    <h1>Як допомогти</h1>
+    <Br size="15"/>
     <ul style="list-style: disc outside none; padding-left: var(--screen-padding)" class="h3 font-w-500 font-secondary">
-        <li style="padding-bottom: 4px">Ви пожете купити йому поїсти</li>
-        <li style="padding-bottom: 4px">Можете особисто відвідати його у нас</li>
-        <li style="padding-bottom: 4px">Купити вакцінацію для Волтера</li>
-        <li style="padding-bottom: 4px">Допомогти любим інщим способом</li>
+        <li style="padding-bottom: 5px">Ви пожете купити йому поїсти</li>
+        <li style="padding-bottom: 5px">Можете особисто відвідати його у нас</li>
+        <li style="padding-bottom: 5px">Купити вакцінацію для Волтера</li>
+        <li style="padding-bottom: 5px">Допомогти любим інщим способом</li>
     </ul>
-    <br class="big">
+    <Br size="30"/>
     <div class="flex">
         <div class="flex flex-align-center font-secondary">
             <Icon size="medium" type="phone" class="theme-svg-fill-opposite"/>
@@ -375,25 +347,21 @@
             <h2>+38 (093) 205-43-92</h2>
         </div>
     </div>
-    <br class="small">
+    <Br size="5"/>
     <p class="font-w-300">Подзвоніть нам, якщо хочете допомогти Волтеру</p>
+    <Br size="60"/>
 
-    <br class="big">
-    <br class="big">
 
     <h1>Коментарі</h1>
-    <br class="small">
-    <br class="tiny">
+    <Br size="20"/>
     <div class="full-container">
         <Comments/>
     </div>
+    <Br size="60"/>
 
-    <br class="big">
-    <br class="big">
-    <br class="big">
 
     <div class="full-container">
         <Footer/>
     </div>
-
+    <Br size="70"/>
 </section>

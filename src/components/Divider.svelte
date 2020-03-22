@@ -1,5 +1,5 @@
 <script>
-    import { toCSSString, classnames } from '../utils'
+    import { toCSSString, classnames } from '@utils'
 
     export let is = 'info'
     export let size = 0

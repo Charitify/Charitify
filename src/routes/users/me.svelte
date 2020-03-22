@@ -1,5 +1,5 @@
 <script>
-    import { Input, Picture, Button, Space } from '../../components'
+    import { Input, Picture, Button, Space } from '@components'
 
     const inputs = [
         {
