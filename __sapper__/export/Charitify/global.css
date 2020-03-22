@@ -291,6 +291,11 @@ html {
 }
 
 body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
     overflow-x: hidden;
     overflow-y: auto;
     text-align: left;
@@ -304,7 +309,7 @@ body {
 }
 
 #sapper {
-    
+
 }
 
 #main {
