@@ -101,6 +101,7 @@
 
     .carousel {
         width: 100%;
+        transform: translateZ(0);
         border-radius: var(--border-radius-big);
     }
 
