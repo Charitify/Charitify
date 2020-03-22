@@ -18,7 +18,7 @@
         onScroll = (e) => requestAnimationFrame(function() {
             const currentY = window.pageYOffset;
             const dirrection = currentY - lastY
-            if (dirrection < -gap) { // up
+            if (dirrection < -gap || currentY < 50) { // up
                 if (!isHeaderVisible) isHeaderVisible = true
                 lastY = currentY + gap;
             } else if (dirrection > gap) { // down
