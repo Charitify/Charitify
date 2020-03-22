@@ -2463,6 +2463,72 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     <br class="${"big"}">
     <br class="${"small"}">
 
+    ${validate_component(Card, "Card").$$render($$result, {}, {}, {
+		default: () => `
+        <section class="${"container"}">
+            <br class="${"big"}">
+
+            <div class="${"flex flex-column flex-align-center"}">
+                ${validate_component(Avatar, "Avatar").$$render(
+			$$result,
+			{
+				size: "big",
+				src: "https://placeimg.com/300/300/people"
+			},
+			{},
+			{}
+		)}
+                <br>
+                <h2>Відео про нас</h2>
+                <br class="${"tiny"}">
+                <p class="${"h3 font-secondary font-w-500"}" style="${"opacity: .7"}">Організація Добра</p>
+            </div>
+
+            <br class="${"big"}">
+
+            <ul>
+                <li>
+                    +38 (093) 455-32-12
+                </li>
+                <li>
+                    sergey.zastrow@gmail.com
+                </li>
+                <li>
+                    Львів, Україна
+                </li>
+            </ul>
+
+            <br class="${"big"}">
+        </section>
+    `
+	})}
+
+    <br class="${"big"}">
+    <br class="${"big"}">
+    <br class="${"small"}">
+
+    <h1>3D - Тур 360°</h1>
+    <br class="${"medium"}">
+    <br class="${"tiny"}">
+    <div class="${"full-container"}">
+        3D - Тур 360°
+    </div>
+
+    <br class="${"big"}">
+    <br class="${"medium"}">
+    <br class="${"small"}">
+
+    <h1>Ми на карті</h1>
+    <br class="${"medium"}">
+    <br class="${"tiny"}">
+    <div class="${"full-container"}">
+        Ми на карті
+    </div>
+
+    <br class="${"big"}">
+    <br class="${"medium"}">
+    <br class="${"small"}">
+
     <h1>Коментарі</h1>
     <br class="${"small"}">
     <div class="${"full-container"}">
