@@ -9,6 +9,7 @@
 
     let value = 'ua'
 
+    const gap = 50
     let isHeaderVisible = true
     let onScroll = null
     let lastY = 0
@@ -16,10 +17,14 @@
     onMount(() => {
         onScroll = (e) => requestAnimationFrame(function() {
             const currentY = window.pageYOffset;
-            if (currentY < lastY && !isHeaderVisible || currentY > lastY && isHeaderVisible) {
-                isHeaderVisible = !isHeaderVisible
+            const dirrection = currentY - lastY
+            if (dirrection < -gap) { // up
+                if (!isHeaderVisible) isHeaderVisible = true
+                lastY = currentY + gap;
+            } else if (dirrection > gap) { // down
+                if (isHeaderVisible) isHeaderVisible = false
+                lastY = currentY - gap;
             }
-            lastY = currentY;
         })
     })
 
