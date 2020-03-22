@@ -32,7 +32,7 @@
     }
 </script>
 
-<svelte:window on:touchmove={onScroll} on:wheel={onScroll}/>
+<svelte:window on:scroll={onScroll}/>
 <nav class={classProp}>
     <ul class="nav-pages flex">
         <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
