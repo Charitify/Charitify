@@ -12,12 +12,16 @@
 
     let isHeaderVisible = true
     let onScroll = null
+    let lastY = 0
     $: classProp = classnames('container', { active: isHeaderVisible })
     onMount(() => {
         onScroll = (e) => requestAnimationFrame(function() {
-            if (e.deltaY < 0 && !isHeaderVisible || e.deltaY > 0 && isHeaderVisible) {
+            const currentY = e.touches[0].clientY;
+            const deltaY = e.deltaY || (lastY - currentY)
+            if (deltaY < 0 && !isHeaderVisible || deltaY > 0 && isHeaderVisible) {
                 isHeaderVisible = !isHeaderVisible
             }
+            lastY = currentY
         })
     })
 
