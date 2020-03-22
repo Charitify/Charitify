@@ -287,7 +287,7 @@ body.theme-dark {
 }
 
 html {
-    /*height: 100%;*/
+    height: 100%;
 }
 
 body {
@@ -318,10 +318,10 @@ body {
 
 #main {
     flex: 1 0 0;
-    /*display: flex;*/
-    /*flex-direction: column;*/
-    /*align-content: stretch;*/
-    /*justify-content: stretch;*/
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
 }
 
 h1 {
@@ -402,29 +402,6 @@ s.small:after {
     content: '\2009';
 }
 
-br {
-    display: block;
-    height: 0;
-    content: '\00a0';
-    box-sizing: content-box;
-}
-
-br.tiny {
-    padding: calc(1em * .29 / 2) 0; /* 4px */
-}
-
-br.small {
-    padding: calc(1em * .57 / 2) 0; /* 8px */
-}
-
-br.medium, br {
-    padding: calc(1em * 1.14 / 2) 0; /* 16px */
-}
-
-br.big {
-    padding: calc(1em * 2.28 / 2) 0; /* 32px */
-}
-
 b {
     font-weight: bold;
 }
@@ -484,6 +461,10 @@ button:not([class]):focus {
 
 .underline {
     text-decoration: underline;
+}
+
+.overflow-hidden {
+    overflow: hidden;
 }
 
 /* ----------=========( Containers )=========----------- */
