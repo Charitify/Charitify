@@ -66,14 +66,14 @@
 
 <style>
     nav {
-        position: relative;
+        position: fixed;
         top: 0;
         width: 100%;
         height: 50px;
         z-index: 10;
         display: flex;
         align-items: center;
-        margin-top: -50px;
+        transform: translateY(-100%);
         transition: .2s ease-in-out;
         color: rgba(var(--color-font-light));
         justify-content: space-between;
@@ -83,7 +83,7 @@
     }
 
     nav.active {
-        margin-top: 0;
+        transform: none
     }
 
     .selected {

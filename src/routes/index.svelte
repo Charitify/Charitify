@@ -1,5 +1,6 @@
 <script>
     import {
+        Br,
         Footer,
         Divider,
         Comments,
@@ -28,6 +29,7 @@
 </svelte:head>
 
 <section>
+    <Br size="50"/>
 
     <div class="top-pic">
         <Carousel/>

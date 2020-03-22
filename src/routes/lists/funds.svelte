@@ -5,7 +5,7 @@
 <script>
     import { onMount } from 'svelte'
     import { api } from '@services'
-    import { ListItems, ListsLayout } from '@components'
+    import { Br, ListItems, ListsLayout } from '@components'
 
     let chariries = []
 
@@ -16,6 +16,7 @@
     })
 </script>
 
+<Br size="50"/>
 <ListsLayout>
     <ListItems items={chariries} basePath="funds"/>
 </ListsLayout>
