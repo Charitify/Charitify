@@ -29,7 +29,7 @@
 </svelte:head>
 
 <section>
-    <Br size="50"/>
+    <Br size="var(--header-height)"/>
 
     <div class="top-pic">
         <Carousel/>

@@ -64,7 +64,7 @@
 <DonationButton/>
 
 <section class="container theme-bg-color-secondary">
-    <Br size="50"/>
+    <Br size="var(--header-height)"/>
     <Br size="30"/>
 
 

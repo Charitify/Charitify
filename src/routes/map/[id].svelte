@@ -9,7 +9,7 @@
     import { stores, goto } from '@sapper/app';
     const { page } = stores();
     import { api } from '@services'
-    import { Map, MapMarker } from '@components'
+    import { Br, Map, MapMarker } from '@components'
 
     let center = undefined
     let markerId = $page.params.id
@@ -41,6 +41,7 @@
     }
 </script>
 
+ <Br size="var(--header-height)"/>
 <Map on:ready={onCreate} {center}>
     {#each organizations as o}
         <MapMarker lat={o.location.lat} lng={o.location.lng} on:click={onMarkerClick.bind(null, o)}/>

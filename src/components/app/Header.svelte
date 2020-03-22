@@ -73,7 +73,7 @@
         position: fixed;
         top: 0;
         width: 100%;
-        height: 50px;
+        height: var(--header-height);
         z-index: 10;
         display: flex;
         align-items: center;
