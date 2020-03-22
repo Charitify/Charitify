@@ -4529,7 +4529,7 @@ const DonatorsList = create_ssr_component(($$result, $$props, $$bindings, $$slot
 		}
 	];
 
-	const grouped = map.map(all, one => new Array(3).fill(one));
+	const grouped = map(all, one => new Array(3).fill(one));
 	$$result.css.add(css$o);
 
 	return `<ul class="${"scroll-x-center svelte-17hwyyp"}">
