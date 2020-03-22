@@ -291,7 +291,7 @@ html {
 }
 
 body {
-    height: 100vh;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     align-content: stretch;
@@ -309,11 +309,15 @@ body {
 }
 
 #sapper {
-
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
 }
 
 #main {
-    min-height: 100vh;
+    flex: 1 0 0;
     display: flex;
     flex-direction: column;
     align-content: stretch;
