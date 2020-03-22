@@ -267,9 +267,9 @@ body.theme-light {
 }
 
 body.theme-dark {
-    --theme-color-primary: var(--color-black);
+    --theme-color-primary: var(--color-dark-second);
     --theme-color-primary-opposite: var(--color-white);
-    --theme-color-secondary: var(--color-dark-second);
+    --theme-color-secondary: var(--color-dark);
 
     --theme-bg-color: var(--color-dark);
     --theme-bg-color-opposite: var(--color-light);
