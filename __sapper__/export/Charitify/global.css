@@ -304,7 +304,6 @@ body {
 }
 
 #sapper {
-    /* min-height: 100vh; */
     /* display: flex;
     flex-direction: column;
     align-content: stretch;
@@ -312,7 +311,7 @@ body {
 }
 
 #main {
-    flex: 1 0 0;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-content: stretch;
