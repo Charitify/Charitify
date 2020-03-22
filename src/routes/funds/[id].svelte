@@ -68,11 +68,11 @@
     <Br size="30"/>
 
 
-    <section class="flex" style="height: 200px">
+    <section class="flex" style="height: 240px">
         <FancyBox>
-            <Carousel items={carousel} on:click={onCarouselClick}/>
+            <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
             <div slot="box">
-                <Carousel {...propsBox} items={carousel}/>
+                <Carousel {...propsBox} items={carousel} dotsBelow={false}/>
             </div>
         </FancyBox>
     </section>
@@ -324,7 +324,7 @@
 
     <h1>Відео про Волтера</h1>
     <Br size="20"/>
-    <section class="flex" style="height: 200px">
+    <section class="flex" style="height: 240px">
         <Carousel items={carousel}/>
     </section>
     <Br size="60"/>

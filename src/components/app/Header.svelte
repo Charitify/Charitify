@@ -82,7 +82,6 @@
         color: rgba(var(--color-font-light));
         justify-content: space-between;
         box-shadow: var(--shadow-secondary);
-        border-bottom: 1px solid rgba(var(--color-danger), .1);
         background-color: rgba(var(--color-dark-second));
     }
 

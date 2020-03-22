@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { waitUntil, classnames } from '@utils'
-    import Picture from './Picture.svelte'
+    import Picture from '@components/Picture.svelte'
 
     const dispatch = createEventDispatcher()
 
@@ -16,11 +16,12 @@
      */
     export let items = []
     export let dots = true
+    export let dotsBelow = true
     export let size = 'stretch'
     export let initIndex = 0
 
     $: activeDot = initIndex
-    $: classProp = classnames('carousel', size, $$props.class)
+    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow })
 
     function carousel(node) {
         initScrollPosition(node)
@@ -91,6 +92,18 @@
         justify-content: stretch;
     }
 
+    .carousel.dotsBelow {
+        padding-bottom: 40px;
+    }
+
+    .carousel.dotsBelow .carousel-dots {
+        bottom: 0;
+    }
+
+    .carousel.dotsBelow .carousel-dots li {
+        background-color: rgba(var(--theme-bg-color-opposite));
+    }
+
     .carousel.stretch .fluid {
         width: 100%;
     }
@@ -101,8 +114,6 @@
 
     .carousel {
         width: 100%;
-        transform: translateZ(0);
-        border-radius: var(--border-radius-big);
     }
 
     .carousel-inner::-webkit-scrollbar {
@@ -113,6 +124,8 @@
         width: 100%;
         overflow-y: hidden;
         overflow-x: scroll;
+        transform: translateZ(0);
+        border-radius: var(--border-radius-big);
     }
 
     .carousel-dots {
@@ -134,8 +147,12 @@
         margin: 5px;
         border-radius: 50%;
         overflow: hidden;
-        background-color: rgba(var(--theme-bg-color));
-        box-shadow: var(--shadow-primary)
+        box-shadow: var(--shadow-primary);
+        background-color: rgba(var(--color-light));
+    }
+
+    .carousel-dots li:not(.active) {
+        opacity: .5;
     }
 
     li.active {

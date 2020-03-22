@@ -80,11 +80,11 @@
   </Button>
   <Br size="20" />
 
-  <section class="flex" style="height: 200px">
+  <section class="flex" style="height: 240px">
     <FancyBox>
-      <Carousel items={carousel} on:click={onCarouselClick} />
+      <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
       <div slot="box">
-        <Carousel {...propsBox} items={carousel} />
+        <Carousel {...propsBox} items={carousel} dotsBelow={false}/>
       </div>
     </FancyBox>
   </section>
@@ -179,6 +179,13 @@
   </section>
   <Br size="50" />
 
+  <h1>Наші піклувальники</h1>
+  <Br size="20"/>
+  <div class="full-container">
+      <DonatorsList/>
+  </div>
+  <Br size="60"/>
+
   <h1>Останні новини</h1>
   <Br size="20" />
   <div class="container">...here all news</div>
@@ -193,7 +200,7 @@
 
   <h1>Відео про нас</h1>
   <Br size="20" />
-  <section class="flex" style="height: 200px">
+  <section class="flex" style="height: 240px">
     <FancyBox>
       <Carousel items={carousel} on:click={onCarouselClick} />
       <div slot="box">

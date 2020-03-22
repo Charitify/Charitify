@@ -47,7 +47,7 @@
     }
 
     li:not(:last-child) {
-        background-image: linear-gradient(to right, rgba(var(--color-black), 0.1) 50%, rgba(var(--color-black), 0) 0%);
+        background-image: linear-gradient(to right, rgba(var(--theme-color-primary-opposite), 0.1) 50%, rgba(var(--theme-color-primary-opposite), 0) 0%);
         background-position: bottom;
         background-size: 20px 1px;
         background-repeat: repeat-x;
