@@ -59,7 +59,7 @@
 </svelte:head>
 
 <section class="container theme-bg-color-secondary">
-  <Br size="var(--header-height)"/>
+  <Br size="var(--header-height)" />
   <Br size="30" />
 
   <Button class="white">
@@ -82,9 +82,9 @@
 
   <section class="flex" style="height: 240px">
     <FancyBox>
-      <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+      <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false} />
       <div slot="box">
-        <Carousel {...propsBox} items={carousel} dotsBelow={false}/>
+        <Carousel {...propsBox} items={carousel} dotsBelow={false} />
       </div>
     </FancyBox>
   </section>
@@ -180,11 +180,11 @@
   <Br size="50" />
 
   <h1>Наші піклувальники</h1>
-  <Br size="20"/>
+  <Br size="20" />
   <div class="full-container">
-      <DonatorsList/>
+    <DonatorsList />
   </div>
-  <Br size="60"/>
+  <Br size="60" />
 
   <h1>Останні новини</h1>
   <Br size="20" />
@@ -265,8 +265,7 @@
       style="border:0;"
       allowfullscreen=""
       aria-hidden="false"
-      tabindex="0" 
-    />
+      tabindex="0" />
   </div>
   <Br size="60" />
 

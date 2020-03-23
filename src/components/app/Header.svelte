@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte'
-    import { classnames } from '@utils'
+    import { classnames, Storages } from '@utils'
     import Icon from '@components/Icon.svelte'
     import Button from '@components/Button.svelte'
     import Avatar from '@components/Avatar.svelte'
@@ -28,13 +28,18 @@
         })
     })
 
-    let isDarkTheme = false
-    function changeTheme() {
-        isDarkTheme = !isDarkTheme
+    let themeName = 'theme-light'
+    function changeTheme(theme) {
+        themeName = theme
         document.body.classList.remove('theme-dark')
         document.body.classList.remove('theme-light')
-        document.body.classList.add(isDarkTheme ? 'theme-dark' : 'theme-light')
+        document.body.classList.add(theme)
+        Storages.cookieStorage.set('theme', theme)
     }
+
+    onMount(() => {
+        changeTheme(Storages.cookieStorage.get('theme'))
+    })
 </script>
 
 <svelte:window on:scroll={onScroll}/>
@@ -55,7 +60,7 @@
         </li>
 
         <li>
-            <Button on:click={changeTheme} auto size="small">
+            <Button on:click={() => changeTheme(themeName === 'theme-light' ? 'theme-dark' : 'theme-light')} auto size="small">
                 <Icon type="moon" size="medium" class="theme-svg-fill-opposite" is="light"/>
             </Button>
         </li>

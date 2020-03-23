@@ -19,16 +19,16 @@ const onwarn = (warning, onwarn) => (warning.code === 'CIRCULAR_DEPENDENCY' && /
 const dedupe = (importee) => importee === 'svelte' || importee.startsWith('svelte/')
 
 const preprocess = sveltePreprocess({
-  scss: {
-    includePaths: ['src']
-  },
-  postcss: {
-    plugins: [require('autoprefixer')()]
-  }
+	scss: {
+		includePaths: ['src']
+	},
+	postcss: {
+		plugins: [require('autoprefixer')()]
+	}
 })
 
 const aliases = alias({
-  resolve: ['.js', '.svelte'],
+	resolve: ['.js', '.svelte'],
 	entries: [
 		{ find: '@utils', replacement: `${__dirname}/src/utils` },
 		{ find: '@config', replacement: `${__dirname}/src/config` },
@@ -59,9 +59,8 @@ export default {
 				browser: true,
 				dedupe
 			}),
-			visualizer(),
 			commonjs(),
-      legacy &&
+			legacy &&
 			babel({
 				extensions: ['.js', '.mjs', '.html', '.svelte'],
 				runtimeHelpers: true,
@@ -85,55 +84,56 @@ export default {
 				]
 			}),
 			
-      !dev &&
+			!dev &&
 			terser({
 				module: true
 			}),
-    ],
-		
-    onwarn
-  },
-
-  server: {
-    input: config.server.input(),
-    output: config.server.output(),
-    plugins: [
-			aliases,
-      replace({
-				'process.browser': false,
-        'process.env.NODE_ENV': JSON.stringify(mode)
-			}),
-      svelte({
-				generate: 'ssr',
-        dev,
-        preprocess
-      }),
-      resolve({
-				dedupe
-      }),
 			visualizer(),
+		],
+		
+		onwarn
+	},
+
+	server: {
+		input: config.server.input(),
+		output: config.server.output(),
+		plugins: [
+			aliases,
+			replace({
+				'process.browser': false,
+				'process.env.NODE_ENV': JSON.stringify(mode)
+			}),
+			svelte({
+				generate: 'ssr',
+				dev,
+				preprocess
+			}),
+			resolve({
+				dedupe
+			}),
 			commonjs(),
-    ],
-    external: Object.keys(pkg.dependencies).concat(
-      require('module').builtinModules || Object.keys(process.binding('natives'))
-    ),
+			visualizer(),
+		],
+		external: Object.keys(pkg.dependencies).concat(
+			require('module').builtinModules || Object.keys(process.binding('natives'))
+		),
 
-    onwarn
-  },
+		onwarn
+	},
 
-  serviceworker: {
-    input: config.serviceworker.input(),
-    output: config.serviceworker.output(),
-    plugins: [
-      resolve(),
-      replace({
-        'process.browser': true,
-        'process.env.NODE_ENV': JSON.stringify(mode)
-      }),
-      commonjs(),
-      !dev && terser()
-    ],
+	serviceworker: {
+		input: config.serviceworker.input(),
+		output: config.serviceworker.output(),
+		plugins: [
+			resolve(),
+			replace({
+				'process.browser': true,
+				'process.env.NODE_ENV': JSON.stringify(mode)
+			}),
+			commonjs(),
+			!dev && terser()
+		],
 
-    onwarn
-  }
+		onwarn
+	}
 }

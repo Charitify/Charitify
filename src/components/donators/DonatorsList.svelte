@@ -1,5 +1,4 @@
 <script>
-    import { _ } from '@utils'
     import DonatorsCard from './DonatorsCard.svelte'
 
     const all = [
@@ -31,7 +30,7 @@
         },
     ]
 
-    const grouped = _.map(all, one => new Array(3).fill(one))
+    const grouped = all.map(one => new Array(3).fill(one))
 
     function scrollEnd(node) {
         try {
