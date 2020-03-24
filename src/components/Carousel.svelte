@@ -36,9 +36,10 @@
     }
 
     function getActiveDot(parent) {
-        const { scrollLeft } = parent
-        const { width } = parent.getBoundingClientRect()
-        const newActiveDot = Math.round(scrollLeft / width)
+        const { scrollLeft, scrollWidth, offsetWidth } = parent
+        const dotAmount = Array.from(parent.children).length
+        const scrollX = scrollLeft / (scrollWidth - offsetWidth)
+        const newActiveDot = Math.round(scrollX * (dotAmount - 1))
         if (activeDot !== newActiveDot) activeDot = newActiveDot
     }
 
