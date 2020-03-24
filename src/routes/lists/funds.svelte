@@ -4,14 +4,14 @@
 
 <script>
     import { onMount } from 'svelte'
-    import { api } from '@services'
+    import { API } from '@services'
     import { Br, ListItems, ListsLayout } from '@components'
 
     let chariries = []
 
     onMount(async () => {
         await new Promise(r => setTimeout(r, 1000))
-        const chars = await api.getFunds()
+        const chars = await API.getFunds()
         chariries = new Array(5).fill(chars).reduce((a, o) => a.concat(...o), [])
     })
 </script>

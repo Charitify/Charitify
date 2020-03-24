@@ -16,6 +16,7 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "compression": "^1.7.1",
+    "dayjs": "^1.8.23",
     "isomorphic-fetch": "^2.2.1",
     "js-cookie": "^2.2.1",
     "js-storage": "^1.1.0",

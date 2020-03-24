@@ -8,14 +8,14 @@
 <script>
     import { stores, goto } from '@sapper/app';
     const { page } = stores();
-    import { api } from '@services'
+    import { API } from '@services'
     import { Br, Map, MapMarker } from '@components'
 
     let organizations = []
 
     async function onCreate({ detail: map }) {
         await new Promise(r => setTimeout(r, 2000))
-        organizations = await api.getOrganizations()
+        organizations = await API.getOrganizations()
 
         console.log(organizations)
 

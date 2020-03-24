@@ -1,7 +1,7 @@
 <script>
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
-    import { api } from '@services'
+    import { API } from '@services'
     import {
         Br,
         Icon,
@@ -27,7 +27,7 @@
     let charity = {}
     $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))
     onMount(async () => {
-        charity = await api.getFund(1)
+        charity = await API.getFund(1)
     })
 
     // Trust button

@@ -8,7 +8,7 @@
 <script>
     import { stores, goto } from '@sapper/app';
     const { page } = stores();
-    import { api } from '@services'
+    import { API } from '@services'
     import { Br, Map, MapMarker } from '@components'
 
     let center = undefined
@@ -16,7 +16,7 @@
     let organizations = []
 
     async function onCreate({ detail: map }) {
-        organizations = await api.getOrganizations()
+        organizations = await API.getOrganizations()
 
         console.log(organizations)
 

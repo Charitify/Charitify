@@ -1,7 +1,7 @@
 <script>
   import { stores } from "@sapper/app";
   import { onMount } from "svelte";
-  import { api } from "@services";
+  import { API } from "@services";
   import {
     Br,
     Icon,
@@ -14,6 +14,7 @@
     Comments,
     Carousel,
     FancyBox,
+    NewsList,
     Documents,
     TrustButton,
     DonatorsList,
@@ -31,7 +32,7 @@
     alt: "photo"
   }));
   onMount(async () => {
-    organization = await api.getOrganization(1);
+    organization = await API.getOrganization(1);
   });
 
   // Trust button
@@ -188,7 +189,7 @@
 
   <h1>Останні новини</h1>
   <Br size="20" />
-  <div class="container">...here all news</div>
+  <NewsList on:click={(e) => console.log(e.detail)}/>
   <Br size="60" />
 
   <h1>Сертифікати</h1>

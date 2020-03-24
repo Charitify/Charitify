@@ -7,3 +7,5 @@ Storages.alwaysUseJsonInStorage()
 export const localStorage = Storages.localStorage
 export const sessionStorage = Storages.sessionStorage
 export const cookieStorage = Cookies
+
+export default Storages

@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte'
-    import { api } from '@services'
+    import { API } from '@services'
 
     import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
@@ -14,7 +14,7 @@
     let comments = []
 
     onMount(async () => {
-        comments = await api.getComments()
+        comments = await API.getComments()
     })
 </script>
 

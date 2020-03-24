@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte'
-    import { classnames, Storages } from '@utils'
+    import { Storages } from '@services'
+    import { classnames } from '@utils'
     import Icon from '@components/Icon.svelte'
     import Button from '@components/Button.svelte'
     import Avatar from '@components/Avatar.svelte'
