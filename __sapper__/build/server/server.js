@@ -8,9 +8,10 @@ var compression = _interopDefault(require('compression'));
 var fs = _interopDefault(require('fs'));
 var path = _interopDefault(require('path'));
 var classnames = _interopDefault(require('classnames'));
+var zlFetch = _interopDefault(require('zl-fetch'));
+var dayjs = _interopDefault(require('dayjs'));
 var Storages = _interopDefault(require('js-storage'));
 var Cookies = _interopDefault(require('js-cookie'));
-var zlFetch = _interopDefault(require('zl-fetch'));
 var Stream = _interopDefault(require('stream'));
 var http = _interopDefault(require('http'));
 var Url = _interopDefault(require('url'));
@@ -233,12 +234,6 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 	return `<br${add_attribute("style", `padding-bottom: ${foramttedSize}`, 0)}${add_attribute("class", $$props.class, 0)}>`;
 });
-
-Storages.alwaysUseJsonInStorage();
-
-const localStorage = Storages.localStorage;
-const sessionStorage = Storages.sessionStorage;
-const cookieStorage = Cookies;
 
 /**
  *
@@ -655,11 +650,324 @@ const FancyBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 ${ ``}`;
 });
 
+var setup = {
+  BACKEND_URL: './mock', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
+
+  MAPBOX_KEY: 'mapbox',
+};
+
+/**
+ *
+ * @description API URLs builders.
+ */
+const endpoints = {
+  USER: (id) => `user.json?id=${id}`,
+  USERS: () => `users.json`,
+
+  RECENT: (id) => `recent.json?id=${id}`,
+  RECENTS: () => `recents.json`,
+
+  COMMENT: (id) => `comment.json?id=${id}`,
+  COMMENTS: () => `comments.json`,
+
+  FUND: (id) => `charity.json?id=${id}`,
+  FUNDS: () => `charities.json`,
+
+  ORGANIZATION: (id) => `organization.json?id=${id}`,
+  ORGANIZATIONS: () => `organizations.json`,
+};
+
+class APIService {
+  /**
+   *
+   * @typedef Config {{
+   *   adapter: Function, (zlFetch)
+   *
+   *   basePath: string,
+   *
+   *   requestInterceptor([
+   *     endpoint: string,
+   *     params?: object,
+   *     config?: object,
+   *   ]): {*},
+   *   responseInterceptor() {
+   *     body: {*},
+   *     headers: object,
+   *     response: {Response},
+   *     status: number,
+   *     statusText: string,
+   *   },
+   *   errorInterceptor() {{
+   *     body: {*},
+   *     headers: object,
+   *     response: {Response},
+   *     status: number,
+   *     statusText: string,
+   *   }},
+   * }}
+   * @param config {Config}
+   */
+  constructor(config = {}) {
+    this._adapter = config.adapter || zlFetch;
+
+    this._base_path = config.basePath ? config.basePath.replace(/\/$/, '') : '';
+
+    this._requestInterceptor = config.requestInterceptor || (async (...args) => args);
+    this._responseInterceptor = config.responseInterceptor || (async (...args) => args);
+    this._errorInterceptor = config.errorInterceptor || Promise.reject;
+  }
+
+  /**
+   *
+   * @param method {'get'|'put'|'post'|'delete'|'patch'}
+   * @param args {*[]}
+   */
+  get newRequest() {
+    const methods = ['get', 'put', 'post', 'delete', 'patch'];
+
+    return methods.reduce((acc, method) => {
+      acc[method] = this.withInterceptors.bind(this, this._adapter[method]);
+      return acc
+    }, {})
+  }
+
+  async withInterceptors(caller, ...args) {
+    const newArgs1 = await this.requestInterceptor(...args);
+    const newArgs2 = await this._requestInterceptor(...newArgs1);
+
+    return caller(...newArgs2)
+      .then(async (response) => {
+        const newResponse = await this._responseInterceptor(response);
+        return await this.handleResponse(newResponse)
+      })
+      .catch(async (reject) => {
+        try {
+          return await this._errorInterceptor(reject)
+        } catch (error) {
+          throw error
+        }
+      })
+      .catch(this.handleReject)
+  }
+
+  async requestInterceptor(...args) {
+    if (typeof args[0] === 'string') { // If URL then concat BASE_PATH.
+      args[0] = `${this._base_path}/${args[0]}`;
+    }
+    return [...args]
+  }
+
+  async handleResponse(response) {
+    return response.body
+  }
+
+  async handleReject(reject) {
+    throw reject
+  }
+}
+
+/**
+ *
+ * @description API class for making REST API requests in a browser.
+ */
+class ApiClass extends APIService {
+  /**
+   *
+   * @param config {Config}
+   */
+  constructor(config) {
+    super(config);
+  }
+
+  /**
+   *
+   * @description Users
+   */
+  getUser(id, params, config) {
+    return this.newRequest.get(endpoints.USER(id), params, config)
+  }
+
+  getUsers(params, config) {
+    return this.newRequest.get(endpoints.USERS(), params, config)
+  }
+
+  postUser(id, body, config) {
+    return this.newRequest.post(endpoints.USER(id), body, config)
+  }
+
+  putUser(id, body, config) {
+    return this.newRequest.put(endpoints.USER(id), body, config)
+  }
+
+  deleteUser(id, config) {
+    return this.newRequest.delete(endpoints.USER(id), config)
+  }
+
+  /**
+   *
+   * @description Recent
+   */
+  getRecent(id, params, config) {
+    return this.newRequest.get(endpoints.RECENT(id), params, config)
+  }
+
+  getRecents(params, config) {
+    return this.newRequest.get(endpoints.RECENTS(), params, config)
+  }
+
+  postRecent(id, body, config) {
+    return this.newRequest.post(endpoints.RECENT(id), body, config)
+  }
+
+  putRecent(id, body, config) {
+    return this.newRequest.put(endpoints.RECENT(id), body, config)
+  }
+
+  deleteRecent(id, config) {
+    return this.newRequest.delete(endpoints.RECENT(id), config)
+  }
+
+  /**
+   *
+   * @description Comments
+   */
+  getComment(id, params, config) {
+    return this.newRequest.get(endpoints.COMMENT(id), params, config)
+  }
+
+  getComments(params, config) {
+    return this.newRequest.get(endpoints.COMMENTS(), params, config)
+  }
+
+  postComment(id, body, config) {
+    return this.newRequest.post(endpoints.COMMENT(id), body, config)
+  }
+
+  putComment(id, body, config) {
+    return this.newRequest.put(endpoints.COMMENT(id), body, config)
+  }
+
+  deleteComment(id, config) {
+    return this.newRequest.delete(endpoints.COMMENT(id), config)
+  }
+
+  /**
+   *
+   * @description Fund
+   */
+  getFund(id, params, config) {
+    return this.newRequest.get(endpoints.FUND(id), params, config)
+  }
+
+  getFunds(params, config) {
+    return this.newRequest.get(endpoints.FUNDS(), params, config)
+  }
+
+  postFund(id, body, config) {
+    return this.newRequest.post(endpoints.FUND(id), body, config)
+  }
+
+  putFund(id, body, config) {
+    return this.newRequest.put(endpoints.FUND(id), body, config)
+  }
+
+  deleteFund(id, config) {
+    return this.newRequest.delete(endpoints.FUND(id), config)
+  }
+
+  /**
+   *
+   * @description Organization
+   */
+  getOrganization(id, params, config) {
+    return this.newRequest.get(endpoints.ORGANIZATION(id), params, config)
+  }
+
+  getOrganizations(params, config) {
+    return this.newRequest.get(endpoints.ORGANIZATIONS(), params, config)
+  }
+
+  postOrganization(id, body, config) {
+    return this.newRequest.post(endpoints.ORGANIZATION(id), body, config)
+  }
+
+  putOrganization(id, body, config) {
+    return this.newRequest.put(endpoints.ORGANIZATION(id), body, config)
+  }
+
+  deleteOrganization(id, config) {
+    return this.newRequest.delete(endpoints.ORGANIZATION(id), config)
+  }
+
+}
+
+/**
+ *
+ * @constructor {Config}
+ */
+var API = new ApiClass({
+  basePath: setup.BACKEND_URL,
+  responseInterceptor: res => (console.info('response -------\n', res), res),
+  errorInterceptor: rej => {
+    console.warn('request error -------\n', rej);
+
+    if (rej && rej.error && rej.error.message === 'Failed to fetch') {
+      console.log('Lost internet connection');
+    }
+
+    throw rej
+  },
+});
+
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var relativeTime = createCommonjsModule(function (module, exports) {
+!function(r,t){module.exports=t();}(commonjsGlobal,function(){return function(r,t,e){var n=t.prototype;e.en.relativeTime={future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"};var o=function(r,t,n,o){for(var d,i,u,a=n.$locale().relativeTime,f=[{l:"s",r:44,d:"second"},{l:"m",r:89},{l:"mm",r:44,d:"minute"},{l:"h",r:89},{l:"hh",r:21,d:"hour"},{l:"d",r:35},{l:"dd",r:25,d:"day"},{l:"M",r:45},{l:"MM",r:10,d:"month"},{l:"y",r:17},{l:"yy",d:"year"}],s=f.length,l=0;l<s;l+=1){var h=f[l];h.d&&(d=o?e(r).diff(n,h.d,!0):n.diff(r,h.d,!0));var m=Math.round(Math.abs(d));if(u=d>0,m<=h.r||!h.r){1===m&&l>0&&(h=f[l-1]);var c=a[h.l];i="string"==typeof c?c.replace("%d",m):c(m,t,h.l,u);break}}return t?i:(u?a.future:a.past).replace("%s",i)};n.to=function(r,t){return o(r,t,this,!0)},n.from=function(r,t){return o(r,t,this)};var d=function(r){return r.$u?e.utc():e()};n.toNow=function(r){return this.to(d(this),r)},n.fromNow=function(r){return this.from(d(this),r)};}});
+});
+
+var utc = createCommonjsModule(function (module, exports) {
+!function(t,i){module.exports=i();}(commonjsGlobal,function(){return function(t,i,e){var s=(new Date).getTimezoneOffset(),n=i.prototype;e.utc=function(t,e){return new i({date:t,utc:!0,format:e})},n.utc=function(){return e(this.toDate(),{locale:this.$L,utc:!0})},n.local=function(){return e(this.toDate(),{locale:this.$L,utc:!1})};var u=n.parse;n.parse=function(t){t.utc&&(this.$u=!0),this.$utils().u(t.$offset)||(this.$offset=t.$offset),u.call(this,t);};var o=n.init;n.init=function(){if(this.$u){var t=this.$d;this.$y=t.getUTCFullYear(),this.$M=t.getUTCMonth(),this.$D=t.getUTCDate(),this.$W=t.getUTCDay(),this.$H=t.getUTCHours(),this.$m=t.getUTCMinutes(),this.$s=t.getUTCSeconds(),this.$ms=t.getUTCMilliseconds();}else o.call(this);};var f=n.utcOffset;n.utcOffset=function(t){var i=this.$utils().u;if(i(t))return this.$u?0:i(this.$offset)?f.call(this):this.$offset;var e,n=Math.abs(t)<=16?60*t:t;return 0!==t?(e=this.local().add(n+s,"minute")).$offset=n:e=this.utc(),e};var r=n.format;n.format=function(t){var i=t||(this.$u?"YYYY-MM-DDTHH:mm:ss[Z]":"");return r.call(this,i)},n.valueOf=function(){var t=this.$utils().u(this.$offset)?0:this.$offset+s;return this.$d.valueOf()-6e4*t},n.isUTC=function(){return !!this.$u},n.toISOString=function(){return this.toDate().toISOString()},n.toString=function(){return this.toDate().toUTCString()};}});
+});
+
+var weekday = createCommonjsModule(function (module, exports) {
+!function(e,t){module.exports=t();}(commonjsGlobal,function(){return function(e,t){t.prototype.weekday=function(e){var t=this.$locale().weekStart||0,n=this.$W,i=(n<t?n+7:n)-t;return this.$utils().u(e)?i:this.subtract(i,"day").add(e,"day")};}});
+});
+
+var en = createCommonjsModule(function (module, exports) {
+!function(e,n){module.exports=n();}(commonjsGlobal,function(){return {name:"en",weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_")}});
+});
+
+var ru = createCommonjsModule(function (module, exports) {
+!function(_,t){module.exports=t(dayjs);}(commonjsGlobal,function(_){_=_&&_.hasOwnProperty("default")?_.default:_;var t="января_февраля_марта_апреля_мая_июня_июля_августа_сентября_октября_ноября_декабря".split("_"),e="январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь".split("_"),n="янв._февр._мар._апр._мая_июня_июля_авг._сент._окт._нояб._дек.".split("_"),s="янв._февр._март_апр._май_июнь_июль_авг._сент._окт._нояб._дек.".split("_"),o=/D[oD]?(\[[^[\]]*\]|\s)+MMMM?/;function r(_,t,e){var n,s;return "m"===e?t?"минута":"минуту":_+" "+(n=+_,s={mm:t?"минута_минуты_минут":"минуту_минуты_минут",hh:"час_часа_часов",dd:"день_дня_дней",MM:"месяц_месяца_месяцев",yy:"год_года_лет"}[e].split("_"),n%10==1&&n%100!=11?s[0]:n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?s[1]:s[2])}var d={name:"ru",weekdays:"воскресенье_понедельник_вторник_среда_четверг_пятница_суббота".split("_"),weekdaysShort:"вск_пнд_втр_срд_чтв_птн_сбт".split("_"),weekdaysMin:"вс_пн_вт_ср_чт_пт_сб".split("_"),months:function(_,n){return o.test(n)?t[_.month()]:e[_.month()]},monthsShort:function(_,t){return o.test(t)?n[_.month()]:s[_.month()]},weekStart:1,formats:{LT:"H:mm",LTS:"H:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY г.",LLL:"D MMMM YYYY г., H:mm",LLLL:"dddd, D MMMM YYYY г., H:mm"},relativeTime:{future:"через %s",past:"%s назад",s:"несколько секунд",m:r,mm:r,h:"час",hh:r,d:"день",dd:r,M:"месяц",MM:r,y:"год",yy:r},ordinal:function(_){return _}};return _.locale(d,null,!0),d});
+});
+
+var uk = createCommonjsModule(function (module, exports) {
+!function(_,e){module.exports=e(dayjs);}(commonjsGlobal,function(_){function e(_,e,t){var s,d;return "m"===t?e?"хвилина":"хвилину":_+" "+(s=+_,d={ss:e?"секунда_секунди_секунд":"секунду_секунди_секунд",mm:e?"хвилина_хвилини_хвилин":"хвилину_хвилини_хвилин",hh:e?"година_години_годин":"годину_години_годин",dd:"день_дні_днів",MM:"місяць_місяці_місяців",yy:"рік_роки_років"}[t].split("_"),s%10==1&&s%100!=11?d[0]:s%10>=2&&s%10<=4&&(s%100<10||s%100>=20)?d[1]:d[2])}_=_&&_.hasOwnProperty("default")?_.default:_;var t={name:"uk",weekdays:"неділя_понеділок_вівторок_середа_четвер_п’ятниця_субота".split("_"),weekdaysShort:"ндл_пнд_втр_срд_чтв_птн_сбт".split("_"),weekdaysMin:"нд_пн_вт_ср_чт_пт_сб".split("_"),months:"січень_лютий_березень_квітень_травень_червень_липень_серпень_вересень_жовтень_листопад_грудень".split("_"),monthsShort:"сiч_лют_бер_квiт_трав_черв_лип_серп_вер_жовт_лист_груд".split("_"),weekStart:1,relativeTime:{future:"за %s",past:"%s тому",s:"декілька секунд",m:e,mm:e,h:"годину",hh:e,d:"день",dd:e,M:"місяць",MM:e,y:"рік",yy:e},ordinal:function(_){return _},formats:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD.MM.YYYY",LL:"D MMMM YYYY р.",LLL:"D MMMM YYYY р., HH:mm",LLLL:"dddd, D MMMM YYYY р., HH:mm"}};return _.locale(t,null,!0),t});
+});
+
+dayjs.extend(relativeTime); // use RelativeTime pluggin
+dayjs.extend(utc); // use UTC pluggin
+dayjs.extend(weekday); // use Weekday pluggin
+
+dayjs.locale('en'); // use Engllish
+dayjs.locale('ru'); // use Russian
+dayjs.locale('uk'); // use Ukrainian
+
+Storages.alwaysUseJsonInStorage();
+
+const localStorage = Storages.localStorage;
+const sessionStorage = Storages.sessionStorage;
+const cookieStorage = Cookies;
+
 /* src/components/app/Header.svelte generated by Svelte v3.18.1 */
 
 const css$a = {
 	code: "nav.svelte-1gs6oax.svelte-1gs6oax{position:fixed;top:0;width:100%;height:var(--header-height);z-index:10;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-transform:translateY(-100%);transform:translateY(-100%);-webkit-transition:.2s ease-in-out;transition:.2s ease-in-out;color:rgba(var(--color-font-light));-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;-webkit-box-shadow:var(--shadow-secondary);box-shadow:var(--shadow-secondary);background-color:rgba(var(--color-dark-second))}nav.active.svelte-1gs6oax.svelte-1gs6oax{-webkit-transform:none;transform:none\n    }.selected.svelte-1gs6oax.svelte-1gs6oax{position:relative;display:inline-block}.selected.svelte-1gs6oax.svelte-1gs6oax::after{position:absolute;content:\"\";width:calc(100% - 1em);height:2px;background-color:rgb(var(--color-danger));display:block;bottom:-1px}.nav-pages.svelte-1gs6oax a.svelte-1gs6oax{padding:0.8em 0.5em}.nav-actions.svelte-1gs6oax.svelte-1gs6oax{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin:-3px}.nav-actions.svelte-1gs6oax li.svelte-1gs6oax{padding:3px}.nav-actions.svelte-1gs6oax a.svelte-1gs6oax{display:block}.lang-select.svelte-1gs6oax.svelte-1gs6oax{padding:5px;background-color:transparent;color:rgba(var(--color-font-light))}.lang-select.svelte-1gs6oax.svelte-1gs6oax:hover,.lang-select.svelte-1gs6oax.svelte-1gs6oax:focus{-webkit-box-shadow:none;box-shadow:none;background-color:rgba(var(--color-black), 0.1)}",
-	map: "{\"version\":3,\"file\":\"Header.svelte\",\"sources\":[\"Header.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { classnames, Storages } from '@utils'\\n    import Icon from '@components/Icon.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Avatar from '@components/Avatar.svelte'\\n\\n    export let segment\\n\\n    let value = 'ua'\\n\\n    const gap = 50\\n    let isHeaderVisible = true\\n    let onScroll = null\\n    let lastY = 0\\n    $: classProp = classnames('container', { active: isHeaderVisible })\\n    onMount(() => {\\n        onScroll = (e) => requestAnimationFrame(function() {\\n            const currentY = window.pageYOffset;\\n            const dirrection = currentY - lastY\\n            if (dirrection < -gap || currentY < 50) { // up\\n                if (!isHeaderVisible) isHeaderVisible = true\\n                lastY = currentY + gap;\\n            } else if (dirrection > gap) { // down\\n                if (isHeaderVisible) isHeaderVisible = false\\n                lastY = currentY - gap;\\n            }\\n        })\\n    })\\n\\n    let themeName = 'theme-light'\\n    function changeTheme(theme) {\\n        themeName = theme\\n        document.body.classList.remove('theme-dark')\\n        document.body.classList.remove('theme-light')\\n        document.body.classList.add(theme)\\n        Storages.cookieStorage.set('theme', theme)\\n    }\\n\\n    onMount(() => {\\n        changeTheme(Storages.cookieStorage.get('theme'))\\n    })\\n</script>\\n\\n<svelte:window on:scroll={onScroll}/>\\n<nav class={classProp}>\\n    <ul class=\\\"nav-pages flex\\\">\\n        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>\\n        <li><a rel=prefetch href='lists/funds' class:selected='{segment === \\\"lists\\\"}'>lists</a></li>\\n        <li><a href='map' class:selected='{segment === \\\"map\\\"}'>map</a></li>\\n    </ul>\\n\\n    <ul class=\\\"nav-actions\\\">\\n        <li>\\n            <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n                <option value=\\\"ua\\\">Ua</option>\\n                <option value=\\\"ru\\\">Ru</option>\\n                <option value=\\\"en\\\">En</option>\\n            </select>\\n        </li>\\n\\n        <li>\\n            <Button on:click={() => changeTheme(themeName === 'theme-light' ? 'theme-dark' : 'theme-light')} auto size=\\\"small\\\">\\n                <Icon type=\\\"moon\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill-opposite\\\" is=\\\"light\\\"/>\\n            </Button>\\n        </li>\\n\\n        <li>\\n            <a class=\\\"btn small\\\" href=\\\"users/me\\\">\\n                <Avatar size=\\\"small\\\" src=\\\"https://placeimg.com/30/30/people\\\" alt=\\\"avatar\\\"/>\\n            </a>\\n        </li>\\n    </ul>\\n</nav>\\n\\n<style>\\n    nav {\\n        position: fixed;\\n        top: 0;\\n        width: 100%;\\n        height: var(--header-height);\\n        z-index: 10;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-transform: translateY(-100%);\\n                transform: translateY(-100%);\\n        -webkit-transition: .2s ease-in-out;\\n        transition: .2s ease-in-out;\\n        color: rgba(var(--color-font-light));\\n        -webkit-box-pack: justify;\\n            -ms-flex-pack: justify;\\n                justify-content: space-between;\\n        -webkit-box-shadow: var(--shadow-secondary);\\n                box-shadow: var(--shadow-secondary);\\n        background-color: rgba(var(--color-dark-second));\\n    }\\n\\n    nav.active {\\n        -webkit-transform: none;\\n                transform: none\\n    }\\n\\n    .selected {\\n        position: relative;\\n        display: inline-block;\\n    }\\n\\n    .selected::after {\\n        position: absolute;\\n        content: \\\"\\\";\\n        width: calc(100% - 1em);\\n        height: 2px;\\n        background-color: rgb(var(--color-danger));\\n        display: block;\\n        bottom: -1px;\\n    }\\n\\n    .nav-pages a {\\n        padding: 0.8em 0.5em;\\n    }\\n\\n    .nav-actions {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        margin: -3px;\\n    }\\n\\n    .nav-actions li {\\n        padding: 3px;\\n    }\\n\\n    .nav-actions a {\\n        display: block;\\n    }\\n\\n    .lang-select {\\n        padding: 5px;\\n        background-color: transparent;\\n        color: rgba(var(--color-font-light));\\n    }\\n\\n    .lang-select:hover,\\n    .lang-select:focus {\\n        -webkit-box-shadow: none;\\n                box-shadow: none;\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9IZWFkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGVBQWU7UUFDZixNQUFNO1FBQ04sV0FBVztRQUNYLDRCQUE0QjtRQUM1QixXQUFXO1FBQ1gsb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsb0NBQTRCO2dCQUE1Qiw0QkFBNEI7UUFDNUIsbUNBQTJCO1FBQTNCLDJCQUEyQjtRQUMzQixvQ0FBb0M7UUFDcEMseUJBQThCO1lBQTlCLHNCQUE4QjtnQkFBOUIsOEJBQThCO1FBQzlCLDJDQUFtQztnQkFBbkMsbUNBQW1DO1FBQ25DLGdEQUFnRDtJQUNwRDs7SUFFQTtRQUNJLHVCQUFjO2dCQUFkO0lBQ0o7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIscUJBQXFCO0lBQ3pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7UUFDWCx1QkFBdUI7UUFDdkIsV0FBVztRQUNYLDBDQUEwQztRQUMxQyxjQUFjO1FBQ2QsWUFBWTtJQUNoQjs7SUFFQTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLFlBQVk7SUFDaEI7O0lBRUE7UUFDSSxZQUFZO0lBQ2hCOztJQUVBO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLFlBQVk7UUFDWiw2QkFBNkI7UUFDN0Isb0NBQW9DO0lBQ3hDOztJQUVBOztRQUVJLHdCQUFnQjtnQkFBaEIsZ0JBQWdCO1FBQ2hCLCtDQUErQztJQUNuRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvSGVhZGVyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIG5hdiB7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1oZWFkZXItaGVpZ2h0KTtcbiAgICAgICAgei1pbmRleDogMTA7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgtMTAwJSk7XG4gICAgICAgIHRyYW5zaXRpb246IC4ycyBlYXNlLWluLW91dDtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1saWdodCkpO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1zZWNvbmRhcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhcmstc2Vjb25kKSk7XG4gICAgfVxuXG4gICAgbmF2LmFjdGl2ZSB7XG4gICAgICAgIHRyYW5zZm9ybTogbm9uZVxuICAgIH1cblxuICAgIC5zZWxlY3RlZCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgIH1cblxuICAgIC5zZWxlY3RlZDo6YWZ0ZXIge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIGNvbnRlbnQ6IFwiXCI7XG4gICAgICAgIHdpZHRoOiBjYWxjKDEwMCUgLSAxZW0pO1xuICAgICAgICBoZWlnaHQ6IDJweDtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpO1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgYm90dG9tOiAtMXB4O1xuICAgIH1cblxuICAgIC5uYXYtcGFnZXMgYSB7XG4gICAgICAgIHBhZGRpbmc6IDAuOGVtIDAuNWVtO1xuICAgIH1cblxuICAgIC5uYXYtYWN0aW9ucyB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIG1hcmdpbjogLTNweDtcbiAgICB9XG5cbiAgICAubmF2LWFjdGlvbnMgbGkge1xuICAgICAgICBwYWRkaW5nOiAzcHg7XG4gICAgfVxuXG4gICAgLm5hdi1hY3Rpb25zIGEge1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICB9XG5cbiAgICAubGFuZy1zZWxlY3Qge1xuICAgICAgICBwYWRkaW5nOiA1cHg7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgfVxuXG4gICAgLmxhbmctc2VsZWN0OmhvdmVyLFxuICAgIC5sYW5nLXNlbGVjdDpmb2N1cyB7XG4gICAgICAgIGJveC1zaGFkb3c6IG5vbmU7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA4EI,GAAG,8BAAC,CAAC,AACD,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,eAAe,CAAC,CAC5B,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,iBAAiB,CAAE,WAAW,KAAK,CAAC,CAC5B,SAAS,CAAE,WAAW,KAAK,CAAC,CACpC,kBAAkB,CAAE,GAAG,CAAC,WAAW,CACnC,UAAU,CAAE,GAAG,CAAC,WAAW,CAC3B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,aAAa,CACtC,kBAAkB,CAAE,IAAI,kBAAkB,CAAC,CACnC,UAAU,CAAE,IAAI,kBAAkB,CAAC,CAC3C,gBAAgB,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,AACpD,CAAC,AAED,GAAG,OAAO,8BAAC,CAAC,AACR,iBAAiB,CAAE,IAAI,CACf,SAAS,CAAE,IAAI;IAC3B,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACzB,CAAC,AAED,uCAAS,OAAO,AAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,yBAAU,CAAC,CAAC,eAAC,CAAC,AACV,OAAO,CAAE,KAAK,CAAC,KAAK,AACxB,CAAC,AAED,YAAY,8BAAC,CAAC,AACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,2BAAY,CAAC,EAAE,eAAC,CAAC,AACb,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,2BAAY,CAAC,CAAC,eAAC,CAAC,AACZ,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,YAAY,8BAAC,CAAC,AACV,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,CAC7B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,AACxC,CAAC,AAED,0CAAY,MAAM,CAClB,0CAAY,MAAM,AAAC,CAAC,AAChB,kBAAkB,CAAE,IAAI,CAChB,UAAU,CAAE,IAAI,CACxB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Header.svelte\",\"sources\":[\"Header.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { Storages } from '@services'\\n    import { classnames } from '@utils'\\n    import Icon from '@components/Icon.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Avatar from '@components/Avatar.svelte'\\n\\n    export let segment\\n\\n    let value = 'ua'\\n\\n    const gap = 50\\n    let isHeaderVisible = true\\n    let onScroll = null\\n    let lastY = 0\\n    $: classProp = classnames('container', { active: isHeaderVisible })\\n    onMount(() => {\\n        onScroll = (e) => requestAnimationFrame(function() {\\n            const currentY = window.pageYOffset;\\n            const dirrection = currentY - lastY\\n            if (dirrection < -gap || currentY < 50) { // up\\n                if (!isHeaderVisible) isHeaderVisible = true\\n                lastY = currentY + gap;\\n            } else if (dirrection > gap) { // down\\n                if (isHeaderVisible) isHeaderVisible = false\\n                lastY = currentY - gap;\\n            }\\n        })\\n    })\\n\\n    let themeName = 'theme-light'\\n    function changeTheme(theme) {\\n        themeName = theme\\n        document.body.classList.remove('theme-dark')\\n        document.body.classList.remove('theme-light')\\n        document.body.classList.add(theme)\\n        Storages.cookieStorage.set('theme', theme)\\n    }\\n\\n    onMount(() => {\\n        changeTheme(Storages.cookieStorage.get('theme'))\\n    })\\n</script>\\n\\n<svelte:window on:scroll={onScroll}/>\\n<nav class={classProp}>\\n    <ul class=\\\"nav-pages flex\\\">\\n        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>\\n        <li><a rel=prefetch href='lists/funds' class:selected='{segment === \\\"lists\\\"}'>lists</a></li>\\n        <li><a href='map' class:selected='{segment === \\\"map\\\"}'>map</a></li>\\n    </ul>\\n\\n    <ul class=\\\"nav-actions\\\">\\n        <li>\\n            <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n                <option value=\\\"ua\\\">Ua</option>\\n                <option value=\\\"ru\\\">Ru</option>\\n                <option value=\\\"en\\\">En</option>\\n            </select>\\n        </li>\\n\\n        <li>\\n            <Button on:click={() => changeTheme(themeName === 'theme-light' ? 'theme-dark' : 'theme-light')} auto size=\\\"small\\\">\\n                <Icon type=\\\"moon\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill-opposite\\\" is=\\\"light\\\"/>\\n            </Button>\\n        </li>\\n\\n        <li>\\n            <a class=\\\"btn small\\\" href=\\\"users/me\\\">\\n                <Avatar size=\\\"small\\\" src=\\\"https://placeimg.com/30/30/people\\\" alt=\\\"avatar\\\"/>\\n            </a>\\n        </li>\\n    </ul>\\n</nav>\\n\\n<style>\\n    nav {\\n        position: fixed;\\n        top: 0;\\n        width: 100%;\\n        height: var(--header-height);\\n        z-index: 10;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-transform: translateY(-100%);\\n                transform: translateY(-100%);\\n        -webkit-transition: .2s ease-in-out;\\n        transition: .2s ease-in-out;\\n        color: rgba(var(--color-font-light));\\n        -webkit-box-pack: justify;\\n            -ms-flex-pack: justify;\\n                justify-content: space-between;\\n        -webkit-box-shadow: var(--shadow-secondary);\\n                box-shadow: var(--shadow-secondary);\\n        background-color: rgba(var(--color-dark-second));\\n    }\\n\\n    nav.active {\\n        -webkit-transform: none;\\n                transform: none\\n    }\\n\\n    .selected {\\n        position: relative;\\n        display: inline-block;\\n    }\\n\\n    .selected::after {\\n        position: absolute;\\n        content: \\\"\\\";\\n        width: calc(100% - 1em);\\n        height: 2px;\\n        background-color: rgb(var(--color-danger));\\n        display: block;\\n        bottom: -1px;\\n    }\\n\\n    .nav-pages a {\\n        padding: 0.8em 0.5em;\\n    }\\n\\n    .nav-actions {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        margin: -3px;\\n    }\\n\\n    .nav-actions li {\\n        padding: 3px;\\n    }\\n\\n    .nav-actions a {\\n        display: block;\\n    }\\n\\n    .lang-select {\\n        padding: 5px;\\n        background-color: transparent;\\n        color: rgba(var(--color-font-light));\\n    }\\n\\n    .lang-select:hover,\\n    .lang-select:focus {\\n        -webkit-box-shadow: none;\\n                box-shadow: none;\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9IZWFkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGVBQWU7UUFDZixNQUFNO1FBQ04sV0FBVztRQUNYLDRCQUE0QjtRQUM1QixXQUFXO1FBQ1gsb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsb0NBQTRCO2dCQUE1Qiw0QkFBNEI7UUFDNUIsbUNBQTJCO1FBQTNCLDJCQUEyQjtRQUMzQixvQ0FBb0M7UUFDcEMseUJBQThCO1lBQTlCLHNCQUE4QjtnQkFBOUIsOEJBQThCO1FBQzlCLDJDQUFtQztnQkFBbkMsbUNBQW1DO1FBQ25DLGdEQUFnRDtJQUNwRDs7SUFFQTtRQUNJLHVCQUFjO2dCQUFkO0lBQ0o7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIscUJBQXFCO0lBQ3pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7UUFDWCx1QkFBdUI7UUFDdkIsV0FBVztRQUNYLDBDQUEwQztRQUMxQyxjQUFjO1FBQ2QsWUFBWTtJQUNoQjs7SUFFQTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLFlBQVk7SUFDaEI7O0lBRUE7UUFDSSxZQUFZO0lBQ2hCOztJQUVBO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLFlBQVk7UUFDWiw2QkFBNkI7UUFDN0Isb0NBQW9DO0lBQ3hDOztJQUVBOztRQUVJLHdCQUFnQjtnQkFBaEIsZ0JBQWdCO1FBQ2hCLCtDQUErQztJQUNuRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvSGVhZGVyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIG5hdiB7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1oZWFkZXItaGVpZ2h0KTtcbiAgICAgICAgei1pbmRleDogMTA7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgtMTAwJSk7XG4gICAgICAgIHRyYW5zaXRpb246IC4ycyBlYXNlLWluLW91dDtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1saWdodCkpO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1zZWNvbmRhcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhcmstc2Vjb25kKSk7XG4gICAgfVxuXG4gICAgbmF2LmFjdGl2ZSB7XG4gICAgICAgIHRyYW5zZm9ybTogbm9uZVxuICAgIH1cblxuICAgIC5zZWxlY3RlZCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgIH1cblxuICAgIC5zZWxlY3RlZDo6YWZ0ZXIge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIGNvbnRlbnQ6IFwiXCI7XG4gICAgICAgIHdpZHRoOiBjYWxjKDEwMCUgLSAxZW0pO1xuICAgICAgICBoZWlnaHQ6IDJweDtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpO1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgYm90dG9tOiAtMXB4O1xuICAgIH1cblxuICAgIC5uYXYtcGFnZXMgYSB7XG4gICAgICAgIHBhZGRpbmc6IDAuOGVtIDAuNWVtO1xuICAgIH1cblxuICAgIC5uYXYtYWN0aW9ucyB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIG1hcmdpbjogLTNweDtcbiAgICB9XG5cbiAgICAubmF2LWFjdGlvbnMgbGkge1xuICAgICAgICBwYWRkaW5nOiAzcHg7XG4gICAgfVxuXG4gICAgLm5hdi1hY3Rpb25zIGEge1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICB9XG5cbiAgICAubGFuZy1zZWxlY3Qge1xuICAgICAgICBwYWRkaW5nOiA1cHg7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgfVxuXG4gICAgLmxhbmctc2VsZWN0OmhvdmVyLFxuICAgIC5sYW5nLXNlbGVjdDpmb2N1cyB7XG4gICAgICAgIGJveC1zaGFkb3c6IG5vbmU7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA6EI,GAAG,8BAAC,CAAC,AACD,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,eAAe,CAAC,CAC5B,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,iBAAiB,CAAE,WAAW,KAAK,CAAC,CAC5B,SAAS,CAAE,WAAW,KAAK,CAAC,CACpC,kBAAkB,CAAE,GAAG,CAAC,WAAW,CACnC,UAAU,CAAE,GAAG,CAAC,WAAW,CAC3B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,aAAa,CACtC,kBAAkB,CAAE,IAAI,kBAAkB,CAAC,CACnC,UAAU,CAAE,IAAI,kBAAkB,CAAC,CAC3C,gBAAgB,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,AACpD,CAAC,AAED,GAAG,OAAO,8BAAC,CAAC,AACR,iBAAiB,CAAE,IAAI,CACf,SAAS,CAAE,IAAI;IAC3B,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACzB,CAAC,AAED,uCAAS,OAAO,AAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,yBAAU,CAAC,CAAC,eAAC,CAAC,AACV,OAAO,CAAE,KAAK,CAAC,KAAK,AACxB,CAAC,AAED,YAAY,8BAAC,CAAC,AACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,2BAAY,CAAC,EAAE,eAAC,CAAC,AACb,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,2BAAY,CAAC,CAAC,eAAC,CAAC,AACZ,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,YAAY,8BAAC,CAAC,AACV,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,CAC7B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,AACxC,CAAC,AAED,0CAAY,MAAM,CAClB,0CAAY,MAAM,AAAC,CAAC,AAChB,kBAAkB,CAAE,IAAI,CAChB,UAAU,CAAE,IAAI,CACxB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC\"}"
 };
 
 let value = "ua";
@@ -1329,280 +1637,11 @@ const Comment = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 	})}`;
 });
 
-var setup = {
-  BACKEND_URL: './mock', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
-
-  MAPBOX_KEY: 'mapbox',
-};
-
-/**
- *
- * @description API URLs builders.
- */
-const endpoints = {
-  USER: (id) => `user.json?id=${id}`,
-  USERS: () => `users.json`,
-
-  RECENT: (id) => `recent.json?id=${id}`,
-  RECENTS: () => `recents.json`,
-
-  COMMENT: (id) => `comment.json?id=${id}`,
-  COMMENTS: () => `comments.json`,
-
-  FUND: (id) => `charity.json?id=${id}`,
-  FUNDS: () => `charities.json`,
-
-  ORGANIZATION: (id) => `organization.json?id=${id}`,
-  ORGANIZATIONS: () => `organizations.json`,
-};
-
-class APIService {
-  /**
-   *
-   * @typedef Config {{
-   *   adapter: Function, (zlFetch)
-   *
-   *   basePath: string,
-   *
-   *   requestInterceptor([
-   *     endpoint: string,
-   *     params?: object,
-   *     config?: object,
-   *   ]): {*},
-   *   responseInterceptor() {
-   *     body: {*},
-   *     headers: object,
-   *     response: {Response},
-   *     status: number,
-   *     statusText: string,
-   *   },
-   *   errorInterceptor() {{
-   *     body: {*},
-   *     headers: object,
-   *     response: {Response},
-   *     status: number,
-   *     statusText: string,
-   *   }},
-   * }}
-   * @param config {Config}
-   */
-  constructor(config = {}) {
-    this._adapter = config.adapter || zlFetch;
-
-    this._base_path = config.basePath ? config.basePath.replace(/\/$/, '') : '';
-
-    this._requestInterceptor = config.requestInterceptor || (async (...args) => args);
-    this._responseInterceptor = config.responseInterceptor || (async (...args) => args);
-    this._errorInterceptor = config.errorInterceptor || Promise.reject;
-  }
-
-  /**
-   *
-   * @param method {'get'|'put'|'post'|'delete'|'patch'}
-   * @param args {*[]}
-   */
-  get newRequest() {
-    const methods = ['get', 'put', 'post', 'delete', 'patch'];
-
-    return methods.reduce((acc, method) => {
-      acc[method] = this.withInterceptors.bind(this, this._adapter[method]);
-      return acc
-    }, {})
-  }
-
-  async withInterceptors(caller, ...args) {
-    const newArgs1 = await this.requestInterceptor(...args);
-    const newArgs2 = await this._requestInterceptor(...newArgs1);
-
-    return caller(...newArgs2)
-      .then(async (response) => {
-        const newResponse = await this._responseInterceptor(response);
-        return await this.handleResponse(newResponse)
-      })
-      .catch(async (reject) => {
-        try {
-          return await this._errorInterceptor(reject)
-        } catch (error) {
-          throw error
-        }
-      })
-      .catch(this.handleReject)
-  }
-
-  async requestInterceptor(...args) {
-    if (typeof args[0] === 'string') { // If URL then concat BASE_PATH.
-      args[0] = `${this._base_path}/${args[0]}`;
-    }
-    return [...args]
-  }
-
-  async handleResponse(response) {
-    return response.body
-  }
-
-  async handleReject(reject) {
-    throw reject
-  }
-}
-
-/**
- *
- * @description API class for making REST API requests in a browser.
- */
-class ApiClass extends APIService {
-  /**
-   *
-   * @param config {Config}
-   */
-  constructor(config) {
-    super(config);
-  }
-
-  /**
-   *
-   * @description Users
-   */
-  getUser(id, params, config) {
-    return this.newRequest.get(endpoints.USER(id), params, config)
-  }
-
-  getUsers(params, config) {
-    return this.newRequest.get(endpoints.USERS(), params, config)
-  }
-
-  postUser(id, body, config) {
-    return this.newRequest.post(endpoints.USER(id), body, config)
-  }
-
-  putUser(id, body, config) {
-    return this.newRequest.put(endpoints.USER(id), body, config)
-  }
-
-  deleteUser(id, config) {
-    return this.newRequest.delete(endpoints.USER(id), config)
-  }
-
-  /**
-   *
-   * @description Recent
-   */
-  getRecent(id, params, config) {
-    return this.newRequest.get(endpoints.RECENT(id), params, config)
-  }
-
-  getRecents(params, config) {
-    return this.newRequest.get(endpoints.RECENTS(), params, config)
-  }
-
-  postRecent(id, body, config) {
-    return this.newRequest.post(endpoints.RECENT(id), body, config)
-  }
-
-  putRecent(id, body, config) {
-    return this.newRequest.put(endpoints.RECENT(id), body, config)
-  }
-
-  deleteRecent(id, config) {
-    return this.newRequest.delete(endpoints.RECENT(id), config)
-  }
-
-  /**
-   *
-   * @description Comments
-   */
-  getComment(id, params, config) {
-    return this.newRequest.get(endpoints.COMMENT(id), params, config)
-  }
-
-  getComments(params, config) {
-    return this.newRequest.get(endpoints.COMMENTS(), params, config)
-  }
-
-  postComment(id, body, config) {
-    return this.newRequest.post(endpoints.COMMENT(id), body, config)
-  }
-
-  putComment(id, body, config) {
-    return this.newRequest.put(endpoints.COMMENT(id), body, config)
-  }
-
-  deleteComment(id, config) {
-    return this.newRequest.delete(endpoints.COMMENT(id), config)
-  }
-
-  /**
-   *
-   * @description Fund
-   */
-  getFund(id, params, config) {
-    return this.newRequest.get(endpoints.FUND(id), params, config)
-  }
-
-  getFunds(params, config) {
-    return this.newRequest.get(endpoints.FUNDS(), params, config)
-  }
-
-  postFund(id, body, config) {
-    return this.newRequest.post(endpoints.FUND(id), body, config)
-  }
-
-  putFund(id, body, config) {
-    return this.newRequest.put(endpoints.FUND(id), body, config)
-  }
-
-  deleteFund(id, config) {
-    return this.newRequest.delete(endpoints.FUND(id), config)
-  }
-
-  /**
-   *
-   * @description Organization
-   */
-  getOrganization(id, params, config) {
-    return this.newRequest.get(endpoints.ORGANIZATION(id), params, config)
-  }
-
-  getOrganizations(params, config) {
-    return this.newRequest.get(endpoints.ORGANIZATIONS(), params, config)
-  }
-
-  postOrganization(id, body, config) {
-    return this.newRequest.post(endpoints.ORGANIZATION(id), body, config)
-  }
-
-  putOrganization(id, body, config) {
-    return this.newRequest.put(endpoints.ORGANIZATION(id), body, config)
-  }
-
-  deleteOrganization(id, config) {
-    return this.newRequest.delete(endpoints.ORGANIZATION(id), config)
-  }
-
-}
-
-/**
- *
- * @constructor {Config}
- */
-var api = new ApiClass({
-  basePath: setup.BACKEND_URL,
-  responseInterceptor: res => (console.info('response -------\n', res), res),
-  errorInterceptor: rej => {
-    console.warn('request error -------\n', rej);
-
-    if (rej && rej.error && rej.error.message === 'Failed to fetch') {
-      console.log('Lost internet connection');
-    }
-
-    throw rej
-  },
-});
-
 /* src/components/comments/Comments.svelte generated by Svelte v3.18.1 */
 
 const css$m = {
 	code: ".comments.svelte-88w9s0.svelte-88w9s0{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;overflow-y:auto;overflow-x:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;padding:15px}.comments-form.svelte-88w9s0.svelte-88w9s0{position:relative;-webkit-box-flex:0;-ms-flex:none;flex:none}.comments-wrap.svelte-88w9s0.svelte-88w9s0{width:100%;margin:-5px 0}.comments-wrap.svelte-88w9s0 li.svelte-88w9s0{width:100%;padding:5px 0}",
-	map: "{\"version\":3,\"file\":\"Comments.svelte\",\"sources\":[\"Comments.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { api } from '@services'\\n\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Form from '@components/Form.svelte'\\n    import Input from '@components/fields/Input.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Comment from './Comment.svelte'\\n\\n    export let withForm = true\\n\\n    let comments = []\\n\\n    onMount(async () => {\\n        comments = await api.getComments()\\n    })\\n</script>\\n\\n<section class=\\\"comments\\\">\\n    <ul class=\\\"comments-wrap\\\">\\n        {#each comments as comment}\\n            <li>\\n                <Comment\\n                        src={comment.avatar}\\n                        title={comment.author}\\n                        date={new Date(comment.created_at).toLocaleDateString()}\\n                        amount={comment.likes}\\n                        checked={comment.checked}\\n                >\\n                    {comment.comment}\\n                </Comment>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n    <Br size=\\\"20\\\"/>  \\n\\n    <p class=\\\"h3 font-w-500 font-secondary underline text-center\\\">\\n        <span>All comments</span>\\n        <span class=\\\"font-w-600\\\">⋁</span>\\n    </p>\\n\\n    {#if withForm}\\n        <Br size=\\\"40\\\"/>  \\n        <div class=\\\"comments-form font-secondary h3\\\">\\n            <Form class=\\\"flex\\\" name=\\\"comment-form\\\">\\n                <Input\\n                        type=\\\"textarea\\\"\\n                        name=\\\"comment\\\"\\n                        rows=\\\"1\\\"\\n                        class=\\\"comment-field flex-self-stretch\\\"\\n                        placeholder=\\\"Залиште свій коментар\\\"\\n                />\\n            </Form>\\n            <div class=\\\"flex absolute\\\" style=\\\"top: 0; right: 0; height: 100%; width: 50px\\\">\\n                <Button type=\\\"submit\\\" class=\\\"flex full-width flex-self-stretch flex-justify-start\\\">\\n                    <Icon type=\\\"send\\\" is=\\\"info\\\" size=\\\"medium\\\"/>\\n                </Button>\\n            </div>\\n        </div>\\n    {/if}\\n</section>\\n\\n<style>\\n    .comments {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        padding: 15px;\\n    }\\n\\n    .comments-form {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n    }\\n\\n    .comments-wrap {\\n        width: 100%;\\n        margin: -5px 0;\\n    }\\n\\n    .comments-wrap li {\\n        width: 100%;\\n        padding: 5px 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtRQUN0QixhQUFhO0lBQ2pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO0lBQ2Q7O0lBRUE7UUFDSSxXQUFXO1FBQ1gsY0FBYztJQUNsQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO0lBQ2xCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jb21tZW50cyB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgcGFkZGluZzogMTVweDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtZm9ybSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtYXJnaW46IC01cHggMDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCBsaSB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nOiA1cHggMDtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAkEI,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,MAAM,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,AACtB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,CAAC,AAClB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Comments.svelte\",\"sources\":[\"Comments.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { API } from '@services'\\n\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Form from '@components/Form.svelte'\\n    import Input from '@components/fields/Input.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Comment from './Comment.svelte'\\n\\n    export let withForm = true\\n\\n    let comments = []\\n\\n    onMount(async () => {\\n        comments = await API.getComments()\\n    })\\n</script>\\n\\n<section class=\\\"comments\\\">\\n    <ul class=\\\"comments-wrap\\\">\\n        {#each comments as comment}\\n            <li>\\n                <Comment\\n                        src={comment.avatar}\\n                        title={comment.author}\\n                        date={new Date(comment.created_at).toLocaleDateString()}\\n                        amount={comment.likes}\\n                        checked={comment.checked}\\n                >\\n                    {comment.comment}\\n                </Comment>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n    <Br size=\\\"20\\\"/>  \\n\\n    <p class=\\\"h3 font-w-500 font-secondary underline text-center\\\">\\n        <span>All comments</span>\\n        <span class=\\\"font-w-600\\\">⋁</span>\\n    </p>\\n\\n    {#if withForm}\\n        <Br size=\\\"40\\\"/>  \\n        <div class=\\\"comments-form font-secondary h3\\\">\\n            <Form class=\\\"flex\\\" name=\\\"comment-form\\\">\\n                <Input\\n                        type=\\\"textarea\\\"\\n                        name=\\\"comment\\\"\\n                        rows=\\\"1\\\"\\n                        class=\\\"comment-field flex-self-stretch\\\"\\n                        placeholder=\\\"Залиште свій коментар\\\"\\n                />\\n            </Form>\\n            <div class=\\\"flex absolute\\\" style=\\\"top: 0; right: 0; height: 100%; width: 50px\\\">\\n                <Button type=\\\"submit\\\" class=\\\"flex full-width flex-self-stretch flex-justify-start\\\">\\n                    <Icon type=\\\"send\\\" is=\\\"info\\\" size=\\\"medium\\\"/>\\n                </Button>\\n            </div>\\n        </div>\\n    {/if}\\n</section>\\n\\n<style>\\n    .comments {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        padding: 15px;\\n    }\\n\\n    .comments-form {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n    }\\n\\n    .comments-wrap {\\n        width: 100%;\\n        margin: -5px 0;\\n    }\\n\\n    .comments-wrap li {\\n        width: 100%;\\n        padding: 5px 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtRQUN0QixhQUFhO0lBQ2pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO0lBQ2Q7O0lBRUE7UUFDSSxXQUFXO1FBQ1gsY0FBYztJQUNsQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO0lBQ2xCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jb21tZW50cyB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgcGFkZGluZzogMTVweDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtZm9ybSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtYXJnaW46IC01cHggMDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCBsaSB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nOiA1cHggMDtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAkEI,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,MAAM,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,AACtB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,CAAC,AAClB,CAAC\"}"
 };
 
 const Comments = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1610,7 +1649,7 @@ const Comments = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let comments = [];
 
 	onMount(async () => {
-		comments = await api.getComments();
+		comments = await API.getComments();
 	});
 
 	if ($$props.withForm === void 0 && $$bindings.withForm && withForm !== void 0) $$bindings.withForm(withForm);
@@ -1785,6 +1824,119 @@ const DonatorsList = create_ssr_component(($$result, $$props, $$bindings, $$slot
 </ul>`;
 });
 
+/* src/components/newsList/NewsItem.svelte generated by Svelte v3.18.1 */
+
+const NewsItem = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { src = undefined } = $$props;
+	let { date = undefined } = $$props;
+	let { title = undefined } = $$props;
+	let { amount = undefined } = $$props;
+	let { subtitle = undefined } = $$props;
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.date === void 0 && $$bindings.date && date !== void 0) $$bindings.date(date);
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.amount === void 0 && $$bindings.amount && amount !== void 0) $$bindings.amount(amount);
+	if ($$props.subtitle === void 0 && $$bindings.subtitle && subtitle !== void 0) $$bindings.subtitle(subtitle);
+	let classProp = classnames($$props.class);
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: classProp }, {}, {
+		default: () => `
+    <section class="${"news-item flex"}">
+
+        <div class="${"flex relative"}" style="${"width: 110px"}">
+            ${validate_component(Picture, "Picture").$$render($$result, { src, alt: title }, {}, {})}
+        </div>
+
+        <div class="${"flex flex-column flex-1"}" style="${"padding: 20px"}">
+            <h3 class="${"text-ellipsis font-w-500"}">${escape(title)}</h3>
+
+            ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+
+            <p class="${"text-ellipsis font-w-300"}">${escape(subtitle)}</p>
+
+            ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+
+            <div class="${"flex flex-align-center flex-justify-between"}">
+                <p>
+                    <span class="${"h4"}" style="${"opacity: .3"}">${escape(date)}</span>
+                </p>
+                <s></s>
+                <s></s>
+                <span class="${"h5 flex flex-align-center font-secondary"}" style="${"min-width: 4em"}">
+                    <span${add_attribute("style", `opacity: ${amount > 2 ? 1 : 0.5}`, 0)}>
+                        ${validate_component(Icon, "Icon").$$render(
+			$$result,
+			{
+				type: "heart-filled",
+				is: "danger",
+				size: "small"
+			},
+			{},
+			{}
+		)}
+                    </span>
+                    <s></s>
+                    <s></s>
+                    ${amount ? `<h4>${escape(amount)}</h4>` : ``}
+                </span>
+            </div>
+        </div>
+
+    </section>
+`
+	})}`;
+});
+
+/* src/components/newsList/NewsList.svelte generated by Svelte v3.18.1 */
+
+const css$p = {
+	code: ".news-list.svelte-6apgo.svelte-6apgo{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;overflow-y:auto;overflow-x:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.news-list-wrap.svelte-6apgo.svelte-6apgo{width:100%;margin:-5px 0}.news-list-wrap.svelte-6apgo li.svelte-6apgo{position:relative;width:100%;padding:5px 0}.arrow.svelte-6apgo.svelte-6apgo{position:absolute;top:8px;right:15px;color:rgba(var(--color-info))}",
+	map: "{\"version\":3,\"file\":\"NewsList.svelte\",\"sources\":[\"NewsList.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { onMount } from 'svelte'\\n    import { API, Dates } from '@services'\\n    \\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Button from '@components/Button.svelte'\\n    import NewsItem from './NewsItem.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n   \\n    let comments = []\\n\\n    $: console.log(comments)\\n\\n    onMount(async () => {\\n        comments = await API.getComments()\\n    })\\n</script>\\n\\n<section class=\\\"news-list\\\">\\n    <ul class=\\\"news-list-wrap\\\">\\n        {#each comments as comment, index}\\n            <li role=\\\"button\\\" on:click={() => dispatch('click', { item: comment, index })}>\\n                <NewsItem\\n                        src={comment.avatar}\\n                        title={comment.author}\\n                        subtitle={comment.author}\\n                        date={Dates(comment.created_at).fromNow()}\\n                        amount={comment.likes}\\n                />\\n\\n                <span class=\\\"arrow h2\\\">→</span>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n    <Br size=\\\"20\\\"/>  \\n\\n    <p class=\\\"h3 font-w-500 font-secondary underline text-center\\\">\\n        <span>All comments</span>\\n        <span class=\\\"font-w-600\\\">⋁</span>\\n    </p>\\n</section>\\n\\n<style>\\n    .news-list {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n    .news-list-wrap {\\n        width: 100%;\\n        margin: -5px 0;\\n    }\\n\\n    .news-list-wrap li {\\n        position: relative;\\n        width: 100%;\\n        padding: 5px 0;\\n    }\\n\\n    .arrow {\\n        position: absolute;\\n        top: 8px;\\n        right: 15px;\\n        color: rgba(var(--color-info));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL25ld3NMaXN0L05ld3NMaXN0LnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtJQUMxQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7UUFDWCxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFFBQVE7UUFDUixXQUFXO1FBQ1gsOEJBQThCO0lBQ2xDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL25ld3NMaXN0L05ld3NMaXN0LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5uZXdzLWxpc3Qge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZmxleC1ncm93OiAxO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgICAgICBvdmVyZmxvdy14OiBoaWRkZW47XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgfVxuXG4gICAgLm5ld3MtbGlzdC13cmFwIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG1hcmdpbjogLTVweCAwO1xuICAgIH1cblxuICAgIC5uZXdzLWxpc3Qtd3JhcCBsaSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIHBhZGRpbmc6IDVweCAwO1xuICAgIH1cblxuICAgIC5hcnJvdyB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiA4cHg7XG4gICAgICAgIHJpZ2h0OiAxNXB4O1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1pbmZvKSk7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AA+CI,UAAU,0BAAC,CAAC,AACR,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,MAAM,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,AAClC,CAAC,AAED,eAAe,0BAAC,CAAC,AACb,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC,AAED,4BAAe,CAAC,EAAE,aAAC,CAAC,AAChB,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,CAAC,AAClB,CAAC,AAED,MAAM,0BAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,GAAG,CACR,KAAK,CAAE,IAAI,CACX,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAClC,CAAC\"}"
+};
+
+const NewsList = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let comments = [];
+
+	onMount(async () => {
+		comments = await API.getComments();
+	});
+
+	$$result.css.add(css$p);
+
+	 {
+		console.log(comments);
+	}
+
+	return `<section class="${"news-list svelte-6apgo"}">
+    <ul class="${"news-list-wrap svelte-6apgo"}">
+        ${each(comments, (comment, index) => `<li role="${"button"}" class="${"svelte-6apgo"}">
+                ${validate_component(NewsItem, "NewsItem").$$render(
+		$$result,
+		{
+			src: comment.avatar,
+			title: comment.author,
+			subtitle: comment.author,
+			date: dayjs(comment.created_at).fromNow(),
+			amount: comment.likes
+		},
+		{},
+		{}
+	)}
+
+                <span class="${"arrow h2 svelte-6apgo"}">→</span>
+            </li>`)}
+    </ul>
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}  
+
+    <p class="${"h3 font-w-500 font-secondary underline text-center"}">
+        <span>All comments</span>
+        <span class="${"font-w-600"}">⋁</span>
+    </p>
+</section>`;
+});
+
 /* src/components/charityCard/CharityCard.svelte generated by Svelte v3.18.1 */
 
 const CharityCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -1856,7 +2008,7 @@ const CharityCard = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 /* src/components/charityCard/CharityCards.svelte generated by Svelte v3.18.1 */
 
-const css$p = {
+const css$q = {
 	code: "div.svelte-1qdehxd{-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-item-align:stretch;align-self:stretch;height:470px;width:77vw;max-width:350px;padding:15px 5px;-webkit-box-sizing:content-box;box-sizing:content-box}div.start.svelte-1qdehxd{padding-left:var(--screen-padding)}div.end.svelte-1qdehxd{padding-right:var(--screen-padding)}",
 	map: "{\"version\":3,\"file\":\"CharityCards.svelte\",\"sources\":[\"CharityCards.svelte\"],\"sourcesContent\":[\"<script>\\n    import Carousel from '@components/Carousel.svelte'\\n    import CharityCard from './CharityCard.svelte'\\n\\n    export let amount = 5\\n\\n    let carousel = new Array(amount).fill(0)\\n</script>\\n\\n<Carousel items={carousel} size=\\\"auto\\\" let:index={index}>\\n    <div class={!index ? 'start' : index === carousel.length - 1 ? 'end' : ''}>\\n       <CharityCard\\n            src=\\\"https://placeimg.com/300/300/people\\\"\\n            total={20000}\\n            current={3500}\\n            city=\\\"Львів\\\"\\n            title=\\\"Допоможи Сірку\\\"\\n       />\\n    </div>\\n</Carousel>\\n\\n<style>\\n    div {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        height: 470px;\\n        width: 77vw;\\n        max-width: 350px;\\n        padding: 15px 5px;\\n        -webkit-box-sizing: content-box;\\n                box-sizing: content-box;\\n    }\\n\\n    div.start {\\n        padding-left: var(--screen-padding);\\n    }\\n\\n    div.end {\\n        padding-right: var(--screen-padding);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2NoYXJpdHlDYXJkL0NoYXJpdHlDYXJkcy5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsYUFBYTtRQUNiLFdBQVc7UUFDWCxnQkFBZ0I7UUFDaEIsaUJBQWlCO1FBQ2pCLCtCQUF1QjtnQkFBdkIsdUJBQXVCO0lBQzNCOztJQUVBO1FBQ0ksbUNBQW1DO0lBQ3ZDOztJQUVBO1FBQ0ksb0NBQW9DO0lBQ3hDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2NoYXJpdHlDYXJkL0NoYXJpdHlDYXJkcy5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBkaXYge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICBoZWlnaHQ6IDQ3MHB4O1xuICAgICAgICB3aWR0aDogNzd2dztcbiAgICAgICAgbWF4LXdpZHRoOiAzNTBweDtcbiAgICAgICAgcGFkZGluZzogMTVweCA1cHg7XG4gICAgICAgIGJveC1zaXppbmc6IGNvbnRlbnQtYm94O1xuICAgIH1cblxuICAgIGRpdi5zdGFydCB7XG4gICAgICAgIHBhZGRpbmctbGVmdDogdmFyKC0tc2NyZWVuLXBhZGRpbmcpO1xuICAgIH1cblxuICAgIGRpdi5lbmQge1xuICAgICAgICBwYWRkaW5nLXJpZ2h0OiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,MAAM,CAAE,KAAK,CACb,KAAK,CAAE,IAAI,CACX,SAAS,CAAE,KAAK,CAChB,OAAO,CAAE,IAAI,CAAC,GAAG,CACjB,kBAAkB,CAAE,WAAW,CACvB,UAAU,CAAE,WAAW,AACnC,CAAC,AAED,GAAG,MAAM,eAAC,CAAC,AACP,YAAY,CAAE,IAAI,gBAAgB,CAAC,AACvC,CAAC,AAED,GAAG,IAAI,eAAC,CAAC,AACL,aAAa,CAAE,IAAI,gBAAgB,CAAC,AACxC,CAAC\"}"
 };
@@ -1865,7 +2017,7 @@ const CharityCards = create_ssr_component(($$result, $$props, $$bindings, $$slot
 	let { amount = 5 } = $$props;
 	let carousel = new Array(amount).fill(0);
 	if ($$props.amount === void 0 && $$bindings.amount && amount !== void 0) $$bindings.amount(amount);
-	$$result.css.add(css$p);
+	$$result.css.add(css$q);
 
 	return `${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, size: "auto" }, {}, {
 		default: ({ index }) => `
@@ -1891,13 +2043,13 @@ const CharityCards = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
 /* src/routes/index.svelte generated by Svelte v3.18.1 */
 
-const css$q = {
+const css$r = {
 	code: ".top-pic.svelte-zj2ii1{-webkit-box-flex:0;-ms-flex:none;flex:none;z-index:0;width:100%;height:200px;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;border-radius:0}",
 	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script>\\n    import {\\n        Br,\\n        Footer,\\n        Divider,\\n        Comments,\\n        Progress,\\n        Carousel,\\n        ContentHolder,\\n        TitleSubTitle,\\n        ListOfFeatures,\\n    } from '@components'\\n</script>\\n\\n<style>\\n    .top-pic {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        z-index: 0;\\n        width: 100%;\\n        height: 200px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        border-radius: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvaW5kZXguc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsVUFBVTtRQUNWLFdBQVc7UUFDWCxhQUFhO1FBQ2Isb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvaW5kZXguc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnRvcC1waWMge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICB6LWluZGV4OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAyMDBweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<svelte:head>\\n    <title>Charitify - list of charities you can donate.</title>\\n</svelte:head>\\n\\n<section>\\n    <Br size=\\\"var(--header-height)\\\"/>\\n\\n    <div class=\\\"top-pic\\\">\\n        <Carousel/>\\n    </div>\\n\\n    <Progress borderRadius=\\\"0 0 8px 8px\\\" value=\\\"30\\\"/>\\n\\n    <p>These guys rise a pound of vegetables. They like vegetables and long text under photos.</p>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <section class=\\\"container\\\">\\n\\n        <TitleSubTitle\\n                title=\\\"Charitify\\\"\\n                subtitle=\\\"Charity application for helping those in need\\\"\\n        />\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n\\n        <ContentHolder/>\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n\\n        <Divider size=\\\"16\\\"/>\\n        <h3 class=\\\"h2 text-right\\\">Comments:</h3>\\n        <Divider size=\\\"20\\\"/>\\n\\n        <Comments withFrom={false}/>\\n\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n\\n            <ContentHolder/>\\n\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n\\n            <ListOfFeatures/>\\n    </section>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Footer/>\\n\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAeI,QAAQ,cAAC,CAAC,AACN,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,CAAC,CACV,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,KAAK,CACb,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,CAAC,AACpB,CAAC\"}"
 };
 
 const Routes = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	$$result.css.add(css$q);
+	$$result.css.add(css$r);
 
 	return `${($$result.head += `${($$result.title = `<title>Charitify - list of charities you can donate.</title>`, "")}`, "")}
 
@@ -2217,7 +2369,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let organization = {};
 
 	onMount(async () => {
-		organization = await api.getOrganization(1);
+		organization = await API.getOrganization(1);
 	});
 
 	// Trust button
@@ -2451,7 +2603,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
   <h1>Останні новини</h1>
   ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-  <div class="${"container"}">...here all news</div>
+  ${validate_component(NewsList, "NewsList").$$render($$result, {}, {}, {})}
   ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
   <h1>Сертифікати</h1>
@@ -2543,9 +2695,9 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/routes/funds/[id].svelte generated by Svelte v3.18.1 */
 
-const css$r = {
+const css$s = {
 	code: "table.svelte-9y31ev tr:not(:last-child) td.svelte-9y31ev{padding-bottom:16px}table.svelte-9y31ev td.svelte-9y31ev:last-child{font-weight:300}",
-	map: "{\"version\":3,\"file\":\"[id].svelte\",\"sources\":[\"[id].svelte\"],\"sourcesContent\":[\"<script>\\n    import { stores } from '@sapper/app'\\n    import { onMount } from 'svelte'\\n    import { api } from '@services'\\n    import {\\n        Br,\\n        Icon,\\n        Card,\\n        Avatar,\\n        Button,\\n        Footer,\\n        Picture,\\n        Progress,\\n        Comments,\\n        Carousel,\\n        FancyBox,\\n        Documents,\\n        TrustButton,\\n        DonatorsList,\\n        DonationButton,\\n    } from '@components'\\n\\n    const { page } = stores()\\n    let charityId = $page.params.id\\n\\n    // Entity\\n    let charity = {}\\n    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))\\n    onMount(async () => {\\n        charity = await api.getFund(1)\\n    })\\n\\n    // Trust button\\n    let active = false\\n    async function onClick() {\\n        active = !active\\n    }\\n\\n    // Carousel & FancyBox\\n    let propsBox = {}\\n    function onCarouselClick({ detail }) {\\n        propsBox = { initIndex: detail.index }\\n    }\\n\\n    // Avatar fancy\\n    let avatarFancy = false\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICB0YWJsZSB0cjpub3QoOmxhc3QtY2hpbGQpIHRkIHtcbiAgICAgICAgcGFkZGluZy1ib3R0b206IDE2cHg7XG4gICAgfVxuXG4gICAgdGFibGUgdGQ6bGFzdC1jaGlsZCB7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiAzMDA7XG4gICAgfVxuIl19 */</style>\\n\\n\\n<DonationButton/>\\n\\n<section class=\\\"container theme-bg-color-secondary\\\">\\n    <Br size=\\\"var(--header-height)\\\"/>\\n    <Br size=\\\"30\\\"/>\\n\\n\\n    <section class=\\\"flex\\\" style=\\\"height: 240px\\\">\\n        <FancyBox>\\n            <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n            <div slot=\\\"box\\\">\\n                <Carousel {...propsBox} items={carousel} dotsBelow={false}/>\\n            </div>\\n        </FancyBox>\\n    </section>\\n    <Br size=\\\"40\\\"/>\\n\\n\\n    <Button class=\\\"white\\\">\\n        <div class=\\\"flex flex-align-center flex-justify-between full-width\\\">\\n            <div class=\\\"flex flex-align-center\\\">\\n                <s></s>\\n                <div class=\\\"flex\\\" style=\\\"max-width: 45px; height: 40px; overflow: hidden\\\">\\n                    <Picture\\n                            src=\\\"./assets/dimsirka.jpg\\\"\\n                            size=\\\"contain\\\"\\n                            alt=\\\"logo\\\"\\n                    />\\n                </div>\\n                <s></s>\\n                <s></s>\\n                <s></s>\\n                <h3>\\\"Дім Сірка\\\"</h3>\\n            </div>\\n            <span style=\\\"font-size: 24px\\\">\\n               →\\n            </span>\\n        </div>\\n    </Button>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"20\\\"/>\\n\\n        <h2>Збережемо тварин разом</h2>\\n        <h3 class=\\\"font-w-normal\\\" style=\\\"opacity: .7\\\">Збір грошей на допомогу безпритульним тваринам</h3>\\n\\n        <Br size=\\\"25\\\"/>\\n        <p class=\\\"font-secondary\\\">\\n            <span class=\\\"h1 font-w-500\\\">₴ 3500</span>\\n            <span class=\\\"h3\\\"> / ₴ 20000</span>\\n        </p>\\n        <Br size=\\\"20\\\"/>\\n\\n        <Progress value={Math.floor(3500 / 20000 * 100)}/>\\n\\n        <Br size=\\\"40\\\"/>\\n    </Card>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <p class=\\\"container flex flex-justify-between flex-align-center\\\">\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon is=\\\"danger\\\" type=\\\"heart-filled\\\" size=\\\"medium\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">1</span>\\n        </span>\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon type=\\\"eye\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">13</span>\\n        </span>\\n    </p>\\n    <Br size=\\\"50\\\"/>\\n\\n\\n    <h2>Збережемо тварин разом</h2>\\n    <Br size=\\\"10\\\"/>\\n    <pre class=\\\"font-w-300\\\">\\n        Терміново шукаємо добрі руки 🤲🥰\\n        Бадді підкинули під кафе біля самої траси!\\n        Біля нього були тільки залишки черствого хліба... 💔\\n        За що можна було покинути малюка напризволяще? 🥺\\n        В чому він міг провинитися? Йому всього 2 місяці.\\n        Зараз буде проходити обробку від паразитів та вакцинацію 💉\\n    </pre>\\n    <Br size=\\\"10\\\"/>\\n\\n\\n    <p class=\\\"flex\\\">\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"share\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Поділитись</p>\\n        </Button>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"link\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Скопіювати</p>\\n        </Button>\\n    </p>\\n    <Br size=\\\"45\\\"/>\\n\\n\\n    <section class=\\\"flex flex-column flex-align-center flex-justify-center\\\">\\n        <div style=\\\"width: 100px; max-width: 100%\\\">\\n            <TrustButton isActive={active} on:click={onClick}/>\\n        </div>\\n        <Br size=\\\"10\\\"/>\\n        <h2>Я довіряю</h2>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"30\\\"/>\\n\\n        <div class=\\\"flex flex-column flex-align-center\\\">\\n            <span>\\n                <FancyBox>\\n                    <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" size=\\\"big\\\" alt=\\\"Волтер\\\"/>\\n                    <div slot=\\\"box\\\">\\n                        <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" alt=\\\"Волтер\\\"/>\\n                    </div>\\n                </FancyBox>\\n            </span>\\n\\n            <Br size=\\\"20\\\"/>\\n\\n            <h2>Волтер</h2>\\n            <Br size=\\\"5\\\"/>\\n            <h3 class=\\\"font-w-500\\\" style=\\\"opacity: .7\\\">Jack Russell Terrier</h3>\\n        </div>\\n        <Br size=\\\"35\\\"/>\\n\\n        <section class=\\\"flex flex-justify-center\\\">\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"text-white text-center absolute\\\">\\n                    <h4 class=\\\"h1\\\">3</h4>\\n                    <h4 style=\\\"margin-top: -8px\\\">Роки</h4>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"info\\\"/>\\n                <div class=\\\"absolute flex\\\" style=\\\"width: 44px; height: 44px\\\">\\n                    <Icon type=\\\"male\\\" is=\\\"light\\\"/>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em; opacity: .3\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"absolute flex flex-column flex-center\\\">\\n                    <Icon type=\\\"cancel-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    <span class=\\\"text-white text-center h5\\\">Cтерилізація</span>\\n                </div>\\n            </div>\\n        </section>\\n        <Br size=\\\"40\\\"/>\\n\\n        <h2>Характер Волтера: 😃</h2>\\n        <Br size=\\\"10\\\"/>\\n        <p class=\\\"font-w-300\\\">\\n            Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми\\n        </p>\\n        <Br size=\\\"35\\\"/>\\n\\n        <h2>Життя Волтера</h2>\\n        <Br size=\\\"10\\\"/>\\n        <table>\\n            <tbody>\\n            <tr>\\n                <td>01.02.2019</td>\\n                <td>—</td>\\n                <td>Його перший день народження</td>\\n            </tr>\\n            <tr>\\n                <td>05.02.2019</td>\\n                <td>—</td>\\n                <td>Ми приютили його з вулиці</td>\\n            </tr>\\n            <tr>\\n                <td>07.03.2019</td>\\n                <td>—</td>\\n                <td>Зробили вакцинацію проти бліх</td>\\n            </tr>\\n            <tr>\\n                <td>23.06.2019</td>\\n                <td>—</td>\\n                <td>Знайшов для себе улюблену іграшку</td>\\n            </tr>\\n            </tbody>\\n        </table>\\n        <Br size=\\\"45\\\"/>\\n\\n        <h2>Вакцинації</h2>\\n        <Br size=\\\"15\\\"/>\\n        <ul class=\\\"flex flex-column text-left\\\">\\n            <li>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від бліх\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від паразитів\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"danger\\\" type=\\\"cancel-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від грибків\\n                </span>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"35\\\"/>\\n    </Card>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Наші піклувальники</h1>\\n    <Br size=\\\"20\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <DonatorsList/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Документи</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Documents/>\\n    </div>\\n    <Br size=\\\"45\\\"/> \\n\\n\\n    <h1>Відео про Волтера</h1>\\n    <Br size=\\\"20\\\"/>\\n    <section class=\\\"flex\\\" style=\\\"height: 20px\\\">\\n        <Carousel items={carousel}/>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Як допомогти</h1>\\n    <Br size=\\\"15\\\"/>\\n    <ul style=\\\"list-style: disc outside none; padding-left: var(--screen-padding)\\\" class=\\\"h3 font-w-500 font-secondary\\\">\\n        <li style=\\\"padding-bottom: 5px\\\">Ви пожете купити йому поїсти</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Можете особисто відвідати його у нас</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Купити вакцінацію для Волтера</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Допомогти любим інщим способом</li>\\n    </ul>\\n    <Br size=\\\"30\\\"/>\\n    <div class=\\\"flex\\\">\\n        <div class=\\\"flex flex-align-center font-secondary\\\">\\n            <Icon size=\\\"medium\\\" type=\\\"phone\\\" class=\\\"theme-svg-fill-opposite\\\"/>\\n            <s></s>\\n            <s></s>\\n            <h2>+38 (093) 205-43-92</h2>\\n        </div>\\n    </div>\\n    <Br size=\\\"5\\\"/>\\n    <p class=\\\"font-w-300\\\">Подзвоніть нам, якщо хочете допомогти Волтеру</p>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Коментарі</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Comments/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <div class=\\\"full-container\\\">\\n        <Footer/>\\n    </div>\\n    <Br size=\\\"70\\\"/>\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAqDI,mBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,cAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,mBAAK,CAAC,gBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"[id].svelte\",\"sources\":[\"[id].svelte\"],\"sourcesContent\":[\"<script>\\n    import { stores } from '@sapper/app'\\n    import { onMount } from 'svelte'\\n    import { API } from '@services'\\n    import {\\n        Br,\\n        Icon,\\n        Card,\\n        Avatar,\\n        Button,\\n        Footer,\\n        Picture,\\n        Progress,\\n        Comments,\\n        Carousel,\\n        FancyBox,\\n        Documents,\\n        TrustButton,\\n        DonatorsList,\\n        DonationButton,\\n    } from '@components'\\n\\n    const { page } = stores()\\n    let charityId = $page.params.id\\n\\n    // Entity\\n    let charity = {}\\n    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))\\n    onMount(async () => {\\n        charity = await API.getFund(1)\\n    })\\n\\n    // Trust button\\n    let active = false\\n    async function onClick() {\\n        active = !active\\n    }\\n\\n    // Carousel & FancyBox\\n    let propsBox = {}\\n    function onCarouselClick({ detail }) {\\n        propsBox = { initIndex: detail.index }\\n    }\\n\\n    // Avatar fancy\\n    let avatarFancy = false\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICB0YWJsZSB0cjpub3QoOmxhc3QtY2hpbGQpIHRkIHtcbiAgICAgICAgcGFkZGluZy1ib3R0b206IDE2cHg7XG4gICAgfVxuXG4gICAgdGFibGUgdGQ6bGFzdC1jaGlsZCB7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiAzMDA7XG4gICAgfVxuIl19 */</style>\\n\\n\\n<DonationButton/>\\n\\n<section class=\\\"container theme-bg-color-secondary\\\">\\n    <Br size=\\\"var(--header-height)\\\"/>\\n    <Br size=\\\"30\\\"/>\\n\\n\\n    <section class=\\\"flex\\\" style=\\\"height: 240px\\\">\\n        <FancyBox>\\n            <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n            <div slot=\\\"box\\\">\\n                <Carousel {...propsBox} items={carousel} dotsBelow={false}/>\\n            </div>\\n        </FancyBox>\\n    </section>\\n    <Br size=\\\"40\\\"/>\\n\\n\\n    <Button class=\\\"white\\\">\\n        <div class=\\\"flex flex-align-center flex-justify-between full-width\\\">\\n            <div class=\\\"flex flex-align-center\\\">\\n                <s></s>\\n                <div class=\\\"flex\\\" style=\\\"max-width: 45px; height: 40px; overflow: hidden\\\">\\n                    <Picture\\n                            src=\\\"./assets/dimsirka.jpg\\\"\\n                            size=\\\"contain\\\"\\n                            alt=\\\"logo\\\"\\n                    />\\n                </div>\\n                <s></s>\\n                <s></s>\\n                <s></s>\\n                <h3>\\\"Дім Сірка\\\"</h3>\\n            </div>\\n            <span style=\\\"font-size: 24px\\\">\\n               →\\n            </span>\\n        </div>\\n    </Button>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"20\\\"/>\\n\\n        <h2>Збережемо тварин разом</h2>\\n        <h3 class=\\\"font-w-normal\\\" style=\\\"opacity: .7\\\">Збір грошей на допомогу безпритульним тваринам</h3>\\n\\n        <Br size=\\\"25\\\"/>\\n        <p class=\\\"font-secondary\\\">\\n            <span class=\\\"h1 font-w-500\\\">₴ 3500</span>\\n            <span class=\\\"h3\\\"> / ₴ 20000</span>\\n        </p>\\n        <Br size=\\\"20\\\"/>\\n\\n        <Progress value={Math.floor(3500 / 20000 * 100)}/>\\n\\n        <Br size=\\\"40\\\"/>\\n    </Card>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <p class=\\\"container flex flex-justify-between flex-align-center\\\">\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon is=\\\"danger\\\" type=\\\"heart-filled\\\" size=\\\"medium\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">1</span>\\n        </span>\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon type=\\\"eye\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">13</span>\\n        </span>\\n    </p>\\n    <Br size=\\\"50\\\"/>\\n\\n\\n    <h2>Збережемо тварин разом</h2>\\n    <Br size=\\\"10\\\"/>\\n    <pre class=\\\"font-w-300\\\">\\n        Терміново шукаємо добрі руки 🤲🥰\\n        Бадді підкинули під кафе біля самої траси!\\n        Біля нього були тільки залишки черствого хліба... 💔\\n        За що можна було покинути малюка напризволяще? 🥺\\n        В чому він міг провинитися? Йому всього 2 місяці.\\n        Зараз буде проходити обробку від паразитів та вакцинацію 💉\\n    </pre>\\n    <Br size=\\\"10\\\"/>\\n\\n\\n    <p class=\\\"flex\\\">\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"share\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Поділитись</p>\\n        </Button>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"link\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Скопіювати</p>\\n        </Button>\\n    </p>\\n    <Br size=\\\"45\\\"/>\\n\\n\\n    <section class=\\\"flex flex-column flex-align-center flex-justify-center\\\">\\n        <div style=\\\"width: 100px; max-width: 100%\\\">\\n            <TrustButton isActive={active} on:click={onClick}/>\\n        </div>\\n        <Br size=\\\"10\\\"/>\\n        <h2>Я довіряю</h2>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"30\\\"/>\\n\\n        <div class=\\\"flex flex-column flex-align-center\\\">\\n            <span>\\n                <FancyBox>\\n                    <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" size=\\\"big\\\" alt=\\\"Волтер\\\"/>\\n                    <div slot=\\\"box\\\">\\n                        <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" alt=\\\"Волтер\\\"/>\\n                    </div>\\n                </FancyBox>\\n            </span>\\n\\n            <Br size=\\\"20\\\"/>\\n\\n            <h2>Волтер</h2>\\n            <Br size=\\\"5\\\"/>\\n            <h3 class=\\\"font-w-500\\\" style=\\\"opacity: .7\\\">Jack Russell Terrier</h3>\\n        </div>\\n        <Br size=\\\"35\\\"/>\\n\\n        <section class=\\\"flex flex-justify-center\\\">\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"text-white text-center absolute\\\">\\n                    <h4 class=\\\"h1\\\">3</h4>\\n                    <h4 style=\\\"margin-top: -8px\\\">Роки</h4>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"info\\\"/>\\n                <div class=\\\"absolute flex\\\" style=\\\"width: 44px; height: 44px\\\">\\n                    <Icon type=\\\"male\\\" is=\\\"light\\\"/>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em; opacity: .3\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"absolute flex flex-column flex-center\\\">\\n                    <Icon type=\\\"cancel-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    <span class=\\\"text-white text-center h5\\\">Cтерилізація</span>\\n                </div>\\n            </div>\\n        </section>\\n        <Br size=\\\"40\\\"/>\\n\\n        <h2>Характер Волтера: 😃</h2>\\n        <Br size=\\\"10\\\"/>\\n        <p class=\\\"font-w-300\\\">\\n            Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми\\n        </p>\\n        <Br size=\\\"35\\\"/>\\n\\n        <h2>Життя Волтера</h2>\\n        <Br size=\\\"10\\\"/>\\n        <table>\\n            <tbody>\\n            <tr>\\n                <td>01.02.2019</td>\\n                <td>—</td>\\n                <td>Його перший день народження</td>\\n            </tr>\\n            <tr>\\n                <td>05.02.2019</td>\\n                <td>—</td>\\n                <td>Ми приютили його з вулиці</td>\\n            </tr>\\n            <tr>\\n                <td>07.03.2019</td>\\n                <td>—</td>\\n                <td>Зробили вакцинацію проти бліх</td>\\n            </tr>\\n            <tr>\\n                <td>23.06.2019</td>\\n                <td>—</td>\\n                <td>Знайшов для себе улюблену іграшку</td>\\n            </tr>\\n            </tbody>\\n        </table>\\n        <Br size=\\\"45\\\"/>\\n\\n        <h2>Вакцинації</h2>\\n        <Br size=\\\"15\\\"/>\\n        <ul class=\\\"flex flex-column text-left\\\">\\n            <li>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від бліх\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від паразитів\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"danger\\\" type=\\\"cancel-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від грибків\\n                </span>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"35\\\"/>\\n    </Card>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Наші піклувальники</h1>\\n    <Br size=\\\"20\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <DonatorsList/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Документи</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Documents/>\\n    </div>\\n    <Br size=\\\"45\\\"/> \\n\\n\\n    <h1>Відео про Волтера</h1>\\n    <Br size=\\\"20\\\"/>\\n    <section class=\\\"flex\\\" style=\\\"height: 20px\\\">\\n        <Carousel items={carousel}/>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Як допомогти</h1>\\n    <Br size=\\\"15\\\"/>\\n    <ul style=\\\"list-style: disc outside none; padding-left: var(--screen-padding)\\\" class=\\\"h3 font-w-500 font-secondary\\\">\\n        <li style=\\\"padding-bottom: 5px\\\">Ви пожете купити йому поїсти</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Можете особисто відвідати його у нас</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Купити вакцінацію для Волтера</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Допомогти любим інщим способом</li>\\n    </ul>\\n    <Br size=\\\"30\\\"/>\\n    <div class=\\\"flex\\\">\\n        <div class=\\\"flex flex-align-center font-secondary\\\">\\n            <Icon size=\\\"medium\\\" type=\\\"phone\\\" class=\\\"theme-svg-fill-opposite\\\"/>\\n            <s></s>\\n            <s></s>\\n            <h2>+38 (093) 205-43-92</h2>\\n        </div>\\n    </div>\\n    <Br size=\\\"5\\\"/>\\n    <p class=\\\"font-w-300\\\">Подзвоніть нам, якщо хочете допомогти Волтеру</p>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Коментарі</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Comments/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <div class=\\\"full-container\\\">\\n        <Footer/>\\n    </div>\\n    <Br size=\\\"70\\\"/>\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAqDI,mBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,cAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,mBAAK,CAAC,gBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
 };
 
 const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -2558,7 +2710,7 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	let charity = {};
 
 	onMount(async () => {
-		charity = await api.getFund(1);
+		charity = await API.getFund(1);
 	});
 
 	// Trust button
@@ -2567,7 +2719,7 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	// Carousel & FancyBox
 	let propsBox = {};
 
-	$$result.css.add(css$r);
+	$$result.css.add(css$s);
 	$page = get_store_value(page);
 	let carousel = (charity.avatars || []).map(p => ({ src: p, alt: "photo" }));
 
@@ -3026,7 +3178,7 @@ const Organizations = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 	onMount(async () => {
 		await new Promise(r => setTimeout(r, 1000));
-		const orgs = await api.getOrganizations();
+		const orgs = await API.getOrganizations();
 		organizations = new Array(1).fill(orgs).reduce((a, o) => a.concat(...o), []);
 	});
 
@@ -3057,7 +3209,7 @@ const Funds = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 	onMount(async () => {
 		await new Promise(r => setTimeout(r, 1000));
-		const chars = await api.getFunds();
+		const chars = await API.getFunds();
 		chariries = new Array(5).fill(chars).reduce((a, o) => a.concat(...o), []);
 	});
 
@@ -3089,7 +3241,7 @@ const Users = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 /* src/routes/users/me.svelte generated by Svelte v3.18.1 */
 
-const css$s = {
+const css$t = {
 	code: "section.svelte-1tc03ji{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}ul.svelte-1tc03ji{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-wrap:wrap;flex-wrap:wrap;margin:0 -5px}li.svelte-1tc03ji{-webkit-box-flex:1;-ms-flex:1 1 50%;flex:1 1 50%;padding:5px}.user-avatar.svelte-1tc03ji{-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:100px;height:100px;border-radius:50%;overflow:hidden;-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary);background-color:rgba(var(--theme-bg-color))}",
 	map: "{\"version\":3,\"file\":\"me.svelte\",\"sources\":[\"me.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Input, Picture, Button, Space } from '@components'\\n\\n    const inputs = [\\n        {\\n            placeholder: 'username',\\n        },\\n        {\\n            placeholder: 'Full name',\\n        },\\n        {\\n            placeholder: 'sex (checkboxes or dropdown)',\\n        },\\n        {\\n            placeholder: 'birth',\\n        },\\n        {\\n            placeholder: 'email',\\n        },\\n        {\\n            placeholder: 'tel',\\n        },\\n        {\\n            placeholder: 'location (autocomplete)',\\n        },\\n    ]\\n\\n    const USERNAME = 'bublikus.script'\\n</script>\\n\\n<section class=\\\"container\\\">\\n    <br>\\n    <div class=\\\"user-avatar\\\">\\n        <Picture src=\\\"https://placeimg.com/100/100/people\\\" alt=\\\"user avatar\\\"/>\\n    </div>\\n    <br>\\n    <br>\\n    <section style=\\\"display: flex; flex-direction: row\\\">\\n        <Button is=\\\"success\\\" auto>success</Button>\\n        <Space size=\\\"2\\\"/>\\n        <Button is=\\\"warning\\\" auto>warning</Button>\\n        <Space size=\\\"2\\\"/>\\n        <Button is=\\\"danger\\\" auto>danger</Button>\\n        <Space size=\\\"2\\\"/>\\n        <Button is=\\\"info\\\" auto>info</Button>\\n    </section>\\n    <br>\\n    <br>\\n    <a href={`https://instagram.com/${USERNAME}/`}>Link to Instagram Page</a>\\n    <br>\\n    <br>\\n    <a href={`instagram://user?username=${USERNAME}`}>Link to Instagram Profile</a>\\n    <br>\\n    <br>\\n    <ul>\\n        {#each inputs as inp}\\n            <li>\\n                <Input {...inp}/>\\n            </li>\\n        {/each}\\n    </ul>\\n</section>\\n\\n<style>\\n    section {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n    ul {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-wrap: wrap;\\n            flex-wrap: wrap;\\n        margin: 0 -5px;\\n    }\\n\\n    li {\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 50%;\\n                flex: 1 1 50%;\\n        padding: 5px;\\n    }\\n\\n    .user-avatar {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 100px;\\n        height: 100px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n        background-color: rgba(var(--theme-bg-color));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvdXNlcnMvbWUuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7SUFDMUI7O0lBRUE7UUFDSSxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixtQkFBZTtZQUFmLGVBQWU7UUFDZixjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksbUJBQWE7WUFBYixpQkFBYTtnQkFBYixhQUFhO1FBQ2IsWUFBWTtJQUNoQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLFlBQVk7UUFDWixhQUFhO1FBQ2Isa0JBQWtCO1FBQ2xCLGdCQUFnQjtRQUNoQix5Q0FBaUM7Z0JBQWpDLGlDQUFpQztRQUNqQyw2Q0FBNkM7SUFDakQiLCJmaWxlIjoic3JjL3JvdXRlcy91c2Vycy9tZS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBzZWN0aW9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICB9XG5cbiAgICB1bCB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBmbGV4LXdyYXA6IHdyYXA7XG4gICAgICAgIG1hcmdpbjogMCAtNXB4O1xuICAgIH1cblxuICAgIGxpIHtcbiAgICAgICAgZmxleDogMSAxIDUwJTtcbiAgICAgICAgcGFkZGluZzogNXB4O1xuICAgIH1cblxuICAgIC51c2VyLWF2YXRhciB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogMTAwcHg7XG4gICAgICAgIGhlaWdodDogMTAwcHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWJnLWNvbG9yKSk7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAgEI,OAAO,eAAC,CAAC,AACL,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,AAClC,CAAC,AAED,EAAE,eAAC,CAAC,AACA,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,aAAa,CAAE,IAAI,CACf,SAAS,CAAE,IAAI,CACnB,MAAM,CAAE,CAAC,CAAC,IAAI,AAClB,CAAC,AAED,EAAE,eAAC,CAAC,AACA,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,GAAG,CACb,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,GAAG,CACrB,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,YAAY,eAAC,CAAC,AACV,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,CACb,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACzC,gBAAgB,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,AACjD,CAAC\"}"
 };
@@ -3109,7 +3261,7 @@ const Me = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 		{ placeholder: "location (autocomplete)" }
 	];
 
-	$$result.css.add(css$s);
+	$$result.css.add(css$t);
 
 	return `<section class="${"container svelte-1tc03ji"}">
     <br>
