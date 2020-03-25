@@ -570,6 +570,8 @@ button:not([class]):focus {
 }
 
 .scroll-x-center > * {
+    position: relative;
+    transform: translateZ(0);
     scroll-snap-stop: always;
     scroll-snap-align: center;
 }
