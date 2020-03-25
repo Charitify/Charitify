@@ -81,8 +81,6 @@
   </Button>
   <Br size="20" />
 
-  a
-
   <section class="flex" style="height: 240px">
     <FancyBox>
       <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false} />
