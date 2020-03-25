@@ -2414,6 +2414,8 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	})}
   ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
+  a
+
   <section class="${"flex"}" style="${"height: 240px"}">
     ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
 		box: () => `<div slot="${"box"}">
