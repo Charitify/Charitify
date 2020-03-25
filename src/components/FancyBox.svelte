@@ -1,9 +1,11 @@
 <script>
     import { createEventDispatcher } from 'svelte'
+    import { fly } from 'svelte/transition';
+    import { classnames } from '@utils'
 
     const dispatch = createEventDispatcher()
 
-    let active = false
+    let active = null
     function onClick(e) {
         active = !active
 
@@ -12,14 +14,21 @@
         else
           dispatch('open', e)
     }
+
+    $: classProp = classnames('fancy-box-ghost', { active })
 </script>
 
 <section role="button" class="fancy-box" on:click={onClick}>
-    <slot></slot>
+    <slot {active}></slot>
 </section>
 
-{#if active}
-    <button type="button" class="fancy-box-ghost" on:click={onClick}>
+{#if active !== null}
+    <button
+            in:fly="{{ y: 20, duration: 200 }}"
+            type="button"
+            class={classProp}
+            on:click={onClick}
+    >
         <slot name="box"></slot>
     </button>
 {/if}
@@ -47,14 +56,17 @@
         overflow: hidden;
         align-items: center;
         justify-content: center;
-        padding: var(--screen-padding);
-        background-color: rgba(var(--color-black), 0);
-        animation: fadeInBox .2s ease-in-out forwards;
+        background-color: rgba(var(--color-black), .75);
+        outline: 20px solid rgba(var(--color-black), .75);
+        transition: .2s ease-in-out;
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
     }
 
-    @keyframes fadeInBox {
-        to {
-            background-color: rgba(var(--color-black), .75);
-        }
+    .fancy-box-ghost.active {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
     }
 </style>

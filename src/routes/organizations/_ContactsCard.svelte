@@ -52,7 +52,7 @@
 
         <ul class="flex flex-justify-center social-icons">
             <li style="padding: 0 10px" class="telegram">
-                <a href="https://t.me/technofrendz" target="_blank">
+                <a href="https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w" target="_blank">
                     <Icon type="telegram" size="large" class="custom"/>
                 </a>
             </li>
