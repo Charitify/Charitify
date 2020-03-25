@@ -34,7 +34,7 @@
         align-self: stretch;
     }
 
-    svg, svg * {
+    svg:not(.custom) * {
         fill: rgba(var(--theme-svg-fill));
         stroke: rgba(var(--theme-svg-fill));
     }
@@ -61,28 +61,35 @@
         align-self: auto;
     }
 
+    .large {
+        width: 40px;
+        height: 40px;
+        flex: none;
+        align-self: auto;
+    }
+
     /* ------------=========( Color )=========------------ */
-    .primary, .primary * {
+    svg.primary * {
         fill: rgb(var(--color-success));
         stroke: rgb(var(--color-success));
     }
 
-    .danger, .danger * {
+    svg.danger * {
         fill: rgb(var(--color-danger));
         stroke: rgb(var(--color-danger));
     }
 
-    .info, .info * {
+    svg.info * {
         fill: rgb(var(--color-info));
         stroke: rgb(var(--color-info));
     }
 
-    .light, .light * {
+    svg.light * {
         fill: rgb(var(--color-white));
         stroke: rgb(var(--color-white));
     }
 
-    .dark, .dark * {
+    svg.dark * {
         fill: rgb(var(--color-black));
         stroke: rgb(var(--color-black));
     }
