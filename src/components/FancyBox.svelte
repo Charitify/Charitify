@@ -34,13 +34,28 @@
                 })
                 .run()
     }
+
+    let slots
+    $: slots = $$props.$$slots || {}
 </script>
 
 <section role="button" class="fancy-box" on:click={onClick}>
     <slot {active}></slot>
 </section>
 
-{#if active !== null}
+{#if !slots.box}
+    <button
+            use:swipe
+            in:fly="{{ y: 20, duration: 200 }}"
+            type="button"
+            class={classProp}
+            on:click={onClick}
+    >
+        <slot></slot>
+    </button>
+{/if}
+
+{#if active !== null && slots.box}
     <button
             use:swipe
             in:fly="{{ y: 20, duration: 200 }}"

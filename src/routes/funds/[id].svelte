@@ -71,9 +71,6 @@
     <section class="flex" style="height: 240px">
         <FancyBox>
             <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-            <div slot="box">
-                <Carousel {...propsBox} items={carousel} dotsBelow={false}/>
-            </div>
         </FancyBox>
     </section>
     <Br size="40"/>
@@ -192,9 +189,6 @@
             <span>
                 <FancyBox>
                     <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
-                    <div slot="box">
-                        <Avatar src="https://placeimg.com/300/300/animal" alt="Волтер"/>
-                    </div>
                 </FancyBox>
             </span>
 

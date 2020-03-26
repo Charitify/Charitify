@@ -85,9 +85,6 @@
     <section class="flex" style="height: 240px">
         <FancyBox>
             <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false} />
-            <div slot="box">
-                <Carousel {...propsBox} items={carousel} dotsBelow={false} />
-            </div>
         </FancyBox>
     </section>
     <Br size="60" />
@@ -205,9 +202,6 @@
     <section class="flex" style="height: 240px">
         <FancyBox>
             <Carousel items={carousel} on:click={onCarouselClick} />
-            <div slot="box">
-                <Carousel {...propsBox} items={carousel} />
-            </div>
         </FancyBox>
     </section>
     <Br size="70" />
