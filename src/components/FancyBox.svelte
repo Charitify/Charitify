@@ -7,15 +7,21 @@
 
     let active = null
 
+    function disableScroll(e) {
+        e.preventDefault()
+    }
+
     function onClick(e) {
         active = !active
 
         if (!active) {
             dispatch('close', e)
             document.body.classList.remove('no-scroll-container')
+            document.body.removeEventListener('touchmove', disableScroll)
         } else {
             dispatch('open', e)
             document.body.classList.add('no-scroll-container')
+            document.body.addEventListener('touchmove', disableScroll)
         }
     }
 

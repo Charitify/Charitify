@@ -28,13 +28,13 @@ export class Swipe {
     return this;
   }
 
-  onUp(callback = () => {}) {
+  onUp(callback = () => this) {
     this.onUp = callback;
 
     return this;
   }
 
-  onDown(callback = () => {}) {
+  onDown(callback = () => this) {
     this.onDown = callback;
 
     return this;

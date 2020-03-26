@@ -470,7 +470,7 @@ button:not([class]):focus {
 }
 
 .no-scroll-container {
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
 }
 
