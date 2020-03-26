@@ -21,7 +21,7 @@
         <ul>
             <li>
                 <a href="tel:+38(093)455-32-12" class="flex flex-align-center" style="padding: 7px 0">
-                    <Icon type="phone-filled" size="medium" is="dark"/>
+                    <Icon type="phone-filled" size="medium"/>
                     <s></s>
                     <s></s>
                     <s></s>
@@ -30,7 +30,7 @@
             </li>
             <li>
                 <a href="mailto:sergey.zastrow@gmail.com" class="flex flex-align-center" style="padding: 7px 0">
-                    <Icon type="email" size="medium" is="dark"/>
+                    <Icon type="email" size="medium"/>
                     <s></s>
                     <s></s>
                     <s></s>
@@ -39,7 +39,7 @@
             </li>
             <li>
                 <a href="http://maps.google.com/?daddr=Львів,+Україна" target="_blank" class="flex flex-align-center" style="padding: 7px 0">
-                    <Icon type="location-mark-filled" size="medium" is="dark"/>
+                    <Icon type="location-mark-filled" size="medium"/>
                     <s></s>
                     <s></s>
                     <s></s>

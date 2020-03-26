@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { fly } from 'svelte/transition';
-    import { classnames } from '@utils'
+    import { classnames, Swipe } from '@utils'
 
     const dispatch = createEventDispatcher()
 
@@ -16,6 +16,14 @@
     }
 
     $: classProp = classnames('fancy-box-ghost', { active })
+
+    function swipe(el) {
+        new Swipe(el)
+            .onDown((yDown, yUp) => {
+                console.log(yDown, yUp)
+            })
+            .run();
+    }
 </script>
 
 <section role="button" class="fancy-box" on:click={onClick}>
@@ -24,6 +32,7 @@
 
 {#if active !== null}
     <button
+            use:swipe
             in:fly="{{ y: 20, duration: 200 }}"
             type="button"
             class={classProp}
@@ -51,7 +60,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 100vh;
         display: flex;
         overflow: hidden;
         align-items: center;
