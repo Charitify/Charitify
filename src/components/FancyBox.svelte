@@ -1,28 +1,32 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { fly } from 'svelte/transition';
+    import { fly } from 'svelte/transition'
     import { classnames, Swipe } from '@utils'
 
     const dispatch = createEventDispatcher()
 
     let active = null
+
     function onClick(e) {
         active = !active
 
-        if (!active)
-          dispatch('close', e)
-        else
-          dispatch('open', e)
+        if (!active) {
+            dispatch('close', e)
+            document.body.classList.remove('overflow-hidden')
+        } else {
+            dispatch('open', e)
+            document.body.classList.add('overflow-hidden')
+        }
     }
 
     $: classProp = classnames('fancy-box-ghost', { active })
 
     function swipe(el) {
         new Swipe(el)
-            .onDown((yDown, yUp) => {
-                console.log(yDown, yUp)
-            })
-            .run();
+                .onDown((yDown, yUp) => {
+                    console.log(yDown, yUp)
+                })
+                .run()
     }
 </script>
 
