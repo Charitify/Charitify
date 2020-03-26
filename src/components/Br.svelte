@@ -15,19 +15,19 @@
   }
 
   :global(br.tiny) {
-    padding-bottom: calc(1em * 0.29) 0; /* 4px */
+    padding-bottom: calc(1em * 0.29); /* 4px */
   }
 
   :global(br.small) {
-    padding-bottom: calc(1em * 0.57) 0; /* 8px */
+    padding-bottom: calc(1em * 0.57); /* 8px */
   }
 
   :global(br.medium),
   :global(br) {
-    padding-bottom: calc(1em * 1.14) 0; /* 16px */
+    padding-bottom: calc(1em * 1.14); /* 16px */
   }
 
   :global(br.big) {
-    padding-bottom: calc(1em * 2.28) 0; /* 32px */
+    padding-bottom: calc(1em * 2.28); /* 32px */
   }
 </style>

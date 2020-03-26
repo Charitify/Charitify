@@ -12,10 +12,10 @@
 
         if (!active) {
             dispatch('close', e)
-            document.body.classList.remove('overflow-hidden')
+            document.body.classList.remove('no-scroll-container')
         } else {
             dispatch('open', e)
-            document.body.classList.add('overflow-hidden')
+            document.body.classList.add('no-scroll-container')
         }
     }
 

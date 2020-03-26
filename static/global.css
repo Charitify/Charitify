@@ -246,7 +246,7 @@ input::-webkit-inner-spin-button {
 
 /* ---------------------===================( Settings )===================--------------------- */
 
-body.theme-light {
+.theme-light {
     --theme-color-primary: var(--color-white);
     --theme-color-primary-opposite: var(--color-black);
     --theme-color-secondary: var(--color-light-second);
@@ -266,7 +266,7 @@ body.theme-light {
     --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.17);
 }
 
-body.theme-dark {
+.theme-dark {
     --theme-color-primary: var(--color-dark-second);
     --theme-color-primary-opposite: var(--color-white);
     --theme-color-secondary: var(--color-dark);
@@ -466,6 +466,11 @@ button:not([class]):focus {
 }
 
 .overflow-hidden {
+    overflow: hidden;
+}
+
+.no-scroll-container {
+    height: 100vh;
     overflow: hidden;
 }
 

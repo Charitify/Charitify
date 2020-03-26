@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte'
     import { Storages } from '@services'
-    import { classnames } from '@utils'
+    import { classnames, safeGet } from '@utils'
     import Icon from '@components/Icon.svelte'
     import Button from '@components/Button.svelte'
     import Avatar from '@components/Avatar.svelte'
@@ -29,17 +29,23 @@
         })
     })
 
-    let themeName = 'theme-light'
+    let themeName = safeGet(() => Storages.cookieStorage.get('theme') || Storages.localStorage.get('theme')) || 'theme-light'
     function changeTheme(theme) {
         themeName = theme
         document.body.classList.remove('theme-dark')
         document.body.classList.remove('theme-light')
         document.body.classList.add(theme)
+
+        document.getElementById('main').classList.remove('theme-dark')
+        document.getElementById('main').classList.remove('theme-light')
+        document.getElementById('main').classList.add(theme)
+
         Storages.cookieStorage.set('theme', theme)
+        Storages.localStorage.set('theme', theme)
     }
 
     onMount(() => {
-        changeTheme(Storages.cookieStorage.get('theme'))
+        changeTheme(themeName)
     })
 </script>
 
