@@ -7,7 +7,7 @@
 </script>
 
 <section>
-    <Avatar src={src} alt={title}/>
+    <Avatar src={src} size="medium" alt={title}/>
 
     <span>
         <h4>{title}</h4>
@@ -30,12 +30,11 @@
         flex-direction: column;
         justify-content: center;
         overflow: hidden;
-        padding: 0 8px;
+        padding: 0 15px;
     }
 
     span h4,
     span sub {
-        line-height: 1.4;
         max-width: 100%;
         overflow: hidden;
         white-space: nowrap;

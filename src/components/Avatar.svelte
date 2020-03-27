@@ -16,10 +16,10 @@
 <style>
     .ava {
         position: relative;
+        flex-grow: 1;
         display: flex;
         border-radius: 50%;
         overflow: hidden;
-        width: 100%;
     }
 
     .ava.small {
