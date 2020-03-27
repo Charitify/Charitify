@@ -42,13 +42,11 @@
                 .onDown(handleVerticalSwipe)
                 .onTouchEnd(async () => {
                     if (ySwipe > THRESHOLD) {
-                        console.log(ySwipe, window.innerHeight)
                         ySwipe = window.innerHeight
                         setActive(false)
                         drawTransform(el, ySwipe)
                         await delay(300)
                     } else if (ySwipe < -THRESHOLD) {
-                        console.log(ySwipe, -window.innerHeight)
                         ySwipe = -window.innerHeight
                         setActive(false)
                         drawTransform(el, ySwipe)
@@ -65,7 +63,6 @@
     }
 
     function drawTransform(el, y) {
-        console.log('-----------', y)
         el.style.transform = `translate3d(0, ${y}px, 0)`
     }
 
