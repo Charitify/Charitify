@@ -7,32 +7,33 @@
 
     let active = null
 
-    function disableScroll(e) {
-        e.preventDefault()
-    }
-
     function onClick(e) {
         active = !active
 
         if (!active) {
             dispatch('close', e)
             document.body.classList.remove('no-scroll-container')
-            document.body.removeEventListener('touchmove', disableScroll)
+            document.documentElement.classList.remove('no-scroll-container')
         } else {
             dispatch('open', e)
             document.body.classList.add('no-scroll-container')
-            document.body.addEventListener('touchmove', disableScroll)
+            document.documentElement.classList.add('no-scroll-container')
         }
     }
 
     $: classProp = classnames('fancy-box-ghost', { active })
 
+    let ySwipe = 0
+    let ySwipeLast = 0
     function swipe(el) {
-        new Swipe(el)
+        new Swipe(el).run()
                 .onDown((yDown, yUp) => {
-                    console.log(yDown, yUp)
+                    ySwipe = ySwipeLast + (yUp - yDown)
+                    el.style.transform = `translateY(${ySwipe}px)`
                 })
-                .run()
+                .onTouchEnd(() => {
+                    ySwipeLast = ySwipe
+                })
     }
 
     let slots
@@ -88,8 +89,8 @@
         height: 100vh;
         display: flex;
         overflow: hidden;
-        align-items: center;
-        justify-content: center;
+        align-items: stretch;
+        justify-content: stretch;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
         transition: .2s ease-in-out;
