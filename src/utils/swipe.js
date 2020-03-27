@@ -1,10 +1,13 @@
 export class Swipe {
   constructor(element) {
+    this.isMoveStart = false
     this.xDown = null;
     this.yDown = null;
     this.element = typeof(element) === 'string' ? document.querySelector(element) : element;
 
     this.element.addEventListener('touchstart', (evt) => {
+      this.isMoveStart = true
+
       this.xDown = evt.touches[0].clientX;
       this.yDown = evt.touches[0].clientY;
 
@@ -15,6 +18,8 @@ export class Swipe {
 
     // Reset values.
     this.element.addEventListener('touchend', (evt) => {
+      this.isMoveStart = false
+
       this.xDown = null;
       this.yDown = null;
 
@@ -63,6 +68,10 @@ export class Swipe {
   }
 
   handleTouchMove(evt) {
+    if (!this.isMoveStart) {
+      return
+    }
+
     const xUp = evt.touches[0].clientX;
     const yUp = evt.touches[0].clientY;
 

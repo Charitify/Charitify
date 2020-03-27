@@ -42,15 +42,17 @@
                 .onDown(handleVerticalSwipe)
                 .onTouchEnd(async () => {
                     if (ySwipe > THRESHOLD) {
+                        console.log(ySwipe, window.innerHeight)
                         ySwipe = window.innerHeight
                         setActive(false)
                         drawTransform(el, ySwipe)
-                        await delay(200)
+                        await delay(300)
                     } else if (ySwipe < -THRESHOLD) {
+                        console.log(ySwipe, -window.innerHeight)
                         ySwipe = -window.innerHeight
                         setActive(false)
                         drawTransform(el, ySwipe)
-                        await delay(200)
+                        await delay(300)
                     }
                     ySwipe = 0
                     drawTransform(el, ySwipe)
@@ -63,12 +65,9 @@
     }
 
     function drawTransform(el, y) {
+        console.log('-----------', y)
         el.style.transform = `translate3d(0, ${y}px, 0)`
     }
-
-    document.addEventListener('scroll', () => {
-        console.log(document.documentElement.scrollTop)
-    })
 
     let slots
     $: slots = $$props.$$slots || {}
@@ -127,7 +126,7 @@
         justify-content: stretch;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
-        transition: .2s ease-out;
+        transition: .3s ease-out;
         opacity: 0;
         transform: translateY(20px);
         pointer-events: none;
