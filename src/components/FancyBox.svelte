@@ -3,9 +3,13 @@
     import { fly } from 'svelte/transition'
     import { classnames, Swipe, delay } from '@utils'
 
+    const START_POSITION = 20
+    const THRESHOLD = 100
+
     const dispatch = createEventDispatcher()
 
     let active = null
+    let fancyBox = null
 
     function onClick(e) {
         const newActive = !active
@@ -13,8 +17,10 @@
         setActive(newActive)
 
         if (!newActive) {
+            drawTransform(e.target, START_POSITION)
             dispatch('close', e)
         } else {
+            drawTransform(fancyBox, 0)
             dispatch('open', e)
         }
     }
@@ -32,9 +38,8 @@
 
     $: classProp = classnames('fancy-box-ghost', { active })
 
-    let ySwipe = 0
-    const THRESHOLD = 100
 
+    let ySwipe = START_POSITION
     function swipe(el) {
         new Swipe(el)
                 .run()
@@ -52,7 +57,8 @@
                         drawTransform(el, ySwipe)
                         await delay(300)
                     }
-                    ySwipe = 0
+
+                    ySwipe = START_POSITION
                     drawTransform(el, ySwipe)
                 })
     }
@@ -76,6 +82,7 @@
 
 {#if !slots.box}
     <button
+            bind:this={fancyBox}
             use:swipe
             in:fly="{{ y: 20, duration: 200 }}"
             type="button"
@@ -88,6 +95,7 @@
 
 {#if active !== null && slots.box}
     <button
+            bind:this={fancyBox}
             use:swipe
             in:fly="{{ y: 20, duration: 200 }}"
             type="button"
