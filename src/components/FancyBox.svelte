@@ -38,7 +38,6 @@
 
     $: classProp = classnames('fancy-box-ghost', { active })
 
-
     let ySwipe = START_POSITION
     function swipe(el) {
         new Swipe(el)
