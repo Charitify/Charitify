@@ -189,6 +189,11 @@
             <span>
                 <FancyBox>
                     <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
+                    <section slot="box" class="flex full-width full-height" style="height: 100vw">
+                        <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding)">
+                            <Avatar src="https://placeimg.com/300/300/animal" alt="Волтер"/>
+                        </div>
+                    </section>
                 </FancyBox>
             </span>
 

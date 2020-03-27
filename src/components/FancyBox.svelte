@@ -10,6 +10,7 @@
 
     let active = null
     let fancyBox = null
+    let slots = $$props.$$slots || {}
 
     function onClick(e) {
         const newActive = !active
@@ -68,11 +69,8 @@
     }
 
     function drawTransform(el, y) {
-        el.style.transform = `translate3d(0, ${y}px, 0)`
+        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
     }
-
-    let slots
-    $: slots = $$props.$$slots || {}
 </script>
 
 <section role="button" class="fancy-box" on:click={onClick}>

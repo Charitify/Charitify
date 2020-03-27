@@ -287,7 +287,7 @@ input::-webkit-inner-spin-button {
 }
 
 html {
-     /* height: 100%; */
+     /* height: 100%; */ /* Commented out for correct working swiping of the FancyBox on IOS. */
 }
 
 body {
@@ -487,6 +487,10 @@ button:not([class]):focus {
 
 .full-width {
     width: 100%;
+}
+
+.full-height {
+    height: 100%;
 }
 
 /* ----------=========( Visibility )=========----------- */

@@ -16,21 +16,24 @@
 <style>
     .ava {
         position: relative;
-        flex: none;
         display: flex;
         border-radius: 50%;
         overflow: hidden;
+        width: 100%;
     }
 
-    .small {
+    .ava.small {
+        flex: none;
         width: 30px;
         height: 30px;
     }
-    .medium {
+    .ava.medium {
+        flex: none;
         width: 60px;
         height: 60px;
     }
-    .big {
+    .ava.big {
+        flex: none;
         width: 130px;
         height: 130px;
     }
