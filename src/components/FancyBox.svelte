@@ -8,16 +8,25 @@
     let active = null
 
     function onClick(e) {
-        active = !active
+        const newActive = !active
 
-        if (!active) {
+        setActive(newActive)
+
+        if (!newActive) {
             dispatch('close', e)
-            document.body.classList.remove('no-scroll-container')
-            document.documentElement.classList.remove('no-scroll-container')
         } else {
             dispatch('open', e)
-            document.body.classList.add('no-scroll-container')
+        }
+    }
+
+    function setActive(isActive) {
+        active = isActive
+        if (!active) {
+            document.documentElement.classList.remove('no-scroll-container')
+        } else {
+            const currScroll = document.documentElement.scrollTop
             document.documentElement.classList.add('no-scroll-container')
+            document.documentElement.scrollTo(0, currScroll)
         }
     }
 
@@ -27,20 +36,21 @@
     const THRESHOLD = 100
 
     function swipe(el) {
-        new Swipe(el).run()
+        new Swipe(el)
+                .run()
                 .onUp(handleVerticalSwipe)
                 .onDown(handleVerticalSwipe)
                 .onTouchEnd(async () => {
                     if (ySwipe > THRESHOLD) {
                         ySwipe = window.innerHeight
-                        active = false
+                        setActive(false)
                         drawTransform(el, ySwipe)
-                        await delay(100)
+                        await delay(200)
                     } else if (ySwipe < -THRESHOLD) {
                         ySwipe = -window.innerHeight
-                        active = false
+                        setActive(false)
                         drawTransform(el, ySwipe)
-                        await delay(100)
+                        await delay(200)
                     }
                     ySwipe = 0
                     drawTransform(el, ySwipe)
@@ -55,6 +65,10 @@
     function drawTransform(el, y) {
         el.style.transform = `translate3d(0, ${y}px, 0)`
     }
+
+    document.addEventListener('scroll', () => {
+        console.log(document.documentElement.scrollTop)
+    })
 
     let slots
     $: slots = $$props.$$slots || {}
@@ -113,7 +127,7 @@
         justify-content: stretch;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
-        transition: .1s ease-out;
+        transition: .2s ease-out;
         opacity: 0;
         transform: translateY(20px);
         pointer-events: none;
