@@ -1,6 +1,7 @@
 export * from './swipe'
 export * as _ from './lodash'
 
+export { default as delay } from './delay'
 export { default as safeGet } from './safeGet'
 export { default as waitUntil } from './waitUntil'
 export { default as classnames } from 'classnames'

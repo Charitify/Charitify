@@ -9,7 +9,7 @@ export class Swipe {
       this.yDown = evt.touches[0].clientY;
 
       try {
-        this.onTouchStart(this.xDown, this.yDown, evt)
+        this.onTouchStart(this.xDown, this.yDown, evt, this.element)
       } catch(err) { /* ignore throwing of unknown functions */ }
     }, false);
 
@@ -21,7 +21,7 @@ export class Swipe {
       try {
         const xUp = evt.changedTouches[0].clientX;
         const yUp = evt.changedTouches[0].clientY;
-        this.onTouchEnd(xUp, yUp, evt)
+        this.onTouchEnd(xUp, yUp, evt, this.element)
       } catch(err) { /* ignore throwing of unknown functions */ }
     })
   }
@@ -72,15 +72,15 @@ export class Swipe {
     try {
       if ( Math.abs( this.xDiff ) > Math.abs( this.yDiff ) ) { // Most significant.
         if ( this.xDiff < 0 ) {
-          this.onLeft(this.xDown, xUp, evt);
+          this.onLeft(this.xDown, xUp, evt, this.element);
         } else {
-          this.onRight(this.xDown, xUp, evt);
+          this.onRight(this.xDown, xUp, evt, this.element);
         }
       } else {
         if ( this.yDiff < 0 ) {
-          this.onUp(this.yDown, yUp, evt);
+          this.onUp(this.yDown, yUp, evt, this.element);
         } else {
-          this.onDown(this.yDown, yUp, evt);
+          this.onDown(this.yDown, yUp, evt, this.element);
         }
       }
     } catch(err) { /* ignore throwing of unknown functions */ }

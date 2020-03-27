@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { fly } from 'svelte/transition'
-    import { classnames, Swipe } from '@utils'
+    import { classnames, Swipe, delay } from '@utils'
 
     const dispatch = createEventDispatcher()
 
@@ -24,16 +24,36 @@
     $: classProp = classnames('fancy-box-ghost', { active })
 
     let ySwipe = 0
-    let ySwipeLast = 0
+    const THRESHOLD = 100
+
     function swipe(el) {
         new Swipe(el).run()
-                .onDown((yDown, yUp) => {
-                    ySwipe = ySwipeLast + (yUp - yDown)
-                    el.style.transform = `translateY(${ySwipe}px)`
+                .onUp(handleVerticalSwipe)
+                .onDown(handleVerticalSwipe)
+                .onTouchEnd(async () => {
+                    if (ySwipe > THRESHOLD) {
+                        ySwipe = window.innerHeight
+                        active = false
+                        drawTransform(el, ySwipe)
+                        await delay(100)
+                    } else if (ySwipe < -THRESHOLD) {
+                        ySwipe = -window.innerHeight
+                        active = false
+                        drawTransform(el, ySwipe)
+                        await delay(100)
+                    }
+                    ySwipe = 0
+                    drawTransform(el, ySwipe)
                 })
-                .onTouchEnd(() => {
-                    ySwipeLast = ySwipe
-                })
+    }
+
+    function handleVerticalSwipe(yDown, yUp, _evt, el) {
+        ySwipe = yUp - yDown
+        drawTransform(el, ySwipe)
+    }
+
+    function drawTransform(el, y) {
+        el.style.transform = `translate3d(0, ${y}px, 0)`
     }
 
     let slots
@@ -93,7 +113,7 @@
         justify-content: stretch;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
-        transition: .2s ease-in-out;
+        transition: .1s ease-out;
         opacity: 0;
         transform: translateY(20px);
         pointer-events: none;
