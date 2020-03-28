@@ -45,14 +45,14 @@
                 .onTouchEnd(async () => {
                     if (ySwipe > THRESHOLD) {
                         ySwipe = window.innerHeight
-                        setActive(false)
                         drawTransform(el, ySwipe)
                         await delay(300)
+                        setActive(false)
                     } else if (ySwipe < -THRESHOLD) {
                         ySwipe = -window.innerHeight
-                        setActive(false)
                         drawTransform(el, ySwipe)
                         await delay(300)
+                        setActive(false)
                     }
 
                     ySwipe = START_POSITION
