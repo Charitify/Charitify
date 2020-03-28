@@ -455,6 +455,16 @@ button:not([class]):focus {
     border-color: rgb(var(--color-success));
 }
 
+@media screen and (max-width: 767px) {
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"] {
+      font-size: 16px;
+    }
+}
+
 ::selection {
     background-color: rgb(var(--color-info), .5);
 }
