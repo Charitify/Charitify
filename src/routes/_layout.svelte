@@ -11,7 +11,7 @@
 
 	onMount(() => {
 		disableDoubleTapZoom([document])
-		disablePinchZoom([document, document.body, document.querySelector('.donate-btn')])
+		disablePinchZoom([window, document, document.body, document.querySelector('.donate-btn')])
 	})
 </script>
 
