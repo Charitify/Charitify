@@ -299,6 +299,7 @@ body {
     overflow-y: auto;
     text-align: left;
     scroll-behavior: smooth;
+    touch-action: manipulation;
     text-rendering: optimizeSpeed;
     font-size: var(--font-size);
     color: rgba(var(--theme-font-color));

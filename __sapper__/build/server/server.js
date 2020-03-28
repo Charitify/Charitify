@@ -2330,26 +2330,27 @@ const Icons = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { segment } = $$props;
+	let touches = "";
 	let theme = safeGet(() => cookieStorage.get("theme") || localStorage.get("theme"));
 
 	onMount(() => {
-		// Avoid double tap to zoom in.
-		let lastTouchEnd = 0;
-
-		document.addEventListener(
-			"touchend",
+		//Disable pinch zoom on document
+		document.documentElement.addEventListener(
+			"touchstart",
 			function (event) {
-				const now = new Date().getTime();
+				touches = JSON.stringify(event.touches, null, 2);
+				console.log(touches);
 
-				if (now - lastTouchEnd <= 300) {
+				if (event.touches.length > 1) {
 					event.preventDefault();
 				}
-
-				lastTouchEnd = now;
 			},
 			false
 		);
-	});
+	}); // Avoid double tap to zoom in.
+	// let lastTouchEnd = 0;
+	// document.addEventListener('touchend', function(event) {
+	// 	const now = (new Date()).getTime();
 
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
 
@@ -2358,6 +2359,11 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 <main id="${"main"}"${add_attribute("class", theme, 0)}>
 	${validate_component(Header, "Header").$$render($$result, { segment }, {}, {})}
 
+	<br>
+	<br>
+	<br>
+
+	${escape(touches)}
 	${$$slots.default ? $$slots.default({}) : ``}
 </main>`;
 });
