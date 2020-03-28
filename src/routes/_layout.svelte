@@ -10,14 +10,6 @@
 	let theme = safeGet(() => Storages.cookieStorage.get('theme') || Storages.localStorage.get('theme'))
 
 	onMount(() => {
-		// Avoid body scroll when FancyBox is open.
-		window.addEventListener('touchmove', function(event) {
-			event.stopPropagation()
-			if (!event.target.closest('.fancy-box-ghost')) { 
-				event.preventDefault();
-			}
-		}, false);
-
 		// Avoid double tap to zoom in.
 		let lastTouchEnd = 0;
 		document.addEventListener('touchend', function(event) {

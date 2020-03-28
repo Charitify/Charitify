@@ -469,12 +469,6 @@ button:not([class]):focus {
     overflow: hidden;
 }
 
-.no-scroll-container {
-    height: 100vh;
-    overflow: hidden;
-    -webkit-overflow-scrolling: touch;
-}
-
 /* ----------=========( Containers )=========----------- */
 .container {
     padding-left: var(--screen-padding);

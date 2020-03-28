@@ -30,23 +30,15 @@
     function setActive(isActive) {
         active = isActive
 
-        if (active) {
-            document.documentElement.classList.add('no-scroll-container')
-            try {
+        setTimeout(() => {
+            if (active) {
                 disableBodyScroll(fancyBox);
-            } catch(e) {
-                console.log(e)
-            }
-        } else {
-            document.documentElement.classList.remove('no-scroll-container')
-            try {
+            } else {
                 enableBodyScroll(fancyBox);
-            } catch(e) {
-                console.log(e)
             }
-        }
+        })
     }
-    
+
     $: classProp = classnames('fancy-box-ghost', { active })
 
     let ySwipe = START_POSITION
