@@ -10,21 +10,13 @@
 	let theme = safeGet(() => Storages.cookieStorage.get('theme') || Storages.localStorage.get('theme'))
 
 	onMount(() => {
+		// Avoid body scroll when FancyBox is open.
 		document.addEventListener('touchmove', function(event) {
-			event = event.originalEvent || event;
-			if (event.scale !== 1) { event.preventDefault(); }
+			event.stopPropagation()
+			if (!event.target.closest('.fancy-box-ghost')) { event.preventDefault(); }
 		}, false);
 
-		document.documentElement.addEventListener('touchstart', function (event) {
-			if (event.touches.length > 1) {
-				event.preventDefault();
-			}
-		}, false);
-
-		document.documentElement.addEventListener('touchmove', function (event) {
-			event.preventDefault();
-		}, false);
-
+		// Avoid double tap to zoom in.
 		let lastTouchEnd = 0;
 		document.addEventListener('touchend', function(event) {
 			const now = (new Date()).getTime();

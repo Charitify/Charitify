@@ -30,21 +30,10 @@
         active = isActive
         if (!active) {
             document.documentElement.classList.remove('no-scroll-container')
-            document.body.removeEventListener('scroll', preventScroll)
-            document.body.removeEventListener('touchmove', preventScroll)
         } else {
-            const lastScrollPos = document.documentElement.scrollTop
             document.documentElement.classList.add('no-scroll-container')
-            document.body.scrollTo(0, lastScrollPos)
-            document.body.addEventListener('scroll', preventScroll)
-            document.body.addEventListener('touchmove', preventScroll)
         }
     }
-
-    function preventScroll(e) {
-      e.preventDefault()
-    }
-
     $: classProp = classnames('fancy-box-ghost', { active })
 
     let ySwipe = START_POSITION
@@ -71,7 +60,7 @@
                 })
     }
 
-    function handleVerticalSwipe(yDown, yUp, _evt, el) {
+    function handleVerticalSwipe(yDown, yUp, evt, el) {
         ySwipe = yUp - yDown
         drawTransform(el, ySwipe)
     }
