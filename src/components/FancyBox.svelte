@@ -46,13 +46,13 @@
                     if (ySwipe > THRESHOLD) {
                         ySwipe = window.innerHeight
                         drawTransform(el, ySwipe)
-                        await delay(300)
                         setActive(false)
+                        await delay(300)
                     } else if (ySwipe < -THRESHOLD) {
                         ySwipe = -window.innerHeight
                         drawTransform(el, ySwipe)
-                        await delay(300)
                         setActive(false)
+                        await delay(300)
                     }
 
                     ySwipe = START_POSITION
@@ -67,6 +67,7 @@
 
     function drawTransform(el, y) {
         el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
+        el && (el.style.webkitTransform = `-webkit-translate3d(0, ${y}px, 0)`)
     }
 </script>
 
@@ -127,13 +128,13 @@
         outline: 20px solid rgba(var(--color-black), .75);
         transition: .3s ease-out;
         opacity: 0;
-        transform: translateY(20px);
+        transform: translate3d(0,20px,0);
         pointer-events: none;
     }
 
     .fancy-box-ghost.active {
         opacity: 1;
-        transform: none;
+        transform: translate3d(0,0,0);
         pointer-events: auto;
     }
 </style>
