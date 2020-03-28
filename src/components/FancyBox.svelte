@@ -61,13 +61,13 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
+      evt.cancelBubble = true
         ySwipe = yUp - yDown
         drawTransform(el, ySwipe)
     }
 
     function drawTransform(el, y) {
-        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
-        el && (el.style.webkitTransform = `-webkit-translate3d(0, ${y}px, 0)`)
+        el && (el.style.transform = `-webkit-translate3d(0, ${y}px, 0)`)
     }
 </script>
 
