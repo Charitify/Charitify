@@ -2356,7 +2356,7 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 	onMount(() => {
 		disableDoubleTapZoom([document]);
-		disablePinchZoom([document, document.querySelector(".donate-btn")]);
+		disablePinchZoom([document, document.body, document.querySelector(".donate-btn")]);
 	});
 
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
