@@ -13,7 +13,6 @@
 		disableDoubleTapZoom([document])
 		disablePinchZoom([document, document.querySelector('.donate-btn')])
 	})
-
 </script>
 
 <style>

@@ -36,6 +36,7 @@
         color: rgba(var(--color-white));
         padding: 20px;
         z-index: 9;
+        touch-action: manipulation;
         text-align: center;
         transition: .3s ease-in-out;
         transform: translateY(100%);
