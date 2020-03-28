@@ -30,11 +30,19 @@
         active = isActive
         if (!active) {
             document.documentElement.classList.remove('no-scroll-container')
+            document.body.removeEventListener('scroll', preventScroll)
+            document.body.removeEventListener('touchmove', preventScroll)
         } else {
-            const currScroll = document.documentElement.scrollTop
+            const lastScrollPos = document.documentElement.scrollTop
             document.documentElement.classList.add('no-scroll-container')
-            document.documentElement.scrollTo(0, currScroll)
+            document.body.scrollTo(0, lastScrollPos)
+            document.body.addEventListener('scroll', preventScroll)
+            document.body.addEventListener('touchmove', preventScroll)
         }
+    }
+
+    function preventScroll(e) {
+      e.preventDefault()
     }
 
     $: classProp = classnames('fancy-box-ghost', { active })
