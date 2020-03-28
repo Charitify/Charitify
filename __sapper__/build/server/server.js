@@ -2335,9 +2335,29 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 		document.addEventListener(
 			"touchmove",
 			function (event) {
+				event = event.originalEvent || event;
+
 				if (event.scale !== 1) {
 					event.preventDefault();
 				}
+			},
+			false
+		);
+
+		document.documentElement.addEventListener(
+			"touchstart",
+			function (event) {
+				if (event.touches.length > 1) {
+					event.preventDefault();
+				}
+			},
+			false
+		);
+
+		document.documentElement.addEventListener(
+			"touchmove",
+			function (event) {
+				event.preventDefault();
 			},
 			false
 		);
