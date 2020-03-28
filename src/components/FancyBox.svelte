@@ -44,14 +44,12 @@
                 .onDown(handleVerticalSwipe)
                 .onTouchEnd(async () => {
                     if (ySwipe > THRESHOLD) {
-                        ySwipe = window.innerHeight
-                        drawTransform(el, ySwipe)
                         setActive(false)
+                        drawTransform(el, ySwipe + 50)
                         await delay(300)
                     } else if (ySwipe < -THRESHOLD) {
-                        ySwipe = -window.innerHeight
-                        drawTransform(el, ySwipe)
                         setActive(false)
+                        drawTransform(el, ySwipe - 50)
                         await delay(300)
                     }
 
@@ -61,13 +59,13 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
-      evt.cancelBubble = true
+        evt.cancelBubble = true
         ySwipe = yUp - yDown
         drawTransform(el, ySwipe)
     }
 
     function drawTransform(el, y) {
-        el && (el.style.transform = `-webkit-translate3d(0, ${y}px, 0)`)
+        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
     }
 </script>
 
