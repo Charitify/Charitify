@@ -1,6 +1,7 @@
 <script>
     import Card from '@components/Card.svelte'
     import Picture from '@components/Picture.svelte'
+    import FancyBox from '@components/FancyBox.svelte'
     import Carousel from '@components/Carousel.svelte'
 
     const cardSample = {
@@ -13,9 +14,11 @@
 
 <Carousel items={all} size="auto" dots={false} let:item={item} let:index={index}>
     <div class={!index ? 'start' : index === all.length - 1 ? 'end' : ''}>
-        <Card class="flex">
-            <Picture {...item} size="contain"/>
-        </Card>
+        <FancyBox>
+            <Card class="flex">
+                <Picture {...item} size="contain"/>
+            </Card>
+        </FancyBox>
     </div>
 </Carousel>
 
