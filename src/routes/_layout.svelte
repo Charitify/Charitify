@@ -11,9 +11,11 @@
 
 	onMount(() => {
 		// Avoid body scroll when FancyBox is open.
-		document.addEventListener('touchmove', function(event) {
+		window.addEventListener('touchmove', function(event) {
 			event.stopPropagation()
-			if (!event.target.closest('.fancy-box-ghost')) { event.preventDefault(); }
+			if (!event.target.closest('.fancy-box-ghost')) { 
+				event.preventDefault();
+			}
 		}, false);
 
 		// Avoid double tap to zoom in.

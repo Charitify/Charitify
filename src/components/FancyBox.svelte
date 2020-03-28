@@ -2,6 +2,7 @@
     import { createEventDispatcher } from 'svelte'
     import { fly } from 'svelte/transition'
     import { classnames, Swipe, delay } from '@utils'
+    import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
     const START_POSITION = 20
     const THRESHOLD = 100
@@ -25,28 +26,27 @@
             dispatch('close', e)
         }
     }
-
-    function prevent(evt) {
-        evt.cancelBubble = true
-        evt.preventDefault();
-        evt.stopPropagation();
-        evt.stopImmediatePropagation();
-    }
-            
+     
     function setActive(isActive) {
         active = isActive
+
         if (active) {
             document.documentElement.classList.add('no-scroll-container')
-            document.addEventListener("touchstart", prevent, false);
-            document.addEventListener("touchmove", prevent, false);
-            document.addEventListener("touchend", prevent, false);
+            try {
+                disableBodyScroll(fancyBox);
+            } catch(e) {
+                console.log(e)
+            }
         } else {
             document.documentElement.classList.remove('no-scroll-container')
-            document.removeEventListener("touchstart", prevent, false);
-            document.removeEventListener("touchmove", prevent, false);
-            document.removeEventListener("touchend", prevent, false);
+            try {
+                enableBodyScroll(fancyBox);
+            } catch(e) {
+                console.log(e)
+            }
         }
     }
+    
     $: classProp = classnames('fancy-box-ghost', { active })
 
     let ySwipe = START_POSITION
@@ -72,10 +72,6 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
-        prevent(evt)
-        
-        console.log(evt)
-
         ySwipe = yUp - yDown
         drawTransform(el, ySwipe)
     }
@@ -144,6 +140,8 @@
         opacity: 0;
         transform: translate3d(0,20px,0);
         pointer-events: none;
+        overflow: scroll;
+        -webkit-overflow-scrolling: touch;
     }
 
     .fancy-box-ghost.active {
