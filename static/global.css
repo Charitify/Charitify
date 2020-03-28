@@ -472,6 +472,7 @@ button:not([class]):focus {
 .no-scroll-container {
     height: 100%;
     overflow: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* ----------=========( Containers )=========----------- */
