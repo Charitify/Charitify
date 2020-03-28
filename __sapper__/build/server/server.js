@@ -314,6 +314,9 @@ function toCSSString(styles = {}) {
 // Disable pinch zoom
 function disablePinchZoom(elements) {
     [].concat(elements || []).forEach((el) => {
+        document.documentElement.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        }, { passive: false });
         document.documentElement.addEventListener('gesturechange', function (event) {
             event.preventDefault();
         }, { passive: false });
@@ -2356,7 +2359,7 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 	onMount(() => {
 		disableDoubleTapZoom([document]);
-		disablePinchZoom([document, document.body, document.querySelector(".donate-btn")]);
+		disablePinchZoom([window, document, document.body, document.querySelector(".donate-btn")]);
 	});
 
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
