@@ -126,6 +126,7 @@
         overflow: hidden;
         align-items: stretch;
         justify-content: stretch;
+        touch-action: manipulation;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
         transition: .3s ease-out;

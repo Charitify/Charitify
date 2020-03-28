@@ -13,22 +13,22 @@
 
 	onMount(() => {
 		//Disable pinch zoom on document
-		document.documentElement.addEventListener('touchstart', function (event) {
+		document.documentElement.addEventListener('gesturestart', function (event) {
 			touches = JSON.stringify(event.touches, null, 2)
 			console.log(touches)
 			if (event.touches.length > 1) {
 				event.preventDefault();
 			}
-		}, false);
+		}, { passive: false });
 
-		document.documentElement.addEventListener('touchmove', function (event) {
+		document.documentElement.addEventListener('gesturechange', function (event) {
 			event.preventDefault();      s
 			touches = JSON.stringify(event.touches, null, 2)
 			console.log(touches)
 			if (event.touches.length > 1) {
 				event.preventDefault();
 			}
-		}, false);
+		}, { passive: false });
 
 		// Avoid double tap to zoom in.
 		// let lastTouchEnd = 0;
