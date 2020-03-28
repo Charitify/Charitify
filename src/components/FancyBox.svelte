@@ -18,7 +18,7 @@
         setActive(newActive)
 
         if (!newActive) {
-            drawTransform(e.target, START_POSITION)
+            drawTransform(fancyBox, START_POSITION)
             dispatch('close', e)
         } else {
             drawTransform(fancyBox, 0)
