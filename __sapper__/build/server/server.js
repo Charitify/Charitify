@@ -2330,6 +2330,35 @@ const Icons = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { segment } = $$props;
 	let theme = safeGet(() => cookieStorage.get("theme") || localStorage.get("theme"));
+
+	onMount(() => {
+		document.addEventListener(
+			"touchmove",
+			function (event) {
+				if (event.scale !== 1) {
+					event.preventDefault();
+				}
+			},
+			false
+		);
+
+		let lastTouchEnd = 0;
+
+		document.addEventListener(
+			"touchend",
+			function (event) {
+				const now = new Date().getTime();
+
+				if (now - lastTouchEnd <= 300) {
+					event.preventDefault();
+				}
+
+				lastTouchEnd = now;
+			},
+			false
+		);
+	});
+
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
 
 	return `${validate_component(Icons, "Icons").$$render($$result, {}, {}, {})}
