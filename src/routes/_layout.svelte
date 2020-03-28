@@ -21,6 +21,15 @@
 			}
 		}, false);
 
+		document.documentElement.addEventListener('touchmove', function (event) {
+			event.preventDefault();      s
+			touches = JSON.stringify(event.touches, null, 2)
+			console.log(touches)
+			if (event.touches.length > 1) {
+				event.preventDefault();
+			}
+		}, false);
+
 		// Avoid double tap to zoom in.
 		// let lastTouchEnd = 0;
 		// document.addEventListener('touchend', function(event) {
