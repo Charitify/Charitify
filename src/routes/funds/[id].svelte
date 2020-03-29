@@ -36,6 +36,10 @@
         neededSum: charity.need_sum,
         currency: charity.currency,
     };
+    $: iconsLine = {
+        likes: charity.likes,
+        views: charity.views,
+    };
 
     onMount(async () => {
         await delay(2000)
@@ -140,13 +144,13 @@
             <Icon is="danger" type="heart-filled" size="medium"/>
             <s></s>
             <s></s>
-            <span class="font-secondary font-w-600 h3">1</span>
+            <span class="font-secondary font-w-600 h3">{iconsLine.likes}</span>
         </span>
         <span class="flex flex-align-center">
             <Icon type="eye" size="medium" class="theme-svg-fill"/>
             <s></s>
             <s></s>
-            <span class="font-secondary font-w-600 h3">13</span>
+            <span class="font-secondary font-w-600 h3">{iconsLine.views}</span>
         </span>
     </p>
     <Br size="50"/>
