@@ -1,34 +1,52 @@
 export class Swipe {
   constructor(element) {
     this.isMoveStart = false
+    this.isTwoFingers = false
+
     this.xDown = null;
     this.yDown = null;
-    this.element = typeof(element) === 'string' ? document.querySelector(element) : element;
+    this.element = typeof (element) === 'string' ? document.querySelector(element) : element;
 
-    this.element.addEventListener('touchstart', (evt) => {
-      this.isMoveStart = true
+    this.element.addEventListener('touchstart', this.touchStartHandler.bind(this), false);
+    this.element.addEventListener('touchend', this.touchEndHandler.bind(this), false)
 
-      this.xDown = evt.touches[0].clientX;
-      this.yDown = evt.touches[0].clientY;
-
-      try {
-        this.onTouchStart(this.xDown, this.yDown, evt, this.element)
-      } catch(err) { /* ignore throwing of unknown functions */ }
-    }, false);
-
-    // Reset values.
-    this.element.addEventListener('touchend', (evt) => {
-      this.isMoveStart = false
-
-      this.xDown = null;
-      this.yDown = null;
-
-      try {
-        const xUp = evt.changedTouches[0].clientX;
-        const yUp = evt.changedTouches[0].clientY;
-        this.onTouchEnd(xUp, yUp, evt, this.element)
-      } catch(err) { /* ignore throwing of unknown functions */ }
+  
+    this.element.addEventListener('gesturescgange', () => {
+      this.isTwoFingers = true
     })
+
+
+    this.element.addEventListener('gestureend', () => {
+      this.isTwoFingers = false
+    })
+  }
+
+  touchStartHandler(evt) {
+    if (this.isTwoFingers) return
+
+    this.isMoveStart = true
+
+    this.xDown = evt.touches[0].clientX;
+    this.yDown = evt.touches[0].clientY;
+
+    try {
+      this.onTouchStart(this.xDown, this.yDown, evt, this.element)
+    } catch(err) { /* ignore throwing of unknown functions */ }
+  }
+
+  touchEndHandler(evt) {
+    if (this.isTwoFingers) return
+
+    this.isMoveStart = false
+
+    this.xDown = null;
+    this.yDown = null;
+
+    try {
+      const xUp = evt.changedTouches[0].clientX;
+      const yUp = evt.changedTouches[0].clientY;
+      this.onTouchEnd(xUp, yUp, evt, this.element)
+    } catch(err) { /* ignore throwing of unknown functions */ }
   }
 
   onLeft(callback) {
@@ -68,7 +86,7 @@ export class Swipe {
   }
 
   handleTouchMove(evt) {
-    if (!this.isMoveStart) {
+    if (!this.isMoveStart || this.isTwoFingers) {
       return
     }
 

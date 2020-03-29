@@ -36,7 +36,7 @@
 
             {#if city}
                 <p class="flex flex-align-center font-secondary font-w-500" style="opacity: .7; margin-left: -2px">
-                    <Icon is="dark" type="location-mark" size="small"/>
+                    <Icon type="location-mark" size="small"/>
                     <s></s>
                     <span>{city}</span>
                 </p>
