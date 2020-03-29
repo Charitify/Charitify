@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Header } from '@components';
 	import { Storages } from '@services'
-	import { safeGet, disablePinchZoom, disableDoubleTapZoom } from '@utils'
+	import { safeGet, disableDoubleTapZoom } from '@utils'
 	import Icons from './_icons.svelte';
 
 	export let segment;
@@ -11,7 +11,6 @@
 
 	onMount(() => {
 		disableDoubleTapZoom([document])
-		disablePinchZoom([document])
 	})
 </script>
 
