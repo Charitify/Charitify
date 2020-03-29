@@ -2079,16 +2079,7 @@ const CharityCard = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
             ${city
 		? `<p class="${"flex flex-align-center font-secondary font-w-500"}" style="${"opacity: .7; margin-left: -2px"}">
-                    ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					is: "dark",
-					type: "location-mark",
-					size: "small"
-				},
-				{},
-				{}
-			)}
+                    ${validate_component(Icon, "Icon").$$render($$result, { type: "location-mark", size: "small" }, {}, {})}
                     <s></s>
                     <span>${escape(city)}</span>
                 </p>`
