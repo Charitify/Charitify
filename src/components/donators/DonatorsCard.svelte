@@ -2,8 +2,10 @@
     import Icon from '@components/Icon.svelte'
     import Card from '@components/Card.svelte'
     import Avatar from '@components/Avatar.svelte'
+    import FancyBox from '@components/FancyBox.svelte'
 
     export let items
+    export let setFancyActive = () => {}
 </script>
 
 {#if Array.isArray(items) && items.length}
@@ -13,7 +15,14 @@
                 {#if item.title && item.src}
                     <li>
                         <div class="relative">
-                            <Avatar src={item.src} size="medium" alt={item.subtitle}/>
+                            <FancyBox on:open={() => setFancyActive(true)} on:close={() => setFancyActive(false)}>
+                                <Avatar src={item.src} size="medium" alt={item.subtitle}/>
+                                <section slot="box" class="flex full-width full-height" style="height: 100vw">
+                                    <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
+                                    <Avatar src={item.src} alt={item.subtitle}/>
+                                </div>
+                                </section>
+                            </FancyBox>
                             {#if item.checked}
                                 <div class="absolute flex" style="top: -1px; right: -1px; width: 20px; height: 20px; overflow: hidden">
                                     <Icon type="polygon" is="info"/>

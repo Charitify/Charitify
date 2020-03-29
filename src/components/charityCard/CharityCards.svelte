@@ -1,13 +1,22 @@
 <script>
+    import { classnames, delay } from '@utils'
     import Carousel from '@components/Carousel.svelte'
     import CharityCard from './CharityCard.svelte'
 
     export let amount = 5
 
     let carousel = new Array(amount).fill(0)
+
+    let active = false
+    async function setFancyActive(isActive) {
+        if (!isActive) {
+            await delay(300)
+        }
+        active = isActive
+    }
 </script>
 
-<Carousel items={carousel} size="auto" let:index={index}>
+<Carousel items={carousel} size="auto" let:index={index} class={classnames('charities', { active })}>
     <div class={!index ? 'start' : index === carousel.length - 1 ? 'end' : ''}>
        <CharityCard
             src="https://placeimg.com/300/300/people"
@@ -15,11 +24,15 @@
             current={3500}
             city="Львів"
             title="Допоможи Сірку"
+            setFancyActive={setFancyActive}
        />
     </div>
 </Carousel>
 
 <style>
+    :global(.charities.active .scroll-x-center > *) {
+        transform: none
+    }
     div {
         flex: none;
         display: flex;

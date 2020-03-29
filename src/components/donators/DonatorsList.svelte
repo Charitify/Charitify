@@ -1,4 +1,5 @@
 <script>
+    import { classnames, delay } from '@utils'
     import DonatorsCard from './DonatorsCard.svelte'
 
     const all = [
@@ -37,17 +38,28 @@
           node.scrollTo(node.scrollWidth, 0)
         } catch (e) {}
     }
+
+    let active = false
+    async function setFancyActive(isActive) {
+        if (!isActive) {
+            await delay(300)
+        }
+        active = isActive
+    }
 </script>
 
-<ul class="scroll-x-center" use:scrollEnd>
+<ul class={classnames('donators scroll-x-center', { active })} use:scrollEnd>
     {#each grouped as cards}
         <li>
-            <DonatorsCard items={cards}/>
+            <DonatorsCard items={cards} setFancyActive={setFancyActive}/>
         </li>
     {/each}
 </ul>
 
 <style>
+    :global(.donators.active.scroll-x-center > *) {
+        transform: none
+    }
     ul {
         width: 100%;
         display: flex;

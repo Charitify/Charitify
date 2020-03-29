@@ -40,6 +40,7 @@
     }
 
     $: classProp = classnames('fancy-box-ghost', { active })
+    $: classPropWrap = classnames('fancy-box', $$props.class,)
 
     let ySwipe = START_POSITION
     function swipe(el) {
@@ -73,7 +74,7 @@
     }
 </script>
 
-<section role="button" class="fancy-box" on:click={onClick}>
+<section role="button" class={classPropWrap} on:click={onClick}>
     <slot {active}></slot>
 </section>
 
@@ -134,8 +135,6 @@
         padding: 0 var(--screen-padding);
         transform: translate3d(0,20px,0);
         pointer-events: none;
-        overflow: scroll;
-        -webkit-overflow-scrolling: touch;
     }
 
     .fancy-box-ghost.active {

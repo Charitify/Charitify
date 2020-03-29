@@ -4,6 +4,7 @@
     import Icon from '@components/Icon.svelte'
     import Card from '@components/Card.svelte'
     import Avatar from '@components/Avatar.svelte'
+    import FancyBox from '@components/FancyBox.svelte'
 
     export let src = undefined
     export let date = undefined
@@ -18,7 +19,14 @@
     <section class="comment flex flex-align-start" style="padding: 20px">
 
         <div class="flex relative">
-            <Avatar src={src} alt={title} size="medium"/>
+            <FancyBox>
+                <Avatar src={src} alt={title} size="medium"/>
+                <section slot="box" class="flex full-width full-height" style="height: 100vw">
+                    <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
+                        <Avatar src={src} alt={title}/>
+                    </div>
+                </section>
+            </FancyBox>
 
             {#if checked}
             <div class="absolute flex" style="top: -1px; right: -1px; width: 20px; height: 20px; overflow: hidden">

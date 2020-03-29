@@ -5,17 +5,27 @@
     import Button from '@components/Button.svelte'
     import Picture from '@components/Picture.svelte'
     import Progress from '@components/Progress.svelte'
+    import FancyBox from '@components/FancyBox.svelte'
 
     export let src = undefined
     export let city = undefined
     export let title = undefined
     export let total = undefined
     export let current = undefined
+    export let setFancyActive = () => {}
 </script>
 
 <Card class="flex flex-column">
+    
     <div style="height: 160px" class="flex">
-        <Picture {src} alt={title}/>
+        <FancyBox on:open={() => setFancyActive(true)} on:close={() => setFancyActive(false)}>
+            <Picture {src} alt={title}/>
+            <section slot="box" class="flex full-width full-height" style="height: 100vw">
+                <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
+                    <Picture {src} alt={title}/>
+                </div>
+            </section>
+        </FancyBox>
     </div>
 
     <section class="container flex flex-column flex-justify-between flex-1">

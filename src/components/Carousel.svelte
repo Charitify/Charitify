@@ -125,7 +125,6 @@
         width: 100%;
         overflow-y: hidden;
         overflow-x: scroll;
-        transform: translateZ(0);
         border-radius: var(--border-radius-big);
     }
 
