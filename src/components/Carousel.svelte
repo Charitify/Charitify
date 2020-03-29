@@ -51,8 +51,8 @@
         if (!parent) return
         const { width } = parent.getBoundingClientRect()
         waitUntil(() => {
-            parent.scrollLeft = width * activeDot
-            if (parent.scrollLeft !== width * activeDot) {
+            parent.scrollLeft = Math.round(width * activeDot)
+            if (parent.scrollLeft !== Math.round(width * activeDot)) {
               throw new Error('Not set.')
             }
         }, { interval: 50 })
