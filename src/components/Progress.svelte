@@ -11,15 +11,10 @@
     export let ariaLabel = undefined
     export let borderRadius = undefined
 
-    $: val = 0
+    $: val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0
     $: titleProp = title || `Progress - ${val}%`
     $: ariaLabelProp = ariaLabel || `Progress - ${val}%`
     $: classProp = classnames('progress', size, $$props.class)
-
-    onMount(() => {
-        // Make loading progress effect on mount component.
-        requestAnimationFrame(() => val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0, 0)
-    })
 
     function getBorderRadius(borders, defaults = '99999px') {
         const brDefault = new Array(4).fill(defaults)

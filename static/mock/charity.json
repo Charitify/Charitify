@@ -1,27 +1,154 @@
 {
   "id": "id",
+
   "avatars": [
-    "https://placeimg.com/300/300/tech",
-    "https://placeimg.com/300/300/people",
-    "https://placeimg.com/300/300/any"
+    "http://placekitten.com/300/200",
+    "http://placekitten.com/300/200",
+    "http://placekitten.com/300/200"
   ],
-  "title": "Short-named charity",
-  "description": "Description of an charity that explains the major purpose of the current charity and also makes space more filled out by the long text inside.",
-  "percent": 25,
-  "org_id": "id",
-  "org_head": "Tinaramisimuss el-de-la Kandelakinuskas",
-  "org_head_avatar": "https://placeimg.com/30/30/people",
-  "organization": "ORG of charity",
+  "avatars2x": [
+    "http://placekitten.com/1000/800",
+    "http://placekitten.com/1000/800",
+    "http://placekitten.com/1000/800"
+  ],
+
+  "title": "Збережемо тварин разом",
+  "subtitle": "Збір грошей на допомогу безпритульним тваринам",
+  "description": "Терміново шукаємо добрі руки 🤲🥰\nБадді підкинули під кафе біля самої траси!\nБіля нього були тільки залишки черствого хліба... 💔\nЗа що можна було покинути малюка напризволяще? 🥺\nВ чому він міг провинитися? Йому всього 2 місяці.\nЗараз буде проходити обробку від паразитів та вакцинацію 💉",
+
+  "need_sum": 20000,
+  "curremt_sum": 3500,
+  "currency": "₴",
+
+  "likes": 2,
+  "views": 12,
+
+  "animal": {
+    "avatars": [
+      "http://placekitten.com/300/200",
+      "http://placekitten.com/300/200",
+      "http://placekitten.com/300/200"
+    ],
+    "avatars2x": [
+      "http://placekitten.com/1000/800",
+      "http://placekitten.com/1000/800",
+      "http://placekitten.com/1000/800"
+    ],
+    "name": "Волтер",
+    "breed": "Jack Russell Terrier",
+    "birth": "2017-02-09T12:30:55.596Z",
+    "sex": "male",
+    "sterilization": false,
+    "character": "Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми",
+    "lifestory": [
+      {
+        "date": "2017-02-09T12:30:55.596Z",
+        "title": "Його перший день народження"
+      },
+      {
+        "date": "2017-05-09T12:30:55.596Z",
+        "title": "Ми приютили його з вулиці"
+      },
+      {
+        "date": "2017-09-09T12:30:55.596Z",
+        "title": "Зробили вакцинацію проти бліх"
+      },
+      {
+        "date": "2018-01-09T12:30:55.596Z",
+        "title": "Знайшов для себе улюблену іграшку"
+      }
+    ],
+    "vaccination": [
+      {
+        "done": true,
+        "title": "Від бліх"
+      },
+      {
+        "done": true,
+        "title": "Від паразитів"
+      },
+      {
+        "done": false,
+        "title": "Від грибків"
+      }
+    ]
+  },
+
+  "organization": {
+    "id": "id",
+    "name": "Дім Сірка",
+    "phone": "+38 (093) 205-43-92",
+    "avatar": "https://placeimg.com/30/30/tech",
+    "head_id": "id",
+    "head_name": "Tinaramisimuss el-de-la Kandelakinuskas",
+    "head_avatar": "https://placeimg.com/50/50/people"
+  },
+
+  "donators": [
+    {
+      "id": "id",
+      "name": "Добра людина",
+      "avatar": "https://placeimg.com/50/50/people",
+      "amount": 5,
+      "currency": "₴",
+      "date": "2018-01-09T12:30:55.596Z"
+    },
+    {
+      "id": "id",
+      "name": "Микола Петрович",
+      "avatar": "https://placeimg.com/50/50/people",
+      "amount": 15,
+      "currency": "₴",
+      "date": "2018-01-09T12:30:55.596Z"
+    },
+    {
+      "id": "id",
+      "name": "Добра людина",
+      "avatar": "https://placeimg.com/50/50/people",
+      "amount": 235.45,
+      "currency": "₴",
+      "date": "2018-01-09T12:30:55.596Z"
+    },
+    {
+      "id": "id",
+      "name": "Микола Петрович",
+      "avatar": "https://placeimg.com/50/50/people",
+      "amount": 105,
+      "currency": "₴",
+      "date": "2018-01-09T12:30:55.596Z"
+    },
+    {
+      "id": "id",
+      "name": "Добра людина",
+      "avatar": "https://placeimg.com/50/50/people",
+      "amount": 1235,
+      "currency": "₴",
+      "date": "2018-01-09T12:30:55.596Z"
+    }
+  ],
+
   "documents": [
     "https://placeimg.com/300/300/tech",
     "https://placeimg.com/300/300/people",
     "https://placeimg.com/300/300/any"
   ],
-  "photos": [
-    "https://placeimg.com/30/30/tech",
-    "https://placeimg.com/30/30/people",
-    "https://placeimg.com/30/30/any"
+  "documents2x": [
+    "https://placeimg.com/1000/1000/tech",
+    "https://placeimg.com/1000/1000/people",
+    "https://placeimg.com/1000/1000/any"
   ],
+
+  "media": [
+    "https://placeimg.com/300/300/tech",
+    "https://placeimg.com/300/300/people",
+    "https://placeimg.com/300/300/any"
+  ],
+  "media2x": [
+    "https://placeimg.com/1000/1000/tech",
+    "https://placeimg.com/1000/1000/people",
+    "https://placeimg.com/1000/1000/any"
+  ],
+
   "location": {
     "lat": 48.9226,
     "lng": 24.7111,
@@ -29,6 +156,9 @@
     "city": "Ivano-Frankivsk",
     "address": "Stusa 1"
   },
+
+  "updated_at": "2020-02-09T12:30:55.596Z",
   "created_at": "2020-02-09T12:30:55.596Z",
-  "tags": ["org", "animals", "help", "need", "other looooooooong tag"]
+
+  "tags": ["Дім", "Сірка", "тварини", "безпритульні"]
 }

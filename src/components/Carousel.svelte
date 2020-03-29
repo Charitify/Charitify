@@ -20,11 +20,15 @@
     export let size = 'stretch'
     export let initIndex = 0
 
+    let parent = null
+
     $: activeDot = initIndex
     $: classProp = classnames('carousel', size, $$props.class, { dotsBelow })
+    $: setScrollPosition(parent, initIndex)
 
     function carousel(node) {
-        initScrollPosition(node)
+        parent = node
+        setScrollPosition(node, activeDot)
         node.addEventListener('scroll', onScroll)
         return { destroy: () => node.removeEventListener('scroll', onScroll) }
     }
@@ -43,7 +47,8 @@
         if (activeDot !== newActiveDot) activeDot = newActiveDot
     }
 
-    function initScrollPosition(parent) {
+    function setScrollPosition(parent, activeDot) {
+        if (!parent) return
         const { width } = parent.getBoundingClientRect()
         waitUntil(() => {
             parent.scrollLeft = width * activeDot

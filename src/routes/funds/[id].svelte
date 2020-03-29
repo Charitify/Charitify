@@ -2,6 +2,7 @@
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
     import { API } from '@services'
+    import { _ } from '@utils'
     import {
         Br,
         Icon,
@@ -25,7 +26,17 @@
 
     // Entity
     let charity = {}
-    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))
+    
+    $: carouselTop = (charity.avatars || []).map((p, i) => ({ src: p, srcBig: _.get(charity.avatars2x, `[${i}]`), alt: 'топ фото' }));
+    $: organization = (charity.organization || {});
+    $: cardTop = {
+        title: charity.title,
+        subtitle: charity.subtitle,
+        currentSum: charity.curremt_sum,
+        neededSum: charity.need_sum,
+        currency: charity.currency,
+    };
+
     onMount(async () => {
         charity = await API.getFund(1)
     })
@@ -70,50 +81,53 @@
 
     <section class="flex" style="height: 240px">
         <FancyBox>
-            <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+            <Carousel items={carouselTop} on:click={onCarouselClick} dotsBelow={false}/>
+            <section slot="box" class="flex full-width">
+                <Carousel items={carouselTop} {...propsBox}/>
+            </section>
         </FancyBox>
     </section>
     <Br size="40"/>
 
 
-    <Button class="white">
+    <a rel="prefetch" href={organization.id} class="btn white full-width" style="padding: 5px 15px;">
         <div class="flex flex-align-center flex-justify-between full-width">
             <div class="flex flex-align-center">
                 <s></s>
                 <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
                     <Picture
-                            src="./assets/dimsirka.jpg"
+                            src={organization.avatar}
                             size="contain"
-                            alt="logo"
+                            alt="фото організації"
                     />
                 </div>
                 <s></s>
                 <s></s>
                 <s></s>
-                <h3>"Дім Сірка"</h3>
+                <h3>{organization.name}</h3>
             </div>
             <span style="font-size: 24px">
                →
             </span>
         </div>
-    </Button>
+    </a>
     <Br size="20"/>
 
 
     <Card class="container">
         <Br size="20"/>
 
-        <h2>Збережемо тварин разом</h2>
-        <h3 class="font-w-normal" style="opacity: .7">Збір грошей на допомогу безпритульним тваринам</h3>
+        <h2>{cardTop.title}</h2>
+        <h3 class="font-w-normal" style="opacity: .7">{cardTop.subtitle}</h3>
 
         <Br size="25"/>
         <p class="font-secondary">
-            <span class="h1 font-w-500">₴ 3500</span>
-            <span class="h3"> / ₴ 20000</span>
+            <span class="h1 font-w-500">{cardTop.currency} {cardTop.currentSum}</span>
+            <span class="h3"> / {cardTop.currency} {cardTop.neededSum}</span>
         </p>
         <Br size="20"/>
 
-        <Progress value={Math.floor(3500 / 20000 * 100)}/>
+        <Progress value={Math.floor(cardTop.currentSum / cardTop.neededSum * 100)}/>
 
         <Br size="40"/>
     </Card>
@@ -324,7 +338,7 @@
     <h1>Відео про Волтера</h1>
     <Br size="20"/>
     <section class="flex" style="height: 20px">
-        <Carousel items={carousel}/>
+        <Carousel items={carouselTop}/>
     </section>
     <Br size="60"/>
 
