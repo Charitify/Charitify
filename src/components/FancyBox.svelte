@@ -52,10 +52,12 @@
                     if (ySwipe > THRESHOLD) {
                         setActive(false)
                         drawTransform(el, ySwipe + 50)
+                        drawOpacity(el, ySwipe + 50)
                         await delay(300)
                     } else if (ySwipe < -THRESHOLD) {
                         setActive(false)
                         drawTransform(el, ySwipe - 50)
+                        drawOpacity(el, ySwipe- 50)
                         await delay(300)
                     }
 
@@ -75,7 +77,7 @@
         el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
     }
     function drawOpacity(el, y) {
-        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 2)), 1))
+        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
     }
 </script>
 
