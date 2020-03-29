@@ -2,7 +2,7 @@
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
     import { API } from '@services'
-    import { _ } from '@utils'
+    import { delay, _ } from '@utils'
     import {
         Br,
         Icon,
@@ -38,6 +38,7 @@
     };
 
     onMount(async () => {
+        await delay(2000)
         charity = await API.getFund(1)
     })
 

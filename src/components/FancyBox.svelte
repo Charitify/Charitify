@@ -61,16 +61,21 @@
 
                     ySwipe = START_POSITION
                     drawTransform(el, ySwipe)
+                    el.style.opacity = null
                 })
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
         ySwipe = yUp - yDown
         drawTransform(el, ySwipe)
+        drawOpacity(el, ySwipe)
     }
 
     function drawTransform(el, y) {
         el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
+    }
+    function drawOpacity(el, y) {
+        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 2)), 1))
     }
 </script>
 
