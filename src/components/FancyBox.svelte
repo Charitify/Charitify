@@ -137,6 +137,11 @@
         pointer-events: none;
     }
 
+    .fancy-box-ghost > * {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
     .fancy-box-ghost.active {
         opacity: 1;
         transform: translate3d(0,0,0);
