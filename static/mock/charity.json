@@ -2,14 +2,14 @@
   "id": "id",
 
   "avatars": [
-    "http://placekitten.com/300/200",
-    "http://placekitten.com/300/200",
-    "http://placekitten.com/300/200"
+    "https://placeimg.com/300/300/tech",
+    "https://placeimg.com/300/300/tech",
+    "https://placeimg.com/300/300/tech"
   ],
   "avatars2x": [
-    "http://placekitten.com/1000/800",
-    "http://placekitten.com/1000/800",
-    "http://placekitten.com/1000/800"
+    "https://placeimg.com/1000/800/tech",
+    "https://placeimg.com/1000/800/tech",
+    "https://placeimg.com/1000/800/tech"
   ],
 
   "title": "Збережемо тварин разом",
@@ -25,14 +25,14 @@
 
   "animal": {
     "avatars": [
-      "http://placekitten.com/300/200",
-      "http://placekitten.com/300/200",
-      "http://placekitten.com/300/200"
+      "https://placeimg.com/300/300/people",
+      "https://placeimg.com/300/300/people",
+      "https://placeimg.com/300/300/people"
     ],
     "avatars2x": [
-      "http://placekitten.com/1000/800",
-      "http://placekitten.com/1000/800",
-      "http://placekitten.com/1000/800"
+      "https://placeimg.com/1000/800/people",
+      "https://placeimg.com/1000/800/people",
+      "https://placeimg.com/1000/800/people"
     ],
     "name": "Волтер",
     "breed": "Jack Russell Terrier",
