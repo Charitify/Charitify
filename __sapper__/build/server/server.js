@@ -237,6 +237,1089 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<br${add_attribute("style", `padding-bottom: ${foramttedSize}`, 0)}${add_attribute("class", $$props.class, 0)}>`;
 });
 
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+/** Built-in value references. */
+var Symbol$1 = root.Symbol;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol$1 ? Symbol$1.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+/** Used for built-in method references. */
+var objectProto$1 = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString$1 = objectProto$1.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString$1.call(value);
+}
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag$1 = Symbol$1 ? Symbol$1.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag$1 && symToStringTag$1 in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/;
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
+}
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto$1 = Function.prototype,
+    objectProto$2 = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString$1 = funcProto$1.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$1 = objectProto$2.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString$1.call(hasOwnProperty$1).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate = getNative(Object, 'create');
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto$3 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty$2.call(data, key) ? data[key] : undefined;
+}
+
+/** Used for built-in method references. */
+var objectProto$4 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty$3.call(data, key);
+}
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED$1 : value;
+  return this;
+}
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+/* Built-in method references that are verified to be native. */
+var Map$1 = getNative(root, 'Map');
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map$1 || ListCache),
+    'string': new Hash
+  };
+}
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Expose `MapCache`.
+memoize.Cache = MapCache;
+
+/** Used as the maximum memoize cache size. */
+var MAX_MEMOIZE_SIZE = 500;
+
+/**
+ * A specialized version of `_.memoize` which clears the memoized function's
+ * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+ *
+ * @private
+ * @param {Function} func The function to have its output memoized.
+ * @returns {Function} Returns the new memoized function.
+ */
+function memoizeCapped(func) {
+  var result = memoize(func, function(key) {
+    if (cache.size === MAX_MEMOIZE_SIZE) {
+      cache.clear();
+    }
+    return key;
+  });
+
+  var cache = result.cache;
+  return result;
+}
+
+/** Used to match property names within property paths. */
+var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoizeCapped(function(string) {
+  var result = [];
+  if (string.charCodeAt(0) === 46 /* . */) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, subString) {
+    result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol$1 ? Symbol$1.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
+}
+
+/** Used as references for various `Number` constants. */
+var INFINITY$1 = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY$1) ? '-0' : result;
+}
+
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+function baseGet(object, path) {
+  path = castPath(path, object);
+
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+  return (index && index == length) ? object : undefined;
+}
+
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
 async function delay (ms, isError) {
   return new Promise((res, rej) => setTimeout(isError ? rej : res, ms))
 }
@@ -304,6 +1387,22 @@ function safeGet(expressionFn, defaultValue, isDefaultTyped = false) {
     console.warn('You need to use a function as the first argument.');
   }
   return defaultValue
+}
+
+function waitUntil(fn, { timeout = 5000, interval = 500 } = {}) {
+  let timer = null;
+  let intervalTimer = null;
+  return new Promise(function (res, rej) {
+    timer = setTimeout(rej, timeout, new Error('Error: Timeout'));
+    intervalTimer = setInterval(async () => {
+      try {
+        const result = await fn();
+        clearTimeout(timer);
+        clearInterval(intervalTimer);
+        res(result);
+      } catch (_e) {}
+    }, interval);
+  })
 }
 
 function toCSSString(styles = {}) {
@@ -558,7 +1657,7 @@ const Divider = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 
 const css$7 = {
 	code: ".progress.medium.svelte-108d5jc.svelte-108d5jc{--progress-height:10px;--progress-padding-point:1px}.progress.svelte-108d5jc.svelte-108d5jc{-webkit-box-flex:0;-ms-flex:0;flex:0;width:100%;border-radius:9999px;height:var(--progress-height)}.progress-inner-frame.svelte-108d5jc.svelte-108d5jc{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;width:100%;height:100%;border-radius:9999px;overflow:hidden;padding:var(--progress-padding-point) 0;background-color:rgba(var(--theme-color-primary-opposite), .1);background-clip:content-box}.progress-core.svelte-108d5jc.svelte-108d5jc{position:absolute;top:0;left:0;height:100%;-webkit-box-flex:0;-ms-flex:none;flex:none;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transition:1s ease-in-out;transition:1s ease-in-out;border-radius:9999px;background-color:rgba(var(--color-info))}.progress[aria-valuenow=\"100\"].svelte-108d5jc .progress-core.svelte-108d5jc{background-color:rgba(var(--color-success))}",
-	map: "{\"version\":3,\"file\":\"Progress.svelte\",\"sources\":[\"Progress.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, onMount } from 'svelte'\\n    import { classnames, safeGet } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let value = 0 // 0 - 100\\n    export let size = 'medium'\\n    export let title = undefined\\n    export let ariaLabel = undefined\\n    export let borderRadius = undefined\\n\\n    $: val = 0\\n    $: titleProp = title || `Progress - ${val}%`\\n    $: ariaLabelProp = ariaLabel || `Progress - ${val}%`\\n    $: classProp = classnames('progress', size, $$props.class)\\n\\n    onMount(() => {\\n        // Make loading progress effect on mount component.\\n        requestAnimationFrame(() => val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0, 0)\\n    })\\n\\n    function getBorderRadius(borders, defaults = '99999px') {\\n        const brDefault = new Array(4).fill(defaults)\\n        const bds = safeGet(() => borders.split(' '), [], true)\\n        const rule = 'border-radius'\\n        return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(' ')}`\\n    }\\n</script>\\n\\n\\n<div\\n        {id}\\n        class={classProp}\\n        title={titleProp}\\n        aria-label={ariaLabelProp}\\n        role=\\\"progressbar\\\"\\n        aria-valuemin=\\\"0\\\"\\n        aria-valuemax=\\\"100\\\"\\n        aria-valuenow={val}\\n        style={getBorderRadius(borderRadius)}\\n>\\n    <div class=\\\"progress-inner-frame\\\">\\n        <div class=\\\"progress-core\\\" style={`width:${val}%`}></div>\\n    </div>\\n</div>\\n\\n<style>\\n    .progress.medium {\\n        --progress-height: 10px;\\n        --progress-padding-point: 1px;\\n    }\\n\\n    .progress {\\n        -webkit-box-flex: 0;\\n            -ms-flex: 0;\\n                flex: 0;\\n        width: 100%;\\n        border-radius: 9999px;\\n        height: var(--progress-height);\\n    }\\n\\n    .progress-inner-frame {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        width: 100%;\\n        height: 100%;\\n        border-radius: 9999px;\\n        overflow: hidden;\\n        padding: var(--progress-padding-point) 0;\\n        background-color: rgba(var(--theme-color-primary-opposite), .1);\\n        background-clip: content-box;\\n    }\\n\\n    .progress-core {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        height: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transition: 1s ease-in-out;\\n        transition: 1s ease-in-out;\\n        border-radius: 9999px;\\n        background-color: rgba(var(--color-info));\\n    }\\n\\n    .progress[aria-valuenow=\\\"100\\\"] .progress-core {\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSx1QkFBdUI7UUFDdkIsNkJBQTZCO0lBQ2pDOztJQUVBO1FBQ0ksbUJBQU87WUFBUCxXQUFPO2dCQUFQLE9BQU87UUFDUCxXQUFXO1FBQ1gscUJBQXFCO1FBQ3JCLDhCQUE4QjtJQUNsQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLFdBQVc7UUFDWCxZQUFZO1FBQ1oscUJBQXFCO1FBQ3JCLGdCQUFnQjtRQUNoQix3Q0FBd0M7UUFDeEMsK0RBQStEO1FBQy9ELDRCQUE0QjtJQUNoQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFlBQVk7UUFDWixtQkFBVTtZQUFWLGNBQVU7Z0JBQVYsVUFBVTtRQUNWLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsa0NBQTBCO1FBQTFCLDBCQUEwQjtRQUMxQixxQkFBcUI7UUFDckIseUNBQXlDO0lBQzdDOztJQUVBO1FBQ0ksNENBQTRDO0lBQ2hEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5wcm9ncmVzcy5tZWRpdW0ge1xuICAgICAgICAtLXByb2dyZXNzLWhlaWdodDogMTBweDtcbiAgICAgICAgLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50OiAxcHg7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzIHtcbiAgICAgICAgZmxleDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDk5OTlweDtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1wcm9ncmVzcy1oZWlnaHQpO1xuICAgIH1cblxuICAgIC5wcm9ncmVzcy1pbm5lci1mcmFtZSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBwYWRkaW5nOiB2YXIoLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50KSAwO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMSk7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzLWNvcmUge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICB0cmFuc2l0aW9uOiAxcyBlYXNlLWluLW91dDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICAucHJvZ3Jlc3NbYXJpYS12YWx1ZW5vdz1cIjEwMFwiXSAucHJvZ3Jlc3MtY29yZSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAiDI,SAAS,OAAO,8BAAC,CAAC,AACd,iBAAiB,CAAE,IAAI,CACvB,wBAAwB,CAAE,GAAG,AACjC,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CACP,IAAI,CAAE,CAAC,CACf,KAAK,CAAE,IAAI,CACX,aAAa,CAAE,MAAM,CACrB,MAAM,CAAE,IAAI,iBAAiB,CAAC,AAClC,CAAC,AAED,qBAAqB,8BAAC,CAAC,AACnB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,MAAM,CACrB,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,IAAI,wBAAwB,CAAC,CAAC,CAAC,CACxC,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CAC/D,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,cAAc,8BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,EAAE,CAAC,WAAW,CAClC,UAAU,CAAE,EAAE,CAAC,WAAW,CAC1B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAC7C,CAAC,AAED,SAAS,CAAC,aAAa,CAAC,KAAK,gBAAC,CAAC,cAAc,eAAC,CAAC,AAC3C,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Progress.svelte\",\"sources\":[\"Progress.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, onMount } from 'svelte'\\n    import { classnames, safeGet } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let value = 0 // 0 - 100\\n    export let size = 'medium'\\n    export let title = undefined\\n    export let ariaLabel = undefined\\n    export let borderRadius = undefined\\n\\n    $: val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0\\n    $: titleProp = title || `Progress - ${val}%`\\n    $: ariaLabelProp = ariaLabel || `Progress - ${val}%`\\n    $: classProp = classnames('progress', size, $$props.class)\\n\\n    function getBorderRadius(borders, defaults = '99999px') {\\n        const brDefault = new Array(4).fill(defaults)\\n        const bds = safeGet(() => borders.split(' '), [], true)\\n        const rule = 'border-radius'\\n        return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(' ')}`\\n    }\\n</script>\\n\\n\\n<div\\n        {id}\\n        class={classProp}\\n        title={titleProp}\\n        aria-label={ariaLabelProp}\\n        role=\\\"progressbar\\\"\\n        aria-valuemin=\\\"0\\\"\\n        aria-valuemax=\\\"100\\\"\\n        aria-valuenow={val}\\n        style={getBorderRadius(borderRadius)}\\n>\\n    <div class=\\\"progress-inner-frame\\\">\\n        <div class=\\\"progress-core\\\" style={`width:${val}%`}></div>\\n    </div>\\n</div>\\n\\n<style>\\n    .progress.medium {\\n        --progress-height: 10px;\\n        --progress-padding-point: 1px;\\n    }\\n\\n    .progress {\\n        -webkit-box-flex: 0;\\n            -ms-flex: 0;\\n                flex: 0;\\n        width: 100%;\\n        border-radius: 9999px;\\n        height: var(--progress-height);\\n    }\\n\\n    .progress-inner-frame {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        width: 100%;\\n        height: 100%;\\n        border-radius: 9999px;\\n        overflow: hidden;\\n        padding: var(--progress-padding-point) 0;\\n        background-color: rgba(var(--theme-color-primary-opposite), .1);\\n        background-clip: content-box;\\n    }\\n\\n    .progress-core {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        height: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transition: 1s ease-in-out;\\n        transition: 1s ease-in-out;\\n        border-radius: 9999px;\\n        background-color: rgba(var(--color-info));\\n    }\\n\\n    .progress[aria-valuenow=\\\"100\\\"] .progress-core {\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSx1QkFBdUI7UUFDdkIsNkJBQTZCO0lBQ2pDOztJQUVBO1FBQ0ksbUJBQU87WUFBUCxXQUFPO2dCQUFQLE9BQU87UUFDUCxXQUFXO1FBQ1gscUJBQXFCO1FBQ3JCLDhCQUE4QjtJQUNsQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLFdBQVc7UUFDWCxZQUFZO1FBQ1oscUJBQXFCO1FBQ3JCLGdCQUFnQjtRQUNoQix3Q0FBd0M7UUFDeEMsK0RBQStEO1FBQy9ELDRCQUE0QjtJQUNoQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFlBQVk7UUFDWixtQkFBVTtZQUFWLGNBQVU7Z0JBQVYsVUFBVTtRQUNWLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsa0NBQTBCO1FBQTFCLDBCQUEwQjtRQUMxQixxQkFBcUI7UUFDckIseUNBQXlDO0lBQzdDOztJQUVBO1FBQ0ksNENBQTRDO0lBQ2hEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5wcm9ncmVzcy5tZWRpdW0ge1xuICAgICAgICAtLXByb2dyZXNzLWhlaWdodDogMTBweDtcbiAgICAgICAgLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50OiAxcHg7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzIHtcbiAgICAgICAgZmxleDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDk5OTlweDtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1wcm9ncmVzcy1oZWlnaHQpO1xuICAgIH1cblxuICAgIC5wcm9ncmVzcy1pbm5lci1mcmFtZSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBwYWRkaW5nOiB2YXIoLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50KSAwO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMSk7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzLWNvcmUge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICB0cmFuc2l0aW9uOiAxcyBlYXNlLWluLW91dDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICAucHJvZ3Jlc3NbYXJpYS12YWx1ZW5vdz1cIjEwMFwiXSAucHJvZ3Jlc3MtY29yZSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA4CI,SAAS,OAAO,8BAAC,CAAC,AACd,iBAAiB,CAAE,IAAI,CACvB,wBAAwB,CAAE,GAAG,AACjC,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CACP,IAAI,CAAE,CAAC,CACf,KAAK,CAAE,IAAI,CACX,aAAa,CAAE,MAAM,CACrB,MAAM,CAAE,IAAI,iBAAiB,CAAC,AAClC,CAAC,AAED,qBAAqB,8BAAC,CAAC,AACnB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,MAAM,CACrB,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,IAAI,wBAAwB,CAAC,CAAC,CAAC,CACxC,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CAC/D,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,cAAc,8BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,EAAE,CAAC,WAAW,CAClC,UAAU,CAAE,EAAE,CAAC,WAAW,CAC1B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAC7C,CAAC,AAED,SAAS,CAAC,aAAa,CAAC,KAAK,gBAAC,CAAC,cAAc,eAAC,CAAC,AAC3C,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC\"}"
 };
 
 function getBorderRadius(borders, defaults = "99999px") {
@@ -576,17 +1675,6 @@ const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let { title = undefined } = $$props;
 	let { ariaLabel = undefined } = $$props;
 	let { borderRadius = undefined } = $$props;
-
-	onMount(() => {
-		// Make loading progress effect on mount component.
-		requestAnimationFrame(
-			() => val = Number.isFinite(+value)
-			? Math.max(0, Math.min(+value, 100))
-			: 0,
-			0
-		);
-	});
-
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
 	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
@@ -594,7 +1682,11 @@ const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	if ($$props.borderRadius === void 0 && $$bindings.borderRadius && borderRadius !== void 0) $$bindings.borderRadius(borderRadius);
 	$$result.css.add(css$7);
-	let val = 0;
+
+	let val = Number.isFinite(+value)
+	? Math.max(0, Math.min(+value, 100))
+	: 0;
+
 	let titleProp = title || `Progress - ${val}%`;
 	let ariaLabelProp = ariaLabel || `Progress - ${val}%`;
 	let classProp = classnames("progress", size, $$props.class);
@@ -610,7 +1702,7 @@ const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 const css$8 = {
 	code: ".carousel.svelte-xsz8iy.svelte-xsz8iy,.carousel-inner.svelte-xsz8iy.svelte-xsz8iy,.carousel-inner.svelte-xsz8iy li.svelte-xsz8iy{position:relative;-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;text-align:left;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.carousel.dotsBelow.svelte-xsz8iy.svelte-xsz8iy{padding-bottom:40px}.carousel.dotsBelow.svelte-xsz8iy .carousel-dots.svelte-xsz8iy{bottom:0}.carousel.dotsBelow.svelte-xsz8iy .carousel-dots li.svelte-xsz8iy{background-color:rgba(var(--theme-bg-color-opposite))}.carousel.stretch.svelte-xsz8iy .fluid.svelte-xsz8iy{width:100%}.carousel.auto.svelte-xsz8iy .fluid.svelte-xsz8iy{width:auto}.carousel.svelte-xsz8iy.svelte-xsz8iy{width:100%}.carousel-inner.svelte-xsz8iy.svelte-xsz8iy::-webkit-scrollbar{display:none}.carousel.svelte-xsz8iy .carousel-inner.svelte-xsz8iy{width:100%;overflow-y:hidden;overflow-x:scroll;border-radius:var(--border-radius-big)}.carousel-dots.svelte-xsz8iy.svelte-xsz8iy{position:absolute;left:0;bottom:10px;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;justify-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;pointer-events:none}.carousel-dots.svelte-xsz8iy li.svelte-xsz8iy{position:relative;width:8px;height:8px;margin:5px;border-radius:50%;overflow:hidden;-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary);background-color:rgba(var(--color-light))}.carousel-dots.svelte-xsz8iy li.svelte-xsz8iy:not(.active){opacity:.5}li.active.svelte-xsz8iy.svelte-xsz8iy{-webkit-transform:scale(1.5);transform:scale(1.5)}",
-	map: "{\"version\":3,\"file\":\"Carousel.svelte\",\"sources\":[\"Carousel.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { waitUntil, classnames } from '@utils'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    /**\\n     *\\n     * @type {number | {\\n     *     src: string,\\n     *     srcBig: string,\\n     *     alt: string,\\n     *     onClick?: function,\\n     * }[]}\\n     */\\n    export let items = []\\n    export let dots = true\\n    export let dotsBelow = true\\n    export let size = 'stretch'\\n    export let initIndex = 0\\n\\n    $: activeDot = initIndex\\n    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow })\\n\\n    function carousel(node) {\\n        initScrollPosition(node)\\n        node.addEventListener('scroll', onScroll)\\n        return { destroy: () => node.removeEventListener('scroll', onScroll) }\\n    }\\n\\n    function onScroll(e) {\\n        try {\\n            getActiveDot(e.target)\\n        } catch (err) { console.warn('Carousel does not work.', err) }\\n    }\\n\\n    function getActiveDot(parent) {\\n        const { scrollLeft, scrollWidth, offsetWidth } = parent\\n        const dotAmount = Array.from(parent.children).length\\n        const scrollX = scrollLeft / (scrollWidth - offsetWidth)\\n        const newActiveDot = Math.round(scrollX * (dotAmount - 1))\\n        if (activeDot !== newActiveDot) activeDot = newActiveDot\\n    }\\n\\n    function initScrollPosition(parent) {\\n        const { width } = parent.getBoundingClientRect()\\n        waitUntil(() => {\\n            parent.scrollLeft = width * activeDot\\n            if (parent.scrollLeft !== width * activeDot) {\\n              throw new Error('Not set.')\\n            }\\n        }, { interval: 50 })\\n    }\\n\\n    function onClick(item, index, e) {\\n        dispatch('click', { item, index, e })\\n        if (typeof item.onClick === 'function') item.onClick(item, index, e)\\n    }\\n\\n</script>\\n\\n<section aria-label=\\\"carousel\\\" class={classProp}>\\n    <ul use:carousel class=\\\"carousel-inner scroll-x-center\\\">\\n        {#each items as item, index}\\n            <li class=\\\"fluid\\\" role=\\\"button\\\" on:click={onClick.bind(null, item, index)}>\\n                <slot {item} {index}>\\n                    <Picture {...item}/>\\n                </slot>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n\\n    {#if dots}\\n        <ul class=\\\"carousel-dots\\\">\\n            {#each items as _item, i}\\n                <li class={i === activeDot ? 'active' : ''}></li>\\n            {/each}\\n        </ul>\\n    {/if}\\n</section>\\n\\n<style>\\n    .carousel, .carousel-inner, .carousel-inner li {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        text-align: left;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .carousel.dotsBelow {\\n        padding-bottom: 40px;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots {\\n        bottom: 0;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots li {\\n        background-color: rgba(var(--theme-bg-color-opposite));\\n    }\\n\\n    .carousel.stretch .fluid {\\n        width: 100%;\\n    }\\n\\n    .carousel.auto .fluid {\\n        width: auto;\\n    }\\n\\n    .carousel {\\n        width: 100%;\\n    }\\n\\n    .carousel-inner::-webkit-scrollbar {\\n        display: none;\\n    }\\n\\n    .carousel .carousel-inner {\\n        width: 100%;\\n        overflow-y: hidden;\\n        overflow-x: scroll;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .carousel-dots {\\n        position: absolute;\\n        left: 0;\\n        bottom: 10px;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        justify-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        pointer-events: none;\\n    }\\n\\n    .carousel-dots li {\\n        position: relative;\\n        width: 8px;\\n        height: 8px;\\n        margin: 5px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n        background-color: rgba(var(--color-light));\\n    }\\n\\n    .carousel-dots li:not(.active) {\\n        opacity: .5;\\n    }\\n\\n    li.active {\\n        -webkit-transform: scale(1.5);\\n                transform: scale(1.5);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksU0FBUztJQUNiOztJQUVBO1FBQ0ksc0RBQXNEO0lBQzFEOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksYUFBYTtJQUNqQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsa0JBQWtCO1FBQ2xCLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixPQUFPO1FBQ1AsWUFBWTtRQUNaLFdBQVc7UUFDWCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixVQUFVO1FBQ1YsV0FBVztRQUNYLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsZ0JBQWdCO1FBQ2hCLHlDQUFpQztnQkFBakMsaUNBQWlDO1FBQ2pDLDBDQUEwQztJQUM5Qzs7SUFFQTtRQUNJLFdBQVc7SUFDZjs7SUFFQTtRQUNJLDZCQUFxQjtnQkFBckIscUJBQXFCO0lBQ3pCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jYXJvdXNlbCwgLmNhcm91c2VsLWlubmVyLCAuY2Fyb3VzZWwtaW5uZXIgbGkge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyB7XG4gICAgICAgIHBhZGRpbmctYm90dG9tOiA0MHB4O1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC5kb3RzQmVsb3cgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBib3R0b206IDA7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyAuY2Fyb3VzZWwtZG90cyBsaSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3Itb3Bwb3NpdGUpKTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuc3RyZXRjaCAuZmx1aWQge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuYXV0byAuZmx1aWQge1xuICAgICAgICB3aWR0aDogYXV0bztcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwtaW5uZXI6Oi13ZWJraXQtc2Nyb2xsYmFyIHtcbiAgICAgICAgZGlzcGxheTogbm9uZTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwgLmNhcm91c2VsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG92ZXJmbG93LXk6IGhpZGRlbjtcbiAgICAgICAgb3ZlcmZsb3cteDogc2Nyb2xsO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIGJvdHRvbTogMTBweDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktaXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC1kb3RzIGxpIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICB3aWR0aDogOHB4O1xuICAgICAgICBoZWlnaHQ6IDhweDtcbiAgICAgICAgbWFyZ2luOiA1cHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWxpZ2h0KSk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMgbGk6bm90KC5hY3RpdmUpIHtcbiAgICAgICAgb3BhY2l0eTogLjU7XG4gICAgfVxuXG4gICAgbGkuYWN0aXZlIHtcbiAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxLjUpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAoFI,qCAAS,CAAE,2CAAe,CAAE,6BAAe,CAAC,EAAE,cAAC,CAAC,AAC5C,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,UAAU,CAAE,IAAI,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,SAAS,UAAU,4BAAC,CAAC,AACjB,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,cAAC,CAAC,AAChC,MAAM,CAAE,CAAC,AACb,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,CAAC,EAAE,cAAC,CAAC,AACnC,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,AAC1D,CAAC,AAED,SAAS,sBAAQ,CAAC,MAAM,cAAC,CAAC,AACtB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,mBAAK,CAAC,MAAM,cAAC,CAAC,AACnB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,AACf,CAAC,AAED,2CAAe,mBAAmB,AAAC,CAAC,AAChC,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,uBAAS,CAAC,eAAe,cAAC,CAAC,AACvB,KAAK,CAAE,IAAI,CACX,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,MAAM,CAClB,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,CACX,MAAM,CAAE,GAAG,CACX,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACzC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,AAC9C,CAAC,AAED,4BAAc,CAAC,gBAAE,KAAK,OAAO,CAAC,AAAC,CAAC,AAC5B,OAAO,CAAE,EAAE,AACf,CAAC,AAED,EAAE,OAAO,4BAAC,CAAC,AACP,iBAAiB,CAAE,MAAM,GAAG,CAAC,CACrB,SAAS,CAAE,MAAM,GAAG,CAAC,AACjC,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Carousel.svelte\",\"sources\":[\"Carousel.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { waitUntil, classnames } from '@utils'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    /**\\n     *\\n     * @type {number | {\\n     *     src: string,\\n     *     srcBig: string,\\n     *     alt: string,\\n     *     onClick?: function,\\n     * }[]}\\n     */\\n    export let items = []\\n    export let dots = true\\n    export let dotsBelow = true\\n    export let size = 'stretch'\\n    export let initIndex = 0\\n\\n    let parent = null\\n\\n    $: activeDot = initIndex\\n    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow })\\n    $: setScrollPosition(parent, initIndex)\\n\\n    function carousel(node) {\\n        parent = node\\n        setScrollPosition(node, activeDot)\\n        node.addEventListener('scroll', onScroll)\\n        return { destroy: () => node.removeEventListener('scroll', onScroll) }\\n    }\\n\\n    function onScroll(e) {\\n        try {\\n            getActiveDot(e.target)\\n        } catch (err) { console.warn('Carousel does not work.', err) }\\n    }\\n\\n    function getActiveDot(parent) {\\n        const { scrollLeft, scrollWidth, offsetWidth } = parent\\n        const dotAmount = Array.from(parent.children).length\\n        const scrollX = scrollLeft / (scrollWidth - offsetWidth)\\n        const newActiveDot = Math.round(scrollX * (dotAmount - 1))\\n        if (activeDot !== newActiveDot) activeDot = newActiveDot\\n    }\\n\\n    function setScrollPosition(parent, activeDot) {\\n        if (!parent) return\\n        const { width } = parent.getBoundingClientRect()\\n        waitUntil(() => {\\n            parent.scrollLeft = width * activeDot\\n            if (parent.scrollLeft !== width * activeDot) {\\n              throw new Error('Not set.')\\n            }\\n        }, { interval: 50 })\\n    }\\n\\n    function onClick(item, index, e) {\\n        dispatch('click', { item, index, e })\\n        if (typeof item.onClick === 'function') item.onClick(item, index, e)\\n    }\\n\\n</script>\\n\\n<section aria-label=\\\"carousel\\\" class={classProp}>\\n    <ul use:carousel class=\\\"carousel-inner scroll-x-center\\\">\\n        {#each items as item, index}\\n            <li class=\\\"fluid\\\" role=\\\"button\\\" on:click={onClick.bind(null, item, index)}>\\n                <slot {item} {index}>\\n                    <Picture {...item}/>\\n                </slot>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n\\n    {#if dots}\\n        <ul class=\\\"carousel-dots\\\">\\n            {#each items as _item, i}\\n                <li class={i === activeDot ? 'active' : ''}></li>\\n            {/each}\\n        </ul>\\n    {/if}\\n</section>\\n\\n<style>\\n    .carousel, .carousel-inner, .carousel-inner li {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        text-align: left;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .carousel.dotsBelow {\\n        padding-bottom: 40px;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots {\\n        bottom: 0;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots li {\\n        background-color: rgba(var(--theme-bg-color-opposite));\\n    }\\n\\n    .carousel.stretch .fluid {\\n        width: 100%;\\n    }\\n\\n    .carousel.auto .fluid {\\n        width: auto;\\n    }\\n\\n    .carousel {\\n        width: 100%;\\n    }\\n\\n    .carousel-inner::-webkit-scrollbar {\\n        display: none;\\n    }\\n\\n    .carousel .carousel-inner {\\n        width: 100%;\\n        overflow-y: hidden;\\n        overflow-x: scroll;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .carousel-dots {\\n        position: absolute;\\n        left: 0;\\n        bottom: 10px;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        justify-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        pointer-events: none;\\n    }\\n\\n    .carousel-dots li {\\n        position: relative;\\n        width: 8px;\\n        height: 8px;\\n        margin: 5px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n        background-color: rgba(var(--color-light));\\n    }\\n\\n    .carousel-dots li:not(.active) {\\n        opacity: .5;\\n    }\\n\\n    li.active {\\n        -webkit-transform: scale(1.5);\\n                transform: scale(1.5);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksU0FBUztJQUNiOztJQUVBO1FBQ0ksc0RBQXNEO0lBQzFEOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksYUFBYTtJQUNqQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsa0JBQWtCO1FBQ2xCLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixPQUFPO1FBQ1AsWUFBWTtRQUNaLFdBQVc7UUFDWCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixVQUFVO1FBQ1YsV0FBVztRQUNYLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsZ0JBQWdCO1FBQ2hCLHlDQUFpQztnQkFBakMsaUNBQWlDO1FBQ2pDLDBDQUEwQztJQUM5Qzs7SUFFQTtRQUNJLFdBQVc7SUFDZjs7SUFFQTtRQUNJLDZCQUFxQjtnQkFBckIscUJBQXFCO0lBQ3pCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jYXJvdXNlbCwgLmNhcm91c2VsLWlubmVyLCAuY2Fyb3VzZWwtaW5uZXIgbGkge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyB7XG4gICAgICAgIHBhZGRpbmctYm90dG9tOiA0MHB4O1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC5kb3RzQmVsb3cgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBib3R0b206IDA7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyAuY2Fyb3VzZWwtZG90cyBsaSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3Itb3Bwb3NpdGUpKTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuc3RyZXRjaCAuZmx1aWQge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuYXV0byAuZmx1aWQge1xuICAgICAgICB3aWR0aDogYXV0bztcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwtaW5uZXI6Oi13ZWJraXQtc2Nyb2xsYmFyIHtcbiAgICAgICAgZGlzcGxheTogbm9uZTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwgLmNhcm91c2VsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG92ZXJmbG93LXk6IGhpZGRlbjtcbiAgICAgICAgb3ZlcmZsb3cteDogc2Nyb2xsO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIGJvdHRvbTogMTBweDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktaXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC1kb3RzIGxpIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICB3aWR0aDogOHB4O1xuICAgICAgICBoZWlnaHQ6IDhweDtcbiAgICAgICAgbWFyZ2luOiA1cHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWxpZ2h0KSk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMgbGk6bm90KC5hY3RpdmUpIHtcbiAgICAgICAgb3BhY2l0eTogLjU7XG4gICAgfVxuXG4gICAgbGkuYWN0aXZlIHtcbiAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxLjUpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAyFI,qCAAS,CAAE,2CAAe,CAAE,6BAAe,CAAC,EAAE,cAAC,CAAC,AAC5C,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,UAAU,CAAE,IAAI,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,SAAS,UAAU,4BAAC,CAAC,AACjB,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,cAAC,CAAC,AAChC,MAAM,CAAE,CAAC,AACb,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,CAAC,EAAE,cAAC,CAAC,AACnC,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,AAC1D,CAAC,AAED,SAAS,sBAAQ,CAAC,MAAM,cAAC,CAAC,AACtB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,mBAAK,CAAC,MAAM,cAAC,CAAC,AACnB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,AACf,CAAC,AAED,2CAAe,mBAAmB,AAAC,CAAC,AAChC,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,uBAAS,CAAC,eAAe,cAAC,CAAC,AACvB,KAAK,CAAE,IAAI,CACX,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,MAAM,CAClB,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,CACX,MAAM,CAAE,GAAG,CACX,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACzC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,AAC9C,CAAC,AAED,4BAAc,CAAC,gBAAE,KAAK,OAAO,CAAC,AAAC,CAAC,AAC5B,OAAO,CAAE,EAAE,AACf,CAAC,AAED,EAAE,OAAO,4BAAC,CAAC,AACP,iBAAiB,CAAE,MAAM,GAAG,CAAC,CACrB,SAAS,CAAE,MAAM,GAAG,CAAC,AACjC,CAAC\"}"
 };
 
 const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -620,6 +1712,23 @@ const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let { dotsBelow = true } = $$props;
 	let { size = "stretch" } = $$props;
 	let { initIndex = 0 } = $$props;
+	let parent = null;
+
+	function setScrollPosition(parent, activeDot) {
+		if (!parent) return;
+		const { width } = parent.getBoundingClientRect();
+
+		waitUntil(
+			() => {
+				parent.scrollLeft = width * activeDot;
+
+				if (parent.scrollLeft !== width * activeDot) {
+					throw new Error("Not set.");
+				}
+			},
+			{ interval: 50 }
+		);
+	}
 
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	if ($$props.dots === void 0 && $$bindings.dots && dots !== void 0) $$bindings.dots(dots);
@@ -629,6 +1738,10 @@ const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	$$result.css.add(css$8);
 	let activeDot = initIndex;
 	let classProp = classnames("carousel", size, $$props.class, { dotsBelow });
+
+	 {
+		setScrollPosition(parent, initIndex);
+	}
 
 	return `<section aria-label="${"carousel"}" class="${escape(null_to_empty(classProp)) + " svelte-xsz8iy"}">
     <ul class="${"carousel-inner scroll-x-center svelte-xsz8iy"}">
@@ -1518,7 +2631,7 @@ const css$l = {
 	map: "{\"version\":3,\"file\":\"Map.svelte\",\"sources\":[\"Map.svelte\"],\"sourcesContent\":[\"<style>\\n    section {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL21hcC9NYXAuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG1CQUFZO1lBQVosb0JBQVk7Z0JBQVosWUFBWTtRQUNaLDRCQUFtQjtZQUFuQixtQkFBbUI7SUFDdkIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvbWFwL01hcC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBzZWN0aW9uIHtcbiAgICAgICAgZmxleC1ncm93OiAxO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgIH1cbiJdfQ== */</style>\\n\\n<script>\\n    import { onMount, onDestroy, setContext, createEventDispatcher } from 'svelte'\\n    import { contextMapbox } from './context'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let center = [31.1656, 48.3794]\\n    export let zoom = 3.75\\n\\n    let map\\n    let container\\n\\n    setContext(contextMapbox, {\\n        getMap: () => map,\\n        getMapbox: () => window.mapboxgl\\n    })\\n\\n    function onCreateMap() {\\n        map = new mapboxgl.Map({\\n            zoom,\\n            center,\\n            container,\\n            style: 'mapbox://styles/mapbox/streets-v11',\\n        })\\n\\n        map.on('dragend', () => dispatch('recentre', { map, center: map.getCenter() }))\\n        map.on('load', () => dispatch('ready', map))\\n    }\\n\\n    function createMap() {\\n        const scriptTag = document.createElement('script')\\n        scriptTag.type = 'text/javascript'\\n        scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js'\\n\\n        const link = document.createElement('link')\\n        link.rel = 'stylesheet'\\n        link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css'\\n\\n        scriptTag.onload = () => {\\n            const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n            mapboxgl.accessToken = token\\n\\n            link.onload = onCreateMap\\n\\n            document.head.appendChild(link)\\n        }\\n\\n        document.body.appendChild(scriptTag)\\n    }\\n\\n    onMount(() => {\\n        if ('mapboxgl' in window) {\\n            onCreateMap()\\n        } else {\\n            createMap()\\n        }\\n    })\\n\\n    onDestroy(() => {\\n        map && map.remove()\\n    })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AACI,OAAO,cAAC,CAAC,AACL,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,AAC3B,CAAC\"}"
 };
 
-const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Map$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
 	let { center = [31.1656, 48.3794] } = $$props;
 	let { zoom = 3.75 } = $$props;
@@ -2962,7 +4075,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 const css$t = {
 	code: "table.svelte-9y31ev tr:not(:last-child) td.svelte-9y31ev{padding-bottom:16px}table.svelte-9y31ev td.svelte-9y31ev:last-child{font-weight:300}",
-	map: "{\"version\":3,\"file\":\"[id].svelte\",\"sources\":[\"[id].svelte\"],\"sourcesContent\":[\"<script>\\n    import { stores } from '@sapper/app'\\n    import { onMount } from 'svelte'\\n    import { API } from '@services'\\n    import {\\n        Br,\\n        Icon,\\n        Card,\\n        Avatar,\\n        Button,\\n        Footer,\\n        Picture,\\n        Progress,\\n        Comments,\\n        Carousel,\\n        FancyBox,\\n        Documents,\\n        TrustButton,\\n        DonatorsList,\\n        DonationButton,\\n    } from '@components'\\n\\n    const { page } = stores()\\n    let charityId = $page.params.id\\n\\n    // Entity\\n    let charity = {}\\n    $: carousel = (charity.avatars || []).map(p => ({ src: p, alt: 'photo' }))\\n    onMount(async () => {\\n        charity = await API.getFund(1)\\n    })\\n\\n    // Trust button\\n    let active = false\\n    async function onClick() {\\n        active = !active\\n    }\\n\\n    // Carousel & FancyBox\\n    let propsBox = {}\\n    function onCarouselClick({ detail }) {\\n        propsBox = { initIndex: detail.index }\\n    }\\n\\n    // Avatar fancy\\n    let avatarFancy = false\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICB0YWJsZSB0cjpub3QoOmxhc3QtY2hpbGQpIHRkIHtcbiAgICAgICAgcGFkZGluZy1ib3R0b206IDE2cHg7XG4gICAgfVxuXG4gICAgdGFibGUgdGQ6bGFzdC1jaGlsZCB7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiAzMDA7XG4gICAgfVxuIl19 */</style>\\n\\n\\n<DonationButton/>\\n\\n<section class=\\\"container theme-bg-color-secondary\\\">\\n    <Br size=\\\"var(--header-height)\\\"/>\\n    <Br size=\\\"30\\\"/>\\n\\n\\n    <section class=\\\"flex\\\" style=\\\"height: 240px\\\">\\n        <FancyBox>\\n            <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n        </FancyBox>\\n    </section>\\n    <Br size=\\\"40\\\"/>\\n\\n\\n    <Button class=\\\"white\\\">\\n        <div class=\\\"flex flex-align-center flex-justify-between full-width\\\">\\n            <div class=\\\"flex flex-align-center\\\">\\n                <s></s>\\n                <div class=\\\"flex\\\" style=\\\"max-width: 45px; height: 40px; overflow: hidden\\\">\\n                    <Picture\\n                            src=\\\"./assets/dimsirka.jpg\\\"\\n                            size=\\\"contain\\\"\\n                            alt=\\\"logo\\\"\\n                    />\\n                </div>\\n                <s></s>\\n                <s></s>\\n                <s></s>\\n                <h3>\\\"Дім Сірка\\\"</h3>\\n            </div>\\n            <span style=\\\"font-size: 24px\\\">\\n               →\\n            </span>\\n        </div>\\n    </Button>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"20\\\"/>\\n\\n        <h2>Збережемо тварин разом</h2>\\n        <h3 class=\\\"font-w-normal\\\" style=\\\"opacity: .7\\\">Збір грошей на допомогу безпритульним тваринам</h3>\\n\\n        <Br size=\\\"25\\\"/>\\n        <p class=\\\"font-secondary\\\">\\n            <span class=\\\"h1 font-w-500\\\">₴ 3500</span>\\n            <span class=\\\"h3\\\"> / ₴ 20000</span>\\n        </p>\\n        <Br size=\\\"20\\\"/>\\n\\n        <Progress value={Math.floor(3500 / 20000 * 100)}/>\\n\\n        <Br size=\\\"40\\\"/>\\n    </Card>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <p class=\\\"container flex flex-justify-between flex-align-center\\\">\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon is=\\\"danger\\\" type=\\\"heart-filled\\\" size=\\\"medium\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">1</span>\\n        </span>\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon type=\\\"eye\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">13</span>\\n        </span>\\n    </p>\\n    <Br size=\\\"50\\\"/>\\n\\n\\n    <h2>Збережемо тварин разом</h2>\\n    <Br size=\\\"10\\\"/>\\n    <pre class=\\\"font-w-300\\\">\\n        Терміново шукаємо добрі руки 🤲🥰\\n        Бадді підкинули під кафе біля самої траси!\\n        Біля нього були тільки залишки черствого хліба... 💔\\n        За що можна було покинути малюка напризволяще? 🥺\\n        В чому він міг провинитися? Йому всього 2 місяці.\\n        Зараз буде проходити обробку від паразитів та вакцинацію 💉\\n    </pre>\\n    <Br size=\\\"10\\\"/>\\n\\n\\n    <p class=\\\"flex\\\">\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"share\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Поділитись</p>\\n        </Button>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"link\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Скопіювати</p>\\n        </Button>\\n    </p>\\n    <Br size=\\\"45\\\"/>\\n\\n\\n    <section class=\\\"flex flex-column flex-align-center flex-justify-center\\\">\\n        <div style=\\\"width: 100px; max-width: 100%\\\">\\n            <TrustButton isActive={active} on:click={onClick}/>\\n        </div>\\n        <Br size=\\\"10\\\"/>\\n        <h2>Я довіряю</h2>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"30\\\"/>\\n\\n        <div class=\\\"flex flex-column flex-align-center\\\">\\n            <span>\\n                <FancyBox>\\n                    <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" size=\\\"big\\\" alt=\\\"Волтер\\\"/>\\n                    <section slot=\\\"box\\\" class=\\\"flex full-width full-height\\\" style=\\\"height: 100vw\\\">\\n                        <div class=\\\"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch\\\" style=\\\"padding: var(--screen-padding) 0\\\">\\n                            <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" alt=\\\"Волтер\\\"/>\\n                        </div>\\n                    </section>\\n                </FancyBox>\\n            </span>\\n\\n            <Br size=\\\"20\\\"/>\\n\\n            <h2>Волтер</h2>\\n            <Br size=\\\"5\\\"/>\\n            <h3 class=\\\"font-w-500\\\" style=\\\"opacity: .7\\\">Jack Russell Terrier</h3>\\n        </div>\\n        <Br size=\\\"35\\\"/>\\n\\n        <section class=\\\"flex flex-justify-center\\\">\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"text-white text-center absolute\\\">\\n                    <h4 class=\\\"h1\\\">3</h4>\\n                    <h4 style=\\\"margin-top: -8px\\\">Роки</h4>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"info\\\"/>\\n                <div class=\\\"absolute flex\\\" style=\\\"width: 44px; height: 44px\\\">\\n                    <Icon type=\\\"male\\\" is=\\\"light\\\"/>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em; opacity: .3\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"absolute flex flex-column flex-center\\\">\\n                    <Icon type=\\\"cancel-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    <span class=\\\"text-white text-center h5\\\">Cтерилізація</span>\\n                </div>\\n            </div>\\n        </section>\\n        <Br size=\\\"40\\\"/>\\n\\n        <h2>Характер Волтера: 😃</h2>\\n        <Br size=\\\"10\\\"/>\\n        <p class=\\\"font-w-300\\\">\\n            Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми\\n        </p>\\n        <Br size=\\\"35\\\"/>\\n\\n        <h2>Життя Волтера</h2>\\n        <Br size=\\\"10\\\"/>\\n        <table>\\n            <tbody>\\n            <tr>\\n                <td>01.02.2019</td>\\n                <td>—</td>\\n                <td>Його перший день народження</td>\\n            </tr>\\n            <tr>\\n                <td>05.02.2019</td>\\n                <td>—</td>\\n                <td>Ми приютили його з вулиці</td>\\n            </tr>\\n            <tr>\\n                <td>07.03.2019</td>\\n                <td>—</td>\\n                <td>Зробили вакцинацію проти бліх</td>\\n            </tr>\\n            <tr>\\n                <td>23.06.2019</td>\\n                <td>—</td>\\n                <td>Знайшов для себе улюблену іграшку</td>\\n            </tr>\\n            </tbody>\\n        </table>\\n        <Br size=\\\"45\\\"/>\\n\\n        <h2>Вакцинації</h2>\\n        <Br size=\\\"15\\\"/>\\n        <ul class=\\\"flex flex-column text-left\\\">\\n            <li>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від бліх\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від паразитів\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"danger\\\" type=\\\"cancel-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від грибків\\n                </span>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"35\\\"/>\\n    </Card>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Наші піклувальники</h1>\\n    <Br size=\\\"20\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <DonatorsList/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Документи</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Documents/>\\n    </div>\\n    <Br size=\\\"45\\\"/> \\n\\n\\n    <h1>Відео про Волтера</h1>\\n    <Br size=\\\"20\\\"/>\\n    <section class=\\\"flex\\\" style=\\\"height: 20px\\\">\\n        <Carousel items={carousel}/>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Як допомогти</h1>\\n    <Br size=\\\"15\\\"/>\\n    <ul style=\\\"list-style: disc outside none; padding-left: var(--screen-padding)\\\" class=\\\"h3 font-w-500 font-secondary\\\">\\n        <li style=\\\"padding-bottom: 5px\\\">Ви пожете купити йому поїсти</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Можете особисто відвідати його у нас</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Купити вакцінацію для Волтера</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Допомогти любим інщим способом</li>\\n    </ul>\\n    <Br size=\\\"30\\\"/>\\n    <div class=\\\"flex\\\">\\n        <div class=\\\"flex flex-align-center font-secondary\\\">\\n            <Icon size=\\\"medium\\\" type=\\\"phone\\\" class=\\\"theme-svg-fill-opposite\\\"/>\\n            <s></s>\\n            <s></s>\\n            <h2>+38 (093) 205-43-92</h2>\\n        </div>\\n    </div>\\n    <Br size=\\\"5\\\"/>\\n    <p class=\\\"font-w-300\\\">Подзвоніть нам, якщо хочете допомогти Волтеру</p>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Коментарі</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Comments/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <div class=\\\"full-container\\\">\\n        <Footer/>\\n    </div>\\n    <Br size=\\\"70\\\"/>\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAqDI,mBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,cAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,mBAAK,CAAC,gBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"[id].svelte\",\"sources\":[\"[id].svelte\"],\"sourcesContent\":[\"<script>\\n    import { stores } from '@sapper/app'\\n    import { onMount } from 'svelte'\\n    import { API } from '@services'\\n    import { _ } from '@utils'\\n    import {\\n        Br,\\n        Icon,\\n        Card,\\n        Avatar,\\n        Button,\\n        Footer,\\n        Picture,\\n        Progress,\\n        Comments,\\n        Carousel,\\n        FancyBox,\\n        Documents,\\n        TrustButton,\\n        DonatorsList,\\n        DonationButton,\\n    } from '@components'\\n\\n    const { page } = stores()\\n    let charityId = $page.params.id\\n\\n    // Entity\\n    let charity = {}\\n    \\n    $: carouselTop = (charity.avatars || []).map((p, i) => ({ src: p, srcBig: _.get(charity.avatars2x, `[${i}]`), alt: 'топ фото' }));\\n    $: organization = (charity.organization || {});\\n    $: cardTop = {\\n        title: charity.title,\\n        subtitle: charity.subtitle,\\n        currentSum: charity.curremt_sum,\\n        neededSum: charity.need_sum,\\n        currency: charity.currency,\\n    };\\n\\n    onMount(async () => {\\n        charity = await API.getFund(1)\\n    })\\n\\n    // Trust button\\n    let active = false\\n    async function onClick() {\\n        active = !active\\n    }\\n\\n    // Carousel & FancyBox\\n    let propsBox = {}\\n    function onCarouselClick({ detail }) {\\n        propsBox = { initIndex: detail.index }\\n    }\\n\\n    // Avatar fancy\\n    let avatarFancy = false\\n</script>\\n\\n<svelte:head>\\n    <title>Charitify - Charity page and donate.</title>\\n</svelte:head>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvZnVuZHMvW2lkXS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICB0YWJsZSB0cjpub3QoOmxhc3QtY2hpbGQpIHRkIHtcbiAgICAgICAgcGFkZGluZy1ib3R0b206IDE2cHg7XG4gICAgfVxuXG4gICAgdGFibGUgdGQ6bGFzdC1jaGlsZCB7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiAzMDA7XG4gICAgfVxuIl19 */</style>\\n\\n\\n<DonationButton/>\\n\\n<section class=\\\"container theme-bg-color-secondary\\\">\\n    <Br size=\\\"var(--header-height)\\\"/>\\n    <Br size=\\\"30\\\"/>\\n\\n\\n    <section class=\\\"flex\\\" style=\\\"height: 240px\\\">\\n        <FancyBox>\\n            <Carousel items={carouselTop} on:click={onCarouselClick} dotsBelow={false}/>\\n            <section slot=\\\"box\\\" class=\\\"flex full-width\\\">\\n                <Carousel items={carouselTop} {...propsBox}/>\\n            </section>\\n        </FancyBox>\\n    </section>\\n    <Br size=\\\"40\\\"/>\\n\\n\\n    <a rel=\\\"prefetch\\\" href={organization.id} class=\\\"btn white full-width\\\" style=\\\"padding: 5px 15px;\\\">\\n        <div class=\\\"flex flex-align-center flex-justify-between full-width\\\">\\n            <div class=\\\"flex flex-align-center\\\">\\n                <s></s>\\n                <div class=\\\"flex\\\" style=\\\"max-width: 45px; height: 40px; overflow: hidden\\\">\\n                    <Picture\\n                            src={organization.avatar}\\n                            size=\\\"contain\\\"\\n                            alt=\\\"фото організації\\\"\\n                    />\\n                </div>\\n                <s></s>\\n                <s></s>\\n                <s></s>\\n                <h3>{organization.name}</h3>\\n            </div>\\n            <span style=\\\"font-size: 24px\\\">\\n               →\\n            </span>\\n        </div>\\n    </a>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"20\\\"/>\\n\\n        <h2>{cardTop.title}</h2>\\n        <h3 class=\\\"font-w-normal\\\" style=\\\"opacity: .7\\\">{cardTop.subtitle}</h3>\\n\\n        <Br size=\\\"25\\\"/>\\n        <p class=\\\"font-secondary\\\">\\n            <span class=\\\"h1 font-w-500\\\">{cardTop.currency} {cardTop.currentSum}</span>\\n            <span class=\\\"h3\\\"> / {cardTop.currency} {cardTop.neededSum}</span>\\n        </p>\\n        <Br size=\\\"20\\\"/>\\n\\n        <Progress value={Math.floor(cardTop.currentSum / cardTop.neededSum * 100)}/>\\n\\n        <Br size=\\\"40\\\"/>\\n    </Card>\\n    <Br size=\\\"20\\\"/>\\n\\n\\n    <p class=\\\"container flex flex-justify-between flex-align-center\\\">\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon is=\\\"danger\\\" type=\\\"heart-filled\\\" size=\\\"medium\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">1</span>\\n        </span>\\n        <span class=\\\"flex flex-align-center\\\">\\n            <Icon type=\\\"eye\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <span class=\\\"font-secondary font-w-600 h3\\\">13</span>\\n        </span>\\n    </p>\\n    <Br size=\\\"50\\\"/>\\n\\n\\n    <h2>Збережемо тварин разом</h2>\\n    <Br size=\\\"10\\\"/>\\n    <pre class=\\\"font-w-300\\\">\\n        Терміново шукаємо добрі руки 🤲🥰\\n        Бадді підкинули під кафе біля самої траси!\\n        Біля нього були тільки залишки черствого хліба... 💔\\n        За що можна було покинути малюка напризволяще? 🥺\\n        В чому він міг провинитися? Йому всього 2 місяці.\\n        Зараз буде проходити обробку від паразитів та вакцинацію 💉\\n    </pre>\\n    <Br size=\\\"10\\\"/>\\n\\n\\n    <p class=\\\"flex\\\">\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"share\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Поділитись</p>\\n        </Button>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <s></s>\\n        <Button class=\\\"flex flex-align-center\\\" auto size=\\\"small\\\">\\n            <Icon type=\\\"link\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill\\\"/>\\n            <s></s>\\n            <s></s>\\n            <p class=\\\"font-w-500\\\">Скопіювати</p>\\n        </Button>\\n    </p>\\n    <Br size=\\\"45\\\"/>\\n\\n\\n    <section class=\\\"flex flex-column flex-align-center flex-justify-center\\\">\\n        <div style=\\\"width: 100px; max-width: 100%\\\">\\n            <TrustButton isActive={active} on:click={onClick}/>\\n        </div>\\n        <Br size=\\\"10\\\"/>\\n        <h2>Я довіряю</h2>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <Card class=\\\"container\\\">\\n        <Br size=\\\"30\\\"/>\\n\\n        <div class=\\\"flex flex-column flex-align-center\\\">\\n            <span>\\n                <FancyBox>\\n                    <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" size=\\\"big\\\" alt=\\\"Волтер\\\"/>\\n                    <section slot=\\\"box\\\" class=\\\"flex full-width full-height\\\" style=\\\"height: 100vw\\\">\\n                        <div class=\\\"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch\\\" style=\\\"padding: var(--screen-padding) 0\\\">\\n                            <Avatar src=\\\"https://placeimg.com/300/300/animal\\\" alt=\\\"Волтер\\\"/>\\n                        </div>\\n                    </section>\\n                </FancyBox>\\n            </span>\\n\\n            <Br size=\\\"20\\\"/>\\n\\n            <h2>Волтер</h2>\\n            <Br size=\\\"5\\\"/>\\n            <h3 class=\\\"font-w-500\\\" style=\\\"opacity: .7\\\">Jack Russell Terrier</h3>\\n        </div>\\n        <Br size=\\\"35\\\"/>\\n\\n        <section class=\\\"flex flex-justify-center\\\">\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"text-white text-center absolute\\\">\\n                    <h4 class=\\\"h1\\\">3</h4>\\n                    <h4 style=\\\"margin-top: -8px\\\">Роки</h4>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"info\\\"/>\\n                <div class=\\\"absolute flex\\\" style=\\\"width: 44px; height: 44px\\\">\\n                    <Icon type=\\\"male\\\" is=\\\"light\\\"/>\\n                </div>\\n            </div>\\n\\n            <div class=\\\"flex flex-center relative\\\" style=\\\"width: 90px; height: 90px; margin: 0 .8em; opacity: .3\\\">\\n                <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n                <div class=\\\"absolute flex flex-column flex-center\\\">\\n                    <Icon type=\\\"cancel-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    <span class=\\\"text-white text-center h5\\\">Cтерилізація</span>\\n                </div>\\n            </div>\\n        </section>\\n        <Br size=\\\"40\\\"/>\\n\\n        <h2>Характер Волтера: 😃</h2>\\n        <Br size=\\\"10\\\"/>\\n        <p class=\\\"font-w-300\\\">\\n            Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми\\n        </p>\\n        <Br size=\\\"35\\\"/>\\n\\n        <h2>Життя Волтера</h2>\\n        <Br size=\\\"10\\\"/>\\n        <table>\\n            <tbody>\\n            <tr>\\n                <td>01.02.2019</td>\\n                <td>—</td>\\n                <td>Його перший день народження</td>\\n            </tr>\\n            <tr>\\n                <td>05.02.2019</td>\\n                <td>—</td>\\n                <td>Ми приютили його з вулиці</td>\\n            </tr>\\n            <tr>\\n                <td>07.03.2019</td>\\n                <td>—</td>\\n                <td>Зробили вакцинацію проти бліх</td>\\n            </tr>\\n            <tr>\\n                <td>23.06.2019</td>\\n                <td>—</td>\\n                <td>Знайшов для себе улюблену іграшку</td>\\n            </tr>\\n            </tbody>\\n        </table>\\n        <Br size=\\\"45\\\"/>\\n\\n        <h2>Вакцинації</h2>\\n        <Br size=\\\"15\\\"/>\\n        <ul class=\\\"flex flex-column text-left\\\">\\n            <li>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від бліх\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від паразитів\\n                </span>\\n            </li>\\n            <li>\\n                <Br size=\\\"10\\\"/>\\n                <span class=\\\"flex flex-align-center font-w-300\\\">\\n                    <Icon is=\\\"danger\\\" type=\\\"cancel-circle\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    Від грибків\\n                </span>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"35\\\"/>\\n    </Card>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Наші піклувальники</h1>\\n    <Br size=\\\"20\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <DonatorsList/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Документи</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Documents/>\\n    </div>\\n    <Br size=\\\"45\\\"/> \\n\\n\\n    <h1>Відео про Волтера</h1>\\n    <Br size=\\\"20\\\"/>\\n    <section class=\\\"flex\\\" style=\\\"height: 20px\\\">\\n        <Carousel items={carouselTop}/>\\n    </section>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Як допомогти</h1>\\n    <Br size=\\\"15\\\"/>\\n    <ul style=\\\"list-style: disc outside none; padding-left: var(--screen-padding)\\\" class=\\\"h3 font-w-500 font-secondary\\\">\\n        <li style=\\\"padding-bottom: 5px\\\">Ви пожете купити йому поїсти</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Можете особисто відвідати його у нас</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Купити вакцінацію для Волтера</li>\\n        <li style=\\\"padding-bottom: 5px\\\">Допомогти любим інщим способом</li>\\n    </ul>\\n    <Br size=\\\"30\\\"/>\\n    <div class=\\\"flex\\\">\\n        <div class=\\\"flex flex-align-center font-secondary\\\">\\n            <Icon size=\\\"medium\\\" type=\\\"phone\\\" class=\\\"theme-svg-fill-opposite\\\"/>\\n            <s></s>\\n            <s></s>\\n            <h2>+38 (093) 205-43-92</h2>\\n        </div>\\n    </div>\\n    <Br size=\\\"5\\\"/>\\n    <p class=\\\"font-w-300\\\">Подзвоніть нам, якщо хочете допомогти Волтеру</p>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <h1>Коментарі</h1>\\n    <Br size=\\\"5\\\"/>\\n    <div class=\\\"full-container\\\">\\n        <Comments/>\\n    </div>\\n    <Br size=\\\"60\\\"/>\\n\\n\\n    <div class=\\\"full-container\\\">\\n        <Footer/>\\n    </div>\\n    <Br size=\\\"70\\\"/>\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAgEI,mBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,cAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,mBAAK,CAAC,gBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
 };
 
 const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -2981,9 +4094,27 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	// Trust button
 	let active = false;
 
+	// Carousel & FancyBox
+	let propsBox = {};
+
 	$$result.css.add(css$t);
 	$page = get_store_value(page);
-	let carousel = (charity.avatars || []).map(p => ({ src: p, alt: "photo" }));
+
+	let carouselTop = (charity.avatars || []).map((p, i) => ({
+		src: p,
+		srcBig: get(charity.avatars2x, `[${i}]`),
+		alt: "топ фото"
+	}));
+
+	let organization = charity.organization || {};
+
+	let cardTop = {
+		title: charity.title,
+		subtitle: charity.subtitle,
+		currentSum: charity.curremt_sum,
+		neededSum: charity.need_sum,
+		currency: charity.currency
+	};
 
 	return `${($$result.head += `${($$result.title = `<title>Charitify - Charity page and donate.</title>`, "")}`, "")}
 
@@ -2999,42 +4130,44 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 
     <section class="${"flex"}" style="${"height: 240px"}">
         ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
+		box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+                ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carouselTop }, propsBox), {}, {})}
+            </section>`,
 		default: () => `
-            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
+            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carouselTop, dotsBelow: false }, {}, {})}
+            
         `
 	})}
     </section>
     ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
 
-    ${validate_component(Button, "Button").$$render($$result, { class: "white" }, {}, {
-		default: () => `
+    <a rel="${"prefetch"}"${add_attribute("href", organization.id, 0)} class="${"btn white full-width"}" style="${"padding: 5px 15px;"}">
         <div class="${"flex flex-align-center flex-justify-between full-width"}">
             <div class="${"flex flex-align-center"}">
                 <s></s>
                 <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
                     ${validate_component(Picture, "Picture").$$render(
-			$$result,
-			{
-				src: "./assets/dimsirka.jpg",
-				size: "contain",
-				alt: "logo"
-			},
-			{},
-			{}
-		)}
+		$$result,
+		{
+			src: organization.avatar,
+			size: "contain",
+			alt: "фото організації"
+		},
+		{},
+		{}
+	)}
                 </div>
                 <s></s>
                 <s></s>
                 <s></s>
-                <h3>&quot;Дім Сірка&quot;</h3>
+                <h3>${escape(organization.name)}</h3>
             </div>
             <span style="${"font-size: 24px"}">
                →
             </span>
         </div>
-    `
-	})}
+    </a>
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
 
@@ -3042,17 +4175,24 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 		default: () => `
         ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
-        <h2>Збережемо тварин разом</h2>
-        <h3 class="${"font-w-normal"}" style="${"opacity: .7"}">Збір грошей на допомогу безпритульним тваринам</h3>
+        <h2>${escape(cardTop.title)}</h2>
+        <h3 class="${"font-w-normal"}" style="${"opacity: .7"}">${escape(cardTop.subtitle)}</h3>
 
         ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
         <p class="${"font-secondary"}">
-            <span class="${"h1 font-w-500"}">₴ 3500</span>
-            <span class="${"h3"}"> / ₴ 20000</span>
+            <span class="${"h1 font-w-500"}">${escape(cardTop.currency)} ${escape(cardTop.currentSum)}</span>
+            <span class="${"h3"}"> / ${escape(cardTop.currency)} ${escape(cardTop.neededSum)}</span>
         </p>
         ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
-        ${validate_component(Progress, "Progress").$$render($$result, { value: Math.floor(3500 / 20000 * 100) }, {}, {})}
+        ${validate_component(Progress, "Progress").$$render(
+			$$result,
+			{
+				value: Math.floor(cardTop.currentSum / cardTop.neededSum * 100)
+			},
+			{},
+			{}
+		)}
 
         ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
     `
@@ -3380,7 +4520,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     <h1>Відео про Волтера</h1>
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
     <section class="${"flex"}" style="${"height: 20px"}">
-        ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel }, {}, {})}
+        ${validate_component(Carousel, "Carousel").$$render($$result, { items: carouselTop }, {}, {})}
     </section>
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
@@ -3590,7 +4730,7 @@ const Map_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 
 ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
-${validate_component(Map$1, "Map").$$render($$result, {}, {}, {
+${validate_component(Map$2, "Map").$$render($$result, {}, {}, {
 		default: () => `
     ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
 `
@@ -3616,7 +4756,7 @@ const U5Bidu5D$3 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 
  ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
-${validate_component(Map$1, "Map").$$render($$result, { center }, {}, {
+${validate_component(Map$2, "Map").$$render($$result, { center }, {}, {
 		default: () => `
     ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
 `
