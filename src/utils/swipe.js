@@ -11,10 +11,13 @@ export class Swipe {
     this.element.addEventListener('touchend', this.touchEndHandler.bind(this), false)
 
   
-    this.element.addEventListener('gesturescgange', () => {
+    this.element.addEventListener('gesturestart', () => {
       this.isTwoFingers = true
     })
 
+    this.element.addEventListener('gesturechange', () => {
+      this.isTwoFingers = true
+    })
 
     this.element.addEventListener('gestureend', () => {
       this.isTwoFingers = false
@@ -89,6 +92,8 @@ export class Swipe {
     if (!this.isMoveStart || this.isTwoFingers) {
       return
     }
+
+    console.log(evt.touches.length)
 
     const xUp = evt.touches[0].clientX;
     const yUp = evt.touches[0].clientY;
