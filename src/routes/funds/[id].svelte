@@ -2,24 +2,22 @@
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
     import { API } from '@services'
-    import { delay, _ } from '@utils'
-    import {
-        Br,
-        Icon,
-        Card,
-        Avatar,
-        Button,
-        Footer,
-        Picture,
-        Progress,
-        Comments,
-        Carousel,
-        FancyBox,
-        Documents,
-        TrustButton,
-        DonatorsList,
-        DonationButton,
-    } from '@components'
+    import { delay, safeGet, _ } from '@utils'
+    import { Br, Footer, DonationButton } from '@components'
+
+    import TopCarousel from './_TopCarousel.svelte'
+    import OrganizationButton from './_OrganizationButton.svelte'
+    import QuickInfoCard from './_QuickInfoCard.svelte'
+    import InteractionIndicators from './_InteractionIndicators.svelte'
+    import Description from './_Description.svelte'
+    import Share from './_Share.svelte'
+    import Trust from './_Trust.svelte'
+    import AnimalCard from './_AnimalCard.svelte'
+    import Donators from './_Donators.svelte'
+    import Documents from './_Documents.svelte'
+    import Media from './_Media.svelte'
+    import HowToHelp from './_HowToHelp.svelte'
+    import Comments from './_Comments.svelte'
 
     const { page } = stores()
     let charityId = $page.params.id
@@ -40,26 +38,27 @@
         likes: charity.likes,
         views: charity.views,
     };
+    $: descriptionBlock = {
+        title: charity.title,
+        text: charity.description,
+    };
+    $: animal = {
+        avatar: safeGet(() => charity.animal.avatars[0]),
+        avatar2x: safeGet(() => charity.animal.avatars2x[0]),
+        name: safeGet(() => charity.animal.name),
+        breed: safeGet(() => charity.animal.breed),
+        age: safeGet(() => (new Date().getFullYear()) - (new Date(charity.animal.birth).getFullYear()), 0, true),
+        sex: safeGet(() => charity.animal.sex),
+        sterilization: safeGet(() => charity.animal.sterilization),
+        character: safeGet(() => charity.animal.character),
+        lifestory: safeGet(() => charity.animal.lifestory, [], true),
+        vaccination: safeGet(() => charity.animal.vaccination, [], true),
+    };
 
     onMount(async () => {
         await delay(2000)
         charity = await API.getFund(1)
     })
-
-    // Trust button
-    let active = false
-    async function onClick() {
-        active = !active
-    }
-
-    // Carousel & FancyBox
-    let propsBox = {}
-    function onCarouselClick({ detail }) {
-        propsBox = { initIndex: detail.index }
-    }
-
-    // Avatar fancy
-    let avatarFancy = false
 </script>
 
 <svelte:head>
@@ -67,15 +66,7 @@
 </svelte:head>
 
 <style>
-    table tr:not(:last-child) td {
-        padding-bottom: 16px;
-    }
-
-    table td:last-child {
-        font-weight: 300;
-    }
 </style>
-
 
 <DonationButton/>
 
@@ -83,300 +74,44 @@
     <Br size="var(--header-height)"/>
     <Br size="30"/>
 
-
-    <section class="flex" style="height: 240px">
-        <FancyBox>
-            <Carousel items={carouselTop} on:click={onCarouselClick} dotsBelow={false}/>
-            <section slot="box" class="flex full-width">
-                <Carousel items={carouselTop} {...propsBox}/>
-            </section>
-        </FancyBox>
-    </section>
+    <TopCarousel items={carouselTop}/>
     <Br size="40"/>
 
-
-    <a rel="prefetch" href={organization.id} class="btn white full-width" style="padding: 5px 15px;">
-        <div class="flex flex-align-center flex-justify-between full-width">
-            <div class="flex flex-align-center">
-                <s></s>
-                <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
-                    <Picture
-                            src={organization.avatar}
-                            size="contain"
-                            alt="фото організації"
-                    />
-                </div>
-                <s></s>
-                <s></s>
-                <s></s>
-                <h3>{organization.name}</h3>
-            </div>
-            <span style="font-size: 24px">
-               →
-            </span>
-        </div>
-    </a>
+    <OrganizationButton organization={organization}/>
     <Br size="20"/>
 
-
-    <Card class="container">
-        <Br size="20"/>
-
-        <h2>{cardTop.title}</h2>
-        <h3 class="font-w-normal" style="opacity: .7">{cardTop.subtitle}</h3>
-
-        <Br size="25"/>
-        <p class="font-secondary">
-            <span class="h1 font-w-500">{cardTop.currency} {cardTop.currentSum}</span>
-            <span class="h3"> / {cardTop.currency} {cardTop.neededSum}</span>
-        </p>
-        <Br size="20"/>
-
-        <Progress value={Math.floor(cardTop.currentSum / cardTop.neededSum * 100)}/>
-
-        <Br size="40"/>
-    </Card>
+    <QuickInfoCard cardTop={cardTop}/>
     <Br size="20"/>
 
-
-    <p class="container flex flex-justify-between flex-align-center">
-        <span class="flex flex-align-center">
-            <Icon is="danger" type="heart-filled" size="medium"/>
-            <s></s>
-            <s></s>
-            <span class="font-secondary font-w-600 h3">{iconsLine.likes}</span>
-        </span>
-        <span class="flex flex-align-center">
-            <Icon type="eye" size="medium" class="theme-svg-fill"/>
-            <s></s>
-            <s></s>
-            <span class="font-secondary font-w-600 h3">{iconsLine.views}</span>
-        </span>
-    </p>
+    <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
     <Br size="50"/>
 
-
-    <h2>Збережемо тварин разом</h2>
-    <Br size="10"/>
-    <pre class="font-w-300">
-        Терміново шукаємо добрі руки 🤲🥰
-        Бадді підкинули під кафе біля самої траси!
-        Біля нього були тільки залишки черствого хліба... 💔
-        За що можна було покинути малюка напризволяще? 🥺
-        В чому він міг провинитися? Йому всього 2 місяці.
-        Зараз буде проходити обробку від паразитів та вакцинацію 💉
-    </pre>
+    <Description title={descriptionBlock.title} text={descriptionBlock.text}/>
     <Br size="10"/>
 
-
-    <p class="flex">
-        <Button class="flex flex-align-center" auto size="small">
-            <Icon type="share" size="medium" class="theme-svg-fill"/>
-            <s></s>
-            <s></s>
-            <p class="font-w-500">Поділитись</p>
-        </Button>
-        <s></s>
-        <s></s>
-        <s></s>
-        <s></s>
-        <s></s>
-        <Button class="flex flex-align-center" auto size="small">
-            <Icon type="link" size="medium" class="theme-svg-fill"/>
-            <s></s>
-            <s></s>
-            <p class="font-w-500">Скопіювати</p>
-        </Button>
-    </p>
+    <Share />
     <Br size="45"/>
 
-
-    <section class="flex flex-column flex-align-center flex-justify-center">
-        <div style="width: 100px; max-width: 100%">
-            <TrustButton isActive={active} on:click={onClick}/>
-        </div>
-        <Br size="10"/>
-        <h2>Я довіряю</h2>
-    </section>
+    <Trust />
     <Br size="60"/>
 
-
-    <Card class="container">
-        <Br size="30"/>
-
-        <div class="flex flex-column flex-align-center">
-            <span>
-                <FancyBox>
-                    <Avatar src="https://placeimg.com/300/300/animal" size="big" alt="Волтер"/>
-                    <section slot="box" class="flex full-width full-height" style="height: 100vw">
-                        <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
-                            <Avatar src="https://placeimg.com/300/300/animal" alt="Волтер"/>
-                        </div>
-                    </section>
-                </FancyBox>
-            </span>
-
-            <Br size="20"/>
-
-            <h2>Волтер</h2>
-            <Br size="5"/>
-            <h3 class="font-w-500" style="opacity: .7">Jack Russell Terrier</h3>
-        </div>
-        <Br size="35"/>
-
-        <section class="flex flex-justify-center">
-            <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
-                <Icon type="polygon" is="primary"/>
-                <div class="text-white text-center absolute">
-                    <h4 class="h1">3</h4>
-                    <h4 style="margin-top: -8px">Роки</h4>
-                </div>
-            </div>
-
-            <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
-                <Icon type="polygon" is="info"/>
-                <div class="absolute flex" style="width: 44px; height: 44px">
-                    <Icon type="male" is="light"/>
-                </div>
-            </div>
-
-            <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em; opacity: .3">
-                <Icon type="polygon" is="primary"/>
-                <div class="absolute flex flex-column flex-center">
-                    <Icon type="cancel-circle" is="light" size="big"/>
-                    <span class="text-white text-center h5">Cтерилізація</span>
-                </div>
-            </div>
-        </section>
-        <Br size="40"/>
-
-        <h2>Характер Волтера: 😃</h2>
-        <Br size="10"/>
-        <p class="font-w-300">
-            Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми
-        </p>
-        <Br size="35"/>
-
-        <h2>Життя Волтера</h2>
-        <Br size="10"/>
-        <table>
-            <tbody>
-            <tr>
-                <td>01.02.2019</td>
-                <td>—</td>
-                <td>Його перший день народження</td>
-            </tr>
-            <tr>
-                <td>05.02.2019</td>
-                <td>—</td>
-                <td>Ми приютили його з вулиці</td>
-            </tr>
-            <tr>
-                <td>07.03.2019</td>
-                <td>—</td>
-                <td>Зробили вакцинацію проти бліх</td>
-            </tr>
-            <tr>
-                <td>23.06.2019</td>
-                <td>—</td>
-                <td>Знайшов для себе улюблену іграшку</td>
-            </tr>
-            </tbody>
-        </table>
-        <Br size="45"/>
-
-        <h2>Вакцинації</h2>
-        <Br size="15"/>
-        <ul class="flex flex-column text-left">
-            <li>
-                <span class="flex flex-align-center font-w-300">
-                    <Icon is="primary" type="checked-circle" size="medium"/>
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    Від бліх
-                </span>
-            </li>
-            <li>
-                <Br size="10"/>
-                <span class="flex flex-align-center font-w-300">
-                    <Icon is="primary" type="checked-circle" size="medium"/>
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    Від паразитів
-                </span>
-            </li>
-            <li>
-                <Br size="10"/>
-                <span class="flex flex-align-center font-w-300">
-                    <Icon is="danger" type="cancel-circle" size="medium"/>
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    Від грибків
-                </span>
-            </li>
-        </ul>
-
-        <Br size="35"/>
-    </Card>
+    <AnimalCard animal={animal}/>
     <Br size="60"/>
 
-
-    <h1>Наші піклувальники</h1>
-    <Br size="20"/>
-    <div class="full-container">
-        <DonatorsList/>
-    </div>
+    <Donators />
     <Br size="60"/>
 
-
-    <h1>Документи</h1>
-    <Br size="5"/>
-    <div class="full-container">
-        <Documents/>
-    </div>
+    <Documents/>
     <Br size="45"/> 
 
-
-    <h1>Відео про Волтера</h1>
-    <Br size="20"/>
-    <section class="flex" style="height: 20px">
-        <Carousel items={carouselTop}/>
-    </section>
+    <Media items={carouselTop}/>
     <Br size="60"/>
 
-
-    <h1>Як допомогти</h1>
-    <Br size="15"/>
-    <ul style="list-style: disc outside none; padding-left: var(--screen-padding)" class="h3 font-w-500 font-secondary">
-        <li style="padding-bottom: 5px">Ви пожете купити йому поїсти</li>
-        <li style="padding-bottom: 5px">Можете особисто відвідати його у нас</li>
-        <li style="padding-bottom: 5px">Купити вакцінацію для Волтера</li>
-        <li style="padding-bottom: 5px">Допомогти любим інщим способом</li>
-    </ul>
-    <Br size="30"/>
-    <div class="flex">
-        <div class="flex flex-align-center font-secondary">
-            <Icon size="medium" type="phone" class="theme-svg-fill-opposite"/>
-            <s></s>
-            <s></s>
-            <h2>+38 (093) 205-43-92</h2>
-        </div>
-    </div>
-    <Br size="5"/>
-    <p class="font-w-300">Подзвоніть нам, якщо хочете допомогти Волтеру</p>
+    <HowToHelp />
     <Br size="60"/>
 
-
-    <h1>Коментарі</h1>
-    <Br size="5"/>
-    <div class="full-container">
-        <Comments/>
-    </div>
+    <Comments />
     <Br size="60"/>
-
 
     <div class="full-container">
         <Footer/>
