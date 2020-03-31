@@ -1,45 +1,86 @@
 {
   "id": "id",
 
-  "avatars": [
-    "https://placeimg.com/300/300/tech",
-    "https://placeimg.com/300/300/tech",
-    "https://placeimg.com/300/300/tech"
-  ],
-  "avatars2x": [
-    "https://placeimg.com/1000/800/tech",
-    "https://placeimg.com/1000/800/tech",
-    "https://placeimg.com/1000/800/tech"
-  ],
+  "is_liked": true,
+
+  "tags": ["Дім", "Сірка", "тварини", "безпритульні"],
+
+  "likes": 2,
+  "views": 12,
+
+  "updated_at": "2020-02-09T12:30:55.596Z",
+  "created_at": "2020-02-09T12:30:55.596Z",
 
   "title": "Збережемо тварин разом",
   "subtitle": "Збір грошей на допомогу безпритульним тваринам",
   "description": "Терміново шукаємо добрі руки 🤲🥰\nБадді підкинули під кафе біля самої траси!\nБіля нього були тільки залишки черствого хліба... 💔\nЗа що можна було покинути малюка напризволяще? 🥺\nВ чому він міг провинитися? Йому всього 2 місяці.\nЗараз буде проходити обробку від паразитів та вакцинацію 💉",
 
-  "need_sum": 20000,
-  "curremt_sum": 3500,
+  "need_sum": 2000000,
+  "curremt_sum": 350000,
   "currency": "₴",
 
-  "likes": 2,
-  "views": 12,
+  "location": {
+    "lat": 48.9226,
+    "lng": 24.7111,
+    "short": "UA",
+    "country": "Ukraine",
+    "city": "Ivano-Frankivsk",
+    "address": "Stusa 1"
+  },
+
+  "organization": {
+    "id": "id",
+    "name": "Дім Сірка",
+    "phone": "+38 (093) 205-43-92",
+    "avatar": "https://placeimg.com/30/30/tech",
+    "head_id": "id",
+    "head_name": "Tinaramisimuss el-de-la Kandelakinuskas",
+    "head_avatar": "https://placeimg.com/50/50/people"
+  },
+
+  "avatars": [
+    {
+      "id": "id",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/people"
+    },
+    {
+      "id": "id",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/people",
+      "src2x": "https://placeimg.com/1000/1000/people"
+    },
+    {
+      "id": "id",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/people",
+      "src2x": "https://placeimg.com/1000/1000/people"
+    }
+  ],
 
   "animal": {
-    "avatars": [
-      "https://placeimg.com/300/300/people",
-      "https://placeimg.com/300/300/people",
-      "https://placeimg.com/300/300/people"
-    ],
-    "avatars2x": [
-      "https://placeimg.com/1000/800/people",
-      "https://placeimg.com/1000/800/people",
-      "https://placeimg.com/1000/800/people"
-    ],
+    "id": "id",
     "name": "Волтер",
     "breed": "Jack Russell Terrier",
     "birth": "2017-02-09T12:30:55.596Z",
     "sex": "male",
     "sterilization": false,
     "character": "Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми",
+
+    "avatars": [
+      {
+        "id": "id",
+        "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+        "src": "https://placeimg.com/300/300/people"
+      },
+      {
+        "id": "id",
+        "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+        "src": "https://placeimg.com/300/300/people",
+        "src2x": "https://placeimg.com/1000/1000/people"
+      }
+    ],
+    
     "lifestory": [
       {
         "date": "2017-02-09T12:30:55.596Z",
@@ -58,6 +99,7 @@
         "title": "Знайшов для себе улюблену іграшку"
       }
     ],
+
     "vaccination": [
       {
         "done": true,
@@ -72,16 +114,6 @@
         "title": "Від грибків"
       }
     ]
-  },
-
-  "organization": {
-    "id": "id",
-    "name": "Дім Сірка",
-    "phone": "+38 (093) 205-43-92",
-    "avatar": "https://placeimg.com/30/30/tech",
-    "head_id": "id",
-    "head_name": "Tinaramisimuss el-de-la Kandelakinuskas",
-    "head_avatar": "https://placeimg.com/50/50/people"
   },
 
   "donators": [
@@ -128,37 +160,46 @@
   ],
 
   "documents": [
-    "https://placeimg.com/300/300/tech",
-    "https://placeimg.com/300/300/people",
-    "https://placeimg.com/300/300/any"
-  ],
-  "documents2x": [
-    "https://placeimg.com/1000/1000/tech",
-    "https://placeimg.com/1000/1000/people",
-    "https://placeimg.com/1000/1000/any"
+    {
+      "id": "id",
+      "title": "Акція добра",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/tech"
+    },
+    {
+      "id": "id",
+      "title": "Акція добра",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/tech",
+      "src2x": "https://placeimg.com/1000/1000/tech"
+    },
+    {
+      "id": "id",
+      "title": "Акція добра",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/tech"
+    }
   ],
 
   "media": [
-    "https://placeimg.com/300/300/tech",
-    "https://placeimg.com/300/300/people",
-    "https://placeimg.com/300/300/any"
-  ],
-  "media2x": [
-    "https://placeimg.com/1000/1000/tech",
-    "https://placeimg.com/1000/1000/people",
-    "https://placeimg.com/1000/1000/any"
-  ],
-
-  "location": {
-    "lat": 48.9226,
-    "lng": 24.7111,
-    "country": "Ukraine",
-    "city": "Ivano-Frankivsk",
-    "address": "Stusa 1"
-  },
-
-  "updated_at": "2020-02-09T12:30:55.596Z",
-  "created_at": "2020-02-09T12:30:55.596Z",
-
-  "tags": ["Дім", "Сірка", "тварини", "безпритульні"]
+    {
+      "id": "id",
+      "title": "Акція добра",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/tech"
+    },
+    {
+      "id": "id",
+      "title": "Акція добра",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/tech",
+      "src2x": "https://placeimg.com/1000/1000/tech"
+    },
+    {
+      "id": "id",
+      "title": "Акція добра",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/tech"
+    }
+  ]
 }

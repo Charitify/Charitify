@@ -25,7 +25,7 @@
     // Entity
     let charity = {}
     
-    $: carouselTop = (charity.avatars || []).map((p, i) => ({ src: p, srcBig: _.get(charity.avatars2x, `[${i}]`), alt: 'топ фото' }));
+    $: carouselTop = (charity.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
     $: organization = (charity.organization || {});
     $: cardTop = {
         title: charity.title,
@@ -43,8 +43,8 @@
         text: charity.description,
     };
     $: animal = {
-        avatar: safeGet(() => charity.animal.avatars[0]),
-        avatar2x: safeGet(() => charity.animal.avatars2x[0]),
+        avatar: safeGet(() => charity.animal.avatars[0].src),
+        avatar2x: safeGet(() => charity.animal.avatars2x[0].src2x),
         name: safeGet(() => charity.animal.name),
         breed: safeGet(() => charity.animal.breed),
         age: safeGet(() => (new Date().getFullYear()) - (new Date(charity.animal.birth).getFullYear()), 0, true),

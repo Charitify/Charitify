@@ -29,8 +29,9 @@
     let organization = {};
     
     $: carousel = (organization.avatars || []).map(p => ({
-        src: p,
-        alt: "photo"
+        src: p.src,
+        src2x: p.src2x,
+        alt: p.title,
     }));
 
     onMount(async () => {
