@@ -8,14 +8,16 @@
 
         <div class="flex flex-column flex-align-center">
             
-            <FancyBox class="flex-justify-center">
-                <Avatar size="big" src="https://placeimg.com/300/300/people" alt="ava"/>
-                <section slot="box" class="flex full-width full-height" style="height: 100vw">
-                    <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
-                        <Avatar src="https://placeimg.com/300/300/people" alt="ava"/>
-                    </div>
-                </section>
-            </FancyBox>
+            <span>
+                <FancyBox class="flex-justify-center">
+                    <Avatar size="big" src="https://placeimg.com/300/300/people" alt="ava"/>
+                    <section slot="box" class="flex full-width full-height" style="height: 100vw">
+                        <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
+                            <Avatar src="https://placeimg.com/300/300/people" alt="ava"/>
+                        </div>
+                    </section>
+                </FancyBox>
+            </span>
 
             <Br size="20" />
             <h2>Наші контакти</h2>

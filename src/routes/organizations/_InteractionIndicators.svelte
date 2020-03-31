@@ -1,0 +1,30 @@
+<script>
+  import { Icon, Button } from "@components";
+
+  export let likes = 0;
+  export let views = 0;
+</script>
+
+<p class="container flex flex-justify-between flex-align-center">
+  <span class="flex flex-align-center">
+    <Icon is="danger" type="heart-filled" size="medium" />
+    <s />
+    <s />
+    <span class="font-secondary font-w-600 h3">{likes}</span>
+  </span>
+
+  <span class="flex">
+    <Button class="flex flex-align-center" auto size="small">
+      <Icon type="share" size="medium" class="theme-svg-fill" />
+      <s />
+      <s />
+      <h3 class="font-w-600">Поділитись</h3>
+    </Button>
+  </span>
+  <span class="flex flex-align-center">
+    <Icon type="eye" size="medium" class="theme-svg-fill" />
+    <s />
+    <s />
+    <span class="font-secondary font-w-600 h3">{views}</span>
+  </span>
+</p>

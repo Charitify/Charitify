@@ -6,6 +6,7 @@
 
     export let is = undefined
     export let id = undefined
+    export let rel = undefined
     export let href = undefined
     export let auto = false
     export let type = 'button'
@@ -33,6 +34,7 @@
 {#if href}
     <a
             {id}
+            {rel}
             {href}
             title={titleProp}
             class={classProp}
