@@ -1584,13 +1584,14 @@ const Avatar = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 const css$5 = {
 	code: ".btn.svelte-76qioz:not(.auto){width:100%;padding:5px 15px}.btn{-webkit-box-flex:0;-ms-flex:none;flex:none;cursor:pointer;max-width:100%;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-weight:bold;text-align:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;color:rgba(var(--theme-font-color));border-radius:var(--border-radius-medium)}.btn.small{padding:5px;min-width:calc(var(--min-interactive-size) / 1.3);min-height:calc(var(--min-interactive-size) / 1.3)}.btn.medium{padding:5px 10px;min-width:var(--min-interactive-size);min-height:var(--min-interactive-size)}.btn.big{padding:5px 15px;min-width:calc(var(--min-interactive-size) * 1.3);min-height:calc(var(--min-interactive-size) * 1.3)}.btn:focus{background-color:rgba(var(--color-black), 0.1)}.btn:hover{background-color:rgba(var(--color-black), 0.1)}.btn:active{background-color:rgba(var(--color-black), 0.1)}.btn.white{color:rgba(var(--color-font-dark));background-color:rgba(var(--color-white))}.btn.white:focus{background-color:rgba(var(--color-white), .85)}.btn.white:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.white:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success{color:rgba(var(--color-font-light));background-color:rgba(var(--color-success))}.btn.success:focus{background-color:rgba(var(--color-success), .85)}.btn.success:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning{color:rgba(var(--color-font-light));background-color:rgba(var(--color-warning))}.btn.warning:focus{background-color:rgba(var(--color-warning), .85)}.btn.warning:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger{color:rgba(var(--color-font-light));background-color:rgba(var(--color-danger))}.btn.danger:focus{background-color:rgba(var(--color-danger), .85)}.btn.danger:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}",
-	map: "{\"version\":3,\"file\":\"Button.svelte\",\"sources\":[\"Button.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let is = undefined\\n    export let id = undefined\\n    export let href = undefined\\n    export let auto = false\\n    export let type = 'button'\\n    export let size = undefined\\n    export let title = undefined\\n    export let htmlFor = undefined\\n    export let disabled = false\\n    export let ariaLabel = undefined\\n\\n    let titleProp = title || ariaLabel\\n    let ariaLabelProp = ariaLabel || title\\n\\n    $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })\\n\\n    function onLabelClick(e) {\\n        document.getElementById(htmlFor).click()\\n        !disabled && dispatch('click', e)\\n    }\\n\\n    function onClick(e) {\\n        !disabled && dispatch('click', e)\\n    }\\n</script>\\n\\n{#if href}\\n    <a\\n            {id}\\n            {href}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </a>\\n{:else if htmlFor}\\n    <label\\n            {id}\\n            {disabled}\\n            for={htmlFor}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onLabelClick}\\n    >\\n        <slot></slot>\\n    </label>\\n{:else}\\n    <button\\n            {id}\\n            {type}\\n            {disabled}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </button>\\n{/if}\\n\\n<style>\\n    .btn:not(.auto) {\\n        width: 100%;\\n        padding: 5px 15px;\\n    }\\n\\n    :global(.btn) {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        cursor: pointer;\\n        max-width: 100%;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        font-weight: bold;\\n        text-align: center;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        color: rgba(var(--theme-font-color));\\n        border-radius: var(--border-radius-medium);\\n    }\\n\\n    :global(.btn.small) {\\n        padding: 5px;\\n        min-width: calc(var(--min-interactive-size) / 1.3);\\n        min-height: calc(var(--min-interactive-size) / 1.3);\\n    }\\n\\n    :global(.btn.medium) {\\n        padding: 5px 10px;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n    }\\n\\n    :global(.btn.big) {\\n        padding: 5px 15px;\\n        min-width: calc(var(--min-interactive-size) * 1.3);\\n        min-height: calc(var(--min-interactive-size) * 1.3);\\n    }\\n\\n    :global(.btn:focus) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:hover) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:active) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    /* White */\\n\\n    :global(.btn).white {\\n        color: rgba(var(--color-font-dark));\\n        background-color: rgba(var(--color-white));\\n    }\\n\\n    :global(.btn).white:focus {\\n        background-color: rgba(var(--color-white), .85);\\n    }\\n\\n    :global(.btn).white:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).white:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Success */\\n\\n    :global(.btn).success {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n    :global(.btn).success:focus {\\n        background-color: rgba(var(--color-success), .85);\\n    }\\n\\n    :global(.btn).success:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).success:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Warning */\\n\\n    :global(.btn).warning {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-warning));\\n    }\\n\\n    :global(.btn).warning:focus {\\n        background-color: rgba(var(--color-warning), .85);\\n    }\\n\\n    :global(.btn).warning:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).warning:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Danger */\\n\\n    :global(.btn).danger {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-danger));\\n    }\\n\\n    :global(.btn).danger:focus {\\n        background-color: rgba(var(--color-danger), .85);\\n    }\\n\\n    :global(.btn).danger:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).danger:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0J1dHRvbi5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGlCQUFpQjtJQUNyQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsZUFBZTtRQUNmLGVBQWU7UUFDZix5QkFBaUI7V0FBakIsc0JBQWlCO1lBQWpCLHFCQUFpQjtnQkFBakIsaUJBQWlCO1FBQ2pCLGlCQUFpQjtRQUNqQixrQkFBa0I7UUFDbEIseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixvQ0FBb0M7UUFDcEMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksWUFBWTtRQUNaLGtEQUFrRDtRQUNsRCxtREFBbUQ7SUFDdkQ7O0lBRUE7UUFDSSxpQkFBaUI7UUFDakIsc0NBQXNDO1FBQ3RDLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGlCQUFpQjtRQUNqQixrREFBa0Q7UUFDbEQsbURBQW1EO0lBQ3ZEOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBLFVBQVU7O0lBRVY7UUFDSSxtQ0FBbUM7UUFDbkMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQSxZQUFZOztJQUVaO1FBQ0ksb0NBQW9DO1FBQ3BDLDRDQUE0QztJQUNoRDs7SUFFQTtRQUNJLGlEQUFpRDtJQUNyRDs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUEsWUFBWTs7SUFFWjtRQUNJLG9DQUFvQztRQUNwQyw0Q0FBNEM7SUFDaEQ7O0lBRUE7UUFDSSxpREFBaUQ7SUFDckQ7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBLFdBQVc7O0lBRVg7UUFDSSxvQ0FBb0M7UUFDcEMsMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQyIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9CdXR0b24uc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmJ0bjpub3QoLmF1dG8pIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxNXB4O1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtZm9udC1jb2xvcikpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLW1lZGl1bSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuLnNtYWxsKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweDtcbiAgICAgICAgbWluLXdpZHRoOiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAvIDEuMyk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IGNhbGModmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpIC8gMS4zKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4ubWVkaXVtKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxMHB4O1xuICAgICAgICBtaW4td2lkdGg6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgbWluLWhlaWdodDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bi5iaWcpIHtcbiAgICAgICAgcGFkZGluZzogNXB4IDE1cHg7XG4gICAgICAgIG1pbi13aWR0aDogY2FsYyh2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSkgKiAxLjMpO1xuICAgICAgICBtaW4taGVpZ2h0OiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAqIDEuMyk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuOmZvY3VzKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bjpob3Zlcikge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgMC4xKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG46YWN0aXZlKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIC8qIFdoaXRlICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1kYXJrKSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itd2hpdGUpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmZvY3VzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci13aGl0ZSksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS53aGl0ZTpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmFjdGl2ZSB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICAvKiBTdWNjZXNzICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLnN1Y2Nlc3Mge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2Vzczpmb2N1cyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcyksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5zdWNjZXNzOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2VzczphY3RpdmUge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgLyogV2FybmluZyAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS53YXJuaW5nIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1saWdodCkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpLCAuODUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2FybmluZzpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIERhbmdlciAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXIge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6aG92ZXIge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
+	map: "{\"version\":3,\"file\":\"Button.svelte\",\"sources\":[\"Button.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let is = undefined\\n    export let id = undefined\\n    export let rel = undefined\\n    export let href = undefined\\n    export let auto = false\\n    export let type = 'button'\\n    export let size = undefined\\n    export let title = undefined\\n    export let htmlFor = undefined\\n    export let disabled = false\\n    export let ariaLabel = undefined\\n\\n    let titleProp = title || ariaLabel\\n    let ariaLabelProp = ariaLabel || title\\n\\n    $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })\\n\\n    function onLabelClick(e) {\\n        document.getElementById(htmlFor).click()\\n        !disabled && dispatch('click', e)\\n    }\\n\\n    function onClick(e) {\\n        !disabled && dispatch('click', e)\\n    }\\n</script>\\n\\n{#if href}\\n    <a\\n            {id}\\n            {rel}\\n            {href}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </a>\\n{:else if htmlFor}\\n    <label\\n            {id}\\n            {disabled}\\n            for={htmlFor}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onLabelClick}\\n    >\\n        <slot></slot>\\n    </label>\\n{:else}\\n    <button\\n            {id}\\n            {type}\\n            {disabled}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </button>\\n{/if}\\n\\n<style>\\n    .btn:not(.auto) {\\n        width: 100%;\\n        padding: 5px 15px;\\n    }\\n\\n    :global(.btn) {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        cursor: pointer;\\n        max-width: 100%;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        font-weight: bold;\\n        text-align: center;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        color: rgba(var(--theme-font-color));\\n        border-radius: var(--border-radius-medium);\\n    }\\n\\n    :global(.btn.small) {\\n        padding: 5px;\\n        min-width: calc(var(--min-interactive-size) / 1.3);\\n        min-height: calc(var(--min-interactive-size) / 1.3);\\n    }\\n\\n    :global(.btn.medium) {\\n        padding: 5px 10px;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n    }\\n\\n    :global(.btn.big) {\\n        padding: 5px 15px;\\n        min-width: calc(var(--min-interactive-size) * 1.3);\\n        min-height: calc(var(--min-interactive-size) * 1.3);\\n    }\\n\\n    :global(.btn:focus) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:hover) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:active) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    /* White */\\n\\n    :global(.btn).white {\\n        color: rgba(var(--color-font-dark));\\n        background-color: rgba(var(--color-white));\\n    }\\n\\n    :global(.btn).white:focus {\\n        background-color: rgba(var(--color-white), .85);\\n    }\\n\\n    :global(.btn).white:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).white:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Success */\\n\\n    :global(.btn).success {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n    :global(.btn).success:focus {\\n        background-color: rgba(var(--color-success), .85);\\n    }\\n\\n    :global(.btn).success:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).success:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Warning */\\n\\n    :global(.btn).warning {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-warning));\\n    }\\n\\n    :global(.btn).warning:focus {\\n        background-color: rgba(var(--color-warning), .85);\\n    }\\n\\n    :global(.btn).warning:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).warning:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Danger */\\n\\n    :global(.btn).danger {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-danger));\\n    }\\n\\n    :global(.btn).danger:focus {\\n        background-color: rgba(var(--color-danger), .85);\\n    }\\n\\n    :global(.btn).danger:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).danger:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0J1dHRvbi5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGlCQUFpQjtJQUNyQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsZUFBZTtRQUNmLGVBQWU7UUFDZix5QkFBaUI7V0FBakIsc0JBQWlCO1lBQWpCLHFCQUFpQjtnQkFBakIsaUJBQWlCO1FBQ2pCLGlCQUFpQjtRQUNqQixrQkFBa0I7UUFDbEIseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixvQ0FBb0M7UUFDcEMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksWUFBWTtRQUNaLGtEQUFrRDtRQUNsRCxtREFBbUQ7SUFDdkQ7O0lBRUE7UUFDSSxpQkFBaUI7UUFDakIsc0NBQXNDO1FBQ3RDLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGlCQUFpQjtRQUNqQixrREFBa0Q7UUFDbEQsbURBQW1EO0lBQ3ZEOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBLFVBQVU7O0lBRVY7UUFDSSxtQ0FBbUM7UUFDbkMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQSxZQUFZOztJQUVaO1FBQ0ksb0NBQW9DO1FBQ3BDLDRDQUE0QztJQUNoRDs7SUFFQTtRQUNJLGlEQUFpRDtJQUNyRDs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUEsWUFBWTs7SUFFWjtRQUNJLG9DQUFvQztRQUNwQyw0Q0FBNEM7SUFDaEQ7O0lBRUE7UUFDSSxpREFBaUQ7SUFDckQ7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBLFdBQVc7O0lBRVg7UUFDSSxvQ0FBb0M7UUFDcEMsMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQyIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9CdXR0b24uc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmJ0bjpub3QoLmF1dG8pIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxNXB4O1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtZm9udC1jb2xvcikpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLW1lZGl1bSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuLnNtYWxsKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweDtcbiAgICAgICAgbWluLXdpZHRoOiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAvIDEuMyk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IGNhbGModmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpIC8gMS4zKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4ubWVkaXVtKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxMHB4O1xuICAgICAgICBtaW4td2lkdGg6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgbWluLWhlaWdodDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bi5iaWcpIHtcbiAgICAgICAgcGFkZGluZzogNXB4IDE1cHg7XG4gICAgICAgIG1pbi13aWR0aDogY2FsYyh2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSkgKiAxLjMpO1xuICAgICAgICBtaW4taGVpZ2h0OiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAqIDEuMyk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuOmZvY3VzKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bjpob3Zlcikge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgMC4xKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG46YWN0aXZlKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIC8qIFdoaXRlICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1kYXJrKSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itd2hpdGUpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmZvY3VzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci13aGl0ZSksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS53aGl0ZTpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmFjdGl2ZSB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICAvKiBTdWNjZXNzICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLnN1Y2Nlc3Mge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2Vzczpmb2N1cyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcyksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5zdWNjZXNzOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2VzczphY3RpdmUge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgLyogV2FybmluZyAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS53YXJuaW5nIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1saWdodCkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpLCAuODUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2FybmluZzpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIERhbmdlciAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXIge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6aG92ZXIge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
 };
 
 const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
 	let { is = undefined } = $$props;
 	let { id = undefined } = $$props;
+	let { rel = undefined } = $$props;
 	let { href = undefined } = $$props;
 	let { auto = false } = $$props;
 	let { type = "button" } = $$props;
@@ -1604,6 +1605,7 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.rel === void 0 && $$bindings.rel && rel !== void 0) $$bindings.rel(rel);
 	if ($$props.href === void 0 && $$bindings.href && href !== void 0) $$bindings.href(href);
 	if ($$props.auto === void 0 && $$bindings.auto && auto !== void 0) $$bindings.auto(auto);
 	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
@@ -1616,7 +1618,7 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	let classProp = classnames("btn", is, size, $$props.class, { auto, disabled });
 
 	return `${href
-	? `<a${add_attribute("id", id, 0)}${add_attribute("href", href, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
+	? `<a${add_attribute("id", id, 0)}${add_attribute("rel", rel, 0)}${add_attribute("href", href, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
         ${$$slots.default ? $$slots.default({}) : ``}
     </a>`
 	: `${htmlFor
@@ -3632,11 +3634,309 @@ stores.session.subscribe(async value => {
 
 const stores$1 = () => getContext(CONTEXT_KEY);
 
+/* src/routes/organizations/_OrganizationButton.svelte generated by Svelte v3.18.1 */
+
+const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { organization = {} } = $$props;
+	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
+
+	return `${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			rel: "prefetch",
+			href: organization.id,
+			class: "white"
+		},
+		{},
+		{
+			default: () => `
+  <div class="${"flex flex-align-center flex-justify-between full-width"}">
+    <div class="${"flex flex-align-center"}">
+      <s></s>
+      <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
+        ${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src: organization.avatar,
+					size: "contain",
+					alt: "фото організації"
+				},
+				{},
+				{}
+			)}
+      </div>
+      <s></s>
+      <s></s>
+      <s></s>
+      <h3>${escape(organization.name)}</h3>
+    </div>
+    <span style="${"font-size: 24px"}">→</span>
+  </div>
+`
+		}
+	)}`;
+});
+
+/* src/routes/organizations/_TopCarousel.svelte generated by Svelte v3.18.1 */
+
+const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items = [] } = $$props;
+
+	// Carousel & FancyBox
+	let propsBox = {};
+
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<section class="${"flex"}" style="${"height: 240px"}">
+    ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
+		box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+            ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items }, propsBox), {}, {})}
+        </section>`,
+		default: () => `
+        ${validate_component(Carousel, "Carousel").$$render($$result, { items, dotsBelow: false }, {}, {})}
+        
+    `
+	})}
+</section>`;
+});
+
+/* src/routes/organizations/_DescriptionShort.svelte generated by Svelte v3.18.1 */
+
+const DescriptionShort = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h2>Організація Добра</h2>
+${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+<pre class="${"font-w-300"}">
+    Організація Добра – благодійний фонд, який опікується долею безпритульних
+    котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться
+    у Львові, вул. Сахарова 3
+</pre>`;
+});
+
+/* src/routes/organizations/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
+
+const InteractionIndicators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { likes = 0 } = $$props;
+	let { views = 0 } = $$props;
+	if ($$props.likes === void 0 && $$bindings.likes && likes !== void 0) $$bindings.likes(likes);
+	if ($$props.views === void 0 && $$bindings.views && views !== void 0) $$bindings.views(views);
+
+	return `<p class="${"container flex flex-justify-between flex-align-center"}">
+  <span class="${"flex flex-align-center"}">
+    ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			is: "danger",
+			type: "heart-filled",
+			size: "medium"
+		},
+		{},
+		{}
+	)}
+    <s></s>
+    <s></s>
+    <span class="${"font-secondary font-w-600 h3"}">${escape(likes)}</span>
+  </span>
+
+  <span class="${"flex"}">
+    ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+      ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "share",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+      <s></s>
+      <s></s>
+      <h3 class="${"font-w-600"}">Поділитись</h3>
+    `
+		}
+	)}
+  </span>
+  <span class="${"flex flex-align-center"}">
+    ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			type: "eye",
+			size: "medium",
+			class: "theme-svg-fill"
+		},
+		{},
+		{}
+	)}
+    <s></s>
+    <s></s>
+    <span class="${"font-secondary font-w-600 h3"}">${escape(views)}</span>
+  </span>
+</p>`;
+});
+
+/* src/routes/organizations/_FundList.svelte generated by Svelte v3.18.1 */
+
+const FundList = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { title } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+
+	return `<h1>${escape(title)}</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
+</div>`;
+});
+
+/* src/routes/organizations/_Description.svelte generated by Svelte v3.18.1 */
+
+const Description = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h1>Про нас</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+<pre class="${"font-w-300"}">
+    Організація Добра – благодійний фонд, який опікується долею безпритульних
+    котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться
+    у Львові, вул. Сахарова 3 Організація Добра – благодійний фонд, який
+    опікується долею безпритульних котиків та песиків.
+</pre>`;
+});
+
+/* src/routes/organizations/_Share.svelte generated by Svelte v3.18.1 */
+
+const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<p class="${"flex"}">
+  ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+    ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "share",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+    <s></s>
+    <s></s>
+    <p class="${"font-w-500"}">Поділитись</p>
+  `
+		}
+	)}
+  <s></s>
+  <s></s>
+  <s></s>
+  <s></s>
+  <s></s>
+  ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+    ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "link",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+    <s></s>
+    <s></s>
+    <p class="${"font-w-500"}">Скопіювати</p>
+  `
+		}
+	)}
+</p>`;
+});
+
+/* src/routes/organizations/_Trust.svelte generated by Svelte v3.18.1 */
+
+const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let active = false;
+
+	return `<section class="${"flex flex-column flex-align-center flex-justify-center"}">
+    <div style="${"width: 100px; max-width: 100%"}">
+        ${validate_component(TrustButton, "TrustButton").$$render($$result, { isActive: active }, {}, {})}
+    </div>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+    <h2>Я довіряю</h2>
+</section>`;
+});
+
+/* src/routes/organizations/_Donators.svelte generated by Svelte v3.18.1 */
+
+const Donators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h1>Наші піклувальники</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(DonatorsList, "DonatorsList").$$render($$result, {}, {}, {})}
+</div>`;
+});
+
+/* src/routes/organizations/_LastNews.svelte generated by Svelte v3.18.1 */
+
+const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h1>Останні новини</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+${validate_component(NewsList, "NewsList").$$render($$result, {}, {}, {})}`;
+});
+
+/* src/routes/organizations/_Certificates.svelte generated by Svelte v3.18.1 */
+
+const Certificates = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h1>Сертифікати</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(Documents, "Documents").$$render($$result, {}, {}, {})}
+</div>`;
+});
+
+/* src/routes/organizations/_Videos.svelte generated by Svelte v3.18.1 */
+
+const Videos = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Відео про нас</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<section class="${"flex"}" style="${"height: 240px"}">
+    ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
+		default: () => `
+        ${validate_component(Carousel, "Carousel").$$render($$result, { items }, {}, {})}
+    `
+	})}
+</section>`;
+});
+
 /* src/routes/organizations/_ContactsCard.svelte generated by Svelte v3.18.1 */
 
 const css$s = {
 	code: ".social-icons.svelte-eudyoq .telegram .svelte-eudyoq{fill:#2197D2}.social-icons.svelte-eudyoq .facebook .svelte-eudyoq{fill:#4267B2}.social-icons.svelte-eudyoq .viber .svelte-eudyoq{fill:#665CAC}",
-	map: "{\"version\":3,\"file\":\"_ContactsCard.svelte\",\"sources\":[\"_ContactsCard.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Br, Card, Icon, Avatar, FancyBox } from '@components'\\n</script>\\n\\n<Card>\\n    <section style=\\\"padding: 0 20px\\\">\\n        <Br size=\\\"30\\\" />\\n\\n        <div class=\\\"flex flex-column flex-align-center\\\">\\n            \\n            <FancyBox class=\\\"flex-justify-center\\\">\\n                <Avatar size=\\\"big\\\" src=\\\"https://placeimg.com/300/300/people\\\" alt=\\\"ava\\\"/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width full-height\\\" style=\\\"height: 100vw\\\">\\n                    <div class=\\\"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch\\\" style=\\\"padding: var(--screen-padding) 0\\\">\\n                        <Avatar src=\\\"https://placeimg.com/300/300/people\\\" alt=\\\"ava\\\"/>\\n                    </div>\\n                </section>\\n            </FancyBox>\\n\\n            <Br size=\\\"20\\\" />\\n            <h2>Наші контакти</h2>\\n            <Br size=\\\"5\\\" />\\n            <p class=\\\"h3 font-secondary font-w-500\\\" style=\\\"opacity: .7\\\">\\n                Організація Добра\\n            </p>\\n        </div>\\n\\n        <Br size=\\\"30\\\" />\\n\\n        <ul>\\n            <li>\\n                <a href=\\\"tel:+38(093)455-32-12\\\" class=\\\"flex flex-align-center\\\" style=\\\"padding: 7px 0\\\">\\n                    <Icon type=\\\"phone-filled\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <p class=\\\"h3\\\">+38 (093) 455-32-12</p>\\n                </a>\\n            </li>\\n            <li>\\n                <a href=\\\"mailto:sergey.zastrow@gmail.com\\\" class=\\\"flex flex-align-center\\\" style=\\\"padding: 7px 0\\\">\\n                    <Icon type=\\\"email\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <p class=\\\"h3\\\">sergey.zastrow@gmail.com</p>\\n                </a>\\n            </li>\\n            <li>\\n                <a href=\\\"http://maps.google.com/?daddr=Львів,+Україна\\\" target=\\\"_blank\\\" class=\\\"flex flex-align-center\\\" style=\\\"padding: 7px 0\\\">\\n                    <Icon type=\\\"location-mark-filled\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <p class=\\\"h3\\\">Львів, Україна</p>\\n                </a>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"30\\\" />\\n\\n        <ul class=\\\"flex flex-justify-center social-icons\\\">\\n            <li style=\\\"padding: 0 10px\\\" class=\\\"telegram\\\">\\n                <a href=\\\"https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w\\\" target=\\\"_blank\\\">\\n                    <Icon type=\\\"telegram\\\" size=\\\"large\\\" class=\\\"custom\\\"/>\\n                </a>\\n            </li>\\n            <li style=\\\"padding: 0 10px\\\" class=\\\"facebook\\\">\\n                <a href=\\\"https://www.facebook.com/groups/3544553825618540\\\" target=\\\"_blank\\\">\\n                    <Icon type=\\\"facebook\\\" size=\\\"large\\\" class=\\\"custom\\\"/>\\n                </a>\\n            </li>\\n            <li style=\\\"padding: 0 10px\\\" class=\\\"viber\\\">\\n                <a href=\\\"viber://forward?text=Check%20this%20out%3A%20%20https%3A%2F%2Fwww.viber.com%2Fblog%2F2017-06-25%2Finvite-friends-your-group-chat%2F\\\" target=\\\"_blank\\\">\\n                    <Icon type=\\\"viber\\\" size=\\\"large\\\" class=\\\"custom\\\"/>\\n                </a>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"30\\\" />\\n    </section>\\n</Card>\\n\\n<style>\\n    .social-icons .telegram * {\\n        fill: #2197D2;\\n    }\\n    .social-icons .facebook * {\\n        fill: #4267B2;\\n    }\\n    .social-icons .viber * {\\n        fill: #665CAC;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fQ29udGFjdHNDYXJkLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxhQUFhO0lBQ2pCO0lBQ0E7UUFDSSxhQUFhO0lBQ2pCO0lBQ0E7UUFDSSxhQUFhO0lBQ2pCIiwiZmlsZSI6InNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fQ29udGFjdHNDYXJkLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5zb2NpYWwtaWNvbnMgLnRlbGVncmFtICoge1xuICAgICAgICBmaWxsOiAjMjE5N0QyO1xuICAgIH1cbiAgICAuc29jaWFsLWljb25zIC5mYWNlYm9vayAqIHtcbiAgICAgICAgZmlsbDogIzQyNjdCMjtcbiAgICB9XG4gICAgLnNvY2lhbC1pY29ucyAudmliZXIgKiB7XG4gICAgICAgIGZpbGw6ICM2NjVDQUM7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAoFI,2BAAa,CAAC,SAAS,CAAC,cAAE,CAAC,AACvB,IAAI,CAAE,OAAO,AACjB,CAAC,AACD,2BAAa,CAAC,SAAS,CAAC,cAAE,CAAC,AACvB,IAAI,CAAE,OAAO,AACjB,CAAC,AACD,2BAAa,CAAC,MAAM,CAAC,cAAE,CAAC,AACpB,IAAI,CAAE,OAAO,AACjB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"_ContactsCard.svelte\",\"sources\":[\"_ContactsCard.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Br, Card, Icon, Avatar, FancyBox } from '@components'\\n</script>\\n\\n<Card>\\n    <section style=\\\"padding: 0 20px\\\">\\n        <Br size=\\\"30\\\" />\\n\\n        <div class=\\\"flex flex-column flex-align-center\\\">\\n            \\n            <span>\\n                <FancyBox class=\\\"flex-justify-center\\\">\\n                    <Avatar size=\\\"big\\\" src=\\\"https://placeimg.com/300/300/people\\\" alt=\\\"ava\\\"/>\\n                    <section slot=\\\"box\\\" class=\\\"flex full-width full-height\\\" style=\\\"height: 100vw\\\">\\n                        <div class=\\\"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch\\\" style=\\\"padding: var(--screen-padding) 0\\\">\\n                            <Avatar src=\\\"https://placeimg.com/300/300/people\\\" alt=\\\"ava\\\"/>\\n                        </div>\\n                    </section>\\n                </FancyBox>\\n            </span>\\n\\n            <Br size=\\\"20\\\" />\\n            <h2>Наші контакти</h2>\\n            <Br size=\\\"5\\\" />\\n            <p class=\\\"h3 font-secondary font-w-500\\\" style=\\\"opacity: .7\\\">\\n                Організація Добра\\n            </p>\\n        </div>\\n\\n        <Br size=\\\"30\\\" />\\n\\n        <ul>\\n            <li>\\n                <a href=\\\"tel:+38(093)455-32-12\\\" class=\\\"flex flex-align-center\\\" style=\\\"padding: 7px 0\\\">\\n                    <Icon type=\\\"phone-filled\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <p class=\\\"h3\\\">+38 (093) 455-32-12</p>\\n                </a>\\n            </li>\\n            <li>\\n                <a href=\\\"mailto:sergey.zastrow@gmail.com\\\" class=\\\"flex flex-align-center\\\" style=\\\"padding: 7px 0\\\">\\n                    <Icon type=\\\"email\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <p class=\\\"h3\\\">sergey.zastrow@gmail.com</p>\\n                </a>\\n            </li>\\n            <li>\\n                <a href=\\\"http://maps.google.com/?daddr=Львів,+Україна\\\" target=\\\"_blank\\\" class=\\\"flex flex-align-center\\\" style=\\\"padding: 7px 0\\\">\\n                    <Icon type=\\\"location-mark-filled\\\" size=\\\"medium\\\"/>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <p class=\\\"h3\\\">Львів, Україна</p>\\n                </a>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"30\\\" />\\n\\n        <ul class=\\\"flex flex-justify-center social-icons\\\">\\n            <li style=\\\"padding: 0 10px\\\" class=\\\"telegram\\\">\\n                <a href=\\\"https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w\\\" target=\\\"_blank\\\">\\n                    <Icon type=\\\"telegram\\\" size=\\\"large\\\" class=\\\"custom\\\"/>\\n                </a>\\n            </li>\\n            <li style=\\\"padding: 0 10px\\\" class=\\\"facebook\\\">\\n                <a href=\\\"https://www.facebook.com/groups/3544553825618540\\\" target=\\\"_blank\\\">\\n                    <Icon type=\\\"facebook\\\" size=\\\"large\\\" class=\\\"custom\\\"/>\\n                </a>\\n            </li>\\n            <li style=\\\"padding: 0 10px\\\" class=\\\"viber\\\">\\n                <a href=\\\"viber://forward?text=Check%20this%20out%3A%20%20https%3A%2F%2Fwww.viber.com%2Fblog%2F2017-06-25%2Finvite-friends-your-group-chat%2F\\\" target=\\\"_blank\\\">\\n                    <Icon type=\\\"viber\\\" size=\\\"large\\\" class=\\\"custom\\\"/>\\n                </a>\\n            </li>\\n        </ul>\\n\\n        <Br size=\\\"30\\\" />\\n    </section>\\n</Card>\\n\\n<style>\\n    .social-icons .telegram * {\\n        fill: #2197D2;\\n    }\\n    .social-icons .facebook * {\\n        fill: #4267B2;\\n    }\\n    .social-icons .viber * {\\n        fill: #665CAC;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fQ29udGFjdHNDYXJkLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxhQUFhO0lBQ2pCO0lBQ0E7UUFDSSxhQUFhO0lBQ2pCO0lBQ0E7UUFDSSxhQUFhO0lBQ2pCIiwiZmlsZSI6InNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fQ29udGFjdHNDYXJkLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5zb2NpYWwtaWNvbnMgLnRlbGVncmFtICoge1xuICAgICAgICBmaWxsOiAjMjE5N0QyO1xuICAgIH1cbiAgICAuc29jaWFsLWljb25zIC5mYWNlYm9vayAqIHtcbiAgICAgICAgZmlsbDogIzQyNjdCMjtcbiAgICB9XG4gICAgLnNvY2lhbC1pY29ucyAudmliZXIgKiB7XG4gICAgICAgIGZpbGw6ICM2NjVDQUM7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsFI,2BAAa,CAAC,SAAS,CAAC,cAAE,CAAC,AACvB,IAAI,CAAE,OAAO,AACjB,CAAC,AACD,2BAAa,CAAC,SAAS,CAAC,cAAE,CAAC,AACvB,IAAI,CAAE,OAAO,AACjB,CAAC,AACD,2BAAa,CAAC,MAAM,CAAC,cAAE,CAAC,AACpB,IAAI,CAAE,OAAO,AACjB,CAAC\"}"
 };
 
 const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -3649,10 +3949,11 @@ const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
         <div class="${"flex flex-column flex-align-center"}">
             
-            ${validate_component(FancyBox, "FancyBox").$$render($$result, { class: "flex-justify-center" }, {}, {
+            <span>
+                ${validate_component(FancyBox, "FancyBox").$$render($$result, { class: "flex-justify-center" }, {}, {
 			box: () => `<section slot="${"box"}" class="${"flex full-width full-height"}" style="${"height: 100vw"}">
-                    <div class="${"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch"}" style="${"padding: var(--screen-padding) 0"}">
-                        ${validate_component(Avatar, "Avatar").$$render(
+                        <div class="${"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch"}" style="${"padding: var(--screen-padding) 0"}">
+                            ${validate_component(Avatar, "Avatar").$$render(
 				$$result,
 				{
 					src: "https://placeimg.com/300/300/people",
@@ -3661,10 +3962,10 @@ const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slot
 				{},
 				{}
 			)}
-                    </div>
-                </section>`,
+                        </div>
+                    </section>`,
 			default: () => `
-                ${validate_component(Avatar, "Avatar").$$render(
+                    ${validate_component(Avatar, "Avatar").$$render(
 				$$result,
 				{
 					size: "big",
@@ -3674,9 +3975,10 @@ const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slot
 				{},
 				{}
 			)}
-                
-            `
+                    
+                `
 		})}
+            </span>
 
             ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
             <h2>Наші контакти</h2>
@@ -3779,6 +4081,36 @@ const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slot
 	})}`;
 });
 
+/* src/routes/organizations/_VirtualTour.svelte generated by Svelte v3.18.1 */
+
+const VirtualTour = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h1>3D - Тур 360°</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<div class="${"full-container"}">
+  <iframe title="${"360 тур"}" src="${"https://www.google.com/maps/embed?pb=!4v1584897060810!6m8!1m7!1skKRg7TofqDSsrkcJRbBDug!2m2!1d48.89874683261886!2d24.75621937486022!3f291.2976377703877!4f-17.03315422439765!5f0.7820865974627469"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
+</div>`;
+});
+
+/* src/routes/organizations/_WeOnMap.svelte generated by Svelte v3.18.1 */
+
+const WeOnMap = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h1>Ми на карті</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<div class="${"full-container"}">
+  <iframe title="${"Карта"}" src="${"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20985.072890836364!2d24.74703549119322!3d48.8937812401519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4730c391910041fd%3A0x6a789a2223e12e2d!2sBo%20Dim%20Sirka%20.%20Prytulok!5e0!3m2!1sen!2sus!4v1584897512173!5m2!1sen!2sus"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
+</div>`;
+});
+
+/* src/routes/organizations/_Comments.svelte generated by Svelte v3.18.1 */
+
+const Comments_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<h1>Коментарі</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+  ${validate_component(Comments, "Comments").$$render($$result, {}, {}, {})}
+</div>`;
+});
+
 /* src/routes/organizations/[id].svelte generated by Svelte v3.18.1 */
 
 const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -3795,9 +4127,6 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 		organization = await API.getOrganization(1);
 	});
 
-	// Trust button
-	let active = false;
-
 	$page = get_store_value(page);
 	let carousel = (organization.avatars || []).map(p => ({ src: p, alt: "photo" }));
 
@@ -3807,261 +4136,55 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
-    ${validate_component(Button, "Button").$$render($$result, { class: "white" }, {}, {
-		default: () => `
-        <div class="${"flex flex-align-center flex-justify-between full-width"}">
-            <div class="${"flex flex-align-center"}">
-                <s></s>
-                <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
-                    ${validate_component(Picture, "Picture").$$render(
-			$$result,
-			{
-				src: "./assets/dimsirka.jpg",
-				size: "contain",
-				alt: "logo"
-			},
-			{},
-			{}
-		)}
-                </div>
-                <s></s>
-                <s></s>
-                <s></s>
-                <h3>&quot;Дім Сірка&quot;</h3>
-            </div>
-        </div>
-    `
-	})}
+    ${validate_component(OrganizationButton, "OrganizationButton").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
-    <section class="${"flex"}" style="${"height: 240px"}">
-        ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-		default: () => `
-            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
-        `
-	})}
-    </section>
+    ${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carousel }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    <h2>Організація Добра</h2>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-    <pre class="${"font-w-300"}">
-    Організація Добра – благодійний фонд, який опікується долею безпритульних
-    котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться
-    у Львові, вул. Сахарова 3
-  </pre>
+    ${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-    <p class="${"container flex flex-justify-between flex-align-center"}">
-    <span class="${"flex flex-align-center"}">
-      ${validate_component(Icon, "Icon").$$render(
-		$$result,
-		{
-			is: "danger",
-			type: "heart-filled",
-			size: "medium"
-		},
-		{},
-		{}
-	)}
-      <s></s>
-      <s></s>
-      <span class="${"font-secondary font-w-600 h3"}">1</span>
-    </span>
-
-        <span class="${"flex"}">
-      ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-        ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "share",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-        <s></s>
-        <s></s>
-        <h3 class="${"font-w-600"}">Поділитись</h3>
-      `
-		}
-	)}
-    </span>
-
-        <span class="${"flex flex-align-center"}">
-      ${validate_component(Icon, "Icon").$$render(
-		$$result,
-		{
-			type: "eye",
-			size: "medium",
-			class: "theme-svg-fill"
-		},
-		{},
-		{}
-	)}
-      <s></s>
-      <s></s>
-      <span class="${"font-secondary font-w-600 h3"}">13</span>
-    </span>
-    </p>
+    ${validate_component(InteractionIndicators, "InteractionIndicators").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    <h1>Фонди тварин</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-    <div class="${"full-container"}">
-        ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
-    </div>
+    ${validate_component(FundList, "FundList").$$render($$result, { title: "Фонди тварин" }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    <h1>Інші фонди</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-    <div class="${"full-container"}">
-        ${validate_component(CharityCards, "CharityCards").$$render($$result, {}, {}, {})}
-    </div>
+    ${validate_component(FundList, "FundList").$$render($$result, { title: "Інші фонди" }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    <h1>Про нас</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-    <pre class="${"font-w-300"}">
-    Організація Добра – благодійний фонд, який опікується долею безпритульних
-    котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться
-    у Львові, вул. Сахарова 3 Організація Добра – благодійний фонд, який
-    опікується долею безпритульних котиків та песиків.
-  </pre>
+    ${validate_component(Description, "Description").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-    <p class="${"flex"}">
-        ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-            ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "share",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-            <s></s>
-            <s></s>
-    <p class="${"font-w-500"}">Поділитись</p>
-    `
-		}
-	)}
-    <s></s>
-    <s></s>
-    <s></s>
-    <s></s>
-    <s></s>
-    ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-        ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "link",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-        <s></s>
-        <s></s>
-        <p class="${"font-w-500"}">Скопіювати</p>
-    `
-		}
-	)}
-    </p>
+    ${validate_component(Share, "Share").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    <section class="${"flex flex-column flex-align-center flex-justify-center"}">
-        <div style="${"width: 100px; max-width: 100%"}">
-            ${validate_component(TrustButton, "TrustButton").$$render($$result, { isActive: active }, {}, {})}
-        </div>
-        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-        <h2>Я довіряю</h2>
-    </section>
+    ${validate_component(Trust, "Trust").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    <h1>Наші піклувальники</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-    <div class="${"full-container"}">
-        ${validate_component(DonatorsList, "DonatorsList").$$render($$result, {}, {}, {})}
-    </div>
+    ${validate_component(Donators, "Donators").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    <h1>Останні новини</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-    ${validate_component(NewsList, "NewsList").$$render($$result, {}, {}, {})}
+    ${validate_component(LastNews, "LastNews").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    <h1>Сертифікати</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-    <div class="${"full-container"}">
-        ${validate_component(Documents, "Documents").$$render($$result, {}, {}, {})}
-    </div>
+    ${validate_component(Certificates, "Certificates").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    <h1>Відео про нас</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-    <section class="${"flex"}" style="${"height: 240px"}">
-        ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-		default: () => `
-            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel }, {}, {})}
-        `
-	})}
-    </section>
+    ${validate_component(Videos, "Videos").$$render($$result, { items: carousel }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "70" }, {}, {})}
 
     ${validate_component(ContactsCard, "ContactsCard").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    <h1>3D - Тур 360°</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-    <div class="${"full-container"}">
-        <iframe title="${"360 тур"}" src="${"https://www.google.com/maps/embed?pb=!4v1584897060810!6m8!1m7!1skKRg7TofqDSsrkcJRbBDug!2m2!1d48.89874683261886!2d24.75621937486022!3f291.2976377703877!4f-17.03315422439765!5f0.7820865974627469"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
-    </div>
+    ${validate_component(VirtualTour, "VirtualTour").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    <h1>Ми на карті</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-    <div class="${"full-container"}">
-        <iframe title="${"Карта"}" src="${"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20985.072890836364!2d24.74703549119322!3d48.8937812401519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4730c391910041fd%3A0x6a789a2223e12e2d!2sBo%20Dim%20Sirka%20.%20Prytulok!5e0!3m2!1sen!2sus!4v1584897512173!5m2!1sen!2sus"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
-    </div>
+    ${validate_component(WeOnMap, "WeOnMap").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    <h1>Коментарі</h1>
-    ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-    <div class="${"full-container"}">
-        ${validate_component(Comments, "Comments").$$render($$result, {}, {}, {})}
-    </div>
+    ${validate_component(Comments_1, "Comments").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
     <div class="${"full-container"}">
@@ -4073,7 +4196,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/routes/funds/_TopCarousel.svelte generated by Svelte v3.18.1 */
 
-const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const TopCarousel$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items = [] } = $$props;
 
 	// Carousel & FancyBox
@@ -4096,25 +4219,34 @@ const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 /* src/routes/funds/_OrganizationButton.svelte generated by Svelte v3.18.1 */
 
-const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const OrganizationButton$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { organization = {} } = $$props;
 	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
 
-	return `<a rel="${"prefetch"}"${add_attribute("href", organization.id, 0)} class="${"btn white full-width"}" style="${"padding: 5px 15px;"}">
+	return `${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			rel: "prefetch",
+			href: organization.id,
+			class: "white"
+		},
+		{},
+		{
+			default: () => `
   <div class="${"flex flex-align-center flex-justify-between full-width"}">
     <div class="${"flex flex-align-center"}">
       <s></s>
       <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
         ${validate_component(Picture, "Picture").$$render(
-		$$result,
-		{
-			src: organization.avatar,
-			size: "contain",
-			alt: "фото організації"
-		},
-		{},
-		{}
-	)}
+				$$result,
+				{
+					src: organization.avatar,
+					size: "contain",
+					alt: "фото організації"
+				},
+				{},
+				{}
+			)}
       </div>
       <s></s>
       <s></s>
@@ -4123,7 +4255,9 @@ const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, 
     </div>
     <span style="${"font-size: 24px"}">→</span>
   </div>
-</a>`;
+`
+		}
+	)}`;
 });
 
 /* src/routes/funds/_QuickInfoCard.svelte generated by Svelte v3.18.1 */
@@ -4162,7 +4296,7 @@ const QuickInfoCard = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 /* src/routes/funds/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
 
-const InteractionIndicators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const InteractionIndicators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { likes = 0 } = $$props;
 	let { views = 0 } = $$props;
 	if ($$props.likes === void 0 && $$bindings.likes && likes !== void 0) $$bindings.likes(likes);
@@ -4204,7 +4338,7 @@ const InteractionIndicators = create_ssr_component(($$result, $$props, $$binding
 
 /* src/routes/funds/_Description.svelte generated by Svelte v3.18.1 */
 
-const Description = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { title } = $$props;
 	let { text } = $$props;
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
@@ -4219,7 +4353,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
 /* src/routes/funds/_Share.svelte generated by Svelte v3.18.1 */
 
-const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Share$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<p class="${"flex"}">
     ${validate_component(Button, "Button").$$render(
 		$$result,
@@ -4283,7 +4417,7 @@ const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 /* src/routes/funds/_Trust.svelte generated by Svelte v3.18.1 */
 
-const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Trust$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let active = false;
 
 	return `<section class="${"flex flex-column flex-align-center flex-justify-center"}">
@@ -4494,7 +4628,7 @@ const AnimalCard = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 /* src/routes/funds/_Donators.svelte generated by Svelte v3.18.1 */
 
-const Donators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Donators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<h1>Наші піклувальники</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 <div class="${"full-container"}">
@@ -4560,7 +4694,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 
 /* src/routes/funds/_Comments.svelte generated by Svelte v3.18.1 */
 
-const Comments_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Comments_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<h1>Коментарі</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 <div class="${"full-container"}">
@@ -4635,16 +4769,16 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
-    ${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
+    ${validate_component(TopCarousel$1, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
-    ${validate_component(OrganizationButton, "OrganizationButton").$$render($$result, { organization }, {}, {})}
+    ${validate_component(OrganizationButton$1, "OrganizationButton").$$render($$result, { organization }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
     ${validate_component(QuickInfoCard, "QuickInfoCard").$$render($$result, { cardTop }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
-    ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+    ${validate_component(InteractionIndicators$1, "InteractionIndicators").$$render(
 		$$result,
 		{
 			likes: iconsLine.likes,
@@ -4655,7 +4789,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    ${validate_component(Description, "Description").$$render(
+    ${validate_component(Description$1, "Description").$$render(
 		$$result,
 		{
 			title: descriptionBlock.title,
@@ -4666,16 +4800,16 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-    ${validate_component(Share, "Share").$$render($$result, {}, {}, {})}
+    ${validate_component(Share$1, "Share").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    ${validate_component(Trust, "Trust").$$render($$result, {}, {}, {})}
+    ${validate_component(Trust$1, "Trust").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(AnimalCard, "AnimalCard").$$render($$result, { animal }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Donators, "Donators").$$render($$result, {}, {}, {})}
+    ${validate_component(Donators$1, "Donators").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(Documents_1, "Documents").$$render($$result, {}, {}, {})}
@@ -4687,7 +4821,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(HowToHelp, "HowToHelp").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Comments_1, "Comments").$$render($$result, {}, {}, {})}
+    ${validate_component(Comments_1$1, "Comments").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     <div class="${"full-container"}">
