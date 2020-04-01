@@ -5,24 +5,20 @@
     import FancyBox from '@components/FancyBox.svelte'
     import Carousel from '@components/Carousel.svelte'
 
-    let active = false
-    const cardSample = {
-        src: 'https://placeimg.com/300/300/people',
-        alt: '10грн',
-    }
+    export let items = []
 
-    const all = new Array(5).fill(cardSample)
+    let active = false
 </script>
 
-<Carousel items={all} size="auto" dots={false} let:item={item} let:index={index} class={classnames('documents', { active })}>
-    <div class={!index ? 'start' : index === all.length - 1 ? 'end' : ''}>
+<Carousel items={items} size="auto" dots={false} let:item={item} let:index={index} class={classnames('documents', { active })}>
+    <div class={!index ? 'start' : index === items.length - 1 ? 'end' : ''}>
         <FancyBox on:open={() => active = true} on:close={() => active = false}>
             <Card class="flex">
-                <Picture {...item} size="contain"/>
+                <Picture src={item.src} alt={item.title} size="contain"/>
             </Card>
             <section slot="box" class="flex" style="width: 100vw; height: calc(100vw * 1.428)">
                 <Card class="flex">
-                    <Picture {...item} size="contain"/>
+                    <Picture src={item.src} srcBig={item.src2x} alt={item.title} size="contain"/>
                 </Card>
             </section>
         </FancyBox>

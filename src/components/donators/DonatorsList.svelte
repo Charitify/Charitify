@@ -1,65 +1,36 @@
 <script>
-    import { classnames, delay } from '@utils'
     import DonatorsCard from './DonatorsCard.svelte'
 
-    const all = [
-        {
-            src: 'https://placeimg.com/300/300/people',
-            title: '₴ 10',
-            subtitle: 'Тіна Канделакі',
-        },
-        {
-            src: 'https://placeimg.com/300/300/people',
-            title: '₴ 250',
-            subtitle: 'Bruce Lee',
-            checked: true,
-        },
-        {
-            src: 'https://placeimg.com/300/300/people',
-            title: '₴ 1140',
-            subtitle: 'Leonardo DiCaprio junior',
-        },
-        {
-            src: 'https://placeimg.com/300/300/people',
-            title: '₴ 50',
-            subtitle: 'Добра людина',
-        },
-        {
-            src: 'https://placeimg.com/300/300/people',
-            title: '₴ 5',
-            subtitle: 'Добра людина',
-        },
-    ]
+    export let items = []
 
-    const grouped = all.map(one => new Array(3).fill(one))
+    let grouped
+    $: grouped = items.reverse().reduce((acc, item) => {
+        const lastInd = Math.max(acc.length - 1, 0)
+        if (!Array.isArray(acc[lastInd])) {
+            acc[lastInd] = []
+        }
+        if (acc[lastInd].length < 3) {
+            acc[lastInd].push(item)
+        } else {
+            acc.push([])
+        }
+        return acc
+    }, []).reverse()
 
     function scrollEnd(node) {
-        try {
-          node.scrollTo(node.scrollWidth, 0)
-        } catch (e) {}
-    }
-
-    let active = false
-    async function setFancyActive(isActive) {
-        if (!isActive) {
-            await delay(300)
-        }
-        active = isActive
+        try { node.scrollTo(node.scrollWidth, 0) } catch (e) {}
     }
 </script>
 
-<ul class={classnames('donators scroll-x-center', { active })} use:scrollEnd>
+<ul class="donators scroll-x-center" use:scrollEnd>
     {#each grouped as cards}
         <li>
-            <DonatorsCard items={cards} setFancyActive={setFancyActive}/>
+            <DonatorsCard items={cards}/>
         </li>
     {/each}
 </ul>
 
 <style>
-    :global(.donators.active.scroll-x-center > *) {
-        transform: none
-    }
     ul {
         width: 100%;
         display: flex;

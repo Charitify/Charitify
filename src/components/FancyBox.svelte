@@ -61,9 +61,15 @@
                         await delay(300)
                     }
 
-                    ySwipe = START_POSITION
-                    drawTransform(el, ySwipe)
-                    el.style.opacity = null
+                    if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {
+                        ySwipe = START_POSITION
+                        drawTransform(el, ySwipe)
+                        el.style.opacity = null
+                    } else {
+                        ySwipe = 0
+                        drawTransform(el, ySwipe)
+                        el.style.opacity = null
+                    }
                 })
     }
 
@@ -86,29 +92,27 @@
 </section>
 
 {#if !slots.box}
-    <button
+    <section
             bind:this={fancyBox}
             use:swipe
             in:fly="{{ y: 20, duration: 200 }}"
-            type="button"
             class={classProp}
-            on:click={onClick}
     >
+        <button type="button" on:click={onClick}>&#10005;</button>
         <slot></slot>
-    </button>
+    </section>
 {/if}
 
 {#if active !== null && slots.box}
-    <button
+    <section
             bind:this={fancyBox}
             use:swipe
             in:fly="{{ y: 20, duration: 200 }}"
-            type="button"
             class={classProp}
-            on:click={onClick}
     >
+        <button type="button" on:click={onClick}>&#10005;</button>
         <slot name="box"></slot>
-    </button>
+    </section>
 {/if}
 
 <style>
@@ -133,7 +137,8 @@
         display: flex;
         overflow: hidden;
         align-items: stretch;
-        justify-content: stretch;
+        justify-content: center;
+        flex-direction: column;
         touch-action: manipulation;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
@@ -153,5 +158,15 @@
         opacity: 1;
         transform: translate3d(0,0,0);
         pointer-events: auto;
+    }
+
+    button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        display: block;
+        width: var(--min-interactive-size);
+        height: var(--min-interactive-size);
     }
 </style>

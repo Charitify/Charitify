@@ -51,9 +51,30 @@
         sex: safeGet(() => charity.animal.sex),
         sterilization: safeGet(() => charity.animal.sterilization),
         character: safeGet(() => charity.animal.character),
-        lifestory: safeGet(() => charity.animal.lifestory, [], true),
+        characterShort: safeGet(() => charity.animal.character_short),
+        lifestory: safeGet(() => charity.animal.lifestory.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() })), [], true),
         vaccination: safeGet(() => charity.animal.vaccination, [], true),
     };
+    $: donators = safeGet(() => charity.donators.map(d => ({
+        id: d.id,
+        title: `${d.currency} ${d.amount}`,
+        subtitle: d.name,
+        src: d.avatar,
+        src2x: d.avatar2x,
+    })), [], true);
+    $: documents = safeGet(() => charity.documents.map(d => ({
+        id: d.id,
+        title: d.title,
+        src: d.src,
+        src2x: d.src2x,
+    })), [], true);
+    $: media = safeGet(() => charity.media.map(d => ({
+        id: d.id,
+        alt: d.title,
+        src: d.src,
+        srcBig: d.src2x,
+        description: d.description,
+    })), [], true);
 
     onMount(async () => {
         await delay(2000)
@@ -98,13 +119,13 @@
     <AnimalCard animal={animal}/>
     <Br size="60"/>
 
-    <Donators />
+    <Donators items={donators}/>
     <Br size="60"/>
 
-    <Documents/>
+    <Documents items={documents}/>
     <Br size="45"/> 
 
-    <Media items={carouselTop}/>
+    <Media items={media}/>
     <Br size="60"/>
 
     <HowToHelp />

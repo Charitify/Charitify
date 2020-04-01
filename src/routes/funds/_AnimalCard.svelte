@@ -57,17 +57,21 @@
             </div>
         </div>
 
-        <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em; opacity: .3">
+        <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
             <Icon type="polygon" is="primary"/>
             <div class="absolute flex flex-column flex-center">
-                <Icon type="cancel-circle" is="light" size="big"/>
+                {#if animal.sterilization}
+                    <Icon type="checked-circle" is="light" size="big"/>
+                {:else}
+                    <Icon type="cancel-circle" is="light" size="big"/>
+                {/if}
                 <span class="text-white text-center h5">Cтерилізація</span>
             </div>
         </div>
     </section>
     <Br size="40"/>
 
-    <h2>Характер Волтера: 😃</h2>
+    <h2>Характер Волтера: {animal.characterShort}</h2>
     <Br size="10"/>
     <p class="font-w-300">
         {animal.character}
@@ -78,26 +82,13 @@
     <Br size="10"/>
     <table>
         <tbody>
-        <tr>
-            <td>01.02.2019</td>
-            <td>—</td>
-            <td>Його перший день народження</td>
-        </tr>
-        <tr>
-            <td>05.02.2019</td>
-            <td>—</td>
-            <td>Ми приютили його з вулиці</td>
-        </tr>
-        <tr>
-            <td>07.03.2019</td>
-            <td>—</td>
-            <td>Зробили вакцинацію проти бліх</td>
-        </tr>
-        <tr>
-            <td>23.06.2019</td>
-            <td>—</td>
-            <td>Знайшов для себе улюблену іграшку</td>
-        </tr>
+            {#each animal.lifestory as item}
+                <tr>
+                    <td>{item.date}</td>
+                    <td>—</td>
+                    <td>{item.title}</td>
+                </tr>
+            {/each}
         </tbody>
     </table>
     <Br size="45"/>
@@ -105,35 +96,24 @@
     <h2>Вакцинації</h2>
     <Br size="15"/>
     <ul class="flex flex-column text-left">
-        <li>
-            <span class="flex flex-align-center font-w-300">
-                <Icon is="primary" type="checked-circle" size="medium"/>
-                <s></s>
-                <s></s>
-                <s></s>
-                Від бліх
-            </span>
-        </li>
-        <li>
-            <Br size="10"/>
-            <span class="flex flex-align-center font-w-300">
-                <Icon is="primary" type="checked-circle" size="medium"/>
-                <s></s>
-                <s></s>
-                <s></s>
-                Від паразитів
-            </span>
-        </li>
-        <li>
-            <Br size="10"/>
-            <span class="flex flex-align-center font-w-300">
-                <Icon is="danger" type="cancel-circle" size="medium"/>
-                <s></s>
-                <s></s>
-                <s></s>
-                Від грибків
-            </span>
-        </li>
+        {#each animal.vaccination as item, i}
+            <li>
+                {#if i}
+                    <Br size="10"/>
+                {/if}
+                <span class="flex flex-align-center font-w-300">
+                    {#if item.done}
+                        <Icon is="primary" type="checked-circle" size="medium"/>
+                    {:else}
+                        <Icon is="danger" type="cancel-circle" size="medium"/>
+                    {/if}
+                    <s></s>
+                    <s></s>
+                    <s></s>
+                    {item.title}
+                </span>
+            </li>
+        {/each}
     </ul>
 
     <Br size="35"/>
