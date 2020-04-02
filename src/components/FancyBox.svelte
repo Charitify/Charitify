@@ -165,7 +165,9 @@
         top: 10px;
         right: 10px;
         font-size: 24px;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: var(--min-interactive-size);
         height: var(--min-interactive-size);
     }
