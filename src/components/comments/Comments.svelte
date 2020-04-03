@@ -1,6 +1,5 @@
 <script>
-    import { onMount } from 'svelte'
-    import { API } from '@services'
+    import { createEventDispatcher } from 'svelte'
 
     import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
@@ -9,18 +8,35 @@
     import Button from '@components/Button.svelte'
     import Comment from './Comment.svelte'
 
+    const dispatch = createEventDispatcher()
+
+    /**
+     * 
+     * @event: submit - submit values of a new comment 
+     * 
+     */
+    
+    /**
+     * @type {boolean}
+     */
     export let withForm = true
 
-    let comments = []
-
-    onMount(async () => {
-        comments = await API.getComments()
-    })
+    /**
+     * @type {{
+     *      likes: number,
+     *      avatar: string,
+     *      author: string,
+     *      comment: string,
+     *      checked: boolean,
+     *      created_at: string,
+     * }}
+     */
+    export let items = []
 </script>
 
 <section class="comments">
     <ul class="comments-wrap">
-        {#each comments as comment}
+        {#each items as comment}
             <li>
                 <Comment
                         src={comment.avatar}
@@ -45,7 +61,7 @@
     {#if withForm}
         <Br size="40"/>  
         <div class="comments-form font-secondary h3">
-            <Form class="flex" name="comment-form">
+            <Form class="flex" name="comment-form" on:submit={values => dispatch('sumbit', values)}>
                 <Input
                         type="textarea"
                         name="comment"

@@ -1,14 +1,12 @@
 <script>
     import { Br } from '@components'
 
-    // export let title
-    // export let text
+    export let title
+    export let text
 </script>
 
-<h2>Організація Добра</h2>
+<h2>{title}</h2>
 <Br size="10" />
 <pre class="font-w-300">
-    Організація Добра – благодійний фонд, який опікується долею безпритульних
-    котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться
-    у Львові, вул. Сахарова 3
+    {text}
 </pre>

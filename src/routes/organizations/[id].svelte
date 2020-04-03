@@ -2,6 +2,7 @@
     import { stores } from "@sapper/app";
     import { onMount } from "svelte";
     import { API } from "@services";
+    import { delay, safeGet } from "@utils";
     import { Br, Footer } from "@components";
 
     import OrganizationButton from './_OrganizationButton.svelte'
@@ -26,16 +27,67 @@
     // Organization
     let organizationId = $page.params.id;
 
+    // Entities
     let organization = {};
+    let comments = []
     
-    $: carousel = (organization.avatars || []).map(p => ({
-        src: p.src,
-        src2x: p.src2x,
-        alt: p.title,
-    }));
+    $: carouselTop = (organization.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
+    $: descriptionShort = {
+        title: organization.title,
+        text: organization.subtitle,
+    };
+    $: iconsLine = {
+        likes: organization.likes,
+        views: organization.views,
+    };
+    $: descriptionBlock = {
+        title: organization.title,
+        text: organization.description,
+    };
+    $: contacts = {
+        phone: safeGet(() => organization.contacts.phone),
+        email: safeGet(() => organization.contacts.email),
+        location: safeGet(() => organization.contacts.location),
+        telegram: safeGet(() => organization.contacts.telegram),
+        facebook: safeGet(() => organization.contacts.facebook),
+        viber: safeGet(() => organization.contacts.viber),
+    };
+    $: donators = safeGet(() => organization.donators.map(d => ({
+        id: d.id,
+        title: `${d.currency} ${d.amount}`,
+        subtitle: d.name,
+        src: d.avatar,
+        src2x: d.avatar2x,
+    })), [], true);
+    $: documents = safeGet(() => organization.documents.map(d => ({
+        id: d.id,
+        title: d.title,
+        src: d.src,
+        src2x: d.src2x,
+    })), [], true);
+    $: media = safeGet(() => organization.media.map(d => ({
+        id: d.id,
+        alt: d.title,
+        src: d.src,
+        srcBig: d.src2x,
+        description: d.description,
+    })), [], true);
+    $: commentsData = {
+        comments: safeGet(() => comments.map(c => ({
+            likes: c.likes,
+            avatar: c['author.avatar'],
+            author: c['author.name'],
+            comment: c.comment,
+            checked: c.checked,
+            reply_to: c.reply_to,
+            created_at: c.created_at,
+        }))),
+    };
 
     onMount(async () => {
+        await delay(2000)
         organization = await API.getOrganization(1);
+        comments = await API.getComments()
     });
 </script>
 
@@ -54,13 +106,13 @@
     <OrganizationButton />
     <Br size="20" />
 
-    <TopCarousel items={carousel}/>
+    <TopCarousel items={carouselTop}/>
     <Br size="60" />
 
-    <DescriptionShort />
+    <DescriptionShort title={descriptionShort.title} text={descriptionShort.text}/>
     <Br size="10" />
 
-    <InteractionIndicators />
+    <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
     <Br size="50" />
 
     <FundList title="Фонди тварин"/>
@@ -78,16 +130,16 @@
     <Trust />
     <Br size="50" />
 
-    <Donators />
+    <Donators items={donators}/>
     <Br size="60" />
 
     <LastNews />
     <Br size="60" />
 
-    <Certificates />
+    <Certificates items={documents}/>
     <Br size="45" />
 
-    <Videos items={carousel}/>
+    <Videos items={media}/>
     <Br size="70" />
 
     <ContactsCard/>

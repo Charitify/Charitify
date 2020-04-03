@@ -20,10 +20,12 @@
     import Comments from './_Comments.svelte'
 
     const { page } = stores()
+
     let charityId = $page.params.id
 
-    // Entity
+    // Entities
     let charity = {}
+    let comments = []
     
     $: carouselTop = (charity.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
     $: organization = (charity.organization || {});
@@ -78,10 +80,22 @@
     $: howToHelp = {
         phone: organization.phone,
     };
+    $: commentsData = {
+        comments: safeGet(() => comments.map(c => ({
+            likes: c.likes,
+            avatar: c['author.avatar'],
+            author: c['author.name'],
+            comment: c.comment,
+            checked: c.checked,
+            reply_to: c.reply_to,
+            created_at: c.created_at,
+        }))),
+    };
 
     onMount(async () => {
         await delay(2000)
         charity = await API.getFund(1)
+        comments = await API.getComments()
     })
 </script>
 
@@ -134,7 +148,7 @@
     <HowToHelp data={howToHelp}/>
     <Br size="60"/>
 
-    <Comments />
+    <Comments items={commentsData.comments}/>
     <Br size="60"/>
 
     <div class="full-container">
