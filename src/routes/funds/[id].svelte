@@ -75,6 +75,9 @@
         srcBig: d.src2x,
         description: d.description,
     })), [], true);
+    $: howToHelp = {
+        phone: organization.phone,
+    };
 
     onMount(async () => {
         await delay(2000)
@@ -128,7 +131,7 @@
     <Media items={media}/>
     <Br size="60"/>
 
-    <HowToHelp />
+    <HowToHelp data={howToHelp}/>
     <Br size="60"/>
 
     <Comments />

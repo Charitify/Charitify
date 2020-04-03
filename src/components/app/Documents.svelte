@@ -16,7 +16,7 @@
             <Card class="flex">
                 <Picture src={item.src} alt={item.title} size="contain"/>
             </Card>
-            <section slot="box" class="flex" style="width: 100vw; height: calc(100vw * 1.428)">
+            <section slot="box" class="flex full-container">
                 <Card class="flex">
                     <Picture src={item.src} srcBig={item.src2x} alt={item.title} size="contain"/>
                 </Card>
@@ -29,6 +29,12 @@
     :global(.documents.active .scroll-x-center > *) {
         transform: none
     }
+
+    section {
+        height: calc((100vw - var(--screen-padding) * 2) * 1.428);
+        padding: 0 var(--screen-padding);
+    }
+    
     div {
         flex: none;
         display: flex;

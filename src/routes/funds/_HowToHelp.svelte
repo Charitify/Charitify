@@ -1,5 +1,7 @@
 <script>
     import { Br, Icon } from '@components'
+
+    export let data = {}
 </script>
 
 <h1>Як допомогти</h1>
@@ -16,7 +18,7 @@
         <Icon size="medium" type="phone" class="theme-svg-fill-opposite"/>
         <s></s>
         <s></s>
-        <h2>+38 (093) 205-43-92</h2>
+        <h2>{data.phone}</h2>
     </div>
 </div>
 <Br size="5"/>
