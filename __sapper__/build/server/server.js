@@ -1761,23 +1761,20 @@ const Comment = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 
 const css$m = {
 	code: ".comments.svelte-88w9s0.svelte-88w9s0{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;overflow-y:auto;overflow-x:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;padding:15px}.comments-form.svelte-88w9s0.svelte-88w9s0{position:relative;-webkit-box-flex:0;-ms-flex:none;flex:none}.comments-wrap.svelte-88w9s0.svelte-88w9s0{width:100%;margin:-5px 0}.comments-wrap.svelte-88w9s0 li.svelte-88w9s0{width:100%;padding:5px 0}",
-	map: "{\"version\":3,\"file\":\"Comments.svelte\",\"sources\":[\"Comments.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { API } from '@services'\\n\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Form from '@components/Form.svelte'\\n    import Input from '@components/fields/Input.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Comment from './Comment.svelte'\\n\\n    export let withForm = true\\n\\n    let comments = []\\n\\n    onMount(async () => {\\n        comments = await API.getComments()\\n    })\\n</script>\\n\\n<section class=\\\"comments\\\">\\n    <ul class=\\\"comments-wrap\\\">\\n        {#each comments as comment}\\n            <li>\\n                <Comment\\n                        src={comment.avatar}\\n                        title={comment.author}\\n                        date={new Date(comment.created_at).toLocaleDateString()}\\n                        amount={comment.likes}\\n                        checked={comment.checked}\\n                >\\n                    {comment.comment}\\n                </Comment>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n    <Br size=\\\"20\\\"/>  \\n\\n    <p class=\\\"h3 font-w-500 font-secondary underline text-center\\\">\\n        <span>All comments</span>\\n        <span class=\\\"font-w-600\\\">⋁</span>\\n    </p>\\n\\n    {#if withForm}\\n        <Br size=\\\"40\\\"/>  \\n        <div class=\\\"comments-form font-secondary h3\\\">\\n            <Form class=\\\"flex\\\" name=\\\"comment-form\\\">\\n                <Input\\n                        type=\\\"textarea\\\"\\n                        name=\\\"comment\\\"\\n                        rows=\\\"1\\\"\\n                        class=\\\"comment-field flex-self-stretch\\\"\\n                        placeholder=\\\"Залиште свій коментар\\\"\\n                />\\n            </Form>\\n            <div class=\\\"flex absolute\\\" style=\\\"top: 0; right: 0; height: 100%; width: 50px\\\">\\n                <Button type=\\\"submit\\\" class=\\\"flex full-width flex-self-stretch flex-justify-start\\\">\\n                    <Icon type=\\\"send\\\" is=\\\"info\\\" size=\\\"medium\\\"/>\\n                </Button>\\n            </div>\\n        </div>\\n    {/if}\\n</section>\\n\\n<style>\\n    .comments {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        padding: 15px;\\n    }\\n\\n    .comments-form {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n    }\\n\\n    .comments-wrap {\\n        width: 100%;\\n        margin: -5px 0;\\n    }\\n\\n    .comments-wrap li {\\n        width: 100%;\\n        padding: 5px 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtRQUN0QixhQUFhO0lBQ2pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO0lBQ2Q7O0lBRUE7UUFDSSxXQUFXO1FBQ1gsY0FBYztJQUNsQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO0lBQ2xCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jb21tZW50cyB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgcGFkZGluZzogMTVweDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtZm9ybSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtYXJnaW46IC01cHggMDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCBsaSB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nOiA1cHggMDtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAkEI,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,MAAM,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,AACtB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,CAAC,AAClB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Comments.svelte\",\"sources\":[\"Comments.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Form from '@components/Form.svelte'\\n    import Input from '@components/fields/Input.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Comment from './Comment.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    /**\\n     * \\n     * @event: submit - submit values of a new comment \\n     * \\n     */\\n    \\n    /**\\n     * @type {boolean}\\n     */\\n    export let withForm = true\\n\\n    /**\\n     * @type {{\\n     *      likes: number,\\n     *      avatar: string,\\n     *      author: string,\\n     *      comment: string,\\n     *      checked: boolean,\\n     *      created_at: string,\\n     * }}\\n     */\\n    export let items = []\\n</script>\\n\\n<section class=\\\"comments\\\">\\n    <ul class=\\\"comments-wrap\\\">\\n        {#each items as comment}\\n            <li>\\n                <Comment\\n                        src={comment.avatar}\\n                        title={comment.author}\\n                        date={new Date(comment.created_at).toLocaleDateString()}\\n                        amount={comment.likes}\\n                        checked={comment.checked}\\n                >\\n                    {comment.comment}\\n                </Comment>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n    <Br size=\\\"20\\\"/>  \\n\\n    <p class=\\\"h3 font-w-500 font-secondary underline text-center\\\">\\n        <span>All comments</span>\\n        <span class=\\\"font-w-600\\\">⋁</span>\\n    </p>\\n\\n    {#if withForm}\\n        <Br size=\\\"40\\\"/>  \\n        <div class=\\\"comments-form font-secondary h3\\\">\\n            <Form class=\\\"flex\\\" name=\\\"comment-form\\\" on:submit={values => dispatch('sumbit', values)}>\\n                <Input\\n                        type=\\\"textarea\\\"\\n                        name=\\\"comment\\\"\\n                        rows=\\\"1\\\"\\n                        class=\\\"comment-field flex-self-stretch\\\"\\n                        placeholder=\\\"Залиште свій коментар\\\"\\n                />\\n            </Form>\\n            <div class=\\\"flex absolute\\\" style=\\\"top: 0; right: 0; height: 100%; width: 50px\\\">\\n                <Button type=\\\"submit\\\" class=\\\"flex full-width flex-self-stretch flex-justify-start\\\">\\n                    <Icon type=\\\"send\\\" is=\\\"info\\\" size=\\\"medium\\\"/>\\n                </Button>\\n            </div>\\n        </div>\\n    {/if}\\n</section>\\n\\n<style>\\n    .comments {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        padding: 15px;\\n    }\\n\\n    .comments-form {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n    }\\n\\n    .comments-wrap {\\n        width: 100%;\\n        margin: -5px 0;\\n    }\\n\\n    .comments-wrap li {\\n        width: 100%;\\n        padding: 5px 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtRQUN0QixhQUFhO0lBQ2pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO0lBQ2Q7O0lBRUE7UUFDSSxXQUFXO1FBQ1gsY0FBYztJQUNsQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO0lBQ2xCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jb21tZW50cyB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgcGFkZGluZzogMTVweDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtZm9ybSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtYXJnaW46IC01cHggMDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCBsaSB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nOiA1cHggMDtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAkFI,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,MAAM,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,AACtB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,CAAC,AAClB,CAAC\"}"
 };
 
 const Comments = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
 	let { withForm = true } = $$props;
-	let comments = [];
-
-	onMount(async () => {
-		comments = await API.getComments();
-	});
-
+	let { items = [] } = $$props;
 	if ($$props.withForm === void 0 && $$bindings.withForm && withForm !== void 0) $$bindings.withForm(withForm);
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	$$result.css.add(css$m);
 
 	return `<section class="${"comments svelte-88w9s0"}">
     <ul class="${"comments-wrap svelte-88w9s0"}">
-        ${each(comments, comment => `<li class="${"svelte-88w9s0"}">
+        ${each(items, comment => `<li class="${"svelte-88w9s0"}">
                 ${validate_component(Comment, "Comment").$$render(
 		$$result,
 		{
@@ -2619,12 +2616,15 @@ const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots
 /* src/routes/organizations/_DescriptionShort.svelte generated by Svelte v3.18.1 */
 
 const DescriptionShort = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	return `<h2>Організація Добра</h2>
+	let { title } = $$props;
+	let { text } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
+
+	return `<h2>${escape(title)}</h2>
 ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 <pre class="${"font-w-300"}">
-    Організація Добра – благодійний фонд, який опікується долею безпритульних
-    котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться
-    у Львові, вул. Сахарова 3
+    ${escape(text)}
 </pre>`;
 });
 
@@ -2806,10 +2806,13 @@ const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 /* src/routes/organizations/_Donators.svelte generated by Svelte v3.18.1 */
 
 const Donators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
 	return `<h1>Наші піклувальники</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 <div class="${"full-container"}">
-    ${validate_component(DonatorsList, "DonatorsList").$$render($$result, {}, {}, {})}
+    ${validate_component(DonatorsList, "DonatorsList").$$render($$result, { items }, {}, {})}
 </div>`;
 });
 
@@ -2824,10 +2827,13 @@ ${validate_component(NewsList, "NewsList").$$render($$result, {}, {}, {})}`;
 /* src/routes/organizations/_Certificates.svelte generated by Svelte v3.18.1 */
 
 const Certificates = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
 	return `<h1>Сертифікати</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 <div class="${"full-container"}">
-    ${validate_component(Documents, "Documents").$$render($$result, {}, {}, {})}
+    ${validate_component(Documents, "Documents").$$render($$result, { items }, {}, {})}
 </div>`;
 });
 
@@ -3037,14 +3043,95 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	// Organization
 	let organizationId = $page.params.id;
 
+	// Entities
 	let organization = {};
 
+	let comments = [];
+
 	onMount(async () => {
+		await delay(2000);
 		organization = await API.getOrganization(1);
+		comments = await API.getComments();
 	});
 
 	$page = get_store_value(page);
-	let carousel = (organization.avatars || []).map(p => ({ src: p.src, src2x: p.src2x, alt: p.title }));
+
+	let carouselTop = (organization.avatars || []).map((a, i) => ({
+		src: a.src,
+		srcBig: a.src2x,
+		alt: a.title
+	}));
+
+	let descriptionShort = {
+		title: organization.title,
+		text: organization.subtitle
+	};
+
+	let iconsLine = {
+		likes: organization.likes,
+		views: organization.views
+	};
+
+	let descriptionBlock = {
+		title: organization.title,
+		text: organization.description
+	};
+
+	let contacts = {
+		phone: safeGet(() => organization.contacts.phone),
+		email: safeGet(() => organization.contacts.email),
+		location: safeGet(() => organization.contacts.location),
+		telegram: safeGet(() => organization.contacts.telegram),
+		facebook: safeGet(() => organization.contacts.facebook),
+		viber: safeGet(() => organization.contacts.viber)
+	};
+
+	let donators = safeGet(
+		() => organization.donators.map(d => ({
+			id: d.id,
+			title: `${d.currency} ${d.amount}`,
+			subtitle: d.name,
+			src: d.avatar,
+			src2x: d.avatar2x
+		})),
+		[],
+		true
+	);
+
+	let documents = safeGet(
+		() => organization.documents.map(d => ({
+			id: d.id,
+			title: d.title,
+			src: d.src,
+			src2x: d.src2x
+		})),
+		[],
+		true
+	);
+
+	let media = safeGet(
+		() => organization.media.map(d => ({
+			id: d.id,
+			alt: d.title,
+			src: d.src,
+			srcBig: d.src2x,
+			description: d.description
+		})),
+		[],
+		true
+	);
+
+	let commentsData = {
+		comments: safeGet(() => comments.map(c => ({
+			likes: c.likes,
+			avatar: c["author.avatar"],
+			author: c["author.name"],
+			comment: c.comment,
+			checked: c.checked,
+			reply_to: c.reply_to,
+			created_at: c.created_at
+		})))
+	};
 
 	return `${($$result.head += `${($$result.title = `<title>Charitify - Organization page.</title>`, "")}`, "")}
 
@@ -3055,13 +3142,29 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(OrganizationButton, "OrganizationButton").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
-    ${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carousel }, {}, {})}
+    ${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, {}, {}, {})}
+    ${validate_component(DescriptionShort, "DescriptionShort").$$render(
+		$$result,
+		{
+			title: descriptionShort.title,
+			text: descriptionShort.text
+		},
+		{},
+		{}
+	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-    ${validate_component(InteractionIndicators, "InteractionIndicators").$$render($$result, {}, {}, {})}
+    ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+		$$result,
+		{
+			likes: iconsLine.likes,
+			views: iconsLine.views
+		},
+		{},
+		{}
+	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
     ${validate_component(FundList, "FundList").$$render($$result, { title: "Фонди тварин" }, {}, {})}
@@ -3079,16 +3182,16 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(Trust, "Trust").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    ${validate_component(Donators, "Donators").$$render($$result, {}, {}, {})}
+    ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(LastNews, "LastNews").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Certificates, "Certificates").$$render($$result, {}, {}, {})}
+    ${validate_component(Certificates, "Certificates").$$render($$result, { items: documents }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    ${validate_component(Videos, "Videos").$$render($$result, { items: carousel }, {}, {})}
+    ${validate_component(Videos, "Videos").$$render($$result, { items: media }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "70" }, {}, {})}
 
     ${validate_component(ContactsCard, "ContactsCard").$$render($$result, {}, {}, {})}
@@ -3592,10 +3695,13 @@ ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 /* src/routes/funds/_Comments.svelte generated by Svelte v3.18.1 */
 
 const Comments_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
 	return `<h1>Коментарі</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 <div class="${"full-container"}">
-    ${validate_component(Comments, "Comments").$$render($$result, {}, {}, {})}
+    ${validate_component(Comments, "Comments").$$render($$result, { items }, {}, {})}
 </div>`;
 });
 
@@ -3607,12 +3713,15 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	$page = get_store_value(page);
 	let charityId = $page.params.id;
 
-	// Entity
+	// Entities
 	let charity = {};
+
+	let comments = [];
 
 	onMount(async () => {
 		await delay(2000);
 		charity = await API.getFund(1);
+		comments = await API.getComments();
 	});
 
 	$page = get_store_value(page);
@@ -3701,6 +3810,18 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 	let howToHelp = { phone: organization.phone };
 
+	let commentsData = {
+		comments: safeGet(() => comments.map(c => ({
+			likes: c.likes,
+			avatar: c["author.avatar"],
+			author: c["author.name"],
+			comment: c.comment,
+			checked: c.checked,
+			reply_to: c.reply_to,
+			created_at: c.created_at
+		})))
+	};
+
 	return `${($$result.head += `${($$result.title = `<title>Charitify - Charity page and donate.</title>`, "")}`, "")}
 
 
@@ -3763,7 +3884,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(HowToHelp, "HowToHelp").$$render($$result, { data: howToHelp }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Comments_1$1, "Comments").$$render($$result, {}, {}, {})}
+    ${validate_component(Comments_1$1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     <div class="${"full-container"}">
