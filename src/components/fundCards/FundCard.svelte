@@ -50,7 +50,7 @@
         </div>
 
         <div>
-            <p class="font-secondary flex flex-wrap flex-align-baseline" style="letter-spacing: -0.5px">
+            <p class="font-secondary flex flex-wrap flex-align-end" style="letter-spacing: -0.5px">
                 <span class="h1 font-w-500">{currency} {current}</span>
                 <s></s>
                 <span class="h4">/ {currency} {total}</span>
