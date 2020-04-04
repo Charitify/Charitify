@@ -4,11 +4,14 @@
   "name": "Дім Сірка",
 
   "is_liked": false,
-
+  
   "tags": ["Дім", "Сірка", "тварини", "безпритульні"],
-
+  
   "likes": 2,
   "views": 12,
+
+  "avatar": "https://placeimg.com/30/30/people",
+  "avatarBig": "https://placeimg.com/300/300/people",
 
   "updated_at": "2020-02-09T12:30:55.596Z",
   "created_at": "2020-02-09T12:30:55.596Z",
@@ -17,22 +20,91 @@
   "subtitle": "Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться у Львові, вул. Сахарова 3",
   "description": "Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться у Львові, вул. Сахарова 3 Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків.",
   
-  "head_id": "id",
-  "head_name": "Tinaramisimuss el-de-la Kandelakinuskas",
-  "head_avatar": "https://placeimg.com/50/50/people",
-
   "need_sum": 20000,
   "curremt_sum": 3500,
   "currency": "₴",
-
-  "contacts": {
-    "phone": "+38 (093) 455-32-12",
-    "email": "sergey.zastrow@gmail.com",
-    "location": "http://maps.google.com/?daddr=Львів,+Україна",
-    "telegram": "https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w",
-    "facebook": "https://www.facebook.com/groups/3544553825618540",
-    "viber": "viber://forward?text=Check%20this%20out%3A%20%20https%3A%2F%2Fwww.viber.com%2Fblog%2F2017-06-25%2Finvite-friends-your-group-chat%2F"
+  
+  "head": {
+    "id": "id",
+    "name": "Tinaramisimuss el-de-la Kandelakinuskas",
+    "avatar": "https://placeimg.com/50/50/people"
   },
+
+  "news": [
+    {
+       "id": "id1",
+       "src": "https://placeimg.com/50/50/people",
+       "likes": 3,
+       "title": "Ми поставили нові будки і пофарбували їх",
+       "subtitle": "Сьогодні була хороша погода і пара зайвих рук для того, щоб обладнати дім наших менших. Вини бігали навколо нас з цікавістю, напевне хотіли вже поскоріш побачити результат.",
+       "created_at": "2020-04-04T12:30:55.596Z"
+    },
+    {
+      "id": "id2",
+      "src": "https://placeimg.com/50/50/people",
+      "likes": 1,
+      "title": "завезли корм",
+      "subtitle": "дякуючи вам ми закупили нові коробки корму",
+      "created_at": "2020-04-04T12:30:55.596Z"
+   },
+   {
+       "id": "id3",
+       "src": "https://placeimg.com/50/50/people",
+       "likes": 0,
+       "title": "3 песиків взяли додому!",
+       "subtitle": "Троє наших улюбленців нарешті знайшли свої доми",
+       "created_at": "2020-04-04T12:30:55.596Z"
+    },
+    {
+      "id": "id4",
+      "src": "https://placeimg.com/50/50/people",
+      "likes": 23,
+      "title": "маленкій Доретті зробили операцію на лапку.",
+      "subtitle": "лікарі сказали, що операція пройшла успішно. Скоро Доретті буде бігати разом з усіма друзями.",
+      "created_at": "2020-04-04T12:30:55.596Z"
+   },
+   {
+      "id": "id5",
+      "src": "https://placeimg.com/50/50/people",
+      "likes": 0,
+      "title": "Вже пізня година, надобраніч.",
+      "subtitle": "Всі наші лапки смачно повечеряли і лягли спати. До завтра з новими силами!",
+      "created_at": "2020-04-04T12:30:55.596Z"
+    }
+  ],
+  
+  "contacts": [
+    {
+      "type": "phone",
+      "title": "+38 (093) 455-32-12",
+      "value": "+38 (093) 455-32-12"
+    },
+    {
+      "type": "email",
+      "title": "sergey.zastrow@gmail.com",
+      "value": "sergey.zastrow@gmail.com"
+    },
+    {
+      "type": "location",
+      "title": "Львів, Україна",
+      "value": "http://maps.google.com/?daddr=Львів,+Україна"
+    },
+    {
+      "type": "telegram",
+      "title": "Telegram",
+      "value": "https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w"
+    },
+    {
+      "type": "facebook",
+      "title": "Facebook",
+      "value": "https://www.facebook.com/groups/3544553825618540"
+    },
+    {
+      "type": "viber",
+      "title": "Viber",
+      "value": "viber://forward?text=Check%20this%20out%3A%20%20https%3A%2F%2Fwww.viber.com%2Fblog%2F2017-06-25%2Finvite-friends-your-group-chat%2F"
+    }
+  ],
 
   "location": {
     "lat": 48.9226,
@@ -40,7 +112,9 @@
     "short": "UA",
     "country": "Ukraine",
     "city": "Ivano-Frankivsk",
-    "address": "Stusa 1"
+    "address": "Stusa 1",
+    "virtual_tour": "https://www.google.com/maps/embed?pb=!4v1584897060810!6m8!1m7!1skKRg7TofqDSsrkcJRbBDug!2m2!1d48.89874683261886!2d24.75621937486022!3f291.2976377703877!4f-17.03315422439765!5f0.7820865974627469",
+    "map": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20985.072890836364!2d24.74703549119322!3d48.8937812401519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4730c391910041fd%3A0x6a789a2223e12e2d!2sBo%20Dim%20Sirka%20.%20Prytulok!5e0!3m2!1sen!2sus!4v1584897512173!5m2!1sen!2sus"
   },
 
   "avatars": [
