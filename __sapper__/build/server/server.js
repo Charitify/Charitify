@@ -2213,7 +2213,7 @@ const FundCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
         </div>
 
         <div>
-            <p class="${"font-secondary flex flex-wrap flex-align-baseline"}" style="${"letter-spacing: -0.5px"}">
+            <p class="${"font-secondary flex flex-wrap flex-align-end"}" style="${"letter-spacing: -0.5px"}">
                 <span class="${"h1 font-w-500"}">${escape(currency)} ${escape(current)}</span>
                 <s></s>
                 <span class="${"h4"}">/ ${escape(currency)} ${escape(total)}</span>
