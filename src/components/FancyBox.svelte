@@ -3,6 +3,7 @@
     import { fly } from 'svelte/transition'
     import { classnames, Swipe, delay } from '@utils'
     import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+    import Portal from './Portal.svelte';
 
     const START_POSITION = 20
     const THRESHOLD = 100
@@ -92,27 +93,31 @@
 </section>
 
 {#if !slots.box}
-    <section
-            bind:this={fancyBox}
-            use:swipe
-            in:fly="{{ y: 20, duration: 200 }}"
-            class={classProp}
-    >
-        <button type="button" on:click={onClick}>&#10005;</button>
-        <slot></slot>
-    </section>
+    <Portal>
+        <section
+                bind:this={fancyBox}
+                use:swipe
+                in:fly="{{ y: 20, duration: 200 }}"
+                class={classProp}
+        >
+            <button type="button" on:click={onClick}>&#10005;</button>
+            <slot></slot>
+        </section>
+    </Portal>  
 {/if}
 
 {#if active !== null && slots.box}
-    <section
-            bind:this={fancyBox}
-            use:swipe
-            in:fly="{{ y: 20, duration: 200 }}"
-            class={classProp}
-    >
-        <button type="button" on:click={onClick}>&#10005;</button>
-        <slot name="box"></slot>
-    </section>
+    <Portal>
+        <section
+                bind:this={fancyBox}
+                use:swipe
+                in:fly="{{ y: 20, duration: 200 }}"
+                class={classProp}
+        >
+            <button type="button" on:click={onClick}>&#10005;</button>
+            <slot name="box"></slot>
+        </section>
+    </Portal>
 {/if}
 
 <style>
