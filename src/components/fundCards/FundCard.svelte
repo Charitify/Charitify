@@ -7,18 +7,19 @@
     import Progress from '@components/Progress.svelte'
     import FancyBox from '@components/FancyBox.svelte'
 
+    export let id = undefined
     export let src = undefined
     export let city = undefined
     export let title = undefined
     export let total = undefined
     export let current = undefined
-    export let setFancyActive = () => {}
+    export let currency = undefined
 </script>
 
 <Card class="flex flex-column">
     
     <div style="height: 160px" class="flex">
-        <FancyBox on:open={() => setFancyActive(true)} on:close={() => setFancyActive(false)}>
+        <FancyBox>
             <Picture {src} alt={title}/>
             <section slot="box" class="flex full-width full-height" style="height: 100vw">
                 <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
@@ -29,10 +30,14 @@
     </div>
 
     <section class="container flex flex-column flex-justify-between flex-1">
-        <div class="flex-none overflow-hidden">
+        <div class="flex-none overflow-hidden" style="height: calc(2 * var(--font-line-height-h2) + var(--font-line-height) + 20px + 5px + 10px)">
             <Br size="20"/>     
 
-            <h2>{title}</h2>
+            <h2 class="text-ellipsis-multiline" style="--max-lines: 2">
+                {title}
+            </h2>
+
+            <Br size="5"/>     
 
             {#if city}
                 <p class="flex flex-align-center font-secondary font-w-500" style="opacity: .7; margin-left: -2px">
@@ -40,20 +45,22 @@
                     <s></s>
                     <span>{city}</span>
                 </p>
+                <Br size="10"/>     
             {/if}
         </div>
 
         <div>
-            <p class="font-secondary">
-                <span class="h1 font-w-500">₴ {current}</span>
-                <span class="h3"> / ₴ {total}</span>
+            <p class="font-secondary flex flex-wrap flex-align-baseline" style="letter-spacing: -0.5px">
+                <span class="h1 font-w-500">{currency} {current}</span>
+                <s></s>
+                <span class="h4">/ {currency} {total}</span>
             </p>
 
             <Br size="20"/>  
             <Progress value={Math.floor(current / total * 100)}/>
             <Br size="40"/>  
 
-            <Button size="big" is="success">
+            <Button size="big" is="success" href={id}>
                 <span class="h2 font-secondary font-w-600">
                     Допомогти
                 </span>

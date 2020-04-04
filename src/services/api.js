@@ -15,8 +15,8 @@ export const endpoints = {
   COMMENT: (id) => `comment.json?id=${id}`,
   COMMENTS: () => `comments.json`,
 
-  FUND: (id) => `charity.json?id=${id}`,
-  FUNDS: () => `charities.json`,
+  FUND: (id) => `fund.json?id=${id}`,
+  FUNDS: () => `funds.json`,
 
   ORGANIZATION: (id) => `organization.json?id=${id}`,
   ORGANIZATIONS: () => `organizations.json`,

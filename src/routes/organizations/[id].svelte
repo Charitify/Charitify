@@ -30,6 +30,7 @@
     // Entities
     let organization = {};
     let comments = []
+    let funds = []
     
     $: organizationBlock = {
         id: organization.id,
@@ -41,6 +42,26 @@
         title: organization.title,
         text: organization.subtitle,
     };
+    $: animalFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
+        id: f.id,
+        src: f.avatars[0].src,
+        type: f.type,
+        title: f.title,
+        total: f.need_sum,
+        current: f.curremt_sum,
+        currency: f.currency,
+        city: f.location.city,
+    })))
+    $: othersFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
+        id: f.id,
+        src: f.avatars[0].src,
+        type: f.type,
+        title: f.title,
+        total: f.need_sum,
+        current: f.curremt_sum,
+        currency: f.currency,
+        city: f.location.city,
+    })))
     $: iconsLine = {
         likes: organization.likes,
         views: organization.views,
@@ -102,6 +123,7 @@
         await delay(2000)
         organization = await API.getOrganization(1);
         comments = await API.getComments()
+        funds = await API.getFunds()
     });
 </script>
 
@@ -129,13 +151,13 @@
     <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
     <Br size="50" />
 
-    <FundList title="Фонди тварин"/>
+    <FundList title="Фонди тварин" items={animalFunds}/>
     <Br size="45" />
 
-    <FundList title="Інші фонди"/>
+    <FundList title="Інші фонди" items={animalFunds}/>
     <Br size="45" />
 
-    <Description/>
+    <Description title={descriptionBlock.title} text={descriptionBlock.text}/>
     <Br size="10" />
 
     <Share />
