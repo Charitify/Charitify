@@ -99,8 +99,20 @@
     /* Fonts supporting (https://www.cssfontstack.com/) */
     --font-family-primary: 'Roboto', sans-serif;
     --font-family-secondary: 'Montserrat', sans-serif;
+    
+    --font-size-h1: 2.25em;
+    --font-size-h2: 1.7em;
+    --font-size-h3: 1.15em;
+    --font-size-h4: 1em;
+    --font-size-h5: .825em;
+    --font-size-h6: .675em;
 
-
+    --font-line-height-h1: calc(var(--font-line-height) * 1.85);
+    --font-line-height-h2: calc(var(--font-line-height) * 1.4);
+    --font-line-height-h3: calc(var(--font-line-height) * 1.15);
+    --font-line-height-h4: calc(var(--font-line-height) * 1.15);
+    --font-line-height-h5: calc(var(--font-line-height) * 1.2);
+    --font-line-height-h6: calc(var(--font-line-height) * 1.2);    
 
     /* -----------========( Other )=========----------- */
 
@@ -338,33 +350,33 @@ h2, h3, h4, h5, h6 {
 }
 
 h1, .h1 {
-    font-size: 2.25em;
-    line-height: calc(var(--font-line-height) * 1.85);
+    font-size: var(--font-size-h1);
+    line-height: var(--font-line-height-h1);
 }
 
 h2, .h2 {
-    font-size: 1.7em;
-    line-height: calc(var(--font-line-height) * 1.4);
+    font-size: var(--font-size-h2);
+    line-height: var(--font-line-height-h2);
 }
 
 h3, .h3 {
-    font-size: 1.15em;
-    line-height: calc(var(--font-line-height) * 1.15);
+    font-size: var(--font-size-h3);
+    line-height: var(--font-line-height-h3);
 }
 
 h4, .h4, p, .p {
-    font-size: 1em;
-    line-height: calc(var(--font-line-height) * 1.15);
+    font-size: var(--font-size-h4);
+    line-height: var(--font-line-height-h4);
 }
 
 h5, .h5 {
-    font-size: .825em;
-    line-height: calc(var(--font-line-height) * 1.2);
+    font-size: var(--font-size-h5);
+    line-height: var(--font-line-height-h5);
 }
 
 h6, .h6 {
-    font-size: .675em;
-    line-height: calc(var(--font-line-height) * 1.2);
+    font-size: var(--font-size-h6);
+    line-height: var(--font-line-height-h6);
 }
 
 sub {
@@ -468,6 +480,14 @@ button:not([class]):focus {
 
 .overflow-hidden {
     overflow: hidden;
+}
+
+.first-letter {
+    display: inline-block;
+}
+
+.first-letter:first-letter {
+    text-transform: uppercase;
 }
 
 /* ----------=========( Containers )=========----------- */
@@ -693,6 +713,15 @@ button:not([class]):focus {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.text-ellipsis-multiline {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: var(--max-lines);
+    -webkit-box-orient: vertical;  
 }
 
 /* ----------=========( Text color )=========----------- */
