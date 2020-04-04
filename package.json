@@ -24,6 +24,7 @@
     "js-storage": "^1.1.0",
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
+    "micromodal": "^0.4.6",
     "polka": "^1.0.0-next.11",
     "sirv": "^0.4.0",
     "zl-fetch": "^3.0.2"
@@ -50,7 +51,7 @@
     "rollup-plugin-svelte": "^5.0.1",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-visualizer": "^3.3.2",
-    "sapper": "^0.27.0",
+    "sapper": "^0.27.12",
     "sapper-environment": "^1.0.1",
     "svelte": "^3.18.1",
     "svelte-preprocess": "^3.5.0"

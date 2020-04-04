@@ -70,7 +70,7 @@
         {#each items as item, index}
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
                 <slot {item} {index}>
-                    <Picture {...item}/>
+                    <Picture {...item} alt={item.alt || 'Фото слайду'}/>
                 </slot>
             </li>
         {/each}

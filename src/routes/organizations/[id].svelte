@@ -92,7 +92,7 @@
     })), [], true).slice(0, 3);
     $: documents = safeGet(() => organization.documents.map(d => ({
         id: d.id,
-        title: d.title,
+        alt: d.title,
         src: d.src,
         src2x: d.src2x,
     })), [], true);
