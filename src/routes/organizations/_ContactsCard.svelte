@@ -1,5 +1,23 @@
 <script>
     import { Br, Card, Icon, Avatar, FancyBox } from '@components'
+
+    export let items = []
+    export let orgName = null
+    export let avatar = null
+    export let avatarBig = null
+
+    const top = ['telegram', 'facebook', 'viber']
+    const icons = {
+        phone: 'phone-filled',
+        email: 'email',
+        location: 'location-mark-filled',
+        telegram: 'telegram',
+        facebook: 'facebook',
+        viber: 'viber',
+    }
+
+    $: topItems = items.filter(i => !top.includes(i.type))
+    $: bottomItems = items.filter(i => top.includes(i.type))
 </script>
 
 <Card>
@@ -10,10 +28,10 @@
             
             <span>
                 <FancyBox class="flex-justify-center">
-                    <Avatar size="big" src="https://placeimg.com/300/300/people" alt="ava"/>
+                    <Avatar size="big" src={avatar} alt="Організація"/>
                     <section slot="box" class="flex full-width full-height" style="height: 100vw">
                         <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
-                            <Avatar src="https://placeimg.com/300/300/people" alt="ava"/>
+                            <Avatar src={avatar} srcBig={avatarBig} alt="ava"/>
                         </div>
                     </section>
                 </FancyBox>
@@ -23,60 +41,36 @@
             <h2>Наші контакти</h2>
             <Br size="5" />
             <p class="h3 font-secondary font-w-500" style="opacity: .7">
-                Організація Добра
+                {orgName}
             </p>
         </div>
 
         <Br size="30" />
 
         <ul>
-            <li>
-                <a href="tel:+38(093)455-32-12" class="flex flex-align-center" style="padding: 7px 0">
-                    <Icon type="phone-filled" size="medium"/>
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    <p class="h3">+38 (093) 455-32-12</p>
-                </a>
-            </li>
-            <li>
-                <a href="mailto:sergey.zastrow@gmail.com" class="flex flex-align-center" style="padding: 7px 0">
-                    <Icon type="email" size="medium"/>
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    <p class="h3">sergey.zastrow@gmail.com</p>
-                </a>
-            </li>
-            <li>
-                <a href="http://maps.google.com/?daddr=Львів,+Україна" target="_blank" class="flex flex-align-center" style="padding: 7px 0">
-                    <Icon type="location-mark-filled" size="medium"/>
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    <p class="h3">Львів, Україна</p>
-                </a>
-            </li>
+            {#each topItems as item}
+                <li>
+                    <a href={item.href} class="flex flex-align-center" style="padding: 7px 0" title={item.title}>
+                        <Icon type={icons[item.type]} size="medium"/>
+                        <s></s>
+                        <s></s>
+                        <s></s>
+                        <p class="h3">{item.title}</p>
+                    </a>
+                </li>
+            {/each}
         </ul>
 
         <Br size="30" />
 
         <ul class="flex flex-justify-center social-icons">
-            <li style="padding: 0 10px" class="telegram">
-                <a href="https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w" target="_blank">
-                    <Icon type="telegram" size="large" class="custom"/>
-                </a>
-            </li>
-            <li style="padding: 0 10px" class="facebook">
-                <a href="https://www.facebook.com/groups/3544553825618540" target="_blank">
-                    <Icon type="facebook" size="large" class="custom"/>
-                </a>
-            </li>
-            <li style="padding: 0 10px" class="viber">
-                <a href="viber://forward?text=Check%20this%20out%3A%20%20https%3A%2F%2Fwww.viber.com%2Fblog%2F2017-06-25%2Finvite-friends-your-group-chat%2F" target="_blank">
-                    <Icon type="viber" size="large" class="custom"/>
-                </a>
-            </li>
+            {#each bottomItems as item}
+                <li style="padding: 0 10px" class={item.type}>
+                    <a href={item.value} target="_blank" title={item.title}>
+                        <Icon type={item.type} size="large" class="custom"/>
+                    </a>
+                </li>
+            {/each}
         </ul>
 
         <Br size="30" />

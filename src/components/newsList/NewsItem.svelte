@@ -8,7 +8,7 @@
     export let src = undefined
     export let date = undefined
     export let title = undefined
-    export let amount = undefined
+    export let likes = undefined
     export let subtitle = undefined
 
     $: classProp = classnames($$props.class)
@@ -17,16 +17,16 @@
 <Card class={classProp}>
     <section class="news-item flex">
 
-        <div class="flex relative" style="width: 110px">
+        <div class="flex flex-none relative" style="width: 110px">
             <Picture src={src} alt={title}/>
         </div>
 
-        <div class="flex flex-column flex-1" style="padding: 20px">
-            <h3 class="text-ellipsis font-w-500">{ title }</h3>
+        <div class="flex flex-column flex-1 container overflow-hidden" style="padding-top: 20px; padding-bottom: 20px">
+            <h3 class="font-w-500 text-ellipsis-multiline" style="--max-lines: 2">{ title }</h3>
 
-            <Br size="5"/>
+            <Br size="10"/>
 
-            <p class="text-ellipsis font-w-300">{ subtitle }</p>
+            <p class="font-w-300 text-ellipsis-multiline" style="--max-lines: 3">{ subtitle }</p>
 
             <Br size="10"/>
 
@@ -37,13 +37,13 @@
                 <s></s>
                 <s></s>
                 <span class="h5 flex flex-align-center font-secondary" style="min-width: 4em">
-                    <span style={`opacity: ${amount > 2 ? 1 : .5}`}>
+                    <span style={`opacity: ${likes > 2 ? 1 : .5}`}>
                         <Icon type="heart-filled" is="danger" size="small"/>
                     </span>
                     <s></s>
                     <s></s>
-                    {#if amount}
-                        <h4>{ amount }</h4>
+                    {#if likes}
+                        <h4>{ likes }</h4>
                     {/if}
                 </span>
             </div>

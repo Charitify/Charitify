@@ -31,6 +31,11 @@
     let organization = {};
     let comments = []
     
+    $: organizationBlock = {
+        id: organization.id,
+        name: organization.title,
+        avatar: organization.avatar,
+    };
     $: carouselTop = (organization.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
     $: descriptionShort = {
         title: organization.title,
@@ -44,21 +49,26 @@
         title: organization.title,
         text: organization.description,
     };
-    $: contacts = {
-        phone: safeGet(() => organization.contacts.phone),
-        email: safeGet(() => organization.contacts.email),
-        location: safeGet(() => organization.contacts.location),
-        telegram: safeGet(() => organization.contacts.telegram),
-        facebook: safeGet(() => organization.contacts.facebook),
-        viber: safeGet(() => organization.contacts.viber),
-    };
+    $: contacts = safeGet(() => organization.contacts.map(c => ({
+        title: c.title,
+        href: c.value,
+        type: c.type,
+    })), []. true)
     $: donators = safeGet(() => organization.donators.map(d => ({
         id: d.id,
+        src: d.avatar,
         title: `${d.currency} ${d.amount}`,
         subtitle: d.name,
-        src: d.avatar,
-        src2x: d.avatar2x,
+        checked: d.checked,
     })), [], true);
+    $: lastNews = safeGet(() => organization.news.map(n => ({
+        id: n.id,
+        src: n.src,
+        likes: n.likes,
+        title: n.title,
+        subtitle: n.subtitle,
+        created_at: n.created_at,
+    })), [], true).slice(0, 3);
     $: documents = safeGet(() => organization.documents.map(d => ({
         id: d.id,
         title: d.title,
@@ -72,6 +82,10 @@
         srcBig: d.src2x,
         description: d.description,
     })), [], true);
+    $: location = {
+        map: safeGet(() => organization.location.map),
+        virtual_tour: safeGet(() => organization.location.virtual_tour),
+    };
     $: commentsData = {
         comments: safeGet(() => comments.map(c => ({
             likes: c.likes,
@@ -103,7 +117,7 @@
     <Br size="var(--header-height)" />
     <Br size="30" />
 
-    <OrganizationButton />
+    <OrganizationButton organization={organizationBlock}/>
     <Br size="20" />
 
     <TopCarousel items={carouselTop}/>
@@ -133,7 +147,7 @@
     <Donators items={donators}/>
     <Br size="60" />
 
-    <LastNews />
+    <LastNews items={lastNews}/>
     <Br size="60" />
 
     <Certificates items={documents}/>
@@ -142,16 +156,21 @@
     <Videos items={media}/>
     <Br size="70" />
 
-    <ContactsCard/>
+    <ContactsCard 
+        items={contacts}
+        orgName={organization.title}
+        avatar={organization.avatar}
+        avatarBig={organization.avatarBig}
+    />
     <Br size="60" />
 
-    <VirtualTour />
+    <VirtualTour src={location.virtual_tour}/>
     <Br size="60" />
 
-    <WeOnMap />
+    <WeOnMap src={location.map}/>
     <Br size="60" />
 
-    <Comments />
+    <Comments items={commentsData.comments}/>
     <Br size="40" />
 
     <div class="full-container">

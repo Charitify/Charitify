@@ -5,12 +5,13 @@
     export let src
     export let alt
     export let size = null // small|medium|big
+    export let srcBig = undefined
 
     $: classProp = classnames('ava', size, $$props.class)
 </script>
 
 <div class={classProp}>
-    <Picture {src} {alt}/>
+    <Picture {src} {srcBig} {alt}/>
 </div>
 
 <style>

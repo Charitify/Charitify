@@ -10,25 +10,29 @@
 
     const dispatch = createEventDispatcher()
    
-    let comments = []
-
-    $: console.log(comments)
-
-    onMount(async () => {
-        comments = await API.getComments()
-    })
+   /**
+    * @type {{
+    *   id: string,
+    *   src: string,
+    *   likes: number,
+    *   title: string,
+    *   subtitle: string,
+    *   created_at: string,
+    * }}
+    */
+    export let items = []
 </script>
 
 <section class="news-list">
     <ul class="news-list-wrap">
-        {#each comments as comment, index}
-            <li role="button" on:click={() => dispatch('click', { item: comment, index })}>
+        {#each items as item, index}
+            <li role="button" on:click={() => dispatch('click', { item, index })} key={item.id}>
                 <NewsItem
-                        src={comment.avatar}
-                        title={comment.author}
-                        subtitle={comment.author}
-                        date={Dates(comment.created_at).fromNow()}
-                        amount={comment.likes}
+                        src={item.src}
+                        likes={item.likes}
+                        title={item.title}
+                        subtitle={item.subtitle}
+                        date={Dates(item.created_at).fromNow()}
                 />
 
                 <span class="arrow h2">→</span>

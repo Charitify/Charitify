@@ -1,11 +1,19 @@
 <script>
   import { Picture, Button } from "@components";
 
+  /**
+   * @type {{
+   *  id: sring,
+   *  name: string,
+   *  avatar: string
+   * }}
+   */
   export let organization = {}
 </script>
 
 <Button rel="prefetch" href={organization.id} class="white">
   <div class="flex flex-align-center flex-justify-between full-width">
+
     <div class="flex flex-align-center">
       <s />
       <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
@@ -19,6 +27,6 @@
       <s />
       <h3>{organization.name}</h3>
     </div>
-    <span style="font-size: 24px">→</span>
+    
   </div>
 </Button>
