@@ -100,11 +100,15 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
+        evt.preventDefault();
+        evt.stopPropagation();
         ySwipe = yUp - yDown
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
+        evt.preventDefault();
+        evt.stopPropagation();
         xSwipe = xUp - xDown
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
@@ -147,7 +151,7 @@
 
 <style>
     .modal {
-        z-index: 10;
+        z-index: 9;
         position: fixed;
         top: 0;
         left: 0;

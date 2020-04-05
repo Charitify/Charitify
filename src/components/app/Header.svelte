@@ -86,7 +86,7 @@
         top: 0;
         width: 100%;
         height: var(--header-height);
-        z-index: 10;
+        z-index: 8;
         display: flex;
         align-items: center;
         transform: translateY(-100%);
