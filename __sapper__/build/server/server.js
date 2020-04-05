@@ -488,659 +488,6 @@ const Card = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 </section>`;
 });
 
-const subscriber_queue = [];
-/**
- * Create a `Writable` store that allows both updating and reading by subscription.
- * @param {*=}value initial value
- * @param {StartStopNotifier=}start start and stop notifications for subscriptions
- */
-function writable(value, start = noop) {
-    let stop;
-    const subscribers = [];
-    function set(new_value) {
-        if (safe_not_equal(value, new_value)) {
-            value = new_value;
-            if (stop) { // store is ready
-                const run_queue = !subscriber_queue.length;
-                for (let i = 0; i < subscribers.length; i += 1) {
-                    const s = subscribers[i];
-                    s[1]();
-                    subscriber_queue.push(s, value);
-                }
-                if (run_queue) {
-                    for (let i = 0; i < subscriber_queue.length; i += 2) {
-                        subscriber_queue[i][0](subscriber_queue[i + 1]);
-                    }
-                    subscriber_queue.length = 0;
-                }
-            }
-        }
-    }
-    function update(fn) {
-        set(fn(value));
-    }
-    function subscribe(run, invalidate = noop) {
-        const subscriber = [run, invalidate];
-        subscribers.push(subscriber);
-        if (subscribers.length === 1) {
-            stop = start(set) || noop;
-        }
-        run(value);
-        return () => {
-            const index = subscribers.indexOf(subscriber);
-            if (index !== -1) {
-                subscribers.splice(index, 1);
-            }
-            if (subscribers.length === 0) {
-                stop();
-                stop = null;
-            }
-        };
-    }
-    return { set, update, subscribe };
-}
-
-function generator(storage) {
-    /**
-     * Creates a `Readable` store that allows reading by subscription.
-     * @param key storage key
-     * @param value initial value
-     * @param {StartStopNotifier}start start and stop notifications for subscriptions
-     */
-    function readable(key, value, start) {
-        return {
-            subscribe: writable$1(key, value, start).subscribe
-        };
-    }
-    /**
-     * Create a `Writable` store that allows both updating and reading by subscription.
-     * @param key storage key
-     * @param {*=}value default value
-     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
-     */
-    function writable$1(key, value, start = noop) {
-        function wrap_start(ogSet) {
-            return start(function wrap_set(new_value) {
-                if (storage) {
-                    storage.setItem(key, new_value);
-                }
-                return ogSet(new_value);
-            });
-        }
-        if (storage) {
-            if (storage.getItem(key)) {
-                value = storage.getItem(key);
-            }
-            storage.setItem(key, value);
-        }
-        const ogStore = writable(value, start ? wrap_start : undefined);
-        function set(new_value) {
-            if (storage) {
-                storage.setItem(key, new_value);
-            }
-            ogStore.set(new_value);
-        }
-        function update(fn) {
-            set(fn(get_store_value(ogStore)));
-        }
-        function subscribe(run, invalidate = noop) {
-            return ogStore.subscribe(run, invalidate);
-        }
-        return { set, update, subscribe };
-    }
-    /**
-     * Derived value store by synchronizing one or more readable stores and
-     * applying an aggregation function over its input values.
-     * @param key storage key
-     * @param {Stores} stores input stores
-     * @param {function(Stores=, function(*)=):*}fn function callback that aggregates the values
-     * @param {*=}initial_value when used asynchronously
-     */
-    function derived(key, stores, fn, initial_value) {
-        const single = !Array.isArray(stores);
-        const stores_array = single
-            ? [stores]
-            : stores;
-        const auto = fn.length < 2;
-        if (storage && storage.getItem(key)) {
-            initial_value = storage.getItem(key);
-        }
-        return readable(key, initial_value, (set) => {
-            let inited = false;
-            const values = [];
-            let pending = 0;
-            let cleanup = noop;
-            const sync = () => {
-                if (pending) {
-                    return;
-                }
-                cleanup();
-                const result = fn(single ? values[0] : values, set);
-                if (auto) {
-                    set(result);
-                }
-                else {
-                    cleanup = is_function(result) ? result : noop;
-                }
-            };
-            const unsubscribers = stores_array.map((store, i) => store.subscribe((value) => {
-                values[i] = value;
-                pending &= ~(1 << i);
-                if (inited) {
-                    sync();
-                }
-            }, () => {
-                pending |= (1 << i);
-            }));
-            inited = true;
-            sync();
-            return function stop() {
-                run_all(unsubscribers);
-                cleanup();
-            };
-        });
-    }
-    return {
-        readable,
-        writable: writable$1,
-        derived,
-        get: get_store_value
-    };
-}
-
-const storage = typeof window !== 'undefined' ? window.sessionStorage : undefined;
-const { readable, writable: writable$1, derived, get } = generator(storage);
-
-const modals = writable$1('modals', JSON.stringify({}));
-
-function generator$1(storage) {
-    /**
-     * Creates a `Readable` store that allows reading by subscription.
-     * @param key storage key
-     * @param value initial value
-     * @param {StartStopNotifier}start start and stop notifications for subscriptions
-     */
-    function readable(key, value, start) {
-        return {
-            subscribe: writable$1(key, value, start).subscribe
-        };
-    }
-    /**
-     * Create a `Writable` store that allows both updating and reading by subscription.
-     * @param key storage key
-     * @param {*=}value default value
-     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
-     */
-    function writable$1(key, value, start = noop) {
-        function wrap_start(ogSet) {
-            return start(function wrap_set(new_value) {
-                if (storage) {
-                    storage.setItem(key, new_value);
-                }
-                return ogSet(new_value);
-            });
-        }
-        if (storage) {
-            if (storage.getItem(key)) {
-                value = storage.getItem(key);
-            }
-            storage.setItem(key, value);
-        }
-        const ogStore = writable(value, start ? wrap_start : undefined);
-        function set(new_value) {
-            if (storage) {
-                storage.setItem(key, new_value);
-            }
-            ogStore.set(new_value);
-        }
-        function update(fn) {
-            set(fn(get_store_value(ogStore)));
-        }
-        function subscribe(run, invalidate = noop) {
-            return ogStore.subscribe(run, invalidate);
-        }
-        return { set, update, subscribe };
-    }
-    /**
-     * Derived value store by synchronizing one or more readable stores and
-     * applying an aggregation function over its input values.
-     * @param key storage key
-     * @param {Stores} stores input stores
-     * @param {function(Stores=, function(*)=):*}fn function callback that aggregates the values
-     * @param {*=}initial_value when used asynchronously
-     */
-    function derived(key, stores, fn, initial_value) {
-        const single = !Array.isArray(stores);
-        const stores_array = single
-            ? [stores]
-            : stores;
-        const auto = fn.length < 2;
-        if (storage && storage.getItem(key)) {
-            initial_value = storage.getItem(key);
-        }
-        return readable(key, initial_value, (set) => {
-            let inited = false;
-            const values = [];
-            let pending = 0;
-            let cleanup = noop;
-            const sync = () => {
-                if (pending) {
-                    return;
-                }
-                cleanup();
-                const result = fn(single ? values[0] : values, set);
-                if (auto) {
-                    set(result);
-                }
-                else {
-                    cleanup = is_function(result) ? result : noop;
-                }
-            };
-            const unsubscribers = stores_array.map((store, i) => store.subscribe((value) => {
-                values[i] = value;
-                pending &= ~(1 << i);
-                if (inited) {
-                    sync();
-                }
-            }, () => {
-                pending |= (1 << i);
-            }));
-            inited = true;
-            sync();
-            return function stop() {
-                run_all(unsubscribers);
-                cleanup();
-            };
-        });
-    }
-    return {
-        readable,
-        writable: writable$1,
-        derived,
-        get: get_store_value
-    };
-}
-
-const storage$1 = typeof window !== 'undefined' ? window.localStorage : undefined;
-const { readable: readable$1, writable: writable$2, derived: derived$1, get: get$1 } = generator$1(storage$1);
-
-const organization = writable$2('organization', null);
-const organizations = writable$2('organizations', null);
-
-/* src/components/Portal.svelte generated by Svelte v3.18.1 */
-
-const css$3 = {
-	code: ".portal-clone.svelte-qh8j7n{display:none}",
-	map: "{\"version\":3,\"file\":\"Portal.svelte\",\"sources\":[\"Portal.svelte\"],\"sourcesContent\":[\"<script>\\n  import { onMount } from \\\"svelte\\\";\\n  let ref;\\n  let portal;\\n\\n  onMount(() => {\\n    portal = document.createElement(\\\"div\\\");\\n    portal.className = \\\"portal\\\";\\n    document.body.appendChild(portal);\\n    portal.appendChild(ref);\\n    return () => document.body.removeChild(portal)\\n  });\\n\\n</script>\\n\\n<div class=\\\"portal-clone\\\">\\n    <div bind:this={ref}>\\n        <slot />\\n    </div>\\n</div>\\n\\n<style>\\n  .portal-clone {\\n    display: none;\\n  }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtFQUNFO0lBQ0UsYUFBYTtFQUNmIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgLnBvcnRhbC1jbG9uZSB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBE,aAAa,cAAC,CAAC,AACb,OAAO,CAAE,IAAI,AACf,CAAC\"}"
-};
-
-const Portal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let ref;
-	let portal;
-
-	onMount(() => {
-		portal = document.createElement("div");
-		portal.className = "portal";
-		document.body.appendChild(portal);
-		portal.appendChild(ref);
-		return () => document.body.removeChild(portal);
-	});
-
-	$$result.css.add(css$3);
-
-	return `<div class="${"portal-clone svelte-qh8j7n"}">
-    <div${add_attribute("this", ref, 1)}>
-        ${$$slots.default ? $$slots.default({}) : ``}
-    </div>
-</div>`;
-});
-
-/* src/components/Modal.svelte generated by Svelte v3.18.1 */
-
-const css$4 = {
-	code: ".modal.svelte-h7yzk9{z-index:10;position:fixed;top:0;left:0;width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-ms-touch-action:manipulation;touch-action:manipulation;background-color:rgba(var(--color-black), .75);outline:20px solid rgba(var(--color-black), .75);-webkit-transition:.3s ease-out;transition:.3s ease-out;opacity:0;padding:0 var(--screen-padding);-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);pointer-events:none}.modal.active.svelte-h7yzk9{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);pointer-events:auto}.modal-inner.svelte-h7yzk9{width:100%;height:300px;background-color:rgba(var(--theme-color-primary))\n    }",
-	map: "{\"version\":3,\"file\":\"Modal.svelte\",\"sources\":[\"Modal.svelte\"],\"sourcesContent\":[\"<script>\\n  import { createEventDispatcher } from 'svelte'\\n  import { fly } from \\\"svelte/transition\\\";\\n  import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';\\n  import { safeGet, classnames } from \\\"@utils\\\";\\n  import { modals } from \\\"@store\\\";\\n  import Portal from \\\"./Portal.svelte\\\";\\n\\n  const dispatch = createEventDispatcher()\\n\\n  export let id\\n  export let open = null\\n\\n  let active\\n  $: active = safeGet(() => open || JSON.parse($modals)[`modal-${id}`].open, null)\\n  $: classProp = classnames('modal', { active })\\n  $: onActiveChange(active)\\n\\n  function onBgClick() {\\n       modals.update(s => JSON.stringify({ ...JSON.parse(s), [`modal-${id}`]: { open: false } }))\\n  }\\n\\n  function onActiveChange(active) {\\n      if (active) {\\n          dispatch('open')\\n          disableBodyScroll()\\n      } else {\\n          dispatch('close')\\n          enableBodyScroll()\\n      }\\n  }\\n</script>\\n\\n{#if active !== null}\\n    <Portal>\\n        <div \\n            id={`modal-${id}`} \\n            aria-hidden=\\\"true\\\" \\n            class={classProp}\\n            in:fly=\\\"{{ y: 20, duration: 200 }}\\\"\\n            on:click={onBgClick}\\n        >\\n            <div\\n                class=\\\"modal-inner\\\"\\n                tabindex=\\\"-1\\\"\\n                role=\\\"dialog\\\"\\n                aria-modal=\\\"true\\\"\\n                aria-labelledby=\\\"модальне вікно\\\"\\n            >\\n                <slot props={safeGet(() => JSON.parse($modals)[`modal-${id}`], {}, true)}/>\\n            </div>\\n        </div>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .modal {\\n        z-index: 10;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 20px solid rgba(var(--color-black), .75);\\n        -webkit-transition: .3s ease-out;\\n        transition: .3s ease-out;\\n        opacity: 0;\\n        padding: 0 var(--screen-padding);\\n        -webkit-transform: translate3d(0,0,0);\\n                transform: translate3d(0,0,0);\\n        pointer-events: none;\\n    }\\n\\n    .modal.active {\\n        opacity: 1;\\n        -webkit-transform: translate3d(0,0,0);\\n                transform: translate3d(0,0,0);\\n        pointer-events: auto;\\n    }\\n\\n    .modal-inner {\\n        width: 100%;\\n        height: 300px;\\n        background-color: rgba(var(--theme-color-primary))\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsZUFBZTtRQUNmLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsOEJBQTBCO1lBQTFCLDBCQUEwQjtRQUMxQiwrQ0FBK0M7UUFDL0MsaURBQWlEO1FBQ2pELGdDQUF3QjtRQUF4Qix3QkFBd0I7UUFDeEIsVUFBVTtRQUNWLGdDQUFnQztRQUNoQyxxQ0FBNkI7Z0JBQTdCLDZCQUE2QjtRQUM3QixvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxVQUFVO1FBQ1YscUNBQTZCO2dCQUE3Qiw2QkFBNkI7UUFDN0Isb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYjtJQUNKIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5tb2RhbCB7XG4gICAgICAgIHotaW5kZXg6IDEwO1xuICAgICAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24taXRlbXM6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgICAgICB0b3VjaC1hY3Rpb246IG1hbmlwdWxhdGlvbjtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC43NSk7XG4gICAgICAgIG91dGxpbmU6IDIwcHggc29saWQgcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC43NSk7XG4gICAgICAgIHRyYW5zaXRpb246IC4zcyBlYXNlLW91dDtcbiAgICAgICAgb3BhY2l0eTogMDtcbiAgICAgICAgcGFkZGluZzogMCB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlM2QoMCwwLDApO1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICB9XG5cbiAgICAubW9kYWwuYWN0aXZlIHtcbiAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUzZCgwLDAsMCk7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBhdXRvO1xuICAgIH1cblxuICAgIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBoZWlnaHQ6IDMwMHB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnkpKVxuICAgIH1cbiJdfQ== */</style>   \"],\"names\":[],\"mappings\":\"AAwDI,MAAM,cAAC,CAAC,AACJ,OAAO,CAAE,EAAE,CACX,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAC/C,OAAO,CAAE,IAAI,CAAC,KAAK,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CACjD,kBAAkB,CAAE,GAAG,CAAC,QAAQ,CAChC,UAAU,CAAE,GAAG,CAAC,QAAQ,CACxB,OAAO,CAAE,CAAC,CACV,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAChC,iBAAiB,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7B,SAAS,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACrC,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,OAAO,cAAC,CAAC,AACX,OAAO,CAAE,CAAC,CACV,iBAAiB,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7B,SAAS,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACrC,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,YAAY,cAAC,CAAC,AACV,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,KAAK,CACb,gBAAgB,CAAE,KAAK,IAAI,qBAAqB,CAAC,CAAC;IACtD,CAAC\"}"
-};
-
-const Modal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let $modals = get_store_value(modals);
-	const dispatch = createEventDispatcher();
-	let { id } = $$props;
-	let { open = null } = $$props;
-	let active;
-
-	function onActiveChange(active) {
-		if (active) {
-			dispatch("open");
-			bodyScrollLock.disableBodyScroll();
-		} else {
-			dispatch("close");
-			bodyScrollLock.enableBodyScroll();
-		}
-	}
-
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.open === void 0 && $$bindings.open && open !== void 0) $$bindings.open(open);
-	$$result.css.add(css$4);
-	active = safeGet(() => open || JSON.parse($modals)[`modal-${id}`].open, null);
-	let classProp = classnames("modal", { active });
-
-	 {
-		onActiveChange(active);
-	}
-
-	return `${active !== null
-	? `${validate_component(Portal, "Portal").$$render($$result, {}, {}, {
-			default: () => `
-        <div${add_attribute("id", `modal-${id}`, 0)} aria-hidden="${"true"}" class="${escape(null_to_empty(classProp)) + " svelte-h7yzk9"}">
-            <div class="${"modal-inner svelte-h7yzk9"}" tabindex="${"-1"}" role="${"dialog"}" aria-modal="${"true"}" aria-labelledby="${"модальне вікно"}">
-                ${$$slots.default
-			? $$slots.default({
-					props: safeGet(() => JSON.parse($modals)[`modal-${id}`], {}, true)
-				})
-			: ``}
-            </div>
-        </div>
-    `
-		})}`
-	: ``}`;
-});
-
-/* src/components/Space.svelte generated by Svelte v3.18.1 */
-
-const Space = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { size = 1 } = $$props;
-	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-	return `${each(Array.from({ length: +size }), _ => ` `)}`;
-});
-
-/* src/components/Picture.svelte generated by Svelte v3.18.1 */
-
-const css$5 = {
-	code: ".picture.svelte-hifk9w.svelte-hifk9w{position:relative;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch;background-color:rgba(var(--color-black), .04)}.picture.svelte-hifk9w .pic.svelte-hifk9w{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;overflow:hidden;-ms-flex-item-align:stretch;align-self:stretch;-o-object-position:center;object-position:center;-webkit-transition:opacity .3s ease-in;transition:opacity .3s ease-in}.picture.svelte-hifk9w .pic-2x.svelte-hifk9w{position:absolute;top:0;left:0;width:100%;height:100%}.picture.cover.svelte-hifk9w .pic.svelte-hifk9w{-o-object-fit:cover;object-fit:cover}.picture.contain.svelte-hifk9w .pic.svelte-hifk9w{-o-object-fit:contain;object-fit:contain}.picture.isError.svelte-hifk9w .pic-1x.svelte-hifk9w,.picture.isError.svelte-hifk9w .pic-2x.svelte-hifk9w,.picture.loadingSrcSmall.svelte-hifk9w .pic-1x.svelte-hifk9w,.picture.loadingSrcBig.svelte-hifk9w .pic-2x.svelte-hifk9w{opacity:0}",
-	map: "{\"version\":3,\"file\":\"Picture.svelte\",\"sources\":[\"Picture.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let src\\n    export let alt\\n    export let size = 'cover'\\n    export let srcBig = undefined\\n    export let id = undefined\\n    export let width = undefined\\n    export let height = undefined\\n\\n    let isError = false\\n    let loadingSrcSmall = true\\n    let loadingSrcBig = true\\n\\n    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isError })\\n\\n    function imgService(node, postFix) {\\n        if (node.complete) {\\n            onLoad(node, postFix)\\n        } else {\\n            node.onload = () => onLoad(node, postFix)\\n            node.onerror = () => onError(node, postFix)\\n        }\\n    }\\n\\n    function onLoad(node, postFix) {\\n        changeLoading(postFix, false)\\n        isError = false\\n        dispatch(`load${postFix}`, node)\\n\\n        if (!srcBig || !loadingSrcBig) {\\n            dispatch('load', node)\\n        }\\n    }\\n\\n    function onError(node, postFix) {\\n        changeLoading(postFix, false)\\n        isError = true\\n        dispatch(`error${postFix}`, node)\\n    }\\n\\n    function changeLoading(type, isLoading) {\\n        switch (type) {\\n            case 'Small':\\n                loadingSrcSmall = isLoading\\n                break\\n            case 'Big':\\n                loadingSrcBig = isLoading\\n                break\\n        }\\n    }\\n\\n</script>\\n\\n<figure class={wrapClassProp}>\\n    <img\\n            use:imgService={'Small'}\\n            {id}\\n            {alt}\\n            {src}\\n            {width}\\n            {height}\\n            class=\\\"pic pic-1x\\\"\\n    />\\n\\n    {#if srcBig && !loadingSrcSmall}\\n        <img\\n                use:imgService={'Big'}\\n                {alt}\\n                {width}\\n                {height}\\n                src={srcBig}\\n                class=\\\"pic pic-2x\\\"\\n        />\\n    {/if}\\n\\n    <figcaption>\\n        <slot></slot>\\n    </figcaption>\\n</figure>\\n\\n<style>\\n    .picture {\\n        position: relative;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n        background-color: rgba(var(--color-black), .04);\\n    }\\n\\n    .picture .pic {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        overflow: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -o-object-position: center;\\n           object-position: center;\\n        -webkit-transition: opacity .3s ease-in;\\n        transition: opacity .3s ease-in;\\n    }\\n\\n    .picture .pic-2x {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n    .picture.cover .pic {\\n        -o-object-fit: cover;\\n           object-fit: cover;\\n    }\\n\\n    .picture.contain .pic {\\n        -o-object-fit: contain;\\n           object-fit: contain;\\n    }\\n\\n    .picture.isError .pic-1x,\\n    .picture.isError .pic-2x,\\n    .picture.loadingSrcSmall .pic-1x,\\n    .picture.loadingSrcBig .pic-2x {\\n        opacity: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1BpY3R1cmUuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGtCQUFrQjtRQUNsQixtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWiw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHlCQUF3QjtZQUF4QixzQkFBd0I7Z0JBQXhCLHdCQUF3QjtRQUN4QiwrQ0FBK0M7SUFDbkQ7O0lBRUE7UUFDSSxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBdUI7V0FBdkIsdUJBQXVCO1FBQ3ZCLHVDQUErQjtRQUEvQiwrQkFBK0I7SUFDbkM7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLE9BQU87UUFDUCxXQUFXO1FBQ1gsWUFBWTtJQUNoQjs7SUFFQTtRQUNJLG9CQUFpQjtXQUFqQixpQkFBaUI7SUFDckI7O0lBRUE7UUFDSSxzQkFBbUI7V0FBbkIsbUJBQW1CO0lBQ3ZCOztJQUVBOzs7O1FBSUksVUFBVTtJQUNkIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1BpY3R1cmUuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnBpY3R1cmUge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAuMDQpO1xuICAgIH1cblxuICAgIC5waWN0dXJlIC5waWMge1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIG9iamVjdC1wb3NpdGlvbjogY2VudGVyO1xuICAgICAgICB0cmFuc2l0aW9uOiBvcGFjaXR5IC4zcyBlYXNlLWluO1xuICAgIH1cblxuICAgIC5waWN0dXJlIC5waWMtMngge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICB9XG5cbiAgICAucGljdHVyZS5jb3ZlciAucGljIHtcbiAgICAgICAgb2JqZWN0LWZpdDogY292ZXI7XG4gICAgfVxuXG4gICAgLnBpY3R1cmUuY29udGFpbiAucGljIHtcbiAgICAgICAgb2JqZWN0LWZpdDogY29udGFpbjtcbiAgICB9XG5cbiAgICAucGljdHVyZS5pc0Vycm9yIC5waWMtMXgsXG4gICAgLnBpY3R1cmUuaXNFcnJvciAucGljLTJ4LFxuICAgIC5waWN0dXJlLmxvYWRpbmdTcmNTbWFsbCAucGljLTF4LFxuICAgIC5waWN0dXJlLmxvYWRpbmdTcmNCaWcgLnBpYy0yeCB7XG4gICAgICAgIG9wYWNpdHk6IDA7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsFI,QAAQ,4BAAC,CAAC,AACN,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,CACpB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,CAChC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAED,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,QAAQ,CAAE,MAAM,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,MAAM,CACvB,eAAe,CAAE,MAAM,CAC1B,kBAAkB,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,CACvC,UAAU,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,AACnC,CAAC,AAED,sBAAQ,CAAC,OAAO,cAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,QAAQ,oBAAM,CAAC,IAAI,cAAC,CAAC,AACjB,aAAa,CAAE,KAAK,CACjB,UAAU,CAAE,KAAK,AACxB,CAAC,AAED,QAAQ,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACnB,aAAa,CAAE,OAAO,CACnB,UAAU,CAAE,OAAO,AAC1B,CAAC,AAED,QAAQ,sBAAQ,CAAC,qBAAO,CACxB,QAAQ,sBAAQ,CAAC,qBAAO,CACxB,QAAQ,8BAAgB,CAAC,qBAAO,CAChC,QAAQ,4BAAc,CAAC,OAAO,cAAC,CAAC,AAC5B,OAAO,CAAE,CAAC,AACd,CAAC\"}"
-};
-
-const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { src } = $$props;
-	let { alt } = $$props;
-	let { size = "cover" } = $$props;
-	let { srcBig = undefined } = $$props;
-	let { id = undefined } = $$props;
-	let { width = undefined } = $$props;
-	let { height = undefined } = $$props;
-	let isError = false;
-	let loadingSrcSmall = true;
-	let loadingSrcBig = true;
-
-	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	if ($$props.alt === void 0 && $$bindings.alt && alt !== void 0) $$bindings.alt(alt);
-	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-	if ($$props.srcBig === void 0 && $$bindings.srcBig && srcBig !== void 0) $$bindings.srcBig(srcBig);
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
-	if ($$props.height === void 0 && $$bindings.height && height !== void 0) $$bindings.height(height);
-	$$result.css.add(css$5);
-	let wrapClassProp = classnames("picture", $$props.class, size, { loadingSrcSmall, loadingSrcBig, isError });
-
-	return `<figure class="${escape(null_to_empty(wrapClassProp)) + " svelte-hifk9w"}">
-    <img${add_attribute("id", id, 0)}${add_attribute("alt", alt, 0)}${add_attribute("src", src, 0)}${add_attribute("width", width, 0)}${add_attribute("height", height, 0)} class="${"pic pic-1x svelte-hifk9w"}">
-
-    ${srcBig && !loadingSrcSmall
-	? `<img${add_attribute("alt", alt, 0)}${add_attribute("width", width, 0)}${add_attribute("height", height, 0)}${add_attribute("src", srcBig, 0)} class="${"pic pic-2x svelte-hifk9w"}">`
-	: ``}
-
-    <figcaption>
-        ${$$slots.default ? $$slots.default({}) : ``}
-    </figcaption>
-</figure>`;
-});
-
-/* src/components/Avatar.svelte generated by Svelte v3.18.1 */
-
-const css$6 = {
-	code: ".ava.svelte-1tl59f6{position:relative;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;border-radius:50%;overflow:hidden}.ava.small.svelte-1tl59f6{-webkit-box-flex:0;-ms-flex:none;flex:none;width:30px;height:30px}.ava.medium.svelte-1tl59f6{-webkit-box-flex:0;-ms-flex:none;flex:none;width:60px;height:60px}.ava.big.svelte-1tl59f6{-webkit-box-flex:0;-ms-flex:none;flex:none;width:130px;height:130px}",
-	map: "{\"version\":3,\"file\":\"Avatar.svelte\",\"sources\":[\"Avatar.svelte\"],\"sourcesContent\":[\"<script>\\n    import { classnames } from '@utils'\\n    import Picture from './Picture.svelte'\\n\\n    export let src\\n    export let alt\\n    export let size = null // small|medium|big\\n    export let srcBig = undefined\\n\\n    $: classProp = classnames('ava', size, $$props.class)\\n</script>\\n\\n<div class={classProp}>\\n    <Picture {src} {srcBig} {alt}/>\\n</div>\\n\\n<style>\\n    .ava {\\n        position: relative;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        border-radius: 50%;\\n        overflow: hidden;\\n    }\\n\\n    .ava.small {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 30px;\\n        height: 30px;\\n    }\\n    .ava.medium {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 60px;\\n        height: 60px;\\n    }\\n    .ava.big {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 130px;\\n        height: 130px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0F2YXRhci5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFZO1lBQVosb0JBQVk7Z0JBQVosWUFBWTtRQUNaLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isa0JBQWtCO1FBQ2xCLGdCQUFnQjtJQUNwQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLFlBQVk7SUFDaEI7SUFDQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLFlBQVk7SUFDaEI7SUFDQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsWUFBWTtRQUNaLGFBQWE7SUFDakIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvQXZhdGFyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5hdmEge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIH1cblxuICAgIC5hdmEuc21hbGwge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICB3aWR0aDogMzBweDtcbiAgICAgICAgaGVpZ2h0OiAzMHB4O1xuICAgIH1cbiAgICAuYXZhLm1lZGl1bSB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIHdpZHRoOiA2MHB4O1xuICAgICAgICBoZWlnaHQ6IDYwcHg7XG4gICAgfVxuICAgIC5hdmEuYmlnIHtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICAgICAgd2lkdGg6IDEzMHB4O1xuICAgICAgICBoZWlnaHQ6IDEzMHB4O1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAiBI,IAAI,eAAC,CAAC,AACF,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,AACpB,CAAC,AAED,IAAI,MAAM,eAAC,CAAC,AACR,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AACD,IAAI,OAAO,eAAC,CAAC,AACT,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AACD,IAAI,IAAI,eAAC,CAAC,AACN,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,AACjB,CAAC\"}"
-};
-
-const Avatar = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { src } = $$props;
-	let { alt } = $$props;
-	let { size = null } = $$props; // small|medium|big
-	let { srcBig = undefined } = $$props;
-	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	if ($$props.alt === void 0 && $$bindings.alt && alt !== void 0) $$bindings.alt(alt);
-	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-	if ($$props.srcBig === void 0 && $$bindings.srcBig && srcBig !== void 0) $$bindings.srcBig(srcBig);
-	$$result.css.add(css$6);
-	let classProp = classnames("ava", size, $$props.class);
-
-	return `<div class="${escape(null_to_empty(classProp)) + " svelte-1tl59f6"}">
-    ${validate_component(Picture, "Picture").$$render($$result, { src, srcBig, alt }, {}, {})}
-</div>`;
-});
-
-/* src/components/Button.svelte generated by Svelte v3.18.1 */
-
-const css$7 = {
-	code: ".btn.svelte-76qioz:not(.auto){width:100%;padding:5px 15px}.btn{-webkit-box-flex:0;-ms-flex:none;flex:none;cursor:pointer;max-width:100%;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-weight:bold;text-align:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;color:rgba(var(--theme-font-color));border-radius:var(--border-radius-medium)}.btn.small{padding:5px;min-width:calc(var(--min-interactive-size) / 1.3);min-height:calc(var(--min-interactive-size) / 1.3)}.btn.medium{padding:5px 10px;min-width:var(--min-interactive-size);min-height:var(--min-interactive-size)}.btn.big{padding:5px 15px;min-width:calc(var(--min-interactive-size) * 1.3);min-height:calc(var(--min-interactive-size) * 1.3)}.btn:focus{background-color:rgba(var(--color-black), 0.1)}.btn:hover{background-color:rgba(var(--color-black), 0.1)}.btn:active{background-color:rgba(var(--color-black), 0.1)}.btn.white{color:rgba(var(--color-font-dark));background-color:rgba(var(--color-white))}.btn.white:focus{background-color:rgba(var(--color-white), .85)}.btn.white:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.white:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success{color:rgba(var(--color-font-light));background-color:rgba(var(--color-success))}.btn.success:focus{background-color:rgba(var(--color-success), .85)}.btn.success:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning{color:rgba(var(--color-font-light));background-color:rgba(var(--color-warning))}.btn.warning:focus{background-color:rgba(var(--color-warning), .85)}.btn.warning:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger{color:rgba(var(--color-font-light));background-color:rgba(var(--color-danger))}.btn.danger:focus{background-color:rgba(var(--color-danger), .85)}.btn.danger:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}",
-	map: "{\"version\":3,\"file\":\"Button.svelte\",\"sources\":[\"Button.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let is = undefined\\n    export let id = undefined\\n    export let rel = undefined\\n    export let href = undefined\\n    export let auto = false\\n    export let type = 'button'\\n    export let size = undefined\\n    export let title = undefined\\n    export let htmlFor = undefined\\n    export let disabled = false\\n    export let ariaLabel = undefined\\n\\n    let titleProp = title || ariaLabel\\n    let ariaLabelProp = ariaLabel || title\\n\\n    $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })\\n\\n    function onLabelClick(e) {\\n        document.getElementById(htmlFor).click()\\n        !disabled && dispatch('click', e)\\n    }\\n\\n    function onClick(e) {\\n        !disabled && dispatch('click', e)\\n    }\\n</script>\\n\\n{#if href}\\n    <a\\n            {id}\\n            {rel}\\n            {href}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </a>\\n{:else if htmlFor}\\n    <label\\n            {id}\\n            {disabled}\\n            for={htmlFor}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onLabelClick}\\n    >\\n        <slot></slot>\\n    </label>\\n{:else}\\n    <button\\n            {id}\\n            {type}\\n            {disabled}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </button>\\n{/if}\\n\\n<style>\\n    .btn:not(.auto) {\\n        width: 100%;\\n        padding: 5px 15px;\\n    }\\n\\n    :global(.btn) {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        cursor: pointer;\\n        max-width: 100%;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        font-weight: bold;\\n        text-align: center;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        color: rgba(var(--theme-font-color));\\n        border-radius: var(--border-radius-medium);\\n    }\\n\\n    :global(.btn.small) {\\n        padding: 5px;\\n        min-width: calc(var(--min-interactive-size) / 1.3);\\n        min-height: calc(var(--min-interactive-size) / 1.3);\\n    }\\n\\n    :global(.btn.medium) {\\n        padding: 5px 10px;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n    }\\n\\n    :global(.btn.big) {\\n        padding: 5px 15px;\\n        min-width: calc(var(--min-interactive-size) * 1.3);\\n        min-height: calc(var(--min-interactive-size) * 1.3);\\n    }\\n\\n    :global(.btn:focus) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:hover) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:active) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    /* White */\\n\\n    :global(.btn).white {\\n        color: rgba(var(--color-font-dark));\\n        background-color: rgba(var(--color-white));\\n    }\\n\\n    :global(.btn).white:focus {\\n        background-color: rgba(var(--color-white), .85);\\n    }\\n\\n    :global(.btn).white:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).white:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Success */\\n\\n    :global(.btn).success {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n    :global(.btn).success:focus {\\n        background-color: rgba(var(--color-success), .85);\\n    }\\n\\n    :global(.btn).success:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).success:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Warning */\\n\\n    :global(.btn).warning {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-warning));\\n    }\\n\\n    :global(.btn).warning:focus {\\n        background-color: rgba(var(--color-warning), .85);\\n    }\\n\\n    :global(.btn).warning:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).warning:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Danger */\\n\\n    :global(.btn).danger {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-danger));\\n    }\\n\\n    :global(.btn).danger:focus {\\n        background-color: rgba(var(--color-danger), .85);\\n    }\\n\\n    :global(.btn).danger:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).danger:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0J1dHRvbi5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGlCQUFpQjtJQUNyQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsZUFBZTtRQUNmLGVBQWU7UUFDZix5QkFBaUI7V0FBakIsc0JBQWlCO1lBQWpCLHFCQUFpQjtnQkFBakIsaUJBQWlCO1FBQ2pCLGlCQUFpQjtRQUNqQixrQkFBa0I7UUFDbEIseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixvQ0FBb0M7UUFDcEMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksWUFBWTtRQUNaLGtEQUFrRDtRQUNsRCxtREFBbUQ7SUFDdkQ7O0lBRUE7UUFDSSxpQkFBaUI7UUFDakIsc0NBQXNDO1FBQ3RDLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGlCQUFpQjtRQUNqQixrREFBa0Q7UUFDbEQsbURBQW1EO0lBQ3ZEOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBLFVBQVU7O0lBRVY7UUFDSSxtQ0FBbUM7UUFDbkMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQSxZQUFZOztJQUVaO1FBQ0ksb0NBQW9DO1FBQ3BDLDRDQUE0QztJQUNoRDs7SUFFQTtRQUNJLGlEQUFpRDtJQUNyRDs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUEsWUFBWTs7SUFFWjtRQUNJLG9DQUFvQztRQUNwQyw0Q0FBNEM7SUFDaEQ7O0lBRUE7UUFDSSxpREFBaUQ7SUFDckQ7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBLFdBQVc7O0lBRVg7UUFDSSxvQ0FBb0M7UUFDcEMsMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQyIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9CdXR0b24uc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmJ0bjpub3QoLmF1dG8pIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxNXB4O1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtZm9udC1jb2xvcikpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLW1lZGl1bSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuLnNtYWxsKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweDtcbiAgICAgICAgbWluLXdpZHRoOiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAvIDEuMyk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IGNhbGModmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpIC8gMS4zKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4ubWVkaXVtKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxMHB4O1xuICAgICAgICBtaW4td2lkdGg6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgbWluLWhlaWdodDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bi5iaWcpIHtcbiAgICAgICAgcGFkZGluZzogNXB4IDE1cHg7XG4gICAgICAgIG1pbi13aWR0aDogY2FsYyh2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSkgKiAxLjMpO1xuICAgICAgICBtaW4taGVpZ2h0OiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAqIDEuMyk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuOmZvY3VzKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bjpob3Zlcikge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgMC4xKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG46YWN0aXZlKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIC8qIFdoaXRlICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1kYXJrKSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itd2hpdGUpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmZvY3VzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci13aGl0ZSksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS53aGl0ZTpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmFjdGl2ZSB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICAvKiBTdWNjZXNzICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLnN1Y2Nlc3Mge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2Vzczpmb2N1cyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcyksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5zdWNjZXNzOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2VzczphY3RpdmUge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgLyogV2FybmluZyAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS53YXJuaW5nIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1saWdodCkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpLCAuODUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2FybmluZzpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIERhbmdlciAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXIge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6aG92ZXIge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAwEI,kBAAI,KAAK,KAAK,CAAC,AAAC,CAAC,AACb,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,IAAI,AACrB,CAAC,AAEO,IAAI,AAAE,CAAC,AACX,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,MAAM,CAAE,OAAO,CACf,SAAS,CAAE,IAAI,CACf,mBAAmB,CAAE,IAAI,CACtB,gBAAgB,CAAE,IAAI,CACrB,eAAe,CAAE,IAAI,CACjB,WAAW,CAAE,IAAI,CACzB,WAAW,CAAE,IAAI,CACjB,UAAU,CAAE,MAAM,CAClB,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,CACpB,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,aAAa,CAAE,IAAI,sBAAsB,CAAC,AAC9C,CAAC,AAEO,UAAU,AAAE,CAAC,AACjB,OAAO,CAAE,GAAG,CACZ,SAAS,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAClD,UAAU,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,AACvD,CAAC,AAEO,WAAW,AAAE,CAAC,AAClB,OAAO,CAAE,GAAG,CAAC,IAAI,CACjB,SAAS,CAAE,IAAI,sBAAsB,CAAC,CACtC,UAAU,CAAE,IAAI,sBAAsB,CAAC,AAC3C,CAAC,AAEO,QAAQ,AAAE,CAAC,AACf,OAAO,CAAE,GAAG,CAAC,IAAI,CACjB,SAAS,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAClD,UAAU,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,AACvD,CAAC,AAEO,UAAU,AAAE,CAAC,AACjB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAEO,UAAU,AAAE,CAAC,AACjB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAEO,WAAW,AAAE,CAAC,AAClB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAIO,IAAI,AAAC,MAAM,AAAC,CAAC,AACjB,KAAK,CAAE,KAAK,IAAI,iBAAiB,CAAC,CAAC,CACnC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,AAC9C,CAAC,AAEO,IAAI,AAAC,MAAM,MAAM,AAAC,CAAC,AACvB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAEO,IAAI,AAAC,MAAM,MAAM,AAAC,CAAC,AACvB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,MAAM,OAAO,AAAC,CAAC,AACxB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAIO,IAAI,AAAC,QAAQ,AAAC,CAAC,AACnB,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,CAAC,GAAG,CAAC,AACrD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,QAAQ,OAAO,AAAC,CAAC,AAC1B,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAIO,IAAI,AAAC,QAAQ,AAAC,CAAC,AACnB,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,CAAC,GAAG,CAAC,AACrD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,QAAQ,OAAO,AAAC,CAAC,AAC1B,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAIO,IAAI,AAAC,OAAO,AAAC,CAAC,AAClB,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,AAC/C,CAAC,AAEO,IAAI,AAAC,OAAO,MAAM,AAAC,CAAC,AACxB,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAEO,IAAI,AAAC,OAAO,MAAM,AAAC,CAAC,AACxB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,OAAO,OAAO,AAAC,CAAC,AACzB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC\"}"
-};
-
-const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { is = undefined } = $$props;
-	let { id = undefined } = $$props;
-	let { rel = undefined } = $$props;
-	let { href = undefined } = $$props;
-	let { auto = false } = $$props;
-	let { type = "button" } = $$props;
-	let { size = undefined } = $$props;
-	let { title = undefined } = $$props;
-	let { htmlFor = undefined } = $$props;
-	let { disabled = false } = $$props;
-	let { ariaLabel = undefined } = $$props;
-	let titleProp = title || ariaLabel;
-	let ariaLabelProp = ariaLabel || title;
-
-	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.rel === void 0 && $$bindings.rel && rel !== void 0) $$bindings.rel(rel);
-	if ($$props.href === void 0 && $$bindings.href && href !== void 0) $$bindings.href(href);
-	if ($$props.auto === void 0 && $$bindings.auto && auto !== void 0) $$bindings.auto(auto);
-	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
-	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-	if ($$props.htmlFor === void 0 && $$bindings.htmlFor && htmlFor !== void 0) $$bindings.htmlFor(htmlFor);
-	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
-	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
-	$$result.css.add(css$7);
-	let classProp = classnames("btn", is, size, $$props.class, { auto, disabled });
-
-	return `${href
-	? `<a${add_attribute("id", id, 0)}${add_attribute("rel", rel, 0)}${add_attribute("href", href, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
-        ${$$slots.default ? $$slots.default({}) : ``}
-    </a>`
-	: `${htmlFor
-		? `<label${add_attribute("id", id, 0)} ${disabled ? "disabled" : ""}${add_attribute("for", htmlFor, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
-        ${$$slots.default ? $$slots.default({}) : ``}
-    </label>`
-		: `<button${add_attribute("id", id, 0)}${add_attribute("type", type, 0)} ${disabled ? "disabled" : ""}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
-        ${$$slots.default ? $$slots.default({}) : ``}
-    </button>`}`}`;
-});
-
-/* src/components/Divider.svelte generated by Svelte v3.18.1 */
-
-const css$8 = {
-	code: ".divider.svelte-16jxdsi{margin:0;border:none;-webkit-box-sizing:content-box;box-sizing:content-box;background-clip:content-box}.info.svelte-16jxdsi{background-color:rgb(var(--color-info))}.success.svelte-16jxdsi{background-color:rgb(var(--color-success))}.warning.svelte-16jxdsi{background-color:rgb(var(--color-warning))}.danger.svelte-16jxdsi{background-color:rgb(var(--color-danger))}",
-	map: "{\"version\":3,\"file\":\"Divider.svelte\",\"sources\":[\"Divider.svelte\"],\"sourcesContent\":[\"<script>\\n    import { toCSSString, classnames } from '@utils'\\n\\n    export let is = 'info'\\n    export let size = 0\\n    export let width = 2\\n\\n    $: classProp = classnames('divider', is, $$props.class)\\n    $: styleProp = toCSSString({ padding: `${size / 2}px 0`, height: `${width}px` })\\n</script>\\n\\n<hr class={classProp} style={styleProp}>\\n\\n<style>\\n    .divider {\\n        margin: 0;\\n        border: none;\\n        -webkit-box-sizing: content-box;\\n                box-sizing: content-box;\\n        background-clip: content-box;\\n    }\\n\\n    .info {\\n        background-color: rgb(var(--color-info));\\n    }\\n\\n    .success {\\n        background-color: rgb(var(--color-success));\\n    }\\n\\n    .warning {\\n        background-color: rgb(var(--color-warning));\\n    }\\n\\n    .danger {\\n        background-color: rgb(var(--color-danger));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0RpdmlkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFNBQVM7UUFDVCxZQUFZO1FBQ1osK0JBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQTRCO0lBQ2hDOztJQUVBO1FBQ0ksd0NBQXdDO0lBQzVDOztJQUVBO1FBQ0ksMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksMENBQTBDO0lBQzlDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0RpdmlkZXIuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmRpdmlkZXIge1xuICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgICAgYm94LXNpemluZzogY29udGVudC1ib3g7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLmluZm8ge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2IodmFyKC0tY29sb3ItaW5mbykpO1xuICAgIH1cblxuICAgIC5zdWNjZXNzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiKHZhcigtLWNvbG9yLXN1Y2Nlc3MpKTtcbiAgICB9XG5cbiAgICAud2FybmluZyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci13YXJuaW5nKSk7XG4gICAgfVxuXG4gICAgLmRhbmdlciB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci1kYW5nZXIpKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAcI,QAAQ,eAAC,CAAC,AACN,MAAM,CAAE,CAAC,CACT,MAAM,CAAE,IAAI,CACZ,kBAAkB,CAAE,WAAW,CACvB,UAAU,CAAE,WAAW,CAC/B,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,KAAK,eAAC,CAAC,AACH,gBAAgB,CAAE,IAAI,IAAI,YAAY,CAAC,CAAC,AAC5C,CAAC,AAED,QAAQ,eAAC,CAAC,AACN,gBAAgB,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC/C,CAAC,AAED,QAAQ,eAAC,CAAC,AACN,gBAAgB,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC/C,CAAC,AAED,OAAO,eAAC,CAAC,AACL,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,AAC9C,CAAC\"}"
-};
-
-const Divider = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { is = "info" } = $$props;
-	let { size = 0 } = $$props;
-	let { width = 2 } = $$props;
-	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
-	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
-	$$result.css.add(css$8);
-	let classProp = classnames("divider", is, $$props.class);
-
-	let styleProp = toCSSString({
-		padding: `${size / 2}px 0`,
-		height: `${width}px`
-	});
-
-	return `<hr class="${escape(null_to_empty(classProp)) + " svelte-16jxdsi"}"${add_attribute("style", styleProp, 0)}>`;
-});
-
-/* src/components/Progress.svelte generated by Svelte v3.18.1 */
-
-const css$9 = {
-	code: ".progress.medium.svelte-108d5jc.svelte-108d5jc{--progress-height:10px;--progress-padding-point:1px}.progress.svelte-108d5jc.svelte-108d5jc{-webkit-box-flex:0;-ms-flex:0;flex:0;width:100%;border-radius:9999px;height:var(--progress-height)}.progress-inner-frame.svelte-108d5jc.svelte-108d5jc{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;width:100%;height:100%;border-radius:9999px;overflow:hidden;padding:var(--progress-padding-point) 0;background-color:rgba(var(--theme-color-primary-opposite), .1);background-clip:content-box}.progress-core.svelte-108d5jc.svelte-108d5jc{position:absolute;top:0;left:0;height:100%;-webkit-box-flex:0;-ms-flex:none;flex:none;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transition:1s ease-in-out;transition:1s ease-in-out;border-radius:9999px;background-color:rgba(var(--color-info))}.progress[aria-valuenow=\"100\"].svelte-108d5jc .progress-core.svelte-108d5jc{background-color:rgba(var(--color-success))}",
-	map: "{\"version\":3,\"file\":\"Progress.svelte\",\"sources\":[\"Progress.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, onMount } from 'svelte'\\n    import { classnames, safeGet } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let value = 0 // 0 - 100\\n    export let size = 'medium'\\n    export let title = undefined\\n    export let ariaLabel = undefined\\n    export let borderRadius = undefined\\n\\n    $: val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0\\n    $: titleProp = title || `Progress - ${val}%`\\n    $: ariaLabelProp = ariaLabel || `Progress - ${val}%`\\n    $: classProp = classnames('progress', size, $$props.class)\\n\\n    function getBorderRadius(borders, defaults = '99999px') {\\n        const brDefault = new Array(4).fill(defaults)\\n        const bds = safeGet(() => borders.split(' '), [], true)\\n        const rule = 'border-radius'\\n        return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(' ')}`\\n    }\\n</script>\\n\\n\\n<div\\n        {id}\\n        class={classProp}\\n        title={titleProp}\\n        aria-label={ariaLabelProp}\\n        role=\\\"progressbar\\\"\\n        aria-valuemin=\\\"0\\\"\\n        aria-valuemax=\\\"100\\\"\\n        aria-valuenow={val}\\n        style={getBorderRadius(borderRadius)}\\n>\\n    <div class=\\\"progress-inner-frame\\\">\\n        <div class=\\\"progress-core\\\" style={`width:${val}%`}></div>\\n    </div>\\n</div>\\n\\n<style>\\n    .progress.medium {\\n        --progress-height: 10px;\\n        --progress-padding-point: 1px;\\n    }\\n\\n    .progress {\\n        -webkit-box-flex: 0;\\n            -ms-flex: 0;\\n                flex: 0;\\n        width: 100%;\\n        border-radius: 9999px;\\n        height: var(--progress-height);\\n    }\\n\\n    .progress-inner-frame {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        width: 100%;\\n        height: 100%;\\n        border-radius: 9999px;\\n        overflow: hidden;\\n        padding: var(--progress-padding-point) 0;\\n        background-color: rgba(var(--theme-color-primary-opposite), .1);\\n        background-clip: content-box;\\n    }\\n\\n    .progress-core {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        height: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transition: 1s ease-in-out;\\n        transition: 1s ease-in-out;\\n        border-radius: 9999px;\\n        background-color: rgba(var(--color-info));\\n    }\\n\\n    .progress[aria-valuenow=\\\"100\\\"] .progress-core {\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSx1QkFBdUI7UUFDdkIsNkJBQTZCO0lBQ2pDOztJQUVBO1FBQ0ksbUJBQU87WUFBUCxXQUFPO2dCQUFQLE9BQU87UUFDUCxXQUFXO1FBQ1gscUJBQXFCO1FBQ3JCLDhCQUE4QjtJQUNsQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLFdBQVc7UUFDWCxZQUFZO1FBQ1oscUJBQXFCO1FBQ3JCLGdCQUFnQjtRQUNoQix3Q0FBd0M7UUFDeEMsK0RBQStEO1FBQy9ELDRCQUE0QjtJQUNoQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFlBQVk7UUFDWixtQkFBVTtZQUFWLGNBQVU7Z0JBQVYsVUFBVTtRQUNWLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsa0NBQTBCO1FBQTFCLDBCQUEwQjtRQUMxQixxQkFBcUI7UUFDckIseUNBQXlDO0lBQzdDOztJQUVBO1FBQ0ksNENBQTRDO0lBQ2hEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5wcm9ncmVzcy5tZWRpdW0ge1xuICAgICAgICAtLXByb2dyZXNzLWhlaWdodDogMTBweDtcbiAgICAgICAgLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50OiAxcHg7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzIHtcbiAgICAgICAgZmxleDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDk5OTlweDtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1wcm9ncmVzcy1oZWlnaHQpO1xuICAgIH1cblxuICAgIC5wcm9ncmVzcy1pbm5lci1mcmFtZSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBwYWRkaW5nOiB2YXIoLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50KSAwO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMSk7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzLWNvcmUge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICB0cmFuc2l0aW9uOiAxcyBlYXNlLWluLW91dDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICAucHJvZ3Jlc3NbYXJpYS12YWx1ZW5vdz1cIjEwMFwiXSAucHJvZ3Jlc3MtY29yZSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA4CI,SAAS,OAAO,8BAAC,CAAC,AACd,iBAAiB,CAAE,IAAI,CACvB,wBAAwB,CAAE,GAAG,AACjC,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CACP,IAAI,CAAE,CAAC,CACf,KAAK,CAAE,IAAI,CACX,aAAa,CAAE,MAAM,CACrB,MAAM,CAAE,IAAI,iBAAiB,CAAC,AAClC,CAAC,AAED,qBAAqB,8BAAC,CAAC,AACnB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,MAAM,CACrB,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,IAAI,wBAAwB,CAAC,CAAC,CAAC,CACxC,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CAC/D,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,cAAc,8BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,EAAE,CAAC,WAAW,CAClC,UAAU,CAAE,EAAE,CAAC,WAAW,CAC1B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAC7C,CAAC,AAED,SAAS,CAAC,aAAa,CAAC,KAAK,gBAAC,CAAC,cAAc,eAAC,CAAC,AAC3C,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC\"}"
-};
-
-function getBorderRadius(borders, defaults = "99999px") {
-	const brDefault = new Array(4).fill(defaults);
-	const bds = safeGet(() => borders.split(" "), [], true);
-	const rule = "border-radius";
-	return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(" ")}`;
-}
-
-const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { id = undefined } = $$props;
-	let { value = 0 } = $$props; // 0 - 100
-	let { size = "medium" } = $$props;
-	let { title = undefined } = $$props;
-	let { ariaLabel = undefined } = $$props;
-	let { borderRadius = undefined } = $$props;
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
-	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
-	if ($$props.borderRadius === void 0 && $$bindings.borderRadius && borderRadius !== void 0) $$bindings.borderRadius(borderRadius);
-	$$result.css.add(css$9);
-
-	let val = Number.isFinite(+value)
-	? Math.max(0, Math.min(+value, 100))
-	: 0;
-
-	let titleProp = title || `Progress - ${val}%`;
-	let ariaLabelProp = ariaLabel || `Progress - ${val}%`;
-	let classProp = classnames("progress", size, $$props.class);
-
-	return `<div${add_attribute("id", id, 0)} class="${escape(null_to_empty(classProp)) + " svelte-108d5jc"}"${add_attribute("title", titleProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)} role="${"progressbar"}" aria-valuemin="${"0"}" aria-valuemax="${"100"}"${add_attribute("aria-valuenow", val, 0)}${add_attribute("style", getBorderRadius(borderRadius), 0)}>
-    <div class="${"progress-inner-frame svelte-108d5jc"}">
-        <div class="${"progress-core svelte-108d5jc"}"${add_attribute("style", `width:${val}%`, 0)}></div>
-    </div>
-</div>`;
-});
-
-/* src/components/Carousel.svelte generated by Svelte v3.18.1 */
-
-const css$a = {
-	code: ".carousel.svelte-xsz8iy.svelte-xsz8iy,.carousel-inner.svelte-xsz8iy.svelte-xsz8iy,.carousel-inner.svelte-xsz8iy li.svelte-xsz8iy{position:relative;-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;text-align:left;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.carousel.dotsBelow.svelte-xsz8iy.svelte-xsz8iy{padding-bottom:40px}.carousel.dotsBelow.svelte-xsz8iy .carousel-dots.svelte-xsz8iy{bottom:0}.carousel.dotsBelow.svelte-xsz8iy .carousel-dots li.svelte-xsz8iy{background-color:rgba(var(--theme-bg-color-opposite))}.carousel.stretch.svelte-xsz8iy .fluid.svelte-xsz8iy{width:100%}.carousel.auto.svelte-xsz8iy .fluid.svelte-xsz8iy{width:auto}.carousel.svelte-xsz8iy.svelte-xsz8iy{width:100%}.carousel-inner.svelte-xsz8iy.svelte-xsz8iy::-webkit-scrollbar{display:none}.carousel.svelte-xsz8iy .carousel-inner.svelte-xsz8iy{width:100%;overflow-y:hidden;overflow-x:scroll;border-radius:var(--border-radius-big)}.carousel-dots.svelte-xsz8iy.svelte-xsz8iy{position:absolute;left:0;bottom:10px;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;justify-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;pointer-events:none}.carousel-dots.svelte-xsz8iy li.svelte-xsz8iy{position:relative;width:8px;height:8px;margin:5px;border-radius:50%;overflow:hidden;-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary);background-color:rgba(var(--color-light))}.carousel-dots.svelte-xsz8iy li.svelte-xsz8iy:not(.active){opacity:.5}li.active.svelte-xsz8iy.svelte-xsz8iy{-webkit-transform:scale(1.5);transform:scale(1.5)}",
-	map: "{\"version\":3,\"file\":\"Carousel.svelte\",\"sources\":[\"Carousel.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { waitUntil, classnames } from '@utils'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    /**\\n     *\\n     * @type {number | {\\n     *     src: string,\\n     *     srcBig: string,\\n     *     alt: string,\\n     *     onClick?: function,\\n     * }[]}\\n     */\\n    export let items = []\\n    export let dots = true\\n    export let dotsBelow = true\\n    export let size = 'stretch'\\n    export let initIndex = 0\\n\\n    let parent = null\\n\\n    $: activeDot = initIndex\\n    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow })\\n    $: setScrollPosition(parent, initIndex)\\n\\n    function carousel(node) {\\n        parent = node\\n        setScrollPosition(node, activeDot)\\n        node.addEventListener('scroll', onScroll)\\n        return { destroy: () => node.removeEventListener('scroll', onScroll) }\\n    }\\n\\n    function onScroll(e) {\\n        try {\\n            getActiveDot(e.target)\\n        } catch (err) { console.warn('Carousel does not work.', err) }\\n    }\\n\\n    function getActiveDot(parent) {\\n        const { scrollLeft, scrollWidth, offsetWidth } = parent\\n        const dotAmount = Array.from(parent.children).length\\n        const scrollX = scrollLeft / (scrollWidth - offsetWidth)\\n        const newActiveDot = Math.round(scrollX * (dotAmount - 1))\\n        if (activeDot !== newActiveDot) activeDot = newActiveDot\\n    }\\n\\n    function setScrollPosition(parent, activeDot) {\\n        if (!parent) return\\n        const { width } = parent.getBoundingClientRect()\\n        waitUntil(() => {\\n            parent.scrollLeft = Math.round(width * activeDot)\\n            if (parent.scrollLeft !== Math.round(width * activeDot)) {\\n              throw new Error('Not set.')\\n            }\\n        }, { interval: 50 })\\n    }\\n\\n    function onClick(item, index, e) {\\n        dispatch('click', { item, index, e })\\n        if (typeof item.onClick === 'function') item.onClick(item, index, e)\\n    }\\n\\n</script>\\n\\n<section aria-label=\\\"carousel\\\" class={classProp}>\\n    <ul use:carousel class=\\\"carousel-inner scroll-x-center\\\">\\n        {#each items as item, index}\\n            <li class=\\\"fluid\\\" role=\\\"button\\\" on:click={onClick.bind(null, item, index)}>\\n                <slot {item} {index}>\\n                    <Picture {...item} alt={item.alt || 'Фото слайду'}/>\\n                </slot>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n\\n    {#if dots}\\n        <ul class=\\\"carousel-dots\\\">\\n            {#each items as _item, i}\\n                <li class={i === activeDot ? 'active' : ''}></li>\\n            {/each}\\n        </ul>\\n    {/if}\\n</section>\\n\\n<style>\\n    .carousel, .carousel-inner, .carousel-inner li {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        text-align: left;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .carousel.dotsBelow {\\n        padding-bottom: 40px;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots {\\n        bottom: 0;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots li {\\n        background-color: rgba(var(--theme-bg-color-opposite));\\n    }\\n\\n    .carousel.stretch .fluid {\\n        width: 100%;\\n    }\\n\\n    .carousel.auto .fluid {\\n        width: auto;\\n    }\\n\\n    .carousel {\\n        width: 100%;\\n    }\\n\\n    .carousel-inner::-webkit-scrollbar {\\n        display: none;\\n    }\\n\\n    .carousel .carousel-inner {\\n        width: 100%;\\n        overflow-y: hidden;\\n        overflow-x: scroll;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .carousel-dots {\\n        position: absolute;\\n        left: 0;\\n        bottom: 10px;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        justify-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        pointer-events: none;\\n    }\\n\\n    .carousel-dots li {\\n        position: relative;\\n        width: 8px;\\n        height: 8px;\\n        margin: 5px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n        background-color: rgba(var(--color-light));\\n    }\\n\\n    .carousel-dots li:not(.active) {\\n        opacity: .5;\\n    }\\n\\n    li.active {\\n        -webkit-transform: scale(1.5);\\n                transform: scale(1.5);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksU0FBUztJQUNiOztJQUVBO1FBQ0ksc0RBQXNEO0lBQzFEOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksYUFBYTtJQUNqQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsa0JBQWtCO1FBQ2xCLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixPQUFPO1FBQ1AsWUFBWTtRQUNaLFdBQVc7UUFDWCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixVQUFVO1FBQ1YsV0FBVztRQUNYLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsZ0JBQWdCO1FBQ2hCLHlDQUFpQztnQkFBakMsaUNBQWlDO1FBQ2pDLDBDQUEwQztJQUM5Qzs7SUFFQTtRQUNJLFdBQVc7SUFDZjs7SUFFQTtRQUNJLDZCQUFxQjtnQkFBckIscUJBQXFCO0lBQ3pCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jYXJvdXNlbCwgLmNhcm91c2VsLWlubmVyLCAuY2Fyb3VzZWwtaW5uZXIgbGkge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyB7XG4gICAgICAgIHBhZGRpbmctYm90dG9tOiA0MHB4O1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC5kb3RzQmVsb3cgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBib3R0b206IDA7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyAuY2Fyb3VzZWwtZG90cyBsaSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3Itb3Bwb3NpdGUpKTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuc3RyZXRjaCAuZmx1aWQge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuYXV0byAuZmx1aWQge1xuICAgICAgICB3aWR0aDogYXV0bztcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwtaW5uZXI6Oi13ZWJraXQtc2Nyb2xsYmFyIHtcbiAgICAgICAgZGlzcGxheTogbm9uZTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwgLmNhcm91c2VsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG92ZXJmbG93LXk6IGhpZGRlbjtcbiAgICAgICAgb3ZlcmZsb3cteDogc2Nyb2xsO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIGJvdHRvbTogMTBweDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktaXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC1kb3RzIGxpIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICB3aWR0aDogOHB4O1xuICAgICAgICBoZWlnaHQ6IDhweDtcbiAgICAgICAgbWFyZ2luOiA1cHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWxpZ2h0KSk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMgbGk6bm90KC5hY3RpdmUpIHtcbiAgICAgICAgb3BhY2l0eTogLjU7XG4gICAgfVxuXG4gICAgbGkuYWN0aXZlIHtcbiAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxLjUpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAyFI,qCAAS,CAAE,2CAAe,CAAE,6BAAe,CAAC,EAAE,cAAC,CAAC,AAC5C,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,UAAU,CAAE,IAAI,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,SAAS,UAAU,4BAAC,CAAC,AACjB,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,cAAC,CAAC,AAChC,MAAM,CAAE,CAAC,AACb,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,CAAC,EAAE,cAAC,CAAC,AACnC,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,AAC1D,CAAC,AAED,SAAS,sBAAQ,CAAC,MAAM,cAAC,CAAC,AACtB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,mBAAK,CAAC,MAAM,cAAC,CAAC,AACnB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,AACf,CAAC,AAED,2CAAe,mBAAmB,AAAC,CAAC,AAChC,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,uBAAS,CAAC,eAAe,cAAC,CAAC,AACvB,KAAK,CAAE,IAAI,CACX,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,MAAM,CAClB,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,CACX,MAAM,CAAE,GAAG,CACX,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACzC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,AAC9C,CAAC,AAED,4BAAc,CAAC,gBAAE,KAAK,OAAO,CAAC,AAAC,CAAC,AAC5B,OAAO,CAAE,EAAE,AACf,CAAC,AAED,EAAE,OAAO,4BAAC,CAAC,AACP,iBAAiB,CAAE,MAAM,GAAG,CAAC,CACrB,SAAS,CAAE,MAAM,GAAG,CAAC,AACjC,CAAC\"}"
-};
-
-const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { items = [] } = $$props;
-	let { dots = true } = $$props;
-	let { dotsBelow = true } = $$props;
-	let { size = "stretch" } = $$props;
-	let { initIndex = 0 } = $$props;
-	let parent = null;
-
-	function setScrollPosition(parent, activeDot) {
-		if (!parent) return;
-		const { width } = parent.getBoundingClientRect();
-
-		waitUntil(
-			() => {
-				parent.scrollLeft = Math.round(width * activeDot);
-
-				if (parent.scrollLeft !== Math.round(width * activeDot)) {
-					throw new Error("Not set.");
-				}
-			},
-			{ interval: 50 }
-		);
-	}
-
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	if ($$props.dots === void 0 && $$bindings.dots && dots !== void 0) $$bindings.dots(dots);
-	if ($$props.dotsBelow === void 0 && $$bindings.dotsBelow && dotsBelow !== void 0) $$bindings.dotsBelow(dotsBelow);
-	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-	if ($$props.initIndex === void 0 && $$bindings.initIndex && initIndex !== void 0) $$bindings.initIndex(initIndex);
-	$$result.css.add(css$a);
-	let activeDot = initIndex;
-	let classProp = classnames("carousel", size, $$props.class, { dotsBelow });
-
-	 {
-		setScrollPosition(parent, initIndex);
-	}
-
-	return `<section aria-label="${"carousel"}" class="${escape(null_to_empty(classProp)) + " svelte-xsz8iy"}">
-    <ul class="${"carousel-inner scroll-x-center svelte-xsz8iy"}">
-        ${each(items, (item, index) => `<li class="${"fluid svelte-xsz8iy"}" role="${"button"}">
-                ${$$slots.default
-	? $$slots.default({ item, index })
-	: `
-                    ${validate_component(Picture, "Picture").$$render($$result, Object.assign(item, { alt: item.alt || "Фото слайду" }), {}, {})}
-                `}
-            </li>`)}
-    </ul>
-
-
-    ${dots
-	? `<ul class="${"carousel-dots svelte-xsz8iy"}">
-            ${each(items, (_item, i) => `<li class="${escape(null_to_empty(i === activeDot ? "active" : "")) + " svelte-xsz8iy"}"></li>`)}
-        </ul>`
-	: ``}
-</section>`;
-});
-
-/* src/components/FancyBox.svelte generated by Svelte v3.18.1 */
-
-const css$b = {
-	code: ".fancy-box.svelte-9w84ay.svelte-9w84ay{position:relative;width:100%;-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.fancy-box-ghost.svelte-9w84ay.svelte-9w84ay{z-index:10;position:fixed;top:0;left:0;width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-ms-touch-action:manipulation;touch-action:manipulation;background-color:rgba(var(--color-black), .75);outline:20px solid rgba(var(--color-black), .75);-webkit-transition:.3s ease-out;transition:.3s ease-out;opacity:0;padding:0 var(--screen-padding);-webkit-transform:translate3d(0,20px,0);transform:translate3d(0,20px,0);pointer-events:none}.fancy-box-ghost.svelte-9w84ay>.svelte-9w84ay{max-width:100%;max-height:100%}.fancy-box-ghost.active.svelte-9w84ay.svelte-9w84ay{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);pointer-events:auto}button.svelte-9w84ay.svelte-9w84ay{position:absolute;top:10px;right:10px;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:var(--min-interactive-size);height:var(--min-interactive-size)}",
-	map: "{\"version\":3,\"file\":\"FancyBox.svelte\",\"sources\":[\"FancyBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { fly } from 'svelte/transition'\\n    import { classnames, Swipe, delay } from '@utils'\\n    import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';\\n    import Portal from './Portal.svelte';\\n\\n    const START_POSITION = 20\\n    const THRESHOLD = 100\\n\\n    const dispatch = createEventDispatcher()\\n\\n    let active = null\\n    let fancyBox = null\\n    let slots = $$props.$$slots || {}\\n\\n    function onClick(e) {\\n        const newActive = !active\\n\\n        setActive(newActive)\\n\\n        if (newActive) {\\n            drawTransform(fancyBox, 0)\\n            dispatch('open', e)\\n        } else {\\n            drawTransform(fancyBox, START_POSITION)\\n            dispatch('close', e)\\n        }\\n    }\\n     \\n    function setActive(isActive) {\\n        active = isActive\\n\\n        setTimeout(() => {\\n            if (active) {\\n                disableBodyScroll(fancyBox);\\n            } else {\\n                enableBodyScroll(fancyBox);\\n            }\\n        })\\n    }\\n\\n    $: classProp = classnames('fancy-box-ghost', { active })\\n    $: classPropWrap = classnames('fancy-box', $$props.class,)\\n\\n    let ySwipe = START_POSITION\\n    function swipe(el) {\\n        new Swipe(el)\\n                .run()\\n                .onUp(handleVerticalSwipe)\\n                .onDown(handleVerticalSwipe)\\n                .onTouchEnd(async () => {\\n                    if (ySwipe > THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, ySwipe + 50)\\n                        drawOpacity(el, ySwipe + 50)\\n                        await delay(300)\\n                    } else if (ySwipe < -THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, ySwipe - 50)\\n                        drawOpacity(el, ySwipe- 50)\\n                        await delay(300)\\n                    }\\n\\n                    if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {\\n                        ySwipe = START_POSITION\\n                        drawTransform(el, ySwipe)\\n                        el.style.opacity = null\\n                    } else {\\n                        ySwipe = 0\\n                        drawTransform(el, ySwipe)\\n                        el.style.opacity = null\\n                    }\\n                })\\n    }\\n\\n    function handleVerticalSwipe(yDown, yUp, evt, el) {\\n        ySwipe = yUp - yDown\\n        drawTransform(el, ySwipe)\\n        drawOpacity(el, ySwipe)\\n    }\\n\\n    function drawTransform(el, y) {\\n        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)\\n    }\\n    function drawOpacity(el, y) {\\n        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))\\n    }\\n</script>\\n\\n<section role=\\\"button\\\" class={classPropWrap} on:click={onClick}>\\n    <slot {active}></slot>\\n</section>\\n\\n{#if !slots.box}\\n    <Portal>\\n        <section\\n                bind:this={fancyBox}\\n                use:swipe\\n                in:fly=\\\"{{ y: 20, duration: 200 }}\\\"\\n                class={classProp}\\n        >\\n            <button type=\\\"button\\\" on:click={onClick}>&#10005;</button>\\n            <slot></slot>\\n        </section>\\n    </Portal>  \\n{/if}\\n\\n{#if active !== null && slots.box}\\n    <Portal>\\n        <section\\n                bind:this={fancyBox}\\n                use:swipe\\n                in:fly=\\\"{{ y: 20, duration: 200 }}\\\"\\n                class={classProp}\\n        >\\n            <button type=\\\"button\\\" on:click={onClick}>&#10005;</button>\\n            <slot name=\\\"box\\\"></slot>\\n        </section>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .fancy-box {\\n        position: relative;\\n        width: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .fancy-box-ghost {\\n        z-index: 10;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 20px solid rgba(var(--color-black), .75);\\n        -webkit-transition: .3s ease-out;\\n        transition: .3s ease-out;\\n        opacity: 0;\\n        padding: 0 var(--screen-padding);\\n        -webkit-transform: translate3d(0,20px,0);\\n                transform: translate3d(0,20px,0);\\n        pointer-events: none;\\n    }\\n\\n    .fancy-box-ghost > * {\\n        max-width: 100%;\\n        max-height: 100%;\\n    }\\n\\n    .fancy-box-ghost.active {\\n        opacity: 1;\\n        -webkit-transform: translate3d(0,0,0);\\n                transform: translate3d(0,0,0);\\n        pointer-events: auto;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 10px;\\n        right: 10px;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: var(--min-interactive-size);\\n        height: var(--min-interactive-size);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0ZhbmN5Qm94LnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsV0FBVztRQUNYLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztRQUNYLGVBQWU7UUFDZixNQUFNO1FBQ04sT0FBTztRQUNQLFdBQVc7UUFDWCxZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2Qiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLDhCQUEwQjtZQUExQiwwQkFBMEI7UUFDMUIsK0NBQStDO1FBQy9DLGlEQUFpRDtRQUNqRCxnQ0FBd0I7UUFBeEIsd0JBQXdCO1FBQ3hCLFVBQVU7UUFDVixnQ0FBZ0M7UUFDaEMsd0NBQWdDO2dCQUFoQyxnQ0FBZ0M7UUFDaEMsb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksZUFBZTtRQUNmLGdCQUFnQjtJQUNwQjs7SUFFQTtRQUNJLFVBQVU7UUFDVixxQ0FBNkI7Z0JBQTdCLDZCQUE2QjtRQUM3QixvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsU0FBUztRQUNULFdBQVc7UUFDWCxlQUFlO1FBQ2Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLGtDQUFrQztRQUNsQyxtQ0FBbUM7SUFDdkMiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvRmFuY3lCb3guc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmZhbmN5LWJveCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgfVxuXG4gICAgLmZhbmN5LWJveC1naG9zdCB7XG4gICAgICAgIHotaW5kZXg6IDEwO1xuICAgICAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24taXRlbXM6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgICAgICB0b3VjaC1hY3Rpb246IG1hbmlwdWxhdGlvbjtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC43NSk7XG4gICAgICAgIG91dGxpbmU6IDIwcHggc29saWQgcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC43NSk7XG4gICAgICAgIHRyYW5zaXRpb246IC4zcyBlYXNlLW91dDtcbiAgICAgICAgb3BhY2l0eTogMDtcbiAgICAgICAgcGFkZGluZzogMCB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlM2QoMCwyMHB4LDApO1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICB9XG5cbiAgICAuZmFuY3ktYm94LWdob3N0ID4gKiB7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgbWF4LWhlaWdodDogMTAwJTtcbiAgICB9XG5cbiAgICAuZmFuY3ktYm94LWdob3N0LmFjdGl2ZSB7XG4gICAgICAgIG9wYWNpdHk6IDE7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlM2QoMCwwLDApO1xuICAgICAgICBwb2ludGVyLWV2ZW50czogYXV0bztcbiAgICB9XG5cbiAgICBidXR0b24ge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMTBweDtcbiAgICAgICAgcmlnaHQ6IDEwcHg7XG4gICAgICAgIGZvbnQtc2l6ZTogMjRweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiB2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSk7XG4gICAgICAgIGhlaWdodDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA2HI,UAAU,4BAAC,CAAC,AACR,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,gBAAgB,4BAAC,CAAC,AACd,OAAO,CAAE,EAAE,CACX,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAC/C,OAAO,CAAE,IAAI,CAAC,KAAK,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CACjD,kBAAkB,CAAE,GAAG,CAAC,QAAQ,CAChC,UAAU,CAAE,GAAG,CAAC,QAAQ,CACxB,OAAO,CAAE,CAAC,CACV,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAChC,iBAAiB,CAAE,YAAY,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CAChC,SAAS,CAAE,YAAY,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CACxC,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,8BAAgB,CAAG,cAAE,CAAC,AAClB,SAAS,CAAE,IAAI,CACf,UAAU,CAAE,IAAI,AACpB,CAAC,AAED,gBAAgB,OAAO,4BAAC,CAAC,AACrB,OAAO,CAAE,CAAC,CACV,iBAAiB,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7B,SAAS,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACrC,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,4BAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,IAAI,CACT,KAAK,CAAE,IAAI,CACX,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,sBAAsB,CAAC,CAClC,MAAM,CAAE,IAAI,sBAAsB,CAAC,AACvC,CAAC\"}"
-};
-
-const FancyBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let active = null;
-	let fancyBox = null;
-	let slots = $$props.$$slots || {};
-
-	$$result.css.add(css$b);
-	let classProp = classnames("fancy-box-ghost", { active });
-	let classPropWrap = classnames("fancy-box", $$props.class);
-
-	return `<section role="${"button"}" class="${escape(null_to_empty(classPropWrap)) + " svelte-9w84ay"}">
-    ${$$slots.default ? $$slots.default({ active }) : ``}
-</section>
-
-${!slots.box
-	? `${validate_component(Portal, "Portal").$$render($$result, {}, {}, {
-			default: () => `
-        <section class="${escape(null_to_empty(classProp)) + " svelte-9w84ay"}"${add_attribute("this", fancyBox, 1)}>
-            <button type="${"button"}" class="${"svelte-9w84ay"}">✕</button>
-            ${$$slots.default ? $$slots.default({}) : ``}
-        </section>
-    `
-		})}`
-	: ``}
-
-${ ``}`;
-});
-
 var setup = {
   BACKEND_URL: './mock', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
 
@@ -1453,6 +800,573 @@ Storages.alwaysUseJsonInStorage();
 const localStorage = Storages.localStorage;
 const sessionStorage = Storages.sessionStorage;
 const cookieStorage = Cookies;
+
+const subscriber_queue = [];
+/**
+ * Create a `Writable` store that allows both updating and reading by subscription.
+ * @param {*=}value initial value
+ * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+ */
+function writable(value, start = noop) {
+    let stop;
+    const subscribers = [];
+    function set(new_value) {
+        if (safe_not_equal(value, new_value)) {
+            value = new_value;
+            if (stop) { // store is ready
+                const run_queue = !subscriber_queue.length;
+                for (let i = 0; i < subscribers.length; i += 1) {
+                    const s = subscribers[i];
+                    s[1]();
+                    subscriber_queue.push(s, value);
+                }
+                if (run_queue) {
+                    for (let i = 0; i < subscriber_queue.length; i += 2) {
+                        subscriber_queue[i][0](subscriber_queue[i + 1]);
+                    }
+                    subscriber_queue.length = 0;
+                }
+            }
+        }
+    }
+    function update(fn) {
+        set(fn(value));
+    }
+    function subscribe(run, invalidate = noop) {
+        const subscriber = [run, invalidate];
+        subscribers.push(subscriber);
+        if (subscribers.length === 1) {
+            stop = start(set) || noop;
+        }
+        run(value);
+        return () => {
+            const index = subscribers.indexOf(subscriber);
+            if (index !== -1) {
+                subscribers.splice(index, 1);
+            }
+            if (subscribers.length === 0) {
+                stop();
+                stop = null;
+            }
+        };
+    }
+    return { set, update, subscribe };
+}
+
+const modals = writable({});
+
+function generator(storage) {
+    /**
+     * Creates a `Readable` store that allows reading by subscription.
+     * @param key storage key
+     * @param value initial value
+     * @param {StartStopNotifier}start start and stop notifications for subscriptions
+     */
+    function readable(key, value, start) {
+        return {
+            subscribe: writable$1(key, value, start).subscribe
+        };
+    }
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param key storage key
+     * @param {*=}value default value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable$1(key, value, start = noop) {
+        function wrap_start(ogSet) {
+            return start(function wrap_set(new_value) {
+                if (storage) {
+                    storage.setItem(key, new_value);
+                }
+                return ogSet(new_value);
+            });
+        }
+        if (storage) {
+            if (storage.getItem(key)) {
+                value = storage.getItem(key);
+            }
+            storage.setItem(key, value);
+        }
+        const ogStore = writable(value, start ? wrap_start : undefined);
+        function set(new_value) {
+            if (storage) {
+                storage.setItem(key, new_value);
+            }
+            ogStore.set(new_value);
+        }
+        function update(fn) {
+            set(fn(get_store_value(ogStore)));
+        }
+        function subscribe(run, invalidate = noop) {
+            return ogStore.subscribe(run, invalidate);
+        }
+        return { set, update, subscribe };
+    }
+    /**
+     * Derived value store by synchronizing one or more readable stores and
+     * applying an aggregation function over its input values.
+     * @param key storage key
+     * @param {Stores} stores input stores
+     * @param {function(Stores=, function(*)=):*}fn function callback that aggregates the values
+     * @param {*=}initial_value when used asynchronously
+     */
+    function derived(key, stores, fn, initial_value) {
+        const single = !Array.isArray(stores);
+        const stores_array = single
+            ? [stores]
+            : stores;
+        const auto = fn.length < 2;
+        if (storage && storage.getItem(key)) {
+            initial_value = storage.getItem(key);
+        }
+        return readable(key, initial_value, (set) => {
+            let inited = false;
+            const values = [];
+            let pending = 0;
+            let cleanup = noop;
+            const sync = () => {
+                if (pending) {
+                    return;
+                }
+                cleanup();
+                const result = fn(single ? values[0] : values, set);
+                if (auto) {
+                    set(result);
+                }
+                else {
+                    cleanup = is_function(result) ? result : noop;
+                }
+            };
+            const unsubscribers = stores_array.map((store, i) => store.subscribe((value) => {
+                values[i] = value;
+                pending &= ~(1 << i);
+                if (inited) {
+                    sync();
+                }
+            }, () => {
+                pending |= (1 << i);
+            }));
+            inited = true;
+            sync();
+            return function stop() {
+                run_all(unsubscribers);
+                cleanup();
+            };
+        });
+    }
+    return {
+        readable,
+        writable: writable$1,
+        derived,
+        get: get_store_value
+    };
+}
+
+const storage = typeof window !== 'undefined' ? window.localStorage : undefined;
+const { readable, writable: writable$1, derived, get } = generator(storage);
+
+const organization = writable$1('organization', null);
+const organizations = writable$1('organizations', null);
+
+/* src/components/Portal.svelte generated by Svelte v3.18.1 */
+
+const css$3 = {
+	code: ".portal-clone.svelte-qh8j7n{display:none}",
+	map: "{\"version\":3,\"file\":\"Portal.svelte\",\"sources\":[\"Portal.svelte\"],\"sourcesContent\":[\"<script>\\n  import { onMount } from \\\"svelte\\\";\\n  let ref;\\n  let portal;\\n\\n  onMount(() => {\\n    portal = document.createElement(\\\"div\\\");\\n    portal.className = \\\"portal\\\";\\n    document.body.appendChild(portal);\\n    portal.appendChild(ref);\\n    return () => document.body.removeChild(portal)\\n  });\\n\\n</script>\\n\\n<div class=\\\"portal-clone\\\">\\n    <div bind:this={ref}>\\n        <slot />\\n    </div>\\n</div>\\n\\n<style>\\n  .portal-clone {\\n    display: none;\\n  }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtFQUNFO0lBQ0UsYUFBYTtFQUNmIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgLnBvcnRhbC1jbG9uZSB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBE,aAAa,cAAC,CAAC,AACb,OAAO,CAAE,IAAI,AACf,CAAC\"}"
+};
+
+const Portal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let ref;
+	let portal;
+
+	onMount(() => {
+		portal = document.createElement("div");
+		portal.className = "portal";
+		document.body.appendChild(portal);
+		portal.appendChild(ref);
+		return () => document.body.removeChild(portal);
+	});
+
+	$$result.css.add(css$3);
+
+	return `<div class="${"portal-clone svelte-qh8j7n"}">
+    <div${add_attribute("this", ref, 1)}>
+        ${$$slots.default ? $$slots.default({}) : ``}
+    </div>
+</div>`;
+});
+
+/* src/components/Modal.svelte generated by Svelte v3.18.1 */
+
+const css$4 = {
+	code: ".modal.svelte-mjsjw5.svelte-mjsjw5{z-index:10;position:fixed;top:0;left:0;width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-ms-touch-action:manipulation;touch-action:manipulation;background-color:rgba(var(--color-black), .75);outline:50px solid rgba(var(--color-black), .75);-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;opacity:0;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);pointer-events:none}.modal.active.svelte-mjsjw5.svelte-mjsjw5{opacity:1;pointer-events:auto}.modal-inner.svelte-mjsjw5.svelte-mjsjw5{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch;overflow:hidden;background-color:rgba(var(--theme-color-primary))}.modal-inner.svelte-mjsjw5>.svelte-mjsjw5{max-width:100%;max-height:100%}.small.svelte-mjsjw5 .modal-inner.svelte-mjsjw5{width:200px;border-radius:var(--border-radius-big)}.medium.svelte-mjsjw5 .modal-inner.svelte-mjsjw5{width:calc(100vw - var(--screen-padding) * 2);border-radius:var(--border-radius-big)}.big.svelte-mjsjw5 .modal-inner.svelte-mjsjw5{width:calc(100% - var(--screen-padding) * 2);height:calc(100% - var(--screen-padding) * 2);border-radius:var(--border-radius-big)}.full.svelte-mjsjw5 .modal-inner.svelte-mjsjw5{width:100%;height:100%;border-radius:0}",
+	map: "{\"version\":3,\"file\":\"Modal.svelte\",\"sources\":[\"Modal.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { fly } from \\\"svelte/transition\\\";\\n    import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';\\n    import { Swipe } from '@services'\\n    import { safeGet, classnames, delay } from \\\"@utils\\\";\\n    import { modals } from \\\"@store\\\";\\n    import Portal from \\\"./Portal.svelte\\\";\\n\\n    const dispatch = createEventDispatcher()\\n    \\n    const DURATION = 250\\n    const THRESHOLD = 100\\n    const START_POSITION = {\\n        x: 0,\\n        y: 20\\n    }\\n\\n    export let id\\n    export let size = 'full'    // small/medium/big/full\\n    export let swipe = []       // up down left right all\\n    export let open = null\\n    export let startPosition = START_POSITION\\n\\n    let active\\n    let modalRef = null\\n\\n    $: isSwipe = {\\n        up: safeGet(() => swipe.includes('up') || swipe.includes('all')),\\n        down: safeGet(() => swipe.includes('down') || swipe.includes('all')),\\n        left: safeGet(() => swipe.includes('left') || swipe.includes('all')),\\n        right: safeGet(() => swipe.includes('right') || swipe.includes('all')),\\n    }\\n    $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)\\n    $: classProp = classnames('modal', size, { active })\\n    $: onActiveChange(active)\\n\\n    async function onActiveChange(active) {\\n        if (active) {\\n            drawTransform(modalRef, 0, 0)\\n            dispatch('open')\\n            disableBodyScroll(modalRef)\\n        } else {\\n            dispatch('close')\\n            enableBodyScroll(modalRef)\\n        }\\n    }\\n\\n    function setActive(isActive) {\\n        if (open !== null) open = isActive\\n        modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))\\n    }\\n\\n    let xSwipe = 0\\n    let ySwipe = 0\\n\\n    function addSwipe(el) {\\n        new Swipe(el)\\n                .run()\\n                .onUp(isSwipe.up ? handleVerticalSwipe : null)\\n                .onDown(isSwipe.down ? handleVerticalSwipe : null)\\n                .onLeft(isSwipe.left ? handleHorizontalSwipe : null)\\n                .onRight(isSwipe.right ? handleHorizontalSwipe : null)\\n                .onTouchEnd(async () => {\\n                    if (xSwipe > THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, xSwipe + 50, ySwipe)\\n                        drawOpacity(el, xSwipe + 50, ySwipe)\\n                        await delay(DURATION)\\n                    } else if (xSwipe < -THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, xSwipe - 50, ySwipe)\\n                        drawOpacity(el, xSwipe - 50, ySwipe)\\n                        await delay(DURATION)\\n                    }\\n                    \\n                    if (ySwipe > THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, xSwipe, ySwipe + 50)\\n                        drawOpacity(el, xSwipe, ySwipe + 50)\\n                        await delay(DURATION)\\n                    } else if (ySwipe < -THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, xSwipe, ySwipe - 50)\\n                        drawOpacity(el, xSwipe, ySwipe - 50)\\n                        await delay(DURATION)\\n                    }\\n\\n                    if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {\\n                        drawTransform(el, 0, 0)\\n                    } else {\\n                        drawTransform(el, startPosition.x, startPosition.y)\\n                    }\\n\\n                    xSwipe = 0\\n                    ySwipe = 0\\n                    el.style.opacity = null\\n                })\\n    }\\n\\n    function handleVerticalSwipe(yDown, yUp, evt, el) {\\n        ySwipe = yUp - yDown\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n    }\\n    function handleHorizontalSwipe(xDown, xUp, evt, el) {\\n        xSwipe = xUp - xDown\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n    }\\n\\n    function drawTransform(el, x, y) {\\n        el && (el.style.transform = `translate3d(${x}px, ${y}px, 0)`)\\n    }\\n    function drawOpacity(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))\\n    }\\n</script>\\n\\n{#if active !== null}\\n    <Portal>\\n        <div \\n            id={`modal-${id}`}\\n            bind:this={modalRef}\\n            aria-hidden=\\\"true\\\" \\n            class={classProp}\\n            use:addSwipe\\n            in:fly=\\\"{{ x: startPosition.x, y: startPosition.y, duration: DURATION }}\\\"\\n            on:click={() => setActive(false)}\\n            style={`transition-duration: ${DURATION}ms`}\\n        >\\n            <div\\n                class=\\\"modal-inner\\\"\\n                tabindex=\\\"-1\\\"\\n                role=\\\"dialog\\\"\\n                aria-modal=\\\"true\\\"\\n                aria-labelledby=\\\"модальне вікно\\\"\\n                on:click={e => e.stopPropagation()}\\n            >\\n                <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>\\n            </div>\\n        </div>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .modal {\\n        z-index: 10;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 50px solid rgba(var(--color-black), .75);\\n        -webkit-transition-timing-function: ease-out;\\n                transition-timing-function: ease-out;\\n        opacity: 0;\\n        -webkit-transform: translate3d(0,0,0);\\n                transform: translate3d(0,0,0);\\n        pointer-events: none;\\n    }\\n\\n    .modal.active {\\n        opacity: 1;\\n        pointer-events: auto;\\n    }\\n\\n    .modal-inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n        overflow: hidden;\\n        background-color: rgba(var(--theme-color-primary));\\n    }\\n    .modal-inner > * {\\n        max-width: 100%;\\n        max-height: 100%;\\n    }\\n\\n    .small .modal-inner {\\n        width: 200px;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .medium .modal-inner {\\n        width: calc(100vw - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n    .big .modal-inner {\\n        width: calc(100% - var(--screen-padding) * 2);\\n        height: calc(100% - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .full .modal-inner {\\n        width: 100%;\\n        height: 100%;\\n        border-radius: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsZUFBZTtRQUNmLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsOEJBQTBCO1lBQTFCLDBCQUEwQjtRQUMxQiwrQ0FBK0M7UUFDL0MsaURBQWlEO1FBQ2pELDRDQUFvQztnQkFBcEMsb0NBQW9DO1FBQ3BDLFVBQVU7UUFDVixxQ0FBNkI7Z0JBQTdCLDZCQUE2QjtRQUM3QixvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxVQUFVO1FBQ1Ysb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLDBCQUFvQjtZQUFwQix1QkFBb0I7Z0JBQXBCLG9CQUFvQjtRQUNwQix5QkFBd0I7WUFBeEIsc0JBQXdCO2dCQUF4Qix3QkFBd0I7UUFDeEIsZ0JBQWdCO1FBQ2hCLGtEQUFrRDtJQUN0RDtJQUNBO1FBQ0ksZUFBZTtRQUNmLGdCQUFnQjtJQUNwQjs7SUFFQTtRQUNJLFlBQVk7UUFDWix1Q0FBdUM7SUFDM0M7O0lBRUE7UUFDSSw4Q0FBOEM7UUFDOUMsdUNBQXVDO0lBQzNDO0lBQ0E7UUFDSSw2Q0FBNkM7UUFDN0MsOENBQThDO1FBQzlDLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLFdBQVc7UUFDWCxZQUFZO1FBQ1osZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5tb2RhbCB7XG4gICAgICAgIHotaW5kZXg6IDEwO1xuICAgICAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIHRvdWNoLWFjdGlvbjogbWFuaXB1bGF0aW9uO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgLjc1KTtcbiAgICAgICAgb3V0bGluZTogNTBweCBzb2xpZCByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgLjc1KTtcbiAgICAgICAgdHJhbnNpdGlvbi10aW1pbmctZnVuY3Rpb246IGVhc2Utb3V0O1xuICAgICAgICBvcGFjaXR5OiAwO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZTNkKDAsMCwwKTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLm1vZGFsLmFjdGl2ZSB7XG4gICAgICAgIG9wYWNpdHk6IDE7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBhdXRvO1xuICAgIH1cblxuICAgIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3ItcHJpbWFyeSkpO1xuICAgIH1cbiAgICAubW9kYWwtaW5uZXIgPiAqIHtcbiAgICAgICAgbWF4LXdpZHRoOiAxMDAlO1xuICAgICAgICBtYXgtaGVpZ2h0OiAxMDAlO1xuICAgIH1cblxuICAgIC5zbWFsbCAubW9kYWwtaW5uZXIge1xuICAgICAgICB3aWR0aDogMjAwcHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLWJvcmRlci1yYWRpdXMtYmlnKTtcbiAgICB9XG5cbiAgICAubWVkaXVtIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIHdpZHRoOiBjYWxjKDEwMHZ3IC0gdmFyKC0tc2NyZWVuLXBhZGRpbmcpICogMik7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLWJvcmRlci1yYWRpdXMtYmlnKTtcbiAgICB9XG4gICAgLmJpZyAubW9kYWwtaW5uZXIge1xuICAgICAgICB3aWR0aDogY2FsYygxMDAlIC0gdmFyKC0tc2NyZWVuLXBhZGRpbmcpICogMik7XG4gICAgICAgIGhlaWdodDogY2FsYygxMDAlIC0gdmFyKC0tc2NyZWVuLXBhZGRpbmcpICogMik7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLWJvcmRlci1yYWRpdXMtYmlnKTtcbiAgICB9XG5cbiAgICAuZnVsbCAubW9kYWwtaW5uZXIge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBib3JkZXItcmFkaXVzOiAwO1xuICAgIH1cbiJdfQ== */</style>   \"],\"names\":[],\"mappings\":\"AAmJI,MAAM,4BAAC,CAAC,AACJ,OAAO,CAAE,EAAE,CACX,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAC/C,OAAO,CAAE,IAAI,CAAC,KAAK,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CACjD,kCAAkC,CAAE,QAAQ,CACpC,0BAA0B,CAAE,QAAQ,CAC5C,OAAO,CAAE,CAAC,CACV,iBAAiB,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7B,SAAS,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACrC,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,OAAO,4BAAC,CAAC,AACX,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,CAChC,QAAQ,CAAE,MAAM,CAChB,gBAAgB,CAAE,KAAK,IAAI,qBAAqB,CAAC,CAAC,AACtD,CAAC,AACD,0BAAY,CAAG,cAAE,CAAC,AACd,SAAS,CAAE,IAAI,CACf,UAAU,CAAE,IAAI,AACpB,CAAC,AAED,oBAAM,CAAC,YAAY,cAAC,CAAC,AACjB,KAAK,CAAE,KAAK,CACZ,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,qBAAO,CAAC,YAAY,cAAC,CAAC,AAClB,KAAK,CAAE,KAAK,KAAK,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AACD,kBAAI,CAAC,YAAY,cAAC,CAAC,AACf,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7C,MAAM,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,mBAAK,CAAC,YAAY,cAAC,CAAC,AAChB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,CAAC,AACpB,CAAC\"}"
+};
+
+const DURATION = 250;
+
+function drawTransform(el, x, y) {
+	el && (el.style.transform = `translate3d(${x}px, ${y}px, 0)`);
+}
+
+const Modal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let $modals = get_store_value(modals);
+	const dispatch = createEventDispatcher();
+	const START_POSITION = { x: 0, y: 20 };
+	let { id } = $$props;
+	let { size = "full" } = $$props; // small/medium/big/full
+	let { swipe = [] } = $$props; // up down left right all
+	let { open = null } = $$props;
+	let { startPosition = START_POSITION } = $$props;
+	let active;
+	let modalRef = null;
+
+	async function onActiveChange(active) {
+		if (active) {
+			drawTransform(modalRef, 0, 0);
+			dispatch("open");
+			bodyScrollLock.disableBodyScroll(modalRef);
+		} else {
+			dispatch("close");
+			bodyScrollLock.enableBodyScroll(modalRef);
+		}
+	}
+
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	if ($$props.swipe === void 0 && $$bindings.swipe && swipe !== void 0) $$bindings.swipe(swipe);
+	if ($$props.open === void 0 && $$bindings.open && open !== void 0) $$bindings.open(open);
+	if ($$props.startPosition === void 0 && $$bindings.startPosition && startPosition !== void 0) $$bindings.startPosition(startPosition);
+	$$result.css.add(css$4);
+
+	let isSwipe = {
+		up: safeGet(() => swipe.includes("up") || swipe.includes("all")),
+		down: safeGet(() => swipe.includes("down") || swipe.includes("all")),
+		left: safeGet(() => swipe.includes("left") || swipe.includes("all")),
+		right: safeGet(() => swipe.includes("right") || swipe.includes("all"))
+	};
+
+	active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null);
+	let classProp = classnames("modal", size, { active });
+
+	 {
+		onActiveChange(active);
+	}
+
+	return `${active !== null
+	? `${validate_component(Portal, "Portal").$$render($$result, {}, {}, {
+			default: () => `
+        <div${add_attribute("id", `modal-${id}`, 0)} aria-hidden="${"true"}" class="${escape(null_to_empty(classProp)) + " svelte-mjsjw5"}"${add_attribute("style", `transition-duration: ${DURATION}ms`, 0)}${add_attribute("this", modalRef, 1)}>
+            <div class="${"modal-inner svelte-mjsjw5"}" tabindex="${"-1"}" role="${"dialog"}" aria-modal="${"true"}" aria-labelledby="${"модальне вікно"}">
+                ${$$slots.default
+			? $$slots.default({
+					props: safeGet(() => $modals[`modal-${id}`], {}, true)
+				})
+			: ``}
+            </div>
+        </div>
+    `
+		})}`
+	: ``}`;
+});
+
+/* src/components/Space.svelte generated by Svelte v3.18.1 */
+
+const Space = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { size = 1 } = $$props;
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	return `${each(Array.from({ length: +size }), _ => ` `)}`;
+});
+
+/* src/components/Picture.svelte generated by Svelte v3.18.1 */
+
+const css$5 = {
+	code: ".picture.svelte-hifk9w.svelte-hifk9w{position:relative;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch;background-color:rgba(var(--color-black), .04)}.picture.svelte-hifk9w .pic.svelte-hifk9w{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;overflow:hidden;-ms-flex-item-align:stretch;align-self:stretch;-o-object-position:center;object-position:center;-webkit-transition:opacity .3s ease-in;transition:opacity .3s ease-in}.picture.svelte-hifk9w .pic-2x.svelte-hifk9w{position:absolute;top:0;left:0;width:100%;height:100%}.picture.cover.svelte-hifk9w .pic.svelte-hifk9w{-o-object-fit:cover;object-fit:cover}.picture.contain.svelte-hifk9w .pic.svelte-hifk9w{-o-object-fit:contain;object-fit:contain}.picture.isError.svelte-hifk9w .pic-1x.svelte-hifk9w,.picture.isError.svelte-hifk9w .pic-2x.svelte-hifk9w,.picture.loadingSrcSmall.svelte-hifk9w .pic-1x.svelte-hifk9w,.picture.loadingSrcBig.svelte-hifk9w .pic-2x.svelte-hifk9w{opacity:0}",
+	map: "{\"version\":3,\"file\":\"Picture.svelte\",\"sources\":[\"Picture.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let src\\n    export let alt\\n    export let size = 'cover'\\n    export let srcBig = undefined\\n    export let id = undefined\\n    export let width = undefined\\n    export let height = undefined\\n\\n    let isError = false\\n    let loadingSrcSmall = true\\n    let loadingSrcBig = true\\n\\n    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isError })\\n\\n    function imgService(node, postFix) {\\n        if (node.complete) {\\n            onLoad(node, postFix)\\n        } else {\\n            node.onload = () => onLoad(node, postFix)\\n            node.onerror = () => onError(node, postFix)\\n        }\\n    }\\n\\n    function onLoad(node, postFix) {\\n        changeLoading(postFix, false)\\n        isError = false\\n        dispatch(`load${postFix}`, node)\\n\\n        if (!srcBig || !loadingSrcBig) {\\n            dispatch('load', node)\\n        }\\n    }\\n\\n    function onError(node, postFix) {\\n        changeLoading(postFix, false)\\n        isError = true\\n        dispatch(`error${postFix}`, node)\\n    }\\n\\n    function changeLoading(type, isLoading) {\\n        switch (type) {\\n            case 'Small':\\n                loadingSrcSmall = isLoading\\n                break\\n            case 'Big':\\n                loadingSrcBig = isLoading\\n                break\\n        }\\n    }\\n\\n</script>\\n\\n<figure class={wrapClassProp}>\\n    <img\\n            use:imgService={'Small'}\\n            {id}\\n            {alt}\\n            {src}\\n            {width}\\n            {height}\\n            class=\\\"pic pic-1x\\\"\\n    />\\n\\n    {#if srcBig && !loadingSrcSmall}\\n        <img\\n                use:imgService={'Big'}\\n                {alt}\\n                {width}\\n                {height}\\n                src={srcBig}\\n                class=\\\"pic pic-2x\\\"\\n        />\\n    {/if}\\n\\n    <figcaption>\\n        <slot></slot>\\n    </figcaption>\\n</figure>\\n\\n<style>\\n    .picture {\\n        position: relative;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n        background-color: rgba(var(--color-black), .04);\\n    }\\n\\n    .picture .pic {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        overflow: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -o-object-position: center;\\n           object-position: center;\\n        -webkit-transition: opacity .3s ease-in;\\n        transition: opacity .3s ease-in;\\n    }\\n\\n    .picture .pic-2x {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n    .picture.cover .pic {\\n        -o-object-fit: cover;\\n           object-fit: cover;\\n    }\\n\\n    .picture.contain .pic {\\n        -o-object-fit: contain;\\n           object-fit: contain;\\n    }\\n\\n    .picture.isError .pic-1x,\\n    .picture.isError .pic-2x,\\n    .picture.loadingSrcSmall .pic-1x,\\n    .picture.loadingSrcBig .pic-2x {\\n        opacity: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1BpY3R1cmUuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGtCQUFrQjtRQUNsQixtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWiw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHlCQUF3QjtZQUF4QixzQkFBd0I7Z0JBQXhCLHdCQUF3QjtRQUN4QiwrQ0FBK0M7SUFDbkQ7O0lBRUE7UUFDSSxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBdUI7V0FBdkIsdUJBQXVCO1FBQ3ZCLHVDQUErQjtRQUEvQiwrQkFBK0I7SUFDbkM7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLE9BQU87UUFDUCxXQUFXO1FBQ1gsWUFBWTtJQUNoQjs7SUFFQTtRQUNJLG9CQUFpQjtXQUFqQixpQkFBaUI7SUFDckI7O0lBRUE7UUFDSSxzQkFBbUI7V0FBbkIsbUJBQW1CO0lBQ3ZCOztJQUVBOzs7O1FBSUksVUFBVTtJQUNkIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1BpY3R1cmUuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnBpY3R1cmUge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAuMDQpO1xuICAgIH1cblxuICAgIC5waWN0dXJlIC5waWMge1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIG9iamVjdC1wb3NpdGlvbjogY2VudGVyO1xuICAgICAgICB0cmFuc2l0aW9uOiBvcGFjaXR5IC4zcyBlYXNlLWluO1xuICAgIH1cblxuICAgIC5waWN0dXJlIC5waWMtMngge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICB9XG5cbiAgICAucGljdHVyZS5jb3ZlciAucGljIHtcbiAgICAgICAgb2JqZWN0LWZpdDogY292ZXI7XG4gICAgfVxuXG4gICAgLnBpY3R1cmUuY29udGFpbiAucGljIHtcbiAgICAgICAgb2JqZWN0LWZpdDogY29udGFpbjtcbiAgICB9XG5cbiAgICAucGljdHVyZS5pc0Vycm9yIC5waWMtMXgsXG4gICAgLnBpY3R1cmUuaXNFcnJvciAucGljLTJ4LFxuICAgIC5waWN0dXJlLmxvYWRpbmdTcmNTbWFsbCAucGljLTF4LFxuICAgIC5waWN0dXJlLmxvYWRpbmdTcmNCaWcgLnBpYy0yeCB7XG4gICAgICAgIG9wYWNpdHk6IDA7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsFI,QAAQ,4BAAC,CAAC,AACN,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,CACpB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,CAChC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAED,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,QAAQ,CAAE,MAAM,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,MAAM,CACvB,eAAe,CAAE,MAAM,CAC1B,kBAAkB,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,CACvC,UAAU,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,AACnC,CAAC,AAED,sBAAQ,CAAC,OAAO,cAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,QAAQ,oBAAM,CAAC,IAAI,cAAC,CAAC,AACjB,aAAa,CAAE,KAAK,CACjB,UAAU,CAAE,KAAK,AACxB,CAAC,AAED,QAAQ,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACnB,aAAa,CAAE,OAAO,CACnB,UAAU,CAAE,OAAO,AAC1B,CAAC,AAED,QAAQ,sBAAQ,CAAC,qBAAO,CACxB,QAAQ,sBAAQ,CAAC,qBAAO,CACxB,QAAQ,8BAAgB,CAAC,qBAAO,CAChC,QAAQ,4BAAc,CAAC,OAAO,cAAC,CAAC,AAC5B,OAAO,CAAE,CAAC,AACd,CAAC\"}"
+};
+
+const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { src } = $$props;
+	let { alt } = $$props;
+	let { size = "cover" } = $$props;
+	let { srcBig = undefined } = $$props;
+	let { id = undefined } = $$props;
+	let { width = undefined } = $$props;
+	let { height = undefined } = $$props;
+	let isError = false;
+	let loadingSrcSmall = true;
+	let loadingSrcBig = true;
+
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.alt === void 0 && $$bindings.alt && alt !== void 0) $$bindings.alt(alt);
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	if ($$props.srcBig === void 0 && $$bindings.srcBig && srcBig !== void 0) $$bindings.srcBig(srcBig);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
+	if ($$props.height === void 0 && $$bindings.height && height !== void 0) $$bindings.height(height);
+	$$result.css.add(css$5);
+	let wrapClassProp = classnames("picture", $$props.class, size, { loadingSrcSmall, loadingSrcBig, isError });
+
+	return `<figure class="${escape(null_to_empty(wrapClassProp)) + " svelte-hifk9w"}">
+    <img${add_attribute("id", id, 0)}${add_attribute("alt", alt, 0)}${add_attribute("src", src, 0)}${add_attribute("width", width, 0)}${add_attribute("height", height, 0)} class="${"pic pic-1x svelte-hifk9w"}">
+
+    ${srcBig && !loadingSrcSmall
+	? `<img${add_attribute("alt", alt, 0)}${add_attribute("width", width, 0)}${add_attribute("height", height, 0)}${add_attribute("src", srcBig, 0)} class="${"pic pic-2x svelte-hifk9w"}">`
+	: ``}
+
+    <figcaption>
+        ${$$slots.default ? $$slots.default({}) : ``}
+    </figcaption>
+</figure>`;
+});
+
+/* src/components/Avatar.svelte generated by Svelte v3.18.1 */
+
+const css$6 = {
+	code: ".ava.svelte-1tl59f6{position:relative;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;border-radius:50%;overflow:hidden}.ava.small.svelte-1tl59f6{-webkit-box-flex:0;-ms-flex:none;flex:none;width:30px;height:30px}.ava.medium.svelte-1tl59f6{-webkit-box-flex:0;-ms-flex:none;flex:none;width:60px;height:60px}.ava.big.svelte-1tl59f6{-webkit-box-flex:0;-ms-flex:none;flex:none;width:130px;height:130px}",
+	map: "{\"version\":3,\"file\":\"Avatar.svelte\",\"sources\":[\"Avatar.svelte\"],\"sourcesContent\":[\"<script>\\n    import { classnames } from '@utils'\\n    import Picture from './Picture.svelte'\\n\\n    export let src\\n    export let alt\\n    export let size = null // small|medium|big\\n    export let srcBig = undefined\\n\\n    $: classProp = classnames('ava', size, $$props.class)\\n</script>\\n\\n<div class={classProp}>\\n    <Picture {src} {srcBig} {alt}/>\\n</div>\\n\\n<style>\\n    .ava {\\n        position: relative;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        border-radius: 50%;\\n        overflow: hidden;\\n    }\\n\\n    .ava.small {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 30px;\\n        height: 30px;\\n    }\\n    .ava.medium {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 60px;\\n        height: 60px;\\n    }\\n    .ava.big {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 130px;\\n        height: 130px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0F2YXRhci5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFZO1lBQVosb0JBQVk7Z0JBQVosWUFBWTtRQUNaLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isa0JBQWtCO1FBQ2xCLGdCQUFnQjtJQUNwQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLFlBQVk7SUFDaEI7SUFDQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLFlBQVk7SUFDaEI7SUFDQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsWUFBWTtRQUNaLGFBQWE7SUFDakIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvQXZhdGFyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5hdmEge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIH1cblxuICAgIC5hdmEuc21hbGwge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICB3aWR0aDogMzBweDtcbiAgICAgICAgaGVpZ2h0OiAzMHB4O1xuICAgIH1cbiAgICAuYXZhLm1lZGl1bSB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIHdpZHRoOiA2MHB4O1xuICAgICAgICBoZWlnaHQ6IDYwcHg7XG4gICAgfVxuICAgIC5hdmEuYmlnIHtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICAgICAgd2lkdGg6IDEzMHB4O1xuICAgICAgICBoZWlnaHQ6IDEzMHB4O1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAiBI,IAAI,eAAC,CAAC,AACF,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,AACpB,CAAC,AAED,IAAI,MAAM,eAAC,CAAC,AACR,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AACD,IAAI,OAAO,eAAC,CAAC,AACT,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AACD,IAAI,IAAI,eAAC,CAAC,AACN,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,AACjB,CAAC\"}"
+};
+
+const Avatar = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { src } = $$props;
+	let { alt } = $$props;
+	let { size = null } = $$props; // small|medium|big
+	let { srcBig = undefined } = $$props;
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.alt === void 0 && $$bindings.alt && alt !== void 0) $$bindings.alt(alt);
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	if ($$props.srcBig === void 0 && $$bindings.srcBig && srcBig !== void 0) $$bindings.srcBig(srcBig);
+	$$result.css.add(css$6);
+	let classProp = classnames("ava", size, $$props.class);
+
+	return `<div class="${escape(null_to_empty(classProp)) + " svelte-1tl59f6"}">
+    ${validate_component(Picture, "Picture").$$render($$result, { src, srcBig, alt }, {}, {})}
+</div>`;
+});
+
+/* src/components/Button.svelte generated by Svelte v3.18.1 */
+
+const css$7 = {
+	code: ".btn.svelte-76qioz:not(.auto){width:100%;padding:5px 15px}.btn{-webkit-box-flex:0;-ms-flex:none;flex:none;cursor:pointer;max-width:100%;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-weight:bold;text-align:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;color:rgba(var(--theme-font-color));border-radius:var(--border-radius-medium)}.btn.small{padding:5px;min-width:calc(var(--min-interactive-size) / 1.3);min-height:calc(var(--min-interactive-size) / 1.3)}.btn.medium{padding:5px 10px;min-width:var(--min-interactive-size);min-height:var(--min-interactive-size)}.btn.big{padding:5px 15px;min-width:calc(var(--min-interactive-size) * 1.3);min-height:calc(var(--min-interactive-size) * 1.3)}.btn:focus{background-color:rgba(var(--color-black), 0.1)}.btn:hover{background-color:rgba(var(--color-black), 0.1)}.btn:active{background-color:rgba(var(--color-black), 0.1)}.btn.white{color:rgba(var(--color-font-dark));background-color:rgba(var(--color-white))}.btn.white:focus{background-color:rgba(var(--color-white), .85)}.btn.white:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.white:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success{color:rgba(var(--color-font-light));background-color:rgba(var(--color-success))}.btn.success:focus{background-color:rgba(var(--color-success), .85)}.btn.success:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning{color:rgba(var(--color-font-light));background-color:rgba(var(--color-warning))}.btn.warning:focus{background-color:rgba(var(--color-warning), .85)}.btn.warning:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger{color:rgba(var(--color-font-light));background-color:rgba(var(--color-danger))}.btn.danger:focus{background-color:rgba(var(--color-danger), .85)}.btn.danger:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}",
+	map: "{\"version\":3,\"file\":\"Button.svelte\",\"sources\":[\"Button.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let is = undefined\\n    export let id = undefined\\n    export let rel = undefined\\n    export let href = undefined\\n    export let auto = false\\n    export let type = 'button'\\n    export let size = undefined\\n    export let title = undefined\\n    export let htmlFor = undefined\\n    export let disabled = false\\n    export let ariaLabel = undefined\\n\\n    let titleProp = title || ariaLabel\\n    let ariaLabelProp = ariaLabel || title\\n\\n    $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })\\n\\n    function onLabelClick(e) {\\n        document.getElementById(htmlFor).click()\\n        !disabled && dispatch('click', e)\\n    }\\n\\n    function onClick(e) {\\n        !disabled && dispatch('click', e)\\n    }\\n</script>\\n\\n{#if href}\\n    <a\\n            {id}\\n            {rel}\\n            {href}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </a>\\n{:else if htmlFor}\\n    <label\\n            {id}\\n            {disabled}\\n            for={htmlFor}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onLabelClick}\\n    >\\n        <slot></slot>\\n    </label>\\n{:else}\\n    <button\\n            {id}\\n            {type}\\n            {disabled}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </button>\\n{/if}\\n\\n<style>\\n    .btn:not(.auto) {\\n        width: 100%;\\n        padding: 5px 15px;\\n    }\\n\\n    :global(.btn) {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        cursor: pointer;\\n        max-width: 100%;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        font-weight: bold;\\n        text-align: center;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        color: rgba(var(--theme-font-color));\\n        border-radius: var(--border-radius-medium);\\n    }\\n\\n    :global(.btn.small) {\\n        padding: 5px;\\n        min-width: calc(var(--min-interactive-size) / 1.3);\\n        min-height: calc(var(--min-interactive-size) / 1.3);\\n    }\\n\\n    :global(.btn.medium) {\\n        padding: 5px 10px;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n    }\\n\\n    :global(.btn.big) {\\n        padding: 5px 15px;\\n        min-width: calc(var(--min-interactive-size) * 1.3);\\n        min-height: calc(var(--min-interactive-size) * 1.3);\\n    }\\n\\n    :global(.btn:focus) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:hover) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:active) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    /* White */\\n\\n    :global(.btn).white {\\n        color: rgba(var(--color-font-dark));\\n        background-color: rgba(var(--color-white));\\n    }\\n\\n    :global(.btn).white:focus {\\n        background-color: rgba(var(--color-white), .85);\\n    }\\n\\n    :global(.btn).white:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).white:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Success */\\n\\n    :global(.btn).success {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n    :global(.btn).success:focus {\\n        background-color: rgba(var(--color-success), .85);\\n    }\\n\\n    :global(.btn).success:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).success:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Warning */\\n\\n    :global(.btn).warning {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-warning));\\n    }\\n\\n    :global(.btn).warning:focus {\\n        background-color: rgba(var(--color-warning), .85);\\n    }\\n\\n    :global(.btn).warning:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).warning:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Danger */\\n\\n    :global(.btn).danger {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-danger));\\n    }\\n\\n    :global(.btn).danger:focus {\\n        background-color: rgba(var(--color-danger), .85);\\n    }\\n\\n    :global(.btn).danger:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).danger:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0J1dHRvbi5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGlCQUFpQjtJQUNyQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsZUFBZTtRQUNmLGVBQWU7UUFDZix5QkFBaUI7V0FBakIsc0JBQWlCO1lBQWpCLHFCQUFpQjtnQkFBakIsaUJBQWlCO1FBQ2pCLGlCQUFpQjtRQUNqQixrQkFBa0I7UUFDbEIseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixvQ0FBb0M7UUFDcEMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksWUFBWTtRQUNaLGtEQUFrRDtRQUNsRCxtREFBbUQ7SUFDdkQ7O0lBRUE7UUFDSSxpQkFBaUI7UUFDakIsc0NBQXNDO1FBQ3RDLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGlCQUFpQjtRQUNqQixrREFBa0Q7UUFDbEQsbURBQW1EO0lBQ3ZEOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBLFVBQVU7O0lBRVY7UUFDSSxtQ0FBbUM7UUFDbkMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQSxZQUFZOztJQUVaO1FBQ0ksb0NBQW9DO1FBQ3BDLDRDQUE0QztJQUNoRDs7SUFFQTtRQUNJLGlEQUFpRDtJQUNyRDs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUEsWUFBWTs7SUFFWjtRQUNJLG9DQUFvQztRQUNwQyw0Q0FBNEM7SUFDaEQ7O0lBRUE7UUFDSSxpREFBaUQ7SUFDckQ7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBLFdBQVc7O0lBRVg7UUFDSSxvQ0FBb0M7UUFDcEMsMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQyIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9CdXR0b24uc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmJ0bjpub3QoLmF1dG8pIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxNXB4O1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtZm9udC1jb2xvcikpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLW1lZGl1bSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuLnNtYWxsKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweDtcbiAgICAgICAgbWluLXdpZHRoOiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAvIDEuMyk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IGNhbGModmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpIC8gMS4zKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4ubWVkaXVtKSB7XG4gICAgICAgIHBhZGRpbmc6IDVweCAxMHB4O1xuICAgICAgICBtaW4td2lkdGg6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgbWluLWhlaWdodDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bi5iaWcpIHtcbiAgICAgICAgcGFkZGluZzogNXB4IDE1cHg7XG4gICAgICAgIG1pbi13aWR0aDogY2FsYyh2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSkgKiAxLjMpO1xuICAgICAgICBtaW4taGVpZ2h0OiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAqIDEuMyk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuOmZvY3VzKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bjpob3Zlcikge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgMC4xKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG46YWN0aXZlKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIC8qIFdoaXRlICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1kYXJrKSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itd2hpdGUpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmZvY3VzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci13aGl0ZSksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS53aGl0ZTpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmFjdGl2ZSB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICAvKiBTdWNjZXNzICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLnN1Y2Nlc3Mge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2Vzczpmb2N1cyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcyksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5zdWNjZXNzOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2VzczphY3RpdmUge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgLyogV2FybmluZyAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS53YXJuaW5nIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1saWdodCkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdhcm5pbmcpLCAuODUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2FybmluZzpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmc6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIERhbmdlciAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXIge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6aG92ZXIge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAwEI,kBAAI,KAAK,KAAK,CAAC,AAAC,CAAC,AACb,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,IAAI,AACrB,CAAC,AAEO,IAAI,AAAE,CAAC,AACX,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,MAAM,CAAE,OAAO,CACf,SAAS,CAAE,IAAI,CACf,mBAAmB,CAAE,IAAI,CACtB,gBAAgB,CAAE,IAAI,CACrB,eAAe,CAAE,IAAI,CACjB,WAAW,CAAE,IAAI,CACzB,WAAW,CAAE,IAAI,CACjB,UAAU,CAAE,MAAM,CAClB,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,CACpB,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,aAAa,CAAE,IAAI,sBAAsB,CAAC,AAC9C,CAAC,AAEO,UAAU,AAAE,CAAC,AACjB,OAAO,CAAE,GAAG,CACZ,SAAS,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAClD,UAAU,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,AACvD,CAAC,AAEO,WAAW,AAAE,CAAC,AAClB,OAAO,CAAE,GAAG,CAAC,IAAI,CACjB,SAAS,CAAE,IAAI,sBAAsB,CAAC,CACtC,UAAU,CAAE,IAAI,sBAAsB,CAAC,AAC3C,CAAC,AAEO,QAAQ,AAAE,CAAC,AACf,OAAO,CAAE,GAAG,CAAC,IAAI,CACjB,SAAS,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAClD,UAAU,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,AACvD,CAAC,AAEO,UAAU,AAAE,CAAC,AACjB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAEO,UAAU,AAAE,CAAC,AACjB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAEO,WAAW,AAAE,CAAC,AAClB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAIO,IAAI,AAAC,MAAM,AAAC,CAAC,AACjB,KAAK,CAAE,KAAK,IAAI,iBAAiB,CAAC,CAAC,CACnC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,AAC9C,CAAC,AAEO,IAAI,AAAC,MAAM,MAAM,AAAC,CAAC,AACvB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC,AAEO,IAAI,AAAC,MAAM,MAAM,AAAC,CAAC,AACvB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,MAAM,OAAO,AAAC,CAAC,AACxB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAIO,IAAI,AAAC,QAAQ,AAAC,CAAC,AACnB,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,CAAC,GAAG,CAAC,AACrD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,QAAQ,OAAO,AAAC,CAAC,AAC1B,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAIO,IAAI,AAAC,QAAQ,AAAC,CAAC,AACnB,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,CAAC,GAAG,CAAC,AACrD,CAAC,AAEO,IAAI,AAAC,QAAQ,MAAM,AAAC,CAAC,AACzB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,QAAQ,OAAO,AAAC,CAAC,AAC1B,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAIO,IAAI,AAAC,OAAO,AAAC,CAAC,AAClB,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,AAC/C,CAAC,AAEO,IAAI,AAAC,OAAO,MAAM,AAAC,CAAC,AACxB,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAEO,IAAI,AAAC,OAAO,MAAM,AAAC,CAAC,AACxB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAEO,IAAI,AAAC,OAAO,OAAO,AAAC,CAAC,AACzB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC\"}"
+};
+
+const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { is = undefined } = $$props;
+	let { id = undefined } = $$props;
+	let { rel = undefined } = $$props;
+	let { href = undefined } = $$props;
+	let { auto = false } = $$props;
+	let { type = "button" } = $$props;
+	let { size = undefined } = $$props;
+	let { title = undefined } = $$props;
+	let { htmlFor = undefined } = $$props;
+	let { disabled = false } = $$props;
+	let { ariaLabel = undefined } = $$props;
+	let titleProp = title || ariaLabel;
+	let ariaLabelProp = ariaLabel || title;
+
+	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.rel === void 0 && $$bindings.rel && rel !== void 0) $$bindings.rel(rel);
+	if ($$props.href === void 0 && $$bindings.href && href !== void 0) $$bindings.href(href);
+	if ($$props.auto === void 0 && $$bindings.auto && auto !== void 0) $$bindings.auto(auto);
+	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.htmlFor === void 0 && $$bindings.htmlFor && htmlFor !== void 0) $$bindings.htmlFor(htmlFor);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
+	$$result.css.add(css$7);
+	let classProp = classnames("btn", is, size, $$props.class, { auto, disabled });
+
+	return `${href
+	? `<a${add_attribute("id", id, 0)}${add_attribute("rel", rel, 0)}${add_attribute("href", href, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
+        ${$$slots.default ? $$slots.default({}) : ``}
+    </a>`
+	: `${htmlFor
+		? `<label${add_attribute("id", id, 0)} ${disabled ? "disabled" : ""}${add_attribute("for", htmlFor, 0)}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
+        ${$$slots.default ? $$slots.default({}) : ``}
+    </label>`
+		: `<button${add_attribute("id", id, 0)}${add_attribute("type", type, 0)} ${disabled ? "disabled" : ""}${add_attribute("title", titleProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-76qioz"}"${add_attribute("aria-label", ariaLabelProp, 0)}>
+        ${$$slots.default ? $$slots.default({}) : ``}
+    </button>`}`}`;
+});
+
+/* src/components/Divider.svelte generated by Svelte v3.18.1 */
+
+const css$8 = {
+	code: ".divider.svelte-16jxdsi{margin:0;border:none;-webkit-box-sizing:content-box;box-sizing:content-box;background-clip:content-box}.info.svelte-16jxdsi{background-color:rgb(var(--color-info))}.success.svelte-16jxdsi{background-color:rgb(var(--color-success))}.warning.svelte-16jxdsi{background-color:rgb(var(--color-warning))}.danger.svelte-16jxdsi{background-color:rgb(var(--color-danger))}",
+	map: "{\"version\":3,\"file\":\"Divider.svelte\",\"sources\":[\"Divider.svelte\"],\"sourcesContent\":[\"<script>\\n    import { toCSSString, classnames } from '@utils'\\n\\n    export let is = 'info'\\n    export let size = 0\\n    export let width = 2\\n\\n    $: classProp = classnames('divider', is, $$props.class)\\n    $: styleProp = toCSSString({ padding: `${size / 2}px 0`, height: `${width}px` })\\n</script>\\n\\n<hr class={classProp} style={styleProp}>\\n\\n<style>\\n    .divider {\\n        margin: 0;\\n        border: none;\\n        -webkit-box-sizing: content-box;\\n                box-sizing: content-box;\\n        background-clip: content-box;\\n    }\\n\\n    .info {\\n        background-color: rgb(var(--color-info));\\n    }\\n\\n    .success {\\n        background-color: rgb(var(--color-success));\\n    }\\n\\n    .warning {\\n        background-color: rgb(var(--color-warning));\\n    }\\n\\n    .danger {\\n        background-color: rgb(var(--color-danger));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0RpdmlkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFNBQVM7UUFDVCxZQUFZO1FBQ1osK0JBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQTRCO0lBQ2hDOztJQUVBO1FBQ0ksd0NBQXdDO0lBQzVDOztJQUVBO1FBQ0ksMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksMENBQTBDO0lBQzlDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0RpdmlkZXIuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmRpdmlkZXIge1xuICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgICAgYm94LXNpemluZzogY29udGVudC1ib3g7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLmluZm8ge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2IodmFyKC0tY29sb3ItaW5mbykpO1xuICAgIH1cblxuICAgIC5zdWNjZXNzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiKHZhcigtLWNvbG9yLXN1Y2Nlc3MpKTtcbiAgICB9XG5cbiAgICAud2FybmluZyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci13YXJuaW5nKSk7XG4gICAgfVxuXG4gICAgLmRhbmdlciB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci1kYW5nZXIpKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAcI,QAAQ,eAAC,CAAC,AACN,MAAM,CAAE,CAAC,CACT,MAAM,CAAE,IAAI,CACZ,kBAAkB,CAAE,WAAW,CACvB,UAAU,CAAE,WAAW,CAC/B,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,KAAK,eAAC,CAAC,AACH,gBAAgB,CAAE,IAAI,IAAI,YAAY,CAAC,CAAC,AAC5C,CAAC,AAED,QAAQ,eAAC,CAAC,AACN,gBAAgB,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC/C,CAAC,AAED,QAAQ,eAAC,CAAC,AACN,gBAAgB,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC/C,CAAC,AAED,OAAO,eAAC,CAAC,AACL,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,AAC9C,CAAC\"}"
+};
+
+const Divider = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { is = "info" } = $$props;
+	let { size = 0 } = $$props;
+	let { width = 2 } = $$props;
+	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
+	$$result.css.add(css$8);
+	let classProp = classnames("divider", is, $$props.class);
+
+	let styleProp = toCSSString({
+		padding: `${size / 2}px 0`,
+		height: `${width}px`
+	});
+
+	return `<hr class="${escape(null_to_empty(classProp)) + " svelte-16jxdsi"}"${add_attribute("style", styleProp, 0)}>`;
+});
+
+/* src/components/Progress.svelte generated by Svelte v3.18.1 */
+
+const css$9 = {
+	code: ".progress.medium.svelte-108d5jc.svelte-108d5jc{--progress-height:10px;--progress-padding-point:1px}.progress.svelte-108d5jc.svelte-108d5jc{-webkit-box-flex:0;-ms-flex:0;flex:0;width:100%;border-radius:9999px;height:var(--progress-height)}.progress-inner-frame.svelte-108d5jc.svelte-108d5jc{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;width:100%;height:100%;border-radius:9999px;overflow:hidden;padding:var(--progress-padding-point) 0;background-color:rgba(var(--theme-color-primary-opposite), .1);background-clip:content-box}.progress-core.svelte-108d5jc.svelte-108d5jc{position:absolute;top:0;left:0;height:100%;-webkit-box-flex:0;-ms-flex:none;flex:none;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transition:1s ease-in-out;transition:1s ease-in-out;border-radius:9999px;background-color:rgba(var(--color-info))}.progress[aria-valuenow=\"100\"].svelte-108d5jc .progress-core.svelte-108d5jc{background-color:rgba(var(--color-success))}",
+	map: "{\"version\":3,\"file\":\"Progress.svelte\",\"sources\":[\"Progress.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, onMount } from 'svelte'\\n    import { classnames, safeGet } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let value = 0 // 0 - 100\\n    export let size = 'medium'\\n    export let title = undefined\\n    export let ariaLabel = undefined\\n    export let borderRadius = undefined\\n\\n    $: val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0\\n    $: titleProp = title || `Progress - ${val}%`\\n    $: ariaLabelProp = ariaLabel || `Progress - ${val}%`\\n    $: classProp = classnames('progress', size, $$props.class)\\n\\n    function getBorderRadius(borders, defaults = '99999px') {\\n        const brDefault = new Array(4).fill(defaults)\\n        const bds = safeGet(() => borders.split(' '), [], true)\\n        const rule = 'border-radius'\\n        return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(' ')}`\\n    }\\n</script>\\n\\n\\n<div\\n        {id}\\n        class={classProp}\\n        title={titleProp}\\n        aria-label={ariaLabelProp}\\n        role=\\\"progressbar\\\"\\n        aria-valuemin=\\\"0\\\"\\n        aria-valuemax=\\\"100\\\"\\n        aria-valuenow={val}\\n        style={getBorderRadius(borderRadius)}\\n>\\n    <div class=\\\"progress-inner-frame\\\">\\n        <div class=\\\"progress-core\\\" style={`width:${val}%`}></div>\\n    </div>\\n</div>\\n\\n<style>\\n    .progress.medium {\\n        --progress-height: 10px;\\n        --progress-padding-point: 1px;\\n    }\\n\\n    .progress {\\n        -webkit-box-flex: 0;\\n            -ms-flex: 0;\\n                flex: 0;\\n        width: 100%;\\n        border-radius: 9999px;\\n        height: var(--progress-height);\\n    }\\n\\n    .progress-inner-frame {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        width: 100%;\\n        height: 100%;\\n        border-radius: 9999px;\\n        overflow: hidden;\\n        padding: var(--progress-padding-point) 0;\\n        background-color: rgba(var(--theme-color-primary-opposite), .1);\\n        background-clip: content-box;\\n    }\\n\\n    .progress-core {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        height: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transition: 1s ease-in-out;\\n        transition: 1s ease-in-out;\\n        border-radius: 9999px;\\n        background-color: rgba(var(--color-info));\\n    }\\n\\n    .progress[aria-valuenow=\\\"100\\\"] .progress-core {\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSx1QkFBdUI7UUFDdkIsNkJBQTZCO0lBQ2pDOztJQUVBO1FBQ0ksbUJBQU87WUFBUCxXQUFPO2dCQUFQLE9BQU87UUFDUCxXQUFXO1FBQ1gscUJBQXFCO1FBQ3JCLDhCQUE4QjtJQUNsQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLFdBQVc7UUFDWCxZQUFZO1FBQ1oscUJBQXFCO1FBQ3JCLGdCQUFnQjtRQUNoQix3Q0FBd0M7UUFDeEMsK0RBQStEO1FBQy9ELDRCQUE0QjtJQUNoQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFlBQVk7UUFDWixtQkFBVTtZQUFWLGNBQVU7Z0JBQVYsVUFBVTtRQUNWLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsa0NBQTBCO1FBQTFCLDBCQUEwQjtRQUMxQixxQkFBcUI7UUFDckIseUNBQXlDO0lBQzdDOztJQUVBO1FBQ0ksNENBQTRDO0lBQ2hEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5wcm9ncmVzcy5tZWRpdW0ge1xuICAgICAgICAtLXByb2dyZXNzLWhlaWdodDogMTBweDtcbiAgICAgICAgLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50OiAxcHg7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzIHtcbiAgICAgICAgZmxleDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDk5OTlweDtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1wcm9ncmVzcy1oZWlnaHQpO1xuICAgIH1cblxuICAgIC5wcm9ncmVzcy1pbm5lci1mcmFtZSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBwYWRkaW5nOiB2YXIoLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50KSAwO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMSk7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzLWNvcmUge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICB0cmFuc2l0aW9uOiAxcyBlYXNlLWluLW91dDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICAucHJvZ3Jlc3NbYXJpYS12YWx1ZW5vdz1cIjEwMFwiXSAucHJvZ3Jlc3MtY29yZSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA4CI,SAAS,OAAO,8BAAC,CAAC,AACd,iBAAiB,CAAE,IAAI,CACvB,wBAAwB,CAAE,GAAG,AACjC,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CACP,IAAI,CAAE,CAAC,CACf,KAAK,CAAE,IAAI,CACX,aAAa,CAAE,MAAM,CACrB,MAAM,CAAE,IAAI,iBAAiB,CAAC,AAClC,CAAC,AAED,qBAAqB,8BAAC,CAAC,AACnB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,MAAM,CACrB,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,IAAI,wBAAwB,CAAC,CAAC,CAAC,CACxC,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CAC/D,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,cAAc,8BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,EAAE,CAAC,WAAW,CAClC,UAAU,CAAE,EAAE,CAAC,WAAW,CAC1B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAC7C,CAAC,AAED,SAAS,CAAC,aAAa,CAAC,KAAK,gBAAC,CAAC,cAAc,eAAC,CAAC,AAC3C,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC\"}"
+};
+
+function getBorderRadius(borders, defaults = "99999px") {
+	const brDefault = new Array(4).fill(defaults);
+	const bds = safeGet(() => borders.split(" "), [], true);
+	const rule = "border-radius";
+	return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(" ")}`;
+}
+
+const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { id = undefined } = $$props;
+	let { value = 0 } = $$props; // 0 - 100
+	let { size = "medium" } = $$props;
+	let { title = undefined } = $$props;
+	let { ariaLabel = undefined } = $$props;
+	let { borderRadius = undefined } = $$props;
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
+	if ($$props.borderRadius === void 0 && $$bindings.borderRadius && borderRadius !== void 0) $$bindings.borderRadius(borderRadius);
+	$$result.css.add(css$9);
+
+	let val = Number.isFinite(+value)
+	? Math.max(0, Math.min(+value, 100))
+	: 0;
+
+	let titleProp = title || `Progress - ${val}%`;
+	let ariaLabelProp = ariaLabel || `Progress - ${val}%`;
+	let classProp = classnames("progress", size, $$props.class);
+
+	return `<div${add_attribute("id", id, 0)} class="${escape(null_to_empty(classProp)) + " svelte-108d5jc"}"${add_attribute("title", titleProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)} role="${"progressbar"}" aria-valuemin="${"0"}" aria-valuemax="${"100"}"${add_attribute("aria-valuenow", val, 0)}${add_attribute("style", getBorderRadius(borderRadius), 0)}>
+    <div class="${"progress-inner-frame svelte-108d5jc"}">
+        <div class="${"progress-core svelte-108d5jc"}"${add_attribute("style", `width:${val}%`, 0)}></div>
+    </div>
+</div>`;
+});
+
+/* src/components/Carousel.svelte generated by Svelte v3.18.1 */
+
+const css$a = {
+	code: ".carousel.svelte-xsz8iy.svelte-xsz8iy,.carousel-inner.svelte-xsz8iy.svelte-xsz8iy,.carousel-inner.svelte-xsz8iy li.svelte-xsz8iy{position:relative;-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;text-align:left;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.carousel.dotsBelow.svelte-xsz8iy.svelte-xsz8iy{padding-bottom:40px}.carousel.dotsBelow.svelte-xsz8iy .carousel-dots.svelte-xsz8iy{bottom:0}.carousel.dotsBelow.svelte-xsz8iy .carousel-dots li.svelte-xsz8iy{background-color:rgba(var(--theme-bg-color-opposite))}.carousel.stretch.svelte-xsz8iy .fluid.svelte-xsz8iy{width:100%}.carousel.auto.svelte-xsz8iy .fluid.svelte-xsz8iy{width:auto}.carousel.svelte-xsz8iy.svelte-xsz8iy{width:100%}.carousel-inner.svelte-xsz8iy.svelte-xsz8iy::-webkit-scrollbar{display:none}.carousel.svelte-xsz8iy .carousel-inner.svelte-xsz8iy{width:100%;overflow-y:hidden;overflow-x:scroll;border-radius:var(--border-radius-big)}.carousel-dots.svelte-xsz8iy.svelte-xsz8iy{position:absolute;left:0;bottom:10px;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;justify-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;pointer-events:none}.carousel-dots.svelte-xsz8iy li.svelte-xsz8iy{position:relative;width:8px;height:8px;margin:5px;border-radius:50%;overflow:hidden;-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary);background-color:rgba(var(--color-light))}.carousel-dots.svelte-xsz8iy li.svelte-xsz8iy:not(.active){opacity:.5}li.active.svelte-xsz8iy.svelte-xsz8iy{-webkit-transform:scale(1.5);transform:scale(1.5)}",
+	map: "{\"version\":3,\"file\":\"Carousel.svelte\",\"sources\":[\"Carousel.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { waitUntil, classnames } from '@utils'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    /**\\n     *\\n     * @type {number | {\\n     *     src: string,\\n     *     srcBig: string,\\n     *     alt: string,\\n     *     onClick?: function,\\n     * }[]}\\n     */\\n    export let items = []\\n    export let dots = true\\n    export let dotsBelow = true\\n    export let size = 'stretch'\\n    export let initIndex = 0\\n\\n    let parent = null\\n\\n    $: activeDot = initIndex\\n    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow })\\n    $: setScrollPosition(parent, initIndex)\\n\\n    function carousel(node) {\\n        parent = node\\n        setScrollPosition(node, activeDot)\\n        node.addEventListener('scroll', onScroll)\\n        node.addEventListener('touchmove', onScroll)\\n        return { \\n            destroy: () => {\\n                node.removeEventListener('scroll', onScroll)\\n                node.removeEventListener('touchmove', onScroll)\\n            }\\n        }\\n    }\\n\\n    function onScroll(e) {\\n        e.stopPropagation()\\n        try {\\n            getActiveDot(e.target)\\n        } catch (err) { console.warn('Carousel does not work.', err) }\\n    }\\n\\n    function getActiveDot(parent) {\\n        const { scrollLeft, scrollWidth, offsetWidth } = parent\\n        const dotAmount = Array.from(parent.children).length\\n        const scrollX = scrollLeft / (scrollWidth - offsetWidth)\\n        const newActiveDot = Math.round(scrollX * (dotAmount - 1))\\n        if (activeDot !== newActiveDot) activeDot = newActiveDot\\n    }\\n\\n    function setScrollPosition(parent, activeDot) {\\n        if (!parent) return\\n        const { width } = parent.getBoundingClientRect()\\n        waitUntil(() => {\\n            parent.scrollLeft = Math.round(width * activeDot)\\n            if (parent.scrollLeft !== Math.round(width * activeDot)) {\\n              throw new Error('Not set.')\\n            }\\n        }, { interval: 50 })\\n    }\\n\\n    function onClick(item, index, e) {\\n        dispatch('click', { item, index, e })\\n        if (typeof item.onClick === 'function') item.onClick(item, index, e)\\n    }\\n\\n</script>\\n\\n<section aria-label=\\\"carousel\\\" class={classProp}>\\n    <ul use:carousel class=\\\"carousel-inner scroll-x-center\\\">\\n        {#each items as item, index}\\n            <li class=\\\"fluid\\\" role=\\\"button\\\" on:click={onClick.bind(null, item, index)}>\\n                <slot {item} {index}>\\n                    <Picture {...item} alt={item.alt || 'Фото слайду'}/>\\n                </slot>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n\\n    {#if dots}\\n        <ul class=\\\"carousel-dots\\\">\\n            {#each items as _item, i}\\n                <li class={i === activeDot ? 'active' : ''}></li>\\n            {/each}\\n        </ul>\\n    {/if}\\n</section>\\n\\n<style>\\n    .carousel, .carousel-inner, .carousel-inner li {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        text-align: left;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .carousel.dotsBelow {\\n        padding-bottom: 40px;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots {\\n        bottom: 0;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots li {\\n        background-color: rgba(var(--theme-bg-color-opposite));\\n    }\\n\\n    .carousel.stretch .fluid {\\n        width: 100%;\\n    }\\n\\n    .carousel.auto .fluid {\\n        width: auto;\\n    }\\n\\n    .carousel {\\n        width: 100%;\\n    }\\n\\n    .carousel-inner::-webkit-scrollbar {\\n        display: none;\\n    }\\n\\n    .carousel .carousel-inner {\\n        width: 100%;\\n        overflow-y: hidden;\\n        overflow-x: scroll;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .carousel-dots {\\n        position: absolute;\\n        left: 0;\\n        bottom: 10px;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        justify-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        pointer-events: none;\\n    }\\n\\n    .carousel-dots li {\\n        position: relative;\\n        width: 8px;\\n        height: 8px;\\n        margin: 5px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n        background-color: rgba(var(--color-light));\\n    }\\n\\n    .carousel-dots li:not(.active) {\\n        opacity: .5;\\n    }\\n\\n    li.active {\\n        -webkit-transform: scale(1.5);\\n                transform: scale(1.5);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksU0FBUztJQUNiOztJQUVBO1FBQ0ksc0RBQXNEO0lBQzFEOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksYUFBYTtJQUNqQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsa0JBQWtCO1FBQ2xCLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixPQUFPO1FBQ1AsWUFBWTtRQUNaLFdBQVc7UUFDWCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixVQUFVO1FBQ1YsV0FBVztRQUNYLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsZ0JBQWdCO1FBQ2hCLHlDQUFpQztnQkFBakMsaUNBQWlDO1FBQ2pDLDBDQUEwQztJQUM5Qzs7SUFFQTtRQUNJLFdBQVc7SUFDZjs7SUFFQTtRQUNJLDZCQUFxQjtnQkFBckIscUJBQXFCO0lBQ3pCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jYXJvdXNlbCwgLmNhcm91c2VsLWlubmVyLCAuY2Fyb3VzZWwtaW5uZXIgbGkge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyB7XG4gICAgICAgIHBhZGRpbmctYm90dG9tOiA0MHB4O1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC5kb3RzQmVsb3cgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBib3R0b206IDA7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyAuY2Fyb3VzZWwtZG90cyBsaSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3Itb3Bwb3NpdGUpKTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuc3RyZXRjaCAuZmx1aWQge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuYXV0byAuZmx1aWQge1xuICAgICAgICB3aWR0aDogYXV0bztcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwtaW5uZXI6Oi13ZWJraXQtc2Nyb2xsYmFyIHtcbiAgICAgICAgZGlzcGxheTogbm9uZTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwgLmNhcm91c2VsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG92ZXJmbG93LXk6IGhpZGRlbjtcbiAgICAgICAgb3ZlcmZsb3cteDogc2Nyb2xsO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIGJvdHRvbTogMTBweDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktaXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC1kb3RzIGxpIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICB3aWR0aDogOHB4O1xuICAgICAgICBoZWlnaHQ6IDhweDtcbiAgICAgICAgbWFyZ2luOiA1cHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWxpZ2h0KSk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMgbGk6bm90KC5hY3RpdmUpIHtcbiAgICAgICAgb3BhY2l0eTogLjU7XG4gICAgfVxuXG4gICAgbGkuYWN0aXZlIHtcbiAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxLjUpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAgGI,qCAAS,CAAE,2CAAe,CAAE,6BAAe,CAAC,EAAE,cAAC,CAAC,AAC5C,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,UAAU,CAAE,IAAI,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,SAAS,UAAU,4BAAC,CAAC,AACjB,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,cAAC,CAAC,AAChC,MAAM,CAAE,CAAC,AACb,CAAC,AAED,SAAS,wBAAU,CAAC,cAAc,CAAC,EAAE,cAAC,CAAC,AACnC,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,AAC1D,CAAC,AAED,SAAS,sBAAQ,CAAC,MAAM,cAAC,CAAC,AACtB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,mBAAK,CAAC,MAAM,cAAC,CAAC,AACnB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,AACf,CAAC,AAED,2CAAe,mBAAmB,AAAC,CAAC,AAChC,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,uBAAS,CAAC,eAAe,cAAC,CAAC,AACvB,KAAK,CAAE,IAAI,CACX,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,MAAM,CAClB,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,CACX,MAAM,CAAE,GAAG,CACX,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACzC,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,AAC9C,CAAC,AAED,4BAAc,CAAC,gBAAE,KAAK,OAAO,CAAC,AAAC,CAAC,AAC5B,OAAO,CAAE,EAAE,AACf,CAAC,AAED,EAAE,OAAO,4BAAC,CAAC,AACP,iBAAiB,CAAE,MAAM,GAAG,CAAC,CACrB,SAAS,CAAE,MAAM,GAAG,CAAC,AACjC,CAAC\"}"
+};
+
+const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { items = [] } = $$props;
+	let { dots = true } = $$props;
+	let { dotsBelow = true } = $$props;
+	let { size = "stretch" } = $$props;
+	let { initIndex = 0 } = $$props;
+	let parent = null;
+
+	function setScrollPosition(parent, activeDot) {
+		if (!parent) return;
+		const { width } = parent.getBoundingClientRect();
+
+		waitUntil(
+			() => {
+				parent.scrollLeft = Math.round(width * activeDot);
+
+				if (parent.scrollLeft !== Math.round(width * activeDot)) {
+					throw new Error("Not set.");
+				}
+			},
+			{ interval: 50 }
+		);
+	}
+
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	if ($$props.dots === void 0 && $$bindings.dots && dots !== void 0) $$bindings.dots(dots);
+	if ($$props.dotsBelow === void 0 && $$bindings.dotsBelow && dotsBelow !== void 0) $$bindings.dotsBelow(dotsBelow);
+	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+	if ($$props.initIndex === void 0 && $$bindings.initIndex && initIndex !== void 0) $$bindings.initIndex(initIndex);
+	$$result.css.add(css$a);
+	let activeDot = initIndex;
+	let classProp = classnames("carousel", size, $$props.class, { dotsBelow });
+
+	 {
+		setScrollPosition(parent, initIndex);
+	}
+
+	return `<section aria-label="${"carousel"}" class="${escape(null_to_empty(classProp)) + " svelte-xsz8iy"}">
+    <ul class="${"carousel-inner scroll-x-center svelte-xsz8iy"}">
+        ${each(items, (item, index) => `<li class="${"fluid svelte-xsz8iy"}" role="${"button"}">
+                ${$$slots.default
+	? $$slots.default({ item, index })
+	: `
+                    ${validate_component(Picture, "Picture").$$render($$result, Object.assign(item, { alt: item.alt || "Фото слайду" }), {}, {})}
+                `}
+            </li>`)}
+    </ul>
+
+
+    ${dots
+	? `<ul class="${"carousel-dots svelte-xsz8iy"}">
+            ${each(items, (_item, i) => `<li class="${escape(null_to_empty(i === activeDot ? "active" : "")) + " svelte-xsz8iy"}"></li>`)}
+        </ul>`
+	: ``}
+</section>`;
+});
+
+/* src/components/FancyBox.svelte generated by Svelte v3.18.1 */
+
+const css$b = {
+	code: ".fancy-box.svelte-1e3vswx.svelte-1e3vswx{position:relative;width:100%;-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.fancy-box-ghost.svelte-1e3vswx.svelte-1e3vswx{z-index:10;position:fixed;top:0;left:0;width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-ms-touch-action:manipulation;touch-action:manipulation;background-color:rgba(var(--color-black), .75);outline:20px solid rgba(var(--color-black), .75);-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;opacity:0;padding:0 var(--screen-padding);-webkit-transform:translate3d(0,20px,0);transform:translate3d(0,20px,0);pointer-events:none}.fancy-box-ghost.svelte-1e3vswx>.svelte-1e3vswx{max-width:100%;max-height:100%}.fancy-box-ghost.active.svelte-1e3vswx.svelte-1e3vswx{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);pointer-events:auto}button.svelte-1e3vswx.svelte-1e3vswx{position:absolute;top:10px;right:10px;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:var(--min-interactive-size);height:var(--min-interactive-size)}",
+	map: "{\"version\":3,\"file\":\"FancyBox.svelte\",\"sources\":[\"FancyBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { fly } from 'svelte/transition'\\n    import { Swipe } from '@services'\\n    import { classnames, delay } from '@utils'\\n    import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';\\n    import Portal from './Portal.svelte';\\n\\n    const DURATION = 250\\n    const START_POSITION = 20\\n    const THRESHOLD = 100\\n\\n    const dispatch = createEventDispatcher()\\n\\n    let active = null\\n    let fancyBox = null\\n    let slots = $$props.$$slots || {}\\n\\n    function onClick(e) {\\n        const newActive = !active\\n\\n        setActive(newActive)\\n\\n        if (newActive) {\\n            drawTransform(fancyBox, 0)\\n            dispatch('open', e)\\n        } else {\\n            drawTransform(fancyBox, START_POSITION)\\n            dispatch('close', e)\\n        }\\n    }\\n     \\n    function setActive(isActive) {\\n        active = isActive\\n\\n        setTimeout(() => {\\n            if (active) {\\n                disableBodyScroll(fancyBox);\\n            } else {\\n                enableBodyScroll(fancyBox);\\n            }\\n        })\\n    }\\n\\n    $: classProp = classnames('fancy-box-ghost', { active })\\n    $: classPropWrap = classnames('fancy-box', $$props.class,)\\n\\n    let ySwipe = START_POSITION\\n    function swipe(el) {\\n        new Swipe(el)\\n                .run()\\n                .onUp(handleVerticalSwipe)\\n                .onDown(handleVerticalSwipe)\\n                .onTouchEnd(async () => {\\n                    if (ySwipe > THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, ySwipe + 50)\\n                        drawOpacity(el, ySwipe + 50)\\n                        await delay(DURATION)\\n                    } else if (ySwipe < -THRESHOLD) {\\n                        setActive(false)\\n                        drawTransform(el, ySwipe - 50)\\n                        drawOpacity(el, ySwipe - 50)\\n                        await delay(DURATION)\\n                    }\\n\\n                    if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {\\n                        ySwipe = START_POSITION\\n                        drawTransform(el, ySwipe)\\n                        el.style.opacity = null\\n                    } else {\\n                        ySwipe = 0\\n                        drawTransform(el, ySwipe)\\n                        el.style.opacity = null\\n                    }\\n                })\\n    }\\n\\n    function handleVerticalSwipe(yDown, yUp, evt, el) {\\n        ySwipe = yUp - yDown\\n        drawTransform(el, ySwipe)\\n        drawOpacity(el, ySwipe)\\n    }\\n\\n    function drawTransform(el, y) {\\n        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)\\n    }\\n    function drawOpacity(el, y) {\\n        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))\\n    }\\n</script>\\n\\n<section role=\\\"button\\\" class={classPropWrap} on:click={onClick}>\\n    <slot {active}></slot>\\n</section>\\n\\n{#if !slots.box}\\n    <Portal>\\n        <section\\n                bind:this={fancyBox}\\n                use:swipe\\n                in:fly=\\\"{{ y: START_POSITION, duration: 200 }}\\\"\\n                class={classProp}\\n                style={`transition-duration: ${DURATION}ms`}\\n        >\\n            <button type=\\\"button\\\" on:click={onClick}>&#10005;</button>\\n            <slot></slot>\\n        </section>\\n    </Portal>  \\n{/if}\\n\\n{#if active !== null && slots.box}\\n    <Portal>\\n        <section\\n                bind:this={fancyBox}\\n                use:swipe\\n                in:fly=\\\"{{ y: START_POSITION, duration: 200 }}\\\"\\n                class={classProp}\\n                style={`transition-duration: ${DURATION}ms`}\\n        >\\n            <button type=\\\"button\\\" on:click={onClick}>&#10005;</button>\\n            <slot name=\\\"box\\\"></slot>\\n        </section>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .fancy-box {\\n        position: relative;\\n        width: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .fancy-box-ghost {\\n        z-index: 10;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 20px solid rgba(var(--color-black), .75);\\n        -webkit-transition-timing-function: ease-out;\\n                transition-timing-function: ease-out;\\n        opacity: 0;\\n        padding: 0 var(--screen-padding);\\n        -webkit-transform: translate3d(0,20px,0);\\n                transform: translate3d(0,20px,0);\\n        pointer-events: none;\\n    }\\n\\n    .fancy-box-ghost > * {\\n        max-width: 100%;\\n        max-height: 100%;\\n    }\\n\\n    .fancy-box-ghost.active {\\n        opacity: 1;\\n        -webkit-transform: translate3d(0,0,0);\\n                transform: translate3d(0,0,0);\\n        pointer-events: auto;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 10px;\\n        right: 10px;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: var(--min-interactive-size);\\n        height: var(--min-interactive-size);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0ZhbmN5Qm94LnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsV0FBVztRQUNYLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztRQUNYLGVBQWU7UUFDZixNQUFNO1FBQ04sT0FBTztRQUNQLFdBQVc7UUFDWCxZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2Qiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLDhCQUEwQjtZQUExQiwwQkFBMEI7UUFDMUIsK0NBQStDO1FBQy9DLGlEQUFpRDtRQUNqRCw0Q0FBb0M7Z0JBQXBDLG9DQUFvQztRQUNwQyxVQUFVO1FBQ1YsZ0NBQWdDO1FBQ2hDLHdDQUFnQztnQkFBaEMsZ0NBQWdDO1FBQ2hDLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGVBQWU7UUFDZixnQkFBZ0I7SUFDcEI7O0lBRUE7UUFDSSxVQUFVO1FBQ1YscUNBQTZCO2dCQUE3Qiw2QkFBNkI7UUFDN0Isb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFNBQVM7UUFDVCxXQUFXO1FBQ1gsZUFBZTtRQUNmLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixrQ0FBa0M7UUFDbEMsbUNBQW1DO0lBQ3ZDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0ZhbmN5Qm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5mYW5jeS1ib3gge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICBhbGlnbi1pdGVtczogc3RyZXRjaDtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBzdHJldGNoO1xuICAgIH1cblxuICAgIC5mYW5jeS1ib3gtZ2hvc3Qge1xuICAgICAgICB6LWluZGV4OiAxMDtcbiAgICAgICAgcG9zaXRpb246IGZpeGVkO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgdG91Y2gtYWN0aW9uOiBtYW5pcHVsYXRpb247XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAuNzUpO1xuICAgICAgICBvdXRsaW5lOiAyMHB4IHNvbGlkIHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAuNzUpO1xuICAgICAgICB0cmFuc2l0aW9uLXRpbWluZy1mdW5jdGlvbjogZWFzZS1vdXQ7XG4gICAgICAgIG9wYWNpdHk6IDA7XG4gICAgICAgIHBhZGRpbmc6IDAgdmFyKC0tc2NyZWVuLXBhZGRpbmcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZTNkKDAsMjBweCwwKTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmZhbmN5LWJveC1naG9zdCA+ICoge1xuICAgICAgICBtYXgtd2lkdGg6IDEwMCU7XG4gICAgICAgIG1heC1oZWlnaHQ6IDEwMCU7XG4gICAgfVxuXG4gICAgLmZhbmN5LWJveC1naG9zdC5hY3RpdmUge1xuICAgICAgICBvcGFjaXR5OiAxO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZTNkKDAsMCwwKTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IGF1dG87XG4gICAgfVxuXG4gICAgYnV0dG9uIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDEwcHg7XG4gICAgICAgIHJpZ2h0OiAxMHB4O1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgICAgICBoZWlnaHQ6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AA+HI,UAAU,8BAAC,CAAC,AACR,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,gBAAgB,8BAAC,CAAC,AACd,OAAO,CAAE,EAAE,CACX,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAC/C,OAAO,CAAE,IAAI,CAAC,KAAK,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CACjD,kCAAkC,CAAE,QAAQ,CACpC,0BAA0B,CAAE,QAAQ,CAC5C,OAAO,CAAE,CAAC,CACV,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAChC,iBAAiB,CAAE,YAAY,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CAChC,SAAS,CAAE,YAAY,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CACxC,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,+BAAgB,CAAG,eAAE,CAAC,AAClB,SAAS,CAAE,IAAI,CACf,UAAU,CAAE,IAAI,AACpB,CAAC,AAED,gBAAgB,OAAO,8BAAC,CAAC,AACrB,OAAO,CAAE,CAAC,CACV,iBAAiB,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7B,SAAS,CAAE,YAAY,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACrC,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,8BAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,IAAI,CACT,KAAK,CAAE,IAAI,CACX,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,sBAAsB,CAAC,CAClC,MAAM,CAAE,IAAI,sBAAsB,CAAC,AACvC,CAAC\"}"
+};
+
+const DURATION$1 = 250;
+
+const FancyBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let active = null;
+	let fancyBox = null;
+	let slots = $$props.$$slots || {};
+
+	$$result.css.add(css$b);
+	let classProp = classnames("fancy-box-ghost", { active });
+	let classPropWrap = classnames("fancy-box", $$props.class);
+
+	return `<section role="${"button"}" class="${escape(null_to_empty(classPropWrap)) + " svelte-1e3vswx"}">
+    ${$$slots.default ? $$slots.default({ active }) : ``}
+</section>
+
+${!slots.box
+	? `${validate_component(Portal, "Portal").$$render($$result, {}, {}, {
+			default: () => `
+        <section class="${escape(null_to_empty(classProp)) + " svelte-1e3vswx"}"${add_attribute("style", `transition-duration: ${DURATION$1}ms`, 0)}${add_attribute("this", fancyBox, 1)}>
+            <button type="${"button"}" class="${"svelte-1e3vswx"}">✕</button>
+            ${$$slots.default ? $$slots.default({}) : ``}
+        </section>
+    `
+		})}`
+	: ``}
+
+${ ``}`;
+});
 
 /* src/components/app/Header.svelte generated by Svelte v3.18.1 */
 
@@ -3185,17 +3099,35 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
 const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items = [] } = $$props;
+	let { carousel = [] } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	if ($$props.carousel === void 0 && $$bindings.carousel && carousel !== void 0) $$bindings.carousel(carousel);
 
 	return `<h1>Останні новини</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 ${validate_component(NewsList, "NewsList").$$render($$result, { items }, {}, {})}
 
-${validate_component(Modal, "Modal").$$render($$result, { id: "last-news" }, {}, {
-		default: () => `
-    something
+${validate_component(Modal, "Modal").$$render(
+		$$result,
+		{
+			id: "last-news",
+			size: "full",
+			swipe: "left right",
+			startPosition: { x: 300, y: 0 }
+		},
+		{},
+		{
+			default: ({ props }) => `
+    something ${escape(props.id)}
+
+    ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+
+    <div class="${"container"}">
+        ${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carousel }, {}, {})}
+    </div>
 `
-	})}`;
+		}
+	)}`;
 });
 
 /* src/routes/organizations/_Certificates.svelte generated by Svelte v3.18.1 */
@@ -3612,7 +3544,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(LastNews, "LastNews").$$render($$result, { items: lastNews }, {}, {})}
+    ${validate_component(LastNews, "LastNews").$$render($$result, { items: lastNews, carousel: carouselTop }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(Certificates, "Certificates").$$render($$result, { items: documents }, {}, {})}
