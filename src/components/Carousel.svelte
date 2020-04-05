@@ -30,11 +30,9 @@
         parent = node
         setScrollPosition(node, activeDot)
         node.addEventListener('scroll', onScroll)
-        node.addEventListener('touchmove', onScroll)
         return { 
             destroy: () => {
                 node.removeEventListener('scroll', onScroll)
-                node.removeEventListener('touchmove', onScroll)
             }
         }
     }

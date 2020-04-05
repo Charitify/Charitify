@@ -34,7 +34,7 @@
 
     <Br/>
 
-    <div class="container">
+    <div class="container" on:touchmove={e => e.stopPropagation()}>
         <section class="flex" style="height: 240px">
             <FancyBox blockBody={false}>
                 <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
