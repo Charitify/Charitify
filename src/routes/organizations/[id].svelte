@@ -169,7 +169,7 @@
     <Donators items={donators}/>
     <Br size="60" />
 
-    <LastNews items={lastNews}/>
+    <LastNews items={lastNews} carousel={carouselTop}/>
     <Br size="60" />
 
     <Certificates items={documents}/>

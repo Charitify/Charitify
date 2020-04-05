@@ -1,44 +1,134 @@
 <script>
-  import { createEventDispatcher } from 'svelte'
-  import { fly } from "svelte/transition";
-  import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-  import { safeGet, classnames } from "@utils";
-  import { modals } from "@store";
-  import Portal from "./Portal.svelte";
+    import { createEventDispatcher } from 'svelte'
+    import { fly } from "svelte/transition";
+    import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+    import { Swipe } from '@services'
+    import { safeGet, classnames, delay } from "@utils";
+    import { modals } from "@store";
+    import Portal from "./Portal.svelte";
 
-  const dispatch = createEventDispatcher()
+    const dispatch = createEventDispatcher()
+    
+    const DURATION = 250
+    const THRESHOLD = 100
+    const START_POSITION = {
+        x: 0,
+        y: 20
+    }
 
-  export let id
-  export let open = null
+    export let id
+    export let size = 'full'    // small/medium/big/full
+    export let swipe = []       // up down left right all
+    export let open = null
+    export let startPosition = START_POSITION
 
-  let active
-  $: active = safeGet(() => open || JSON.parse($modals)[`modal-${id}`].open, null)
-  $: classProp = classnames('modal', { active })
-  $: onActiveChange(active)
+    let active
+    let modalRef = null
 
-  function onBgClick() {
-       modals.update(s => JSON.stringify({ ...JSON.parse(s), [`modal-${id}`]: { open: false } }))
-  }
+    $: isSwipe = {
+        up: safeGet(() => swipe.includes('up') || swipe.includes('all')),
+        down: safeGet(() => swipe.includes('down') || swipe.includes('all')),
+        left: safeGet(() => swipe.includes('left') || swipe.includes('all')),
+        right: safeGet(() => swipe.includes('right') || swipe.includes('all')),
+    }
+    $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)
+    $: classProp = classnames('modal', size, { active })
+    $: onActiveChange(active)
 
-  function onActiveChange(active) {
-      if (active) {
-          dispatch('open')
-          disableBodyScroll()
-      } else {
-          dispatch('close')
-          enableBodyScroll()
-      }
-  }
+    async function onActiveChange(active) {
+        if (active) {
+            drawTransform(modalRef, 0, 0)
+            dispatch('open')
+            disableBodyScroll(modalRef)
+        } else {
+            dispatch('close')
+            enableBodyScroll(modalRef)
+        }
+    }
+
+    function setActive(isActive) {
+        if (open !== null) open = isActive
+        modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))
+    }
+
+    let xSwipe = 0
+    let ySwipe = 0
+
+    function addSwipe(el) {
+        new Swipe(el)
+                .run()
+                .onUp(isSwipe.up ? handleVerticalSwipe : null)
+                .onDown(isSwipe.down ? handleVerticalSwipe : null)
+                .onLeft(isSwipe.left ? handleHorizontalSwipe : null)
+                .onRight(isSwipe.right ? handleHorizontalSwipe : null)
+                .onTouchEnd(async () => {
+                    if (xSwipe > THRESHOLD) {
+                        setActive(false)
+                        drawTransform(el, xSwipe + 50, ySwipe)
+                        drawOpacity(el, xSwipe + 50, ySwipe)
+                        await delay(DURATION)
+                    } else if (xSwipe < -THRESHOLD) {
+                        setActive(false)
+                        drawTransform(el, xSwipe - 50, ySwipe)
+                        drawOpacity(el, xSwipe - 50, ySwipe)
+                        await delay(DURATION)
+                    }
+                    
+                    if (ySwipe > THRESHOLD) {
+                        setActive(false)
+                        drawTransform(el, xSwipe, ySwipe + 50)
+                        drawOpacity(el, xSwipe, ySwipe + 50)
+                        await delay(DURATION)
+                    } else if (ySwipe < -THRESHOLD) {
+                        setActive(false)
+                        drawTransform(el, xSwipe, ySwipe - 50)
+                        drawOpacity(el, xSwipe, ySwipe - 50)
+                        await delay(DURATION)
+                    }
+
+                    if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {
+                        drawTransform(el, 0, 0)
+                    } else {
+                        drawTransform(el, startPosition.x, startPosition.y)
+                    }
+
+                    xSwipe = 0
+                    ySwipe = 0
+                    el.style.opacity = null
+                })
+    }
+
+    function handleVerticalSwipe(yDown, yUp, evt, el) {
+        ySwipe = yUp - yDown
+        drawTransform(el, xSwipe, ySwipe)
+        drawOpacity(el, xSwipe, ySwipe)
+    }
+    function handleHorizontalSwipe(xDown, xUp, evt, el) {
+        xSwipe = xUp - xDown
+        drawTransform(el, xSwipe, ySwipe)
+        drawOpacity(el, xSwipe, ySwipe)
+    }
+
+    function drawTransform(el, x, y) {
+        el && (el.style.transform = `translate3d(${x}px, ${y}px, 0)`)
+    }
+    function drawOpacity(el, x, y) {
+        const delta = Math.abs(x) > Math.abs(y) ? x : y
+        el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))
+    }
 </script>
 
 {#if active !== null}
     <Portal>
         <div 
-            id={`modal-${id}`} 
+            id={`modal-${id}`}
+            bind:this={modalRef}
             aria-hidden="true" 
             class={classProp}
-            in:fly="{{ y: 20, duration: 200 }}"
-            on:click={onBgClick}
+            use:addSwipe
+            in:fly="{{ x: startPosition.x, y: startPosition.y, duration: DURATION }}"
+            on:click={() => setActive(false)}
+            style={`transition-duration: ${DURATION}ms`}
         >
             <div
                 class="modal-inner"
@@ -46,8 +136,9 @@
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="модальне вікно"
+                on:click={e => e.stopPropagation()}
             >
-                <slot props={safeGet(() => JSON.parse($modals)[`modal-${id}`], {}, true)}/>
+                <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>
             </div>
         </div>
     </Portal>
@@ -63,28 +154,54 @@
         height: 100%;
         display: flex;
         overflow: hidden;
-        align-items: stretch;
+        align-items: center;
         justify-content: center;
         flex-direction: column;
         touch-action: manipulation;
         background-color: rgba(var(--color-black), .75);
-        outline: 20px solid rgba(var(--color-black), .75);
-        transition: .3s ease-out;
+        outline: 50px solid rgba(var(--color-black), .75);
+        transition-timing-function: ease-out;
         opacity: 0;
-        padding: 0 var(--screen-padding);
         transform: translate3d(0,0,0);
         pointer-events: none;
     }
 
     .modal.active {
         opacity: 1;
-        transform: translate3d(0,0,0);
         pointer-events: auto;
     }
 
     .modal-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: stretch;
+        overflow: hidden;
+        background-color: rgba(var(--theme-color-primary));
+    }
+    .modal-inner > * {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .small .modal-inner {
+        width: 200px;
+        border-radius: var(--border-radius-big);
+    }
+
+    .medium .modal-inner {
+        width: calc(100vw - var(--screen-padding) * 2);
+        border-radius: var(--border-radius-big);
+    }
+    .big .modal-inner {
+        width: calc(100% - var(--screen-padding) * 2);
+        height: calc(100% - var(--screen-padding) * 2);
+        border-radius: var(--border-radius-big);
+    }
+
+    .full .modal-inner {
         width: 100%;
-        height: 300px;
-        background-color: rgba(var(--theme-color-primary))
+        height: 100%;
+        border-radius: 0;
     }
 </style>   

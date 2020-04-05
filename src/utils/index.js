@@ -1,4 +1,3 @@
-export * from './swipe'
 export * as _ from './lodash'
 
 export { default as delay } from './delay'

@@ -30,10 +30,17 @@
         parent = node
         setScrollPosition(node, activeDot)
         node.addEventListener('scroll', onScroll)
-        return { destroy: () => node.removeEventListener('scroll', onScroll) }
+        node.addEventListener('touchmove', onScroll)
+        return { 
+            destroy: () => {
+                node.removeEventListener('scroll', onScroll)
+                node.removeEventListener('touchmove', onScroll)
+            }
+        }
     }
 
     function onScroll(e) {
+        e.stopPropagation()
         try {
             getActiveDot(e.target)
         } catch (err) { console.warn('Carousel does not work.', err) }

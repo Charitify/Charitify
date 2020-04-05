@@ -1,4 +1,4 @@
-export class Swipe {
+export default class Swipe {
   constructor(element) {
     this.isMoveStart = false
     this.isTwoFingers = false
@@ -126,8 +126,4 @@ export class Swipe {
 
     return this
   }
-}
-
-export function swipe(element) {
-  return new Swipe(element)
 }

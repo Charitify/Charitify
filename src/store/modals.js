@@ -1,3 +1,3 @@
-import { writable } from 'svelte-persistent-store/session';
+import { writable } from 'svelte/store';
 
-export const modals = writable('modals', JSON.stringify({}));
+export const modals = writable({});

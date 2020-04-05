@@ -1,10 +1,12 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { fly } from 'svelte/transition'
-    import { classnames, Swipe, delay } from '@utils'
+    import { Swipe } from '@services'
+    import { classnames, delay } from '@utils'
     import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
     import Portal from './Portal.svelte';
 
+    const DURATION = 250
     const START_POSITION = 20
     const THRESHOLD = 100
 
@@ -54,12 +56,12 @@
                         setActive(false)
                         drawTransform(el, ySwipe + 50)
                         drawOpacity(el, ySwipe + 50)
-                        await delay(300)
+                        await delay(DURATION)
                     } else if (ySwipe < -THRESHOLD) {
                         setActive(false)
                         drawTransform(el, ySwipe - 50)
-                        drawOpacity(el, ySwipe- 50)
-                        await delay(300)
+                        drawOpacity(el, ySwipe - 50)
+                        await delay(DURATION)
                     }
 
                     if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {
@@ -97,8 +99,9 @@
         <section
                 bind:this={fancyBox}
                 use:swipe
-                in:fly="{{ y: 20, duration: 200 }}"
+                in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
+                style={`transition-duration: ${DURATION}ms`}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
             <slot></slot>
@@ -111,8 +114,9 @@
         <section
                 bind:this={fancyBox}
                 use:swipe
-                in:fly="{{ y: 20, duration: 200 }}"
+                in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
+                style={`transition-duration: ${DURATION}ms`}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
             <slot name="box"></slot>
@@ -147,7 +151,7 @@
         touch-action: manipulation;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
-        transition: .3s ease-out;
+        transition-timing-function: ease-out;
         opacity: 0;
         padding: 0 var(--screen-padding);
         transform: translate3d(0,20px,0);
