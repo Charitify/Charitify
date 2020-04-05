@@ -1,5 +1,5 @@
 <script>
-    import { Br, FundCards } from '@components'
+    import { Br, FundCards, Modal } from '@components'
 
     export let title
     export let items = []

@@ -24,9 +24,9 @@
     "js-storage": "^1.1.0",
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
-    "micromodal": "^0.4.6",
     "polka": "^1.0.0-next.11",
     "sirv": "^0.4.0",
+    "svelte-persistent-store": "^0.1.1",
     "zl-fetch": "^3.0.2"
   },
   "devDependencies": {

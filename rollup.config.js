@@ -31,6 +31,7 @@ const aliases = alias({
 	resolve: ['.js', '.svelte'],
 	entries: [
 		{ find: '@utils', replacement: `${__dirname}/src/utils` },
+		{ find: '@store', replacement: `${__dirname}/src/store` },
 		{ find: '@config', replacement: `${__dirname}/src/config` },
 		{ find: '@shared', replacement: `${__dirname}/src/shared` },
 		{ find: '@services', replacement: `${__dirname}/src/services` },
