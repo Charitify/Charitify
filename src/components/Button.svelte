@@ -28,6 +28,7 @@
     }
 
     function onClick(e) {
+        e.stopPropagation();
         !disabled && dispatch('click', e)
     }
 </script>

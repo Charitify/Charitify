@@ -26,7 +26,7 @@
             <Picture src={src} alt={title}/>
         </div>
 
-        <div class="flex flex-column flex-1 container overflow-hidden" style="padding-top: 20px; padding-bottom: 10px">
+        <div class="flex flex-column flex-1 container overflow-hidden" style="padding-top: 20px; padding-bottom: 5px">
             <h3 class="font-w-500 text-ellipsis-multiline" style="--max-lines: 2">{ title }</h3>
 
             <Br size="10"/>
@@ -40,7 +40,7 @@
                 <s></s>
                 <s></s>
                 <span class="h5 flex flex-align-center font-secondary" style="min-width: 4em">
-                    <Button size="medium" on:click={(e) => (e.stopPropagation(), dispatch('click', !isLiked))}>
+                    <Button size="medium" on:click={(e) => dispatch('onLike', !isLiked)}>
                         <span style={`opacity: ${isLiked ? 1 : .5}`}>
                             <Icon type="heart-filled" is="danger" size="small"/>
                         </span>

@@ -37,9 +37,9 @@
 
         setTimeout(() => {
             if (active) {
-                blockBody && disableBodyScroll(fancyBox);
+                blockBody && disableBodyScroll();
             } else {
-                blockBody && enableBodyScroll(fancyBox);
+                blockBody && enableBodyScroll();
             }
         })
     }
