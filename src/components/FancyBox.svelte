@@ -6,11 +6,13 @@
     import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
     import Portal from './Portal.svelte';
 
+    const dispatch = createEventDispatcher()
+    
     const DURATION = 250
     const START_POSITION = 20
     const THRESHOLD = 100
 
-    const dispatch = createEventDispatcher()
+    export let blockBody = true
 
     let active = null
     let fancyBox = null
@@ -35,9 +37,9 @@
 
         setTimeout(() => {
             if (active) {
-                disableBodyScroll(fancyBox);
+                blockBody && disableBodyScroll(fancyBox);
             } else {
-                enableBodyScroll(fancyBox);
+                blockBody && enableBodyScroll(fancyBox);
             }
         })
     }

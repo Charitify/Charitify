@@ -51,7 +51,7 @@
         const dotAmount = Array.from(parent.children).length
         const scrollX = scrollLeft / (scrollWidth - offsetWidth)
         const newActiveDot = Math.round(scrollX * (dotAmount - 1))
-        if (activeDot !== newActiveDot) activeDot = newActiveDot
+        if (activeDot !== newActiveDot && !isNaN(newActiveDot)) activeDot = newActiveDot
     }
 
     function setScrollPosition(parent, activeDot) {

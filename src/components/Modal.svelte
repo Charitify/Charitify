@@ -21,6 +21,7 @@
     export let swipe = []       // up down left right all
     export let open = null
     export let startPosition = START_POSITION
+    export let blockBody = true
 
     let active
     let modalRef = null
@@ -39,10 +40,10 @@
         if (active) {
             drawTransform(modalRef, 0, 0)
             dispatch('open')
-            disableBodyScroll(modalRef)
+            blockBody && disableBodyScroll(modalRef)
         } else {
             dispatch('close')
-            enableBodyScroll(modalRef)
+            blockBody && enableBodyScroll(modalRef)
         }
     }
 
