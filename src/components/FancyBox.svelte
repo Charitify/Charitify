@@ -37,9 +37,9 @@
 
         setTimeout(() => {
             if (active) {
-                blockBody && disableBodyScroll();
+                blockBody && disableBodyScroll(fancyBox);
             } else {
-                blockBody && enableBodyScroll();
+                blockBody && enableBodyScroll(fancyBox);
             }
         })
     }
@@ -120,7 +120,6 @@
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
                 style={`transition-duration: ${DURATION}ms`}
-                on:touchmove={e => e.stopPropagation()}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
             <slot name="box"></slot>
