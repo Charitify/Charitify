@@ -40,10 +40,10 @@
         if (active) {
             drawTransform(modalRef, 0, 0)
             dispatch('open')
-            blockBody && disableBodyScroll(modalRef)
+            blockBody && disableBodyScroll()
         } else {
             dispatch('close')
-            blockBody && enableBodyScroll(modalRef)
+            blockBody && enableBodyScroll()
         }
     }
 
@@ -100,15 +100,11 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
-        evt.preventDefault();
-        evt.stopPropagation();
         ySwipe = yUp - yDown
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
-        evt.preventDefault();
-        evt.stopPropagation();
         xSwipe = xUp - xDown
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
