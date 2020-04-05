@@ -1,17 +1,27 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import { Icon, Button } from "@components";
+
+  const dispatch = createEventDispatcher()
 
   export let likes = 0;
   export let views = 0;
+  export let isLiked = false;
 </script>
 
 <p class="container flex flex-justify-between flex-align-center">
-  <span class="flex flex-align-center">
+  <Button 
+    class="flex flex-align-center" 
+    auto
+    size="small"
+    style={`opacity: ${isLiked ? 1 : .5}`}
+    on:click={() => dispatch('click', !isLiked)}
+>
     <Icon is="danger" type="heart-filled" size="medium" />
     <s />
     <s />
     <span class="font-secondary font-w-600 h3">{likes}</span>
-  </span>
+  </Button>
 
   <span class="flex">
     <Button class="flex flex-align-center" auto size="small">

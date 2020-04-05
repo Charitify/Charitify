@@ -40,6 +40,9 @@
         likes: charity.likes,
         views: charity.views,
     };
+    $: trust = {
+        isLiked: charity.is_liked,
+    };
     $: descriptionBlock = {
         title: charity.title,
         text: charity.description,
@@ -130,7 +133,7 @@
     <Share />
     <Br size="45"/>
 
-    <Trust />
+    <Trust active={trust.isLiked}/>
     <Br size="60"/>
 
     <AnimalCard animal={animal}/>

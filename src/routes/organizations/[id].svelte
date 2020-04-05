@@ -64,6 +64,7 @@
     })))
     $: iconsLine = {
         likes: organization.likes,
+        isLiked: organization.is_liked,
         views: organization.views,
     };
     $: descriptionBlock = {
@@ -86,6 +87,7 @@
         id: n.id,
         src: n.src,
         likes: n.likes,
+        isLiked: n.is_liked,
         title: n.title,
         subtitle: n.subtitle,
         created_at: n.created_at,
@@ -148,7 +150,7 @@
     <DescriptionShort title={descriptionShort.title} text={descriptionShort.text}/>
     <Br size="10" />
 
-    <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
+    <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
     <Br size="50" />
 
     <FundList title="Фонди тварин" items={animalFunds}/>
@@ -163,7 +165,7 @@
     <Share />
     <Br size="50" />
 
-    <Trust />
+    <Trust active={organization.isLiked}/>
     <Br size="50" />
 
     <Donators items={donators}/>

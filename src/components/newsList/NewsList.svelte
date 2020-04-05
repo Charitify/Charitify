@@ -29,8 +29,9 @@
             <li role="button" on:click={() => dispatch('click', { item, index })} key={item.id}>
                 <NewsItem
                         src={item.src}
-                        likes={item.likes}
                         title={item.title}
+                        likes={item.likes}
+                        isLiked={item.isLiked}
                         subtitle={item.subtitle}
                         date={Dates(item.created_at).fromNow()}
                 />

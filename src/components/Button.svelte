@@ -12,6 +12,7 @@
     export let type = 'button'
     export let size = undefined
     export let title = undefined
+    export let style = undefined
     export let htmlFor = undefined
     export let disabled = false
     export let ariaLabel = undefined
@@ -36,6 +37,7 @@
             {id}
             {rel}
             {href}
+            {style}
             title={titleProp}
             class={classProp}
             aria-label={ariaLabelProp}
@@ -46,6 +48,7 @@
 {:else if htmlFor}
     <label
             {id}
+            {style}
             {disabled}
             for={htmlFor}
             title={titleProp}
@@ -59,6 +62,7 @@
     <button
             {id}
             {type}
+            {style}
             {disabled}
             title={titleProp}
             class={classProp}
