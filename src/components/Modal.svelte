@@ -130,6 +130,7 @@
             in:fly="{{ x: startPosition.x, y: startPosition.y, duration: DURATION }}"
             on:click={() => setActive(false)}
             style={`transition-duration: ${DURATION}ms`}
+            on:touchmove={e => e.stopPropagation()}
         >
             <div
                 class="modal-inner"

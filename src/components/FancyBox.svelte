@@ -45,7 +45,7 @@
     }
 
     $: classProp = classnames('fancy-box-ghost', { active })
-    $: classPropWrap = classnames('fancy-box', $$props.class,)
+    $: classPropWrap = classnames('fancy-box', $$props.class)
 
     let ySwipe = START_POSITION
     function swipe(el) {
@@ -104,6 +104,7 @@
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
                 style={`transition-duration: ${DURATION}ms`}
+                on:touchmove={e => e.stopPropagation()}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
             <slot></slot>
@@ -119,6 +120,7 @@
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
                 style={`transition-duration: ${DURATION}ms`}
+                on:touchmove={e => e.stopPropagation()}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
             <slot name="box"></slot>
