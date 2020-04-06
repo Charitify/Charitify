@@ -601,6 +601,19 @@ button:not([class]):focus {
     scroll-snap-align: center;
 }
 
+.scroll-y-center {
+    scroll-snap-type: y mandatory;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scroll-y-center > * {
+    position: relative;
+    transform: translateZ(0);
+    scroll-snap-stop: always;
+    scroll-snap-align: center;
+}
+
 /* ----------=========( Text align )=========----------- */
 .text-center {
     text-align: center;
