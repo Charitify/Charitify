@@ -55,7 +55,7 @@
     on:open={() => onToggleModal(true)}
     on:close={() => onToggleModal(false)}
 >
-    <section class="scroll-box scroll-y-center">
+    <section class="scroll-box scroll-y-center" style="height: 100vh">
         <div class="container">
             <Br/>
             
