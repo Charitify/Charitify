@@ -72,6 +72,29 @@
             evt._isScroller = true
         })
     }
+
+    function detectScroll(el) {
+        container = el
+
+        function getPercentage(el) {
+            let height = el.clientHeight;
+            let scrollHeight = el.scrollHeight - height;
+            let scrollTop = el.scrollTop;
+            return scrollTop / scrollHeight;
+        }
+        
+
+        function controllScroll(e) {
+            const percentage = getPersentage(container)
+            if (percentage <= 0) {
+                container.scrollTop = 1
+            } else if (percentage >= 100) {
+                let height = el.clientHeight;
+                let scrollHeight = el.scrollHeight - height;
+                container.scrollTop = scrollHeight - 1
+            }
+        }
+    }
 </script>
 
 <h1>Останні новини</h1>
@@ -85,7 +108,7 @@
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
-    <section bind:this={scroller} class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
+    <section bind:this={scroller} use={detectScroll} class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
         <Br/>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
