@@ -35,15 +35,24 @@
     $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)
     $: classProp = classnames('modal', size, { active })
     $: onActiveChange(active)
+    $: blockScroll(modalRef)
+
+    function blockScroll(modal) {
+        if (active) {
+            blockBody && disableBodyScroll(modal)
+        } else {
+            blockBody && enableBodyScroll(modal)
+        }
+    }
 
     async function onActiveChange(active) {
         if (active) {
             drawTransform(modalRef, 0, 0)
             dispatch('open')
-            blockBody && disableBodyScroll(modalRef)
+            blockScroll(modalRef)
         } else {
             dispatch('close')
-            blockBody && enableBodyScroll(modalRef)
+            blockScroll(modalRef)
         }
     }
 
