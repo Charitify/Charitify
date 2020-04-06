@@ -1,10 +1,13 @@
 <script>
     import { modals } from '@store'
+    import { bodyScroll } from '@utils'
     import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'
     import TopCarousel from './_TopCarousel.svelte'
 
     export let items = []
     export let carousel = []
+
+    let modal = null
 
     function onClick(e) {
         modals.update(s => ({ ...s, ['modal-last-news']: { open: true, id: e.detail.item.id } }))
@@ -15,13 +18,18 @@
     function onCarouselClick({ detail }) {
         propsBox = { initIndex: detail.index }
     }
+
+    function onFancyClose() {
+        bodyScroll.disableScroll(modal)
+    }
 </script>
 
 <h1>Останні новини</h1>
 <Br size="20" />
 <NewsList {items} on:click={onClick}/>
 
-<Modal 
+<Modal
+    bind:ref={modal}
     id="last-news" 
     size="full"
     swipe="left right" 
@@ -32,7 +40,7 @@
             <Br/>
             
             <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox blockBody={false}>
+                <FancyBox on:close={onFancyClose}>
                     <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                     <section slot="box" class="flex full-width">
                         <Carousel items={carousel} {...propsBox}/>
@@ -46,7 +54,7 @@
             <br>
             
             <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox blockBody={false}>
+                <FancyBox on:close={onFancyClose}>
                     <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                     <section slot="box" class="flex full-width">
                         <Carousel items={carousel} {...propsBox}/>
@@ -60,7 +68,7 @@
             <br>
             
             <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox blockBody={false}>
+                <FancyBox on:close={onFancyClose}>
                     <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                     <section slot="box" class="flex full-width">
                         <Carousel items={carousel} {...propsBox}/>
@@ -74,7 +82,7 @@
             <br>
             
             <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox blockBody={false}>
+                <FancyBox on:close={onFancyClose}>
                     <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                     <section slot="box" class="flex full-width">
                         <Carousel items={carousel} {...propsBox}/>

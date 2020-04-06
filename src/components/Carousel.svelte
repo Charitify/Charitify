@@ -38,7 +38,6 @@
     }
 
     function onScroll(e) {
-        e.stopPropagation()
         try {
             getActiveDot(e.target)
         } catch (err) { console.warn('Carousel does not work.', err) }
