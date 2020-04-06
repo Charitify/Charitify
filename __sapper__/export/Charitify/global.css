@@ -585,11 +585,13 @@ button:not([class]):focus {
     flex: 1 1 0;
     overflow-x: hidden;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .scroll-x-center {
     scroll-snap-type: x mandatory;
     -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
 }
 
 .scroll-x-center > * {
@@ -602,6 +604,7 @@ button:not([class]):focus {
 .scroll-y-center {
     scroll-snap-type: y mandatory;
     -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
 }
 
 .scroll-y-center > * {
