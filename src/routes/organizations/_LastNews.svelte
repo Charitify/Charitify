@@ -1,6 +1,6 @@
 <script>
     import { modals } from '@store'
-    import { bodyScroll } from '@utils'
+    import { bodyScroll, safeGet } from '@utils'
     import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'
     import TopCarousel from './_TopCarousel.svelte'
 
@@ -16,6 +16,8 @@
         modals.update(s => ({ ...s, ['modal-last-news']: { open: true, id: e.detail.item.id } }))
     }
 
+    $: modal = safeGet(() => modalRef.children[0])
+
     // Carousel & FancyBox
     let propsBox = {}
     function onCarouselClick({ detail }) {
@@ -25,9 +27,9 @@
     function onToggleModal(open) {
         isModalOpen = open
         if (isModalOpen) {
-            bodyScroll.disableScroll(modalRef)
+            bodyScroll.disableScroll(modal)
         } else {
-            bodyScroll.enableScroll(modalRef)
+            bodyScroll.enableScroll(modal)
         }
     }
     function onToggleFancyBox(open) {
@@ -36,7 +38,7 @@
             bodyScroll.disableScroll(fancyRef)
         } else {
             bodyScroll.enableScroll(fancyRef)
-            bodyScroll.disableScroll(modalRef)
+            bodyScroll.disableScroll(modal)
         }
     }
 </script>
