@@ -3190,6 +3190,10 @@ function stopScrollOverflow(el) {
 	});
 }
 
+function detectScroll(el) {
+	container = el;
+}
+
 const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let $modals = get_store_value(modals);
 	let { items = [] } = $$props;
@@ -3246,7 +3250,7 @@ ${validate_component(Modal, "Modal").$$render(
 			},
 			{
 				default: () => `
-    <section class="${"container scroll-box scroll-y-center"}" style="${"flex: 1 1 auto; max-height: 100%"}"${add_attribute("this", scroller, 1)}>
+    <section${add_attribute("use", detectScroll, 0)} class="${"container scroll-box scroll-y-center"}" style="${"flex: 1 1 auto; max-height: 100%"}"${add_attribute("this", scroller, 1)}>
         ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
         
         <section class="${"flex"}" style="${"height: 240px"}">
