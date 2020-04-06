@@ -36,6 +36,7 @@
             bodyScroll.disableScroll(fancyRef)
         } else {
             bodyScroll.enableScroll(fancyRef)
+            bodyScroll.disableScroll(modalRef)
         }
     }
 </script>
