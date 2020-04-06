@@ -1,9 +1,8 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { fly } from "svelte/transition";
-    import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
     import { Swipe } from '@services'
-    import { safeGet, classnames, delay } from "@utils";
+    import { safeGet, classnames, delay, bodyScroll } from "@utils";
     import { modals } from "@store";
     import Portal from "./Portal.svelte";
 
@@ -40,10 +39,10 @@
 
     function blockScroll(modal) {
         if (blockBody && active && !isBodyBlocked) {
-            disableBodyScroll(modal)
+            bodyScroll.disableScroll();
             isBodyBlocked = true
         } else if (blockBody && !active && isBodyBlocked) {
-            enableBodyScroll(modal)
+            bodyScroll.enableScroll();
             isBodyBlocked = false
         }
     }

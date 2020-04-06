@@ -2,13 +2,20 @@
   import { onMount } from "svelte";
   let ref;
   let portal;
+  let portalWrapper;
 
   onMount(() => {
+    portalWrapper = document.getElementById("portal");
+    if (!portalWrapper) {
+        portalWrapper = document.createElement("div");
+        portalWrapper.id = 'portal'
+        document.body.appendChild(portalWrapper);
+    }
     portal = document.createElement("div");
     portal.className = "portal";
-    document.body.appendChild(portal);
+    portalWrapper.appendChild(portal);
     portal.appendChild(ref);
-    return () => document.body.removeChild(portal)
+    return () => portalWrapper.removeChild(portal)
   });
 
 </script>

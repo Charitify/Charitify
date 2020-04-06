@@ -1,4 +1,5 @@
 export * as _ from './lodash'
+export * as bodyScroll from './bodyScroll'
 
 export { default as delay } from './delay'
 export { default as safeGet } from './safeGet'

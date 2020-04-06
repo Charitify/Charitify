@@ -2,8 +2,7 @@
     import { createEventDispatcher } from 'svelte'
     import { fly } from 'svelte/transition'
     import { Swipe } from '@services'
-    import { classnames, delay } from '@utils'
-    import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+    import { classnames, delay, bodyScroll } from '@utils'
     import Portal from './Portal.svelte';
 
     const dispatch = createEventDispatcher()
@@ -37,9 +36,9 @@
 
         setTimeout(() => {
             if (active) {
-                blockBody && disableBodyScroll(fancyBox);
+                blockBody && bodyScroll.disableScroll();
             } else {
-                blockBody && enableBodyScroll(fancyBox);
+                blockBody && bodyScroll.enableScroll();
             }
         })
     }
