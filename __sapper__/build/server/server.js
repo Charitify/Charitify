@@ -3162,12 +3162,10 @@ ${validate_component(Modal, "Modal").$$render(
 		},
 		{},
 		{
-			default: ({ props }) => `
-    something ${escape(props.id)}
-
-    ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
-
-    <div class="${"container"}">
+			default: () => `
+    <div class="${"container scroll-box scroll-y-center"}">
+        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+        
         <section class="${"flex"}" style="${"height: 240px"}">
             ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
 				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
@@ -3179,6 +3177,59 @@ ${validate_component(Modal, "Modal").$$render(
             `
 			})}
         </section>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="${"flex"}" style="${"height: 240px"}">
+            ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
+				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+                    ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
+                </section>`,
+				default: () => `
+                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
+                
+            `
+			})}
+        </section>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="${"flex"}" style="${"height: 240px"}">
+            ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
+				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+                    ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
+                </section>`,
+				default: () => `
+                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
+                
+            `
+			})}
+        </section>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="${"flex"}" style="${"height: 240px"}">
+            ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
+				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+                    ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
+                </section>`,
+				default: () => `
+                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
+                
+            `
+			})}
+        </section>
+
+        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
     </div>
 `
 		}
