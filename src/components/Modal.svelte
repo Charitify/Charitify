@@ -25,6 +25,7 @@
 
     let active
     let modalRef = null
+    let isBodyBlocked = false
 
     $: isSwipe = {
         up: safeGet(() => swipe.includes('up') || swipe.includes('all')),
@@ -38,10 +39,12 @@
     $: blockScroll(modalRef)
 
     function blockScroll(modal) {
-        if (active) {
-            blockBody && disableBodyScroll(modal)
-        } else {
-            blockBody && enableBodyScroll(modal)
+        if (blockBody && active && !isBodyBlocked) {
+            disableBodyScroll(modal)
+            isBodyBlocked = true
+        } else if (blockBody && !active && isBodyBlocked) {
+            enableBodyScroll(modal)
+            isBodyBlocked = false
         }
     }
 
