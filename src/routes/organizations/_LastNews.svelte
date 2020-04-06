@@ -26,16 +26,13 @@
 <Modal 
     id="last-news" 
     size="full"
-    let:props={props}
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
-    something {props.id}
-
-    <Br/>
-
-    <div class="container">
-        <section class="flex" style="height: 240px">
+    <div class="container scroll-box scroll-y-center">
+        <Br/>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
             <FancyBox blockBody={false}>
                 <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                 <section slot="box" class="flex full-width">
@@ -43,5 +40,49 @@
                 </section>
             </FancyBox>
         </section>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+            <FancyBox blockBody={false}>
+                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                <section slot="box" class="flex full-width">
+                    <Carousel items={carousel} {...propsBox}/>
+                </section>
+            </FancyBox>
+        </section>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+            <FancyBox blockBody={false}>
+                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                <section slot="box" class="flex full-width">
+                    <Carousel items={carousel} {...propsBox}/>
+                </section>
+            </FancyBox>
+        </section>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+            <FancyBox blockBody={false}>
+                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                <section slot="box" class="flex full-width">
+                    <Carousel items={carousel} {...propsBox}/>
+                </section>
+            </FancyBox>
+        </section>
+
+        <Br/>
     </div>
 </Modal>
