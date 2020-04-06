@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
+    import { createEventDispatcher, tick } from 'svelte'
     import { fly } from "svelte/transition";
     import { Swipe } from '@services'
     import { safeGet, classnames, delay, bodyScroll } from "@utils";
@@ -16,6 +16,7 @@
     }
 
     export let id
+    export let ref = null
     export let size = 'full'    // small/medium/big/full
     export let swipe = []       // up down left right all
     export let open = null
@@ -23,7 +24,6 @@
     export let blockBody = true
 
     let active
-    let modalRef = null
     let isBodyBlocked = false
 
     $: isSwipe = {
@@ -35,26 +35,28 @@
     $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)
     $: classProp = classnames('modal', size, { active })
     $: onActiveChange(active)
-    $: blockScroll(modalRef)
+    $: blockScroll(ref)
 
     function blockScroll(modal) {
         if (blockBody && active && !isBodyBlocked) {
-            bodyScroll.disableScroll();
+            bodyScroll.disableScroll(modal);
             isBodyBlocked = true
         } else if (blockBody && !active && isBodyBlocked) {
-            bodyScroll.enableScroll();
+            bodyScroll.enableScroll(modal);
             isBodyBlocked = false
         }
     }
 
     async function onActiveChange(active) {
         if (active) {
-            drawTransform(modalRef, 0, 0)
+            drawTransform(ref, 0, 0)
+            blockScroll(ref)
+            await tick()
             dispatch('open')
-            blockScroll(modalRef)
         } else {
+            blockScroll(ref)
+            await tick()
             dispatch('close')
-            blockScroll(modalRef)
         }
     }
 
@@ -132,9 +134,9 @@
 
 {#if active !== null}
     <Portal>
-        <div 
+        <div
             id={`modal-${id}`}
-            bind:this={modalRef}
+            bind:this={ref}
             aria-hidden="true" 
             class={classProp}
             use:addSwipe

@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
+    import { createEventDispatcher, tick } from 'svelte'
     import { fly } from 'svelte/transition'
     import { Swipe } from '@services'
     import { classnames, delay, bodyScroll } from '@utils'
@@ -11,34 +11,36 @@
     const START_POSITION = 20
     const THRESHOLD = 100
 
+    export let ref = null
     export let blockBody = true
 
     let active = null
-    let fancyBox = null
     let slots = $$props.$$slots || {}
 
-    function onClick(e) {
+    async function onClick(e) {
         const newActive = !active
 
         setActive(newActive)
 
         if (newActive) {
-            drawTransform(fancyBox, 0)
+            drawTransform(ref, 0)
+            await tick()
             dispatch('open', e)
         } else {
-            drawTransform(fancyBox, START_POSITION)
+            drawTransform(ref, START_POSITION)
+            await tick()
             dispatch('close', e)
         }
     }
-     
+
     function setActive(isActive) {
         active = isActive
 
         setTimeout(() => {
             if (active) {
-                blockBody && bodyScroll.disableScroll();
+                blockBody && bodyScroll.disableScroll(ref);
             } else {
-                blockBody && bodyScroll.enableScroll();
+                blockBody && bodyScroll.enableScroll(ref);
             }
         })
     }
@@ -98,7 +100,7 @@
 {#if !slots.box}
     <Portal>
         <section
-                bind:this={fancyBox}
+                bind:this={ref}
                 use:swipe
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
@@ -114,7 +116,7 @@
 {#if active !== null && slots.box}
     <Portal>
         <section
-                bind:this={fancyBox}
+                bind:this={ref}
                 use:swipe
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
