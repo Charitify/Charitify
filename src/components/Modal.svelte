@@ -193,11 +193,6 @@
         overflow: hidden;
         background-color: rgba(var(--theme-color-primary));
     }
-    .modal-inner > * {
-        max-width: 100%;
-        max-height: 100%;
-    }
-
     .small .modal-inner {
         width: 200px;
         border-radius: var(--border-radius-big);

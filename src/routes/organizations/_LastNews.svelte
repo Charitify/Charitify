@@ -35,62 +35,60 @@
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
-    <section class="scroll-box scroll-y-center" style="height: 100vh">
-        <div class="container">
-            <Br/>
-            
-            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox on:close={onFancyClose}>
-                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                    <section slot="box" class="flex full-width">
-                        <Carousel items={carousel} {...propsBox}/>
-                    </section>
-                </FancyBox>
-            </section>
+    <section class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
+        <Br/>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+            <FancyBox on:close={onFancyClose}>
+                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                <section slot="box" class="flex full-width">
+                    <Carousel items={carousel} {...propsBox}/>
+                </section>
+            </FancyBox>
+        </section>
 
-            <br>
-            <br>
-            <br>
-            <br>
-            
-            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox on:close={onFancyClose}>
-                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                    <section slot="box" class="flex full-width">
-                        <Carousel items={carousel} {...propsBox}/>
-                    </section>
-                </FancyBox>
-            </section>
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+            <FancyBox on:close={onFancyClose}>
+                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                <section slot="box" class="flex full-width">
+                    <Carousel items={carousel} {...propsBox}/>
+                </section>
+            </FancyBox>
+        </section>
 
-            <br>
-            <br>
-            <br>
-            <br>
-            
-            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox on:close={onFancyClose}>
-                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                    <section slot="box" class="flex full-width">
-                        <Carousel items={carousel} {...propsBox}/>
-                    </section>
-                </FancyBox>
-            </section>
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+            <FancyBox on:close={onFancyClose}>
+                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                <section slot="box" class="flex full-width">
+                    <Carousel items={carousel} {...propsBox}/>
+                </section>
+            </FancyBox>
+        </section>
 
-            <br>
-            <br>
-            <br>
-            <br>
-            
-            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-                <FancyBox on:close={onFancyClose}>
-                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                    <section slot="box" class="flex full-width">
-                        <Carousel items={carousel} {...propsBox}/>
-                    </section>
-                </FancyBox>
-            </section>
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+            <FancyBox on:close={onFancyClose}>
+                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                <section slot="box" class="flex full-width">
+                    <Carousel items={carousel} {...propsBox}/>
+                </section>
+            </FancyBox>
+        </section>
 
-            <Br/>
-        </div>
+        <Br/>
     </section>
 </Modal>
