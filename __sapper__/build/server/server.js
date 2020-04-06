@@ -3194,7 +3194,7 @@ ${validate_component(Modal, "Modal").$$render(
 			},
 			{
 				default: () => `
-    <section class="${"scroll-box scroll-y-center"}">
+    <section class="${"scroll-box scroll-y-center"}" style="${"height: 100vh"}">
         <div class="${"container"}">
             ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
             
