@@ -3158,67 +3158,42 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items = [] } = $$props;
 	let { carousel = [] } = $$props;
-	let fancyRef;
-	let modalRef;
 
 	// Carousel & FancyBox
 	let propsBox = {};
 
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	if ($$props.carousel === void 0 && $$bindings.carousel && carousel !== void 0) $$bindings.carousel(carousel);
-	let $$settled;
-	let $$rendered;
 
-	do {
-		$$settled = true;
-		let modal = safeGet(() => modalRef.children[0]);
-
-		$$rendered = `<h1>Останні новини</h1>
+	return `<h1>Останні новини</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 ${validate_component(NewsList, "NewsList").$$render($$result, { items }, {}, {})}
 
 ${validate_component(Modal, "Modal").$$render(
-			$$result,
-			{
-				id: "last-news",
-				size: "full",
-				swipe: "left right",
-				blockBody: false,
-				startPosition: { x: 300, y: 0 },
-				ref: modalRef
-			},
-			{
-				ref: $$value => {
-					modalRef = $$value;
-					$$settled = false;
-				}
-			},
-			{
-				default: () => `
+		$$result,
+		{
+			id: "last-news",
+			size: "full",
+			swipe: "left right",
+			startPosition: { x: 300, y: 0 }
+		},
+		{},
+		{
+			default: () => `
     <section class="${"scroll-box scroll-y-center"}" style="${"height: 100vh"}">
         <div class="${"container"}">
             ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
             
             <section class="${"flex"}" style="${"height: 240px"}">
-                ${validate_component(FancyBox, "FancyBox").$$render(
-					$$result,
-					{ blockBody: false, ref: fancyRef },
-					{
-						ref: $$value => {
-							fancyRef = $$value;
-							$$settled = false;
-						}
-					},
-					{
-						box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+                ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
+				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
                         ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
                     </section>`,
-						default: () => `
+				default: () => `
                     ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
                     
                 `
-					}
-				)}
+			})}
             </section>
 
             <br>
@@ -3228,14 +3203,14 @@ ${validate_component(Modal, "Modal").$$render(
             
             <section class="${"flex"}" style="${"height: 240px"}">
                 ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
-					box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
                         ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
                     </section>`,
-					default: () => `
+				default: () => `
                     ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
                     
                 `
-				})}
+			})}
             </section>
 
             <br>
@@ -3245,14 +3220,14 @@ ${validate_component(Modal, "Modal").$$render(
             
             <section class="${"flex"}" style="${"height: 240px"}">
                 ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
-					box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
                         ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
                     </section>`,
-					default: () => `
+				default: () => `
                     ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
                     
                 `
-				})}
+			})}
             </section>
 
             <br>
@@ -3262,25 +3237,22 @@ ${validate_component(Modal, "Modal").$$render(
             
             <section class="${"flex"}" style="${"height: 240px"}">
                 ${validate_component(FancyBox, "FancyBox").$$render($$result, { blockBody: false }, {}, {
-					box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
                         ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
                     </section>`,
-					default: () => `
+				default: () => `
                     ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
                     
                 `
-				})}
+			})}
             </section>
 
             ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
         </div>
     </section>
 `
-			}
-		)}`;
-	} while (!$$settled);
-
-	return $$rendered;
+		}
+	)}`;
 });
 
 /* src/routes/organizations/_Certificates.svelte generated by Svelte v3.18.1 */
