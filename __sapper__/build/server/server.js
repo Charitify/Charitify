@@ -3171,6 +3171,7 @@ const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 	do {
 		$$settled = true;
+		let modal = safeGet(() => modalRef.children[0]);
 
 		$$rendered = `<h1>Останні новини</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
