@@ -55,77 +55,79 @@
     on:open={() => onToggleModal(true)}
     on:close={() => onToggleModal(false)}
 >
-    <div class="container scroll-box scroll-y-center">
-        <Br/>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox
-                bind:ref={fancyRef}
-                blockBody={false}
-                on:open={() => onToggleFancyBox(true)}
-                on:close={() => onToggleFancyBox(false)}
-            >
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
-        </section>
+    <section class="scroll-box scroll-y-center">
+        <div class="container">
+            <Br/>
+            
+            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+                <FancyBox
+                    bind:ref={fancyRef}
+                    blockBody={false}
+                    on:open={() => onToggleFancyBox(true)}
+                    on:close={() => onToggleFancyBox(false)}
+                >
+                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                    <section slot="box" class="flex full-width">
+                        <Carousel items={carousel} {...propsBox}/>
+                    </section>
+                </FancyBox>
+            </section>
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox 
-                blockBody={false}
-                on:open={() => onToggleFancyBox(true)}
-                on:close={() => onToggleFancyBox(false)}
-            >
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
-        </section>
+            <br>
+            <br>
+            <br>
+            <br>
+            
+            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+                <FancyBox 
+                    blockBody={false}
+                    on:open={() => onToggleFancyBox(true)}
+                    on:close={() => onToggleFancyBox(false)}
+                >
+                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                    <section slot="box" class="flex full-width">
+                        <Carousel items={carousel} {...propsBox}/>
+                    </section>
+                </FancyBox>
+            </section>
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox 
-                blockBody={false}
-                on:open={() => onToggleFancyBox(true)}
-                on:close={() => onToggleFancyBox(false)}
-            >
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
-        </section>
+            <br>
+            <br>
+            <br>
+            <br>
+            
+            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+                <FancyBox 
+                    blockBody={false}
+                    on:open={() => onToggleFancyBox(true)}
+                    on:close={() => onToggleFancyBox(false)}
+                >
+                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                    <section slot="box" class="flex full-width">
+                        <Carousel items={carousel} {...propsBox}/>
+                    </section>
+                </FancyBox>
+            </section>
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox 
-                blockBody={false}
-                on:open={() => onToggleFancyBox(true)}
-                on:close={() => onToggleFancyBox(false)}
-            >
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
-        </section>
+            <br>
+            <br>
+            <br>
+            <br>
+            
+            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+                <FancyBox 
+                    blockBody={false}
+                    on:open={() => onToggleFancyBox(true)}
+                    on:close={() => onToggleFancyBox(false)}
+                >
+                    <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
+                    <section slot="box" class="flex full-width">
+                        <Carousel items={carousel} {...propsBox}/>
+                    </section>
+                </FancyBox>
+            </section>
 
-        <Br/>
-    </div>
+            <Br/>
+        </div>
+    </section>
 </Modal>
