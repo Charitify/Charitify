@@ -40,10 +40,10 @@
         if (active) {
             drawTransform(modalRef, 0, 0)
             dispatch('open')
-            blockBody && disableBodyScroll()
+            blockBody && disableBodyScroll(modalRef)
         } else {
             dispatch('close')
-            blockBody && enableBodyScroll()
+            blockBody && enableBodyScroll(modalRef)
         }
     }
 

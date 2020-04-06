@@ -26,7 +26,7 @@
 <Modal 
     id="last-news" 
     size="full"
-    let:props={props} 
+    let:props={props}
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
@@ -34,7 +34,7 @@
 
     <Br/>
 
-    <div class="container" on:touchmove={e => e.stopPropagation()}>
+    <div class="container">
         <section class="flex" style="height: 240px">
             <FancyBox blockBody={false}>
                 <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
