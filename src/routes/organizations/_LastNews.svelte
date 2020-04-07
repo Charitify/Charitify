@@ -21,18 +21,21 @@
         propsBox = { initIndex: detail.index }
     }
 
+    let modalActive
     $: modalActive = safeGet(() => $modals['modal-last-news'].open)
     $: onTriggerModal(modalActive)
 
     function onFancyClose() {
-        bodyScroll.disableScroll(modal)
+        bodyScroll.disableScroll(scroller)
     }
 
     function onTriggerModal() {
-        if (modalActive) {
-            document.body.addEventListener('touchmove', preventScroll, { passive: false })
-        } else {
-            document.body.removeEventListener('touchmove', preventScroll, { passive: false })
+        if (typeof window !== 'undefined') {
+            if (modalActive) {
+                document.body.addEventListener('touchmove', preventScroll, { passive: false })
+            } else {
+                document.body.removeEventListener('touchmove', preventScroll, { passive: false })
+            }
         }
     }
 
@@ -74,7 +77,6 @@
     }
 
     function detectScroll(el) {
-        container = el
 
         function getPercentage(el) {
             let height = el.clientHeight;
@@ -83,17 +85,22 @@
             return scrollTop / scrollHeight;
         }
         
-
-        function controllScroll(e) {
-            const percentage = getPersentage(container)
+        function controllScroll(el) {
+            const percentage = getPercentage(el)
             if (percentage <= 0) {
-                container.scrollTop = 1
+                el.scrollTop = 1
+                console.log('red line of scroller')
             } else if (percentage >= 100) {
                 let height = el.clientHeight;
                 let scrollHeight = el.scrollHeight - height;
-                container.scrollTop = scrollHeight - 1
+                el.scrollTop = scrollHeight - 1
+                console.log('red line of scroller')
             }
+            console.log(percentage)
         }
+
+        el.addEventListener('touchmove', controllScroll.bind(null, el))
+        el.addEventListener('scroll', controllScroll.bind(null, el))
     }
 </script>
 
@@ -108,7 +115,7 @@
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
-    <section bind:this={scroller} use={detectScroll} class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
+    <section bind:this={scroller} use:detectScroll class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
         <Br/>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
