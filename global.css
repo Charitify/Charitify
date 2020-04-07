@@ -307,8 +307,6 @@ body {
     flex-direction: column;
     align-content: stretch;
     justify-content: stretch;
-    overflow-x: hidden;
-    overflow-y: auto;
     text-align: left;
     scroll-behavior: smooth;
     touch-action: manipulation;
