@@ -3190,10 +3190,6 @@ function stopScrollOverflow(el) {
 	});
 }
 
-function detectScroll(el) {
-	container = el;
-}
-
 const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let $modals = get_store_value(modals);
 	let { items = [] } = $$props;
@@ -3204,11 +3200,15 @@ const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	// Carousel & FancyBox
 	let propsBox = {};
 
+	let modalActive;
+
 	function onTriggerModal() {
-		if (modalActive) {
-			document.body.addEventListener("touchmove", preventScroll, { passive: false });
-		} else {
-			document.body.removeEventListener("touchmove", preventScroll, { passive: false });
+		if (typeof window !== "undefined") {
+			if (modalActive) {
+				document.body.addEventListener("touchmove", preventScroll, { passive: false });
+			} else {
+				document.body.removeEventListener("touchmove", preventScroll, { passive: false });
+			}
 		}
 	}
 
@@ -3219,7 +3219,7 @@ const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 	do {
 		$$settled = true;
-		let modalActive = safeGet(() => $modals["modal-last-news"].open);
+		modalActive = safeGet(() => $modals["modal-last-news"].open);
 
 		 {
 			onTriggerModal();
@@ -3250,7 +3250,7 @@ ${validate_component(Modal, "Modal").$$render(
 			},
 			{
 				default: () => `
-    <section${add_attribute("use", detectScroll, 0)} class="${"container scroll-box scroll-y-center"}" style="${"flex: 1 1 auto; max-height: 100%"}"${add_attribute("this", scroller, 1)}>
+    <section class="${"container scroll-box scroll-y-center"}" style="${"flex: 1 1 auto; max-height: 100%"}"${add_attribute("this", scroller, 1)}>
         ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
         
         <section class="${"flex"}" style="${"height: 240px"}">
