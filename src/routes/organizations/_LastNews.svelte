@@ -85,7 +85,8 @@
             return scrollTop / scrollHeight;
         }
         
-        function controllScroll(el) {
+        function controllScroll(el, e) {
+            e.stopPropagation()
             const percentage = getPercentage(el)
             if (percentage <= 0) {
                 el.scrollTop = 1
