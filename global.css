@@ -612,13 +612,6 @@ button:not([class]):focus {
     scroll-snap-align: center;
 }
 
-.block-scroll {
-    touch-action: none;
-    -webkit-overflow-scrolling: none;
-    overflow: hidden;
-    overscroll-behavior: none;
-}
-
 /* ----------=========( Text align )=========----------- */
 .text-center {
     text-align: center;
