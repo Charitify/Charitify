@@ -152,7 +152,7 @@
         touch-action: manipulation;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
-        transition-timing-function: ease-out;
+        transition-timing-function: linear;
         opacity: 0;
         padding: 0 var(--screen-padding);
         transform: translate3d(0,20px,0);

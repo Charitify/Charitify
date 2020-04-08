@@ -21,16 +21,7 @@
         propsBox = { initIndex: detail.index }
     }
 
-    let modalActive
     $: modalActive = safeGet(() => $modals['modal-last-news'].open)
-
-    function onFancyClose() {
-        bodyScroll.disableScroll()
-    }
-
-    function detectScroll() {
-        bodyScroll.disableScroll()
-    }
 </script>
 
 <h1>Останні новини</h1>
@@ -44,11 +35,11 @@
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
-    <section bind:this={scroller} use:detectScroll class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
+    <section class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
         <Br/>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox on:close={onFancyClose}>
+            <FancyBox>
                 <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                 <section slot="box" class="flex full-width">
                     <Carousel items={carousel} {...propsBox}/>
@@ -62,7 +53,7 @@
         <br>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox on:close={onFancyClose}>
+            <FancyBox>
                 <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                 <section slot="box" class="flex full-width">
                     <Carousel items={carousel} {...propsBox}/>
@@ -76,7 +67,7 @@
         <br>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox on:close={onFancyClose}>
+            <FancyBox>
                 <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                 <section slot="box" class="flex full-width">
                     <Carousel items={carousel} {...propsBox}/>
@@ -90,7 +81,7 @@
         <br>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox on:close={onFancyClose}>
+            <FancyBox>
                 <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
                 <section slot="box" class="flex full-width">
                     <Carousel items={carousel} {...propsBox}/>
