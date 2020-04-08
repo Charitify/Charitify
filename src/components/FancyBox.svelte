@@ -34,10 +34,10 @@
 
         await tick()
         if (active) {
-            blockBody && bodyScroll.disableScroll(ref);
+            blockBody && bodyScroll.disableScroll();
             dispatch('open')
         } else {
-            blockBody && bodyScroll.enableScroll(ref);
+            blockBody && bodyScroll.enableScroll();
             dispatch('close')
         }
     }

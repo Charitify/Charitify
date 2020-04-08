@@ -25,12 +25,11 @@
     $: modalActive = safeGet(() => $modals['modal-last-news'].open)
 
     function onFancyClose() {
-        console.log('here')
-        bodyScroll.disableScroll(scroller)
+        bodyScroll.disableScroll()
     }
 
-    function detectScroll(el) {
-        bodyScroll.disableScroll(el)
+    function detectScroll() {
+        bodyScroll.disableScroll()
     }
 </script>
 
