@@ -7,7 +7,7 @@
 
     const dispatch = createEventDispatcher()
     
-    const DURATION = 0
+    const DURATION = 150
     const START_POSITION = 20
     const THRESHOLD = 100
 
@@ -157,6 +157,7 @@
         padding: 0 var(--screen-padding);
         transform: translate3d(0,20px,0);
         pointer-events: none;
+        will-change: transform, opacity;
     }
 
     .fancy-box-ghost > * {
