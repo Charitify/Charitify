@@ -24,25 +24,22 @@
 
         if (newActive) {
             drawTransform(ref, 0)
-            await tick()
-            dispatch('open', e)
         } else {
             drawTransform(ref, START_POSITION)
-            await tick()
-            dispatch('close', e)
         }
     }
 
-    function setActive(isActive) {
+    async function setActive(isActive) {
         active = isActive
 
-        setTimeout(() => {
-            if (active) {
-                blockBody && bodyScroll.disableScroll(ref);
-            } else {
-                blockBody && bodyScroll.enableScroll(ref);
-            }
-        })
+        await tick()
+        if (active) {
+            blockBody && bodyScroll.disableScroll(ref);
+            dispatch('open')
+        } else {
+            blockBody && bodyScroll.enableScroll(ref);
+            dispatch('close')
+        }
     }
 
     $: classProp = classnames('fancy-box-ghost', { active })
