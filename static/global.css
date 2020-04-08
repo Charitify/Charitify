@@ -324,7 +324,6 @@ body {
     flex-direction: column;
     align-content: stretch;
     justify-content: stretch;
-    transition: opacity .3s ease-in-out;
 
     --header-height: 50px;
 }
@@ -618,10 +617,6 @@ button:not([class]):focus {
     height: 100%;
     width: 100%;
     overflow: hidden;
-}
-
-.body-scroll-lock #sapper {
-    opacity: .25;
 }
 
 /* ----------=========( Text align )=========----------- */
