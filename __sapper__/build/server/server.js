@@ -301,32 +301,31 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 });
 
 function disableScroll() {
-    const scrollDistance = document.documentElement.scrollTop;
+    // const scrollDistance = document.documentElement.scrollTop
 
-    document.documentElement.classList.add('overflow-hidden');
-    document.body.classList.add('overflow-hidden');
-    document.body.addEventListener("touchmove", freezeVp, false);
-    
-    const vpH = window.innerHeight;
-    document.documentElement.style.height = vpH.toString() + "px";
-    document.body.style.height = vpH.toString() + "px";
+    document.body.classList.add('body-scroll-lock');
 
-    console.log(scrollDistance);
-    document.body.scrollTop = scrollDistance;
+    // const vpH = window.innerHeight;
+    // document.documentElement.style.height = vpH.toString() + "px";
+    // document.body.style.height = vpH.toString() + "px";
+
+    // console.log(scrollDistance)
+    // document.body.scrollTop = scrollDistance
 }
 
 function enableScroll() {
-    document.documentElement.style.height = null;
-    document.body.style.height = null;
+    document.body.classList.remove('body-scroll-lock');
+    // document.documentElement.style.height = null
+    // document.body.style.height = null
 
-    document.documentElement.classList.remove('overflow-hidden');
-    document.body.classList.remove('overflow-hidden');
-    document.body.removeEventListener("touchmove", freezeVp, false);
+    // document.documentElement.classList.remove('overflow-hidden')
+    // document.body.classList.remove('overflow-hidden')
+    // document.body.removeEventListener("touchmove", freezeVp, false);
 }
 
-function freezeVp(e) {
-    e.preventDefault();
-}
+// function freezeVp(e) {
+    // e.preventDefault();
+// };
 
 async function delay (ms, isError) {
   return new Promise((res, rej) => setTimeout(isError ? rej : res, ms))
