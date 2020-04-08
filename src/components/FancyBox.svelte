@@ -7,7 +7,7 @@
 
     const dispatch = createEventDispatcher()
     
-    const DURATION = 250
+    const DURATION = 0
     const START_POSITION = 20
     const THRESHOLD = 100
 
