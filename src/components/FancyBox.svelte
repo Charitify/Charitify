@@ -144,7 +144,7 @@
         el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
     }
 
-    // 
+    // style={`transition-duration: ${DURATION}ms`}
 </script>
 
 <section role="button" class={classPropWrap} on:click={onClick}>
@@ -157,7 +157,6 @@
                 bind:this={container}
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
-                style={`transition-duration: ${DURATION}ms`}
                 on:touchmove={e => e.stopPropagation()}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
@@ -174,7 +173,7 @@
                 bind:this={container}
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
-                style={`transition-duration: ${DURATION}ms`}
+                
         >
             <button type="button" on:click={onClick}>&#10005;</button>
             <main bind:this={ref} use:swipe>
