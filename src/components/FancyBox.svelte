@@ -35,9 +35,11 @@
 
         await tick()
         if (active) {
+            setDuration(container, 0)
             blockBody && bodyScroll.disableScroll();
             dispatch('open')
         } else {
+            setDuration(container, DURATION)
             blockBody && bodyScroll.enableScroll();
             dispatch('close')
         }
@@ -66,11 +68,9 @@
             ]
         });
 
-        let managerInner = new Hammer(ref, {
-            recognizers: [
-                [Hammer.Pinch, { enable: true }],
-            ]
-        });
+        let managerInner = new Hammer(ref);
+
+        managerInner.get('pinch').set({ enable: true });
 
         managerInner.on('pinch', function(e) {
             console.log(e)
@@ -87,7 +87,6 @@
 
         manager.on('panend', async function(e) {
             let el = container
-            console.log(e.deltaY)
             if (e.deltaY > THRESHOLD) {
                 setActive(false)
                 drawTransform(el, ySwipe + 50)
@@ -105,6 +104,8 @@
                 drawTransform(el, ySwipe)
                 el.style.opacity = null
             } else {
+                setDuration(container, DURATION)
+                setTimeout(() => setDuration(container, 0), DURATION)
                 ySwipe = 0
                 drawTransform(el, ySwipe)
                 el.style.opacity = null
@@ -152,6 +153,9 @@
     function drawTransform(el, y) {
         el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
     }
+    function setDuration(el, ms) {
+        el && (el.style.transitionDuration = `${ms}ms`)
+    }
     function drawOpacity(el, y) {
         el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
     }
@@ -185,7 +189,6 @@
                 bind:this={container}
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
-                
         >
             <button type="button" on:click={onClick}>&#10005;</button>
             <main bind:this={ref} use:swipe>
