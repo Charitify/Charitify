@@ -1,4 +1,4 @@
-import{c as t}from"./client.4ddd69c2.js";var e=t((function(t){
+import{c as t}from"./client.52329a07.js";var e=t((function(t){
 /*! Hammer.JS - v2.0.7 - 2016-04-22
  * http://hammerjs.github.io/
  *
