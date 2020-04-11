@@ -12,7 +12,7 @@
     const THRESHOLD = 100
 
     export let ref = null
-    export let blockBody = true
+    // export let blockBody = true
 
     let active = null
     let slots = $$props.$$slots || {}
@@ -22,11 +22,11 @@
 
         setActive(newActive)
 
-        if (newActive) {
-            drawTransform(ref, 0)
-        } else {
-            drawTransform(ref, START_POSITION)
-        }
+        // if (newActive) {
+        //     drawTransform(ref, 0)
+        // } else {
+        //     drawTransform(ref, START_POSITION)
+        // }
     }
 
     async function setActive(isActive) {
@@ -34,10 +34,10 @@
 
         await tick()
         if (active) {
-            blockBody && bodyScroll.disableScroll();
+            // blockBody && bodyScroll.disableScroll();
             dispatch('open')
         } else {
-            blockBody && bodyScroll.enableScroll();
+            // blockBody && bodyScroll.enableScroll();
             dispatch('close')
         }
     }
@@ -45,49 +45,77 @@
     $: classProp = classnames('fancy-box-ghost', { active })
     $: classPropWrap = classnames('fancy-box', $$props.class)
 
-    let ySwipe = START_POSITION
-    function swipe(el) {
-        new Swipe(el)
-                .run()
-                .onUp(handleVerticalSwipe)
-                .onDown(handleVerticalSwipe)
-                .onTouchEnd(async () => {
-                    if (ySwipe > THRESHOLD) {
-                        setActive(false)
-                        drawTransform(el, ySwipe + 50)
-                        drawOpacity(el, ySwipe + 50)
-                        await delay(DURATION)
-                    } else if (ySwipe < -THRESHOLD) {
-                        setActive(false)
-                        drawTransform(el, ySwipe - 50)
-                        drawOpacity(el, ySwipe - 50)
-                        await delay(DURATION)
-                    }
+    // Declare global variables to swiped correct distance
+    let deltaX = 0;
+    let deltaY = 0;
 
-                    if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {
-                        ySwipe = START_POSITION
-                        drawTransform(el, ySwipe)
-                        el.style.opacity = null
-                    } else {
-                        ySwipe = 0
-                        drawTransform(el, ySwipe)
-                        el.style.opacity = null
-                    }
-                })
+    async function swipe(el) {
+        const { default: Hammer } = await import('hammerjs')
+
+        console.log(Hammer)
+
+        let manager = new Hammer.Manager(el);
+        let Swipe = new Hammer.Swipe();
+        manager.add(Swipe);
+
+        // Subscribe to a desired event
+        manager.on('swipe', function(e) {
+            console.log(e)
+            deltaY = deltaY + e.deltaY;
+            let direction = e.offsetDirection;
+            let translate3d = 'translate3d(0, ' + deltaY + 'px, 0)';
+        
+            if (direction === 8 || direction === 16) {
+                e.target.style.transform = translate3d;
+            }
+        });
     }
 
-    function handleVerticalSwipe(yDown, yUp, evt, el) {
-        ySwipe = yUp - yDown
-        drawTransform(el, ySwipe)
-        drawOpacity(el, ySwipe)
-    }
+    // let ySwipe = START_POSITION
+    // function swipe(el) {
+    //     new Swipe(el)
+    //             .run()
+    //             .onUp(handleVerticalSwipe)
+    //             .onDown(handleVerticalSwipe)
+    //             .onTouchEnd(async () => {
+    //                 if (ySwipe > THRESHOLD) {
+    //                     setActive(false)
+    //                     drawTransform(el, ySwipe + 50)
+    //                     drawOpacity(el, ySwipe + 50)
+    //                     await delay(DURATION)
+    //                 } else if (ySwipe < -THRESHOLD) {
+    //                     setActive(false)
+    //                     drawTransform(el, ySwipe - 50)
+    //                     drawOpacity(el, ySwipe - 50)
+    //                     await delay(DURATION)
+    //                 }
 
-    function drawTransform(el, y) {
-        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
-    }
-    function drawOpacity(el, y) {
-        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
-    }
+    //                 if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {
+    //                     ySwipe = START_POSITION
+    //                     drawTransform(el, ySwipe)
+    //                     el.style.opacity = null
+    //                 } else {
+    //                     ySwipe = 0
+    //                     drawTransform(el, ySwipe)
+    //                     el.style.opacity = null
+    //                 }
+    //             })
+    // }
+
+    // function handleVerticalSwipe(yDown, yUp, evt, el) {
+    //     ySwipe = yUp - yDown
+    //     drawTransform(el, ySwipe)
+    //     drawOpacity(el, ySwipe)
+    // }
+
+    // function drawTransform(el, y) {
+    //     el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
+    // }
+    // function drawOpacity(el, y) {
+    //     el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
+    // }
+
+    // 
 </script>
 
 <section role="button" class={classPropWrap} on:click={onClick}>
@@ -97,15 +125,15 @@
 {#if !slots.box}
     <Portal>
         <section
-                bind:this={ref}
-                use:swipe
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
                 style={`transition-duration: ${DURATION}ms`}
                 on:touchmove={e => e.stopPropagation()}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
-            <slot></slot>
+            <main bind:this={ref} use:swipe>
+                <slot></slot>
+            </main>
         </section>
     </Portal>  
 {/if}
@@ -113,14 +141,14 @@
 {#if active !== null && slots.box}
     <Portal>
         <section
-                bind:this={ref}
-                use:swipe
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
                 style={`transition-duration: ${DURATION}ms`}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
-            <slot name="box"></slot>
+            <main bind:this={ref} use:swipe>
+                <slot name="box"></slot>
+            </main>
         </section>
     </Portal>
 {/if}
@@ -158,6 +186,17 @@
         transform: translate3d(0,20px,0);
         pointer-events: none;
         will-change: transform, opacity;
+    }
+
+    main {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        align-items: stretch;
+        transition: .1s ease-in-out;
     }
 
     .fancy-box-ghost > * {
