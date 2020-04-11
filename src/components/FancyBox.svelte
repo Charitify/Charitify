@@ -66,6 +66,18 @@
             ]
         });
 
+        let managerInner = new Hammer(ref, {
+            recognizers: [
+                [Hammer.Pinch, { enable: true }],
+            ]
+        });
+
+        managerInner.on('pinch', function(e) {
+            console.log(e)
+            e.targe.innerHTML = e.toString()
+            alert(e)
+        })
+
         manager.on('panup pandown', async function(e) {
             ySwipe = e.deltaY
             let el = container
