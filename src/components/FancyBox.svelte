@@ -12,7 +12,8 @@
     const THRESHOLD = 100
 
     export let ref = null
-    // export let blockBody = true
+    export let container = null
+    export let blockBody = true
 
     let active = null
     let slots = $$props.$$slots || {}
@@ -22,11 +23,11 @@
 
         setActive(newActive)
 
-        // if (newActive) {
-        //     drawTransform(ref, 0)
-        // } else {
-        //     drawTransform(ref, START_POSITION)
-        // }
+        if (newActive) {
+            drawTransform(ref, 0)
+        } else {
+            drawTransform(ref, START_POSITION)
+        }
     }
 
     async function setActive(isActive) {
@@ -34,10 +35,10 @@
 
         await tick()
         if (active) {
-            // blockBody && bodyScroll.disableScroll();
+            blockBody && bodyScroll.disableScroll();
             dispatch('open')
         } else {
-            // blockBody && bodyScroll.enableScroll();
+            blockBody && bodyScroll.enableScroll();
             dispatch('close')
         }
     }
@@ -45,28 +46,56 @@
     $: classProp = classnames('fancy-box-ghost', { active })
     $: classPropWrap = classnames('fancy-box', $$props.class)
 
-    // Declare global variables to swiped correct distance
-    let deltaX = 0;
-    let deltaY = 0;
-
+    let ySwipe = START_POSITION
     async function swipe(el) {
+        /**
+         *  DIRECTION_NONE	        1
+         *  DIRECTION_LEFT	        2
+         *  DIRECTION_RIGHT	        4
+         *  DIRECTION_UP	        8
+         *  DIRECTION_DOWN	        16
+         *  DIRECTION_HORIZONTAL	6
+         *  DIRECTION_VERTICAL	    24
+         *  DIRECTION_ALL	        30
+         */
         const { default: Hammer } = await import('hammerjs')
 
-        console.log(Hammer)
+        let manager = new Hammer(container, {
+            recognizers: [
+                [Hammer.Pan, { direction: Hammer.DIRECTION_VERTICAL }],
+            ]
+        });
 
-        let manager = new Hammer.Manager(el);
-        let Swipe = new Hammer.Swipe();
-        manager.add(Swipe);
+        manager.on('panup pandown', async function(e) {
+            ySwipe = e.deltaY
+            let el = container
+            drawTransform(el, ySwipe)
+            drawOpacity(el, ySwipe)
+        })
 
-        // Subscribe to a desired event
-        manager.on('swipe', function(e) {
-            console.log(e)
-            deltaY = deltaY + e.deltaY;
-            let direction = e.offsetDirection;
-            let translate3d = 'translate3d(0, ' + deltaY + 'px, 0)';
-        
-            if (direction === 8 || direction === 16) {
-                e.target.style.transform = translate3d;
+        manager.on('panend', async function(e) {
+            let el = container
+            console.log(e.deltaY)
+            if (e.deltaY > THRESHOLD) {
+                setActive(false)
+                drawTransform(el, ySwipe + 50)
+                drawOpacity(el, ySwipe + 50)
+                await delay(DURATION)
+            } else if (e.deltaY < -THRESHOLD) {
+                setActive(false)
+                drawTransform(el, ySwipe - 50)
+                drawOpacity(el, ySwipe - 50)
+                await delay(DURATION)
+            }
+
+            if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {
+                ySwipe = START_POSITION
+                drawTransform(el, ySwipe)
+                el.style.opacity = null
+            } else {
+                ySwipe = 0
+                drawTransform(el, ySwipe)
+                el.style.opacity = null
             }
         });
     }
@@ -108,12 +137,12 @@
     //     drawOpacity(el, ySwipe)
     // }
 
-    // function drawTransform(el, y) {
-    //     el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
-    // }
-    // function drawOpacity(el, y) {
-    //     el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
-    // }
+    function drawTransform(el, y) {
+        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
+    }
+    function drawOpacity(el, y) {
+        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
+    }
 
     // 
 </script>
@@ -125,6 +154,7 @@
 {#if !slots.box}
     <Portal>
         <section
+                bind:this={container}
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
                 style={`transition-duration: ${DURATION}ms`}
@@ -141,6 +171,7 @@
 {#if active !== null && slots.box}
     <Portal>
         <section
+                bind:this={container}
                 in:fly="{{ y: START_POSITION, duration: 200 }}"
                 class={classProp}
                 style={`transition-duration: ${DURATION}ms`}
@@ -182,7 +213,6 @@
         outline: 20px solid rgba(var(--color-black), .75);
         transition-timing-function: linear;
         opacity: 0;
-        padding: 0 var(--screen-padding);
         transform: translate3d(0,20px,0);
         pointer-events: none;
         will-change: transform, opacity;
@@ -194,9 +224,10 @@
         height: 100%;
         display: flex;
         flex-direction: column;
-        justify-items: center;
+        justify-content: center;
         align-items: stretch;
         transition: .1s ease-in-out;
+        padding: 0 var(--screen-padding);
     }
 
     .fancy-box-ghost > * {
