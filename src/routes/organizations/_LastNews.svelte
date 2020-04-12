@@ -11,8 +11,8 @@
     let modal = null
     let scroller = null
 
-    function onClick(e) {
-        modals.update(s => ({ ...s, ['modal-last-news']: { open: true, id: e.detail.item.id } }))
+    function onClick(open, e) {
+        modals.update(s => ({ ...s, ['modal-last-news']: { open, id: safeGet(() => e.detail.item.id) } }))
     }
 
     // Carousel & FancyBox
@@ -26,7 +26,7 @@
 
 <h1>Останні новини</h1>
 <Br size="20" />
-<NewsList {items} on:click={onClick}/>
+<NewsList {items} on:click={onClick.bind(null, true)}/>
 
 <Modal
     bind:ref={modal}
@@ -35,6 +35,11 @@
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
+    <header class="flex flex-align-center flex-justify-between" style="background-color: rgb(var(--color-info))">
+        <h2 style="padding: 15px 20px">Закрити</h2>
+        <button type="button" on:click={onClick.bind(null, false)} class="close">&#10005;</button>
+    </header>
+
     <section class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
         <Br/>
         
@@ -92,3 +97,14 @@
         <Br/>
     </section>
 </Modal>
+
+<style>
+    button.close {
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+    }
+</style>
