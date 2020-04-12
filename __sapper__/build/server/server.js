@@ -304,7 +304,6 @@ function disableScroll(el) {
     if (document.documentElement.classList.contains('body-scroll-lock')) {
         return
     }
-    // lastScrollPosition = document.documentElement.scrollTop
     document.body.classList.add('body-scroll-lock');
 
     if (el && el.parentElement) {
@@ -312,8 +311,6 @@ function disableScroll(el) {
         el.parentElement.ontouchmove = (e) => (e.stopPropagation());
         el.parentElement.ontouchend = (e) => (e.stopPropagation());
     }
-    // document.body.style.position = `relative`
-    // document.body.style.top = `-${lastScrollPosition}px`
 }
 
 function enableScroll(el) {
@@ -324,9 +321,6 @@ function enableScroll(el) {
         el.parentElement.ontouchmove = null;
         el.parentElement.ontouchend = null;
     }
-//     // document.body.style.position = null
-//     // document.body.style.top = null
-//     // document.documentElement.scrollTop = lastScrollPosition
 }
 
 async function delay (ms, isError) {
