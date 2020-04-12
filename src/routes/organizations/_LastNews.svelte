@@ -22,6 +22,15 @@
     }
 
     $: modalActive = safeGet(() => $modals['modal-last-news'].open)
+
+    function synteticScroll(el) {
+        el.ontouchmove = function(e) {
+            e.preventDefault()
+            e.stopPropagation()
+
+            console.log(e)
+        }
+    }
 </script>
 
 <h1>Останні новини</h1>
@@ -40,7 +49,7 @@
         <button type="button" on:click={onClick.bind(null, false)} class="close">&#10005;</button>
     </header>
 
-    <section class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
+    <section use:synteticScroll class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
         <Br/>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
