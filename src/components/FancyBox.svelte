@@ -88,7 +88,8 @@
     }
 
     function drawTransform(el, y) {
-        el && (el.style.transform = `translate3d(0, ${y}px, 0)`)
+        let scale = 1 - Math.abs(y / window.innerHeight)
+        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, 0, ${y})`)
     }
     function setDuration(el, ms) {
         el && (el.style.transitionDuration = `${ms}ms`)
@@ -155,6 +156,7 @@
         align-items: stretch;
         justify-content: center;
         flex-direction: column;
+        user-select: none;
         touch-action: manipulation;
         background-color: rgba(var(--color-black), .75);
         outline: 20px solid rgba(var(--color-black), .75);
