@@ -6,19 +6,15 @@ export function disableScroll(el) {
     }
     document.body.classList.add('body-scroll-lock')
 
-    if (el && el.parentElement) {
-        el.parentElement.ontouchstart = (e) => (e.stopPropagation());
-        el.parentElement.ontouchmove = (e) => (e.stopPropagation());
-        el.parentElement.ontouchend = (e) => (e.stopPropagation());
-    }
+    document.body.ontouchstart = (e) => (e.stopPropagation());
+    document.body.ontouchmove = (e) => (console.log(e.touches[0].clientY), e.stopPropagation());
+    document.body.ontouchend = (e) => (e.stopPropagation());
 }
 
 export function enableScroll(el) {
     document.body.classList.remove('body-scroll-lock')
 
-    if (el && el.parentElement) {
-        el.parentElement.ontouchstart = null;
-        el.parentElement.ontouchmove = null;
-        el.parentElement.ontouchend = null;
-    }
+    document.body.ontouchstart = null;
+    document.body.ontouchmove = null;
+    document.body.ontouchend = null;
 }
