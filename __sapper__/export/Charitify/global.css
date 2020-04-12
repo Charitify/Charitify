@@ -614,10 +614,10 @@ button:not([class]):focus {
 }
 
 .body-scroll-lock {
-    position: fixed;
     height: 100%;
     width: 100%;
     overflow: hidden;
+    -webkit-overflow-scrolling: auto;
 }
 
 .body-scroll-lock #sapper {
