@@ -299,7 +299,7 @@ input::-webkit-inner-spin-button {
 }
 
 html {
-     /* height: 100%; */ /* Commented out for correct working swiping of the FancyBox on IOS. */
+    height: 100%; /* Commented out for correct working swiping of the FancyBox on IOS. */
 }
 
 body {
