@@ -8,9 +8,9 @@ export function disableScroll(el) {
     document.body.classList.add('body-scroll-lock')
 
     if (el && el.parentElement) {
-        el.parentElement.ontouchstart = (e) => (e.preventDefault(), e.stopPropagation());
-        el.parentElement.ontouchmove = (e) => (e.preventDefault(), e.stopPropagation());
-        el.parentElement.ontouchend = (e) => (e.preventDefault(), e.stopPropagation());
+        el.parentElement.ontouchstart = (e) => (e.stopPropagation());
+        el.parentElement.ontouchmove = (e) => (e.stopPropagation());
+        el.parentElement.ontouchend = (e) => (e.stopPropagation());
     }
     // document.body.style.position = `relative`
     // document.body.style.top = `-${lastScrollPosition}px`
