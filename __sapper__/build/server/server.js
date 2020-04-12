@@ -306,9 +306,9 @@ function disableScroll(el) {
     }
     document.body.classList.add('body-scroll-lock');
 
-    document.body.ontouchstart = (e) => (e.stopPropagation());
-    document.body.ontouchmove = (e) => (console.log(e.touches[0].clientY), e.stopPropagation());
-    document.body.ontouchend = (e) => (e.stopPropagation());
+    document.body.ontouchstart = (e) => (e.preventDefault(), e.stopPropagation());
+    document.body.ontouchmove = (e) => (console.log(e.touches[0].clientY), e.preventDefault(), e.stopPropagation());
+    document.body.ontouchend = (e) => (e.preventDefault(), e.stopPropagation());
 }
 
 function enableScroll(el) {
