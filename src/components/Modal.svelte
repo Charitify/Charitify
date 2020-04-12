@@ -49,6 +49,8 @@
 
     async function onActiveChange(active) {
         if (active) {
+            setDuration(ref, DURATION)
+            setTimeout(() => setDuration(ref, 0), DURATION)
             drawTransform(ref, 0, 0)
             blockScroll(ref)
             await tick()
@@ -94,6 +96,8 @@
                         drawOpacity(el, xSwipe, ySwipe + 50)
                         await delay(DURATION)
                     } else if (ySwipe < -THRESHOLD) {
+                        setDuration(ref, DURATION)
+                        setTimeout(() => setDuration(ref, 0), DURATION)
                         setActive(false)
                         drawTransform(el, xSwipe, ySwipe - 50)
                         drawOpacity(el, xSwipe, ySwipe - 50)
@@ -101,6 +105,8 @@
                     }
 
                     if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {
+                        setDuration(ref, DURATION)
+                        setTimeout(() => setDuration(ref, 0), DURATION)
                         drawTransform(el, 0, 0)
                     } else {
                         drawTransform(el, startPosition.x, startPosition.y)
@@ -124,7 +130,12 @@
     }
 
     function drawTransform(el, x, y) {
-        el && (el.style.transform = `translate3d(${x}px, ${y}px, 0)`)
+        const delta = Math.abs(x) > Math.abs(y) ? x : y
+        let scale = 1 - Math.abs(delta / window.innerHeight)
+        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${x}, ${y})`)
+    }
+     function setDuration(el, ms) {
+        el && (el.style.transitionDuration = `${ms}ms`)
     }
     function drawOpacity(el, x, y) {
         const delta = Math.abs(x) > Math.abs(y) ? x : y
@@ -142,7 +153,6 @@
             use:addSwipe
             in:fly="{{ x: startPosition.x, y: startPosition.y, duration: DURATION }}"
             on:click={() => setActive(false)}
-            style={`transition-duration: ${DURATION}ms`}
         >
             <div
                 class="modal-inner"
@@ -172,6 +182,7 @@
         justify-content: center;
         flex-direction: column;
         touch-action: manipulation;
+        user-select: none;
         background-color: rgba(var(--color-black), .75);
         outline: 50px solid rgba(var(--color-black), .75);
         transition-timing-function: ease-out;
