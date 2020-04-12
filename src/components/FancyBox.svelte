@@ -88,7 +88,7 @@
     }
 
     function drawTransform(el, y) {
-        let scale = 1 - Math.abs(y / window.innerHeight)
+        let scale = 1 - Math.abs(y / (window.innerHeight * 1.5))
         el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, 0, ${y})`)
     }
     function setDuration(el, ms) {
