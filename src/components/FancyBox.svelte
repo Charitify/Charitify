@@ -36,11 +36,11 @@
         if (active) {
             setDuration(ref, DURATION)
             setTimeout(() => setDuration(ref, 0), DURATION)
-            blockBody && bodyScroll.disableScroll();
+            blockBody && bodyScroll.disableScroll(ref);
             dispatch('open')
         } else {
             setDuration(ref, DURATION)
-            blockBody && bodyScroll.enableScroll();
+            blockBody && bodyScroll.enableScroll(ref);
             dispatch('close')
         }
     }
