@@ -23,12 +23,25 @@
 
     $: modalActive = safeGet(() => $modals['modal-last-news'].open)
 
+    let screenY = 0
+    let currentScroll = 0
     function synteticScroll(el) {
+        el.ontouchstart = function(e) {
+            screenY = e.touches[0].screenY
+            currentScroll = el.scrollTop
+        }
+        el.ontouchend = function(e) {
+            screenY = 0
+            currentScroll = 0
+        }
         el.ontouchmove = function(e) {
+            let deltaY = screenY - e.touches[0].screenY
             e.preventDefault()
             e.stopPropagation()
 
-            console.log(e)
+            el.scrollTop = currentScroll + deltaY
+
+            console.log(el.scrollTop)
         }
     }
 </script>
@@ -44,7 +57,7 @@
     swipe="left right" 
     startPosition={{ x: 300, y: 0 }}
 >
-    <header class="flex flex-align-center flex-justify-between" style="background-color: rgb(var(--color-info))">
+    <header class="flex flex-align-center flex-justify-between" style="background-color: rgb(var(--color-info)); transition: .1s">
         <h2 style="padding: 15px 20px">Закрити</h2>
         <button type="button" on:click={onClick.bind(null, false)} class="close">&#10005;</button>
     </header>
