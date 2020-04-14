@@ -2951,7 +2951,7 @@ const DescriptionShort = create_ssr_component(($$result, $$props, $$bindings, $$
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
 
-	return `<h2>${escape(title)}</h2>
+	return `${title ? `<h2>${escape(title)}</h2>` : ``}
 ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 <pre class="${"font-w-300"}">
     ${escape(text)}
@@ -3171,13 +3171,16 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
 const css$u = {
 	code: "button.close.svelte-1x3icg0{font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:60px;height:60px}",
-	map: "{\"version\":3,\"file\":\"_LastNews.svelte\",\"sources\":[\"_LastNews.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { modals } from '@store'\\n    import { bodyScroll, safeGet } from '@utils'\\n    import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'\\n    import TopCarousel from './_TopCarousel.svelte'\\n\\n    export let items = []\\n    export let carousel = []\\n\\n    let scroller = null\\n\\n    function onClick(open, e) {\\n        modals.update(s => ({ ...s, ['modal-last-news']: { open, id: safeGet(() => e.detail.item.id) } }))\\n    }\\n\\n    // Carousel & FancyBox\\n    let propsBox = {}\\n    function onCarouselClick({ detail }) {\\n        propsBox = { initIndex: detail.index }\\n    }\\n\\n    $: modalActive = safeGet(() => $modals['modal-last-news'].open)\\n    $: {\\n        if (modalActive && scroller) {\\n            bodyScroll.disableScroll(scroller)\\n        } else if (!modalActive) {\\n            bodyScroll.enableScroll(scroller)\\n        }\\n    }\\n</script>\\n\\n<h1>Останні новини</h1>\\n<Br size=\\\"20\\\" />\\n<NewsList {items} on:click={onClick.bind(null, true)}/>\\n\\n<Modal\\n    id=\\\"last-news\\\" \\n    size=\\\"full\\\"\\n    swipe=\\\"left right\\\"\\n    blockBody={false}\\n    startPosition={{ x: 300, y: 0 }}\\n>\\n    <header\\n        class=\\\"flex flex-align-center flex-justify-between\\\"\\n        style=\\\"background-color: rgb(var(--color-info)); transition: .1s; color: rgb(var(--color-white))\\\"\\n    >\\n        <h2 style=\\\"padding: 15px 20px\\\">Закрити</h2>\\n        <button type=\\\"button\\\" on:click={onClick.bind(null, false)} class=\\\"close\\\">&#10005;</button>\\n    </header>\\n\\n    <section bind:this={scroller} class=\\\"container scroll-box scroll-y-center\\\" style=\\\"flex: 1 1 auto; max-height: 100%\\\">\\n        <Br/>\\n        \\n        <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n            <FancyBox>\\n                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width\\\">\\n                    <Carousel items={carousel} {...propsBox}/>\\n                </section>\\n            </FancyBox>\\n        </section>\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        \\n        <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n            <FancyBox>\\n                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width\\\">\\n                    <Carousel items={carousel} {...propsBox}/>\\n                </section>\\n            </FancyBox>\\n        </section>\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        \\n        <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n            <FancyBox>\\n                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width\\\">\\n                    <Carousel items={carousel} {...propsBox}/>\\n                </section>\\n            </FancyBox>\\n        </section>\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        \\n        <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n            <FancyBox>\\n                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width\\\">\\n                    <Carousel items={carousel} {...propsBox}/>\\n                </section>\\n            </FancyBox>\\n        </section>\\n\\n        <Br/>\\n    </section>\\n</Modal>\\n\\n<style>\\n    button.close {\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 60px;\\n        height: 60px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fTGFzdE5ld3Muc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL3JvdXRlcy9vcmdhbml6YXRpb25zL19MYXN0TmV3cy5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBidXR0b24uY2xvc2Uge1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNjBweDtcbiAgICAgICAgaGVpZ2h0OiA2MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AA8GI,MAAM,MAAM,eAAC,CAAC,AACV,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"_LastNews.svelte\",\"sources\":[\"_LastNews.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { modals } from '@store'\\n    import { bodyScroll, safeGet } from '@utils'\\n    import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'\\n    import TopCarousel from './_TopCarousel.svelte'\\n    import Trust from './_Trust.svelte'\\n    import DescriptionShort from './_DescriptionShort.svelte'\\n    import InteractionIndicators from './_InteractionIndicators.svelte'\\n    \\n    export let items = []\\n    export let carousel = []\\n    export let iconsLine = {}\\n    export let organization = {}\\n    export let descriptionShort = {}\\n\\n    let scroller = null\\n\\n    function onClick(open, e) {\\n        modals.update(s => ({ ...s, ['modal-last-news']: { open, id: safeGet(() => e.detail.item.id) } }))\\n    }\\n\\n    // Carousel & FancyBox\\n    let propsBox = {}\\n    function onCarouselClick({ detail }) {\\n        propsBox = { initIndex: detail.index }\\n    }\\n\\n    $: modalActive = safeGet(() => $modals['modal-last-news'].open)\\n    $: {\\n        if (modalActive && scroller) {\\n            bodyScroll.disableScroll(scroller)\\n        } else if (!modalActive) {\\n            bodyScroll.enableScroll(scroller)\\n        }\\n    }\\n</script>\\n\\n<h1>Останні новини</h1>\\n<Br size=\\\"20\\\" />\\n<NewsList {items} on:click={onClick.bind(null, true)}/>\\n\\n<Modal\\n    id=\\\"last-news\\\" \\n    size=\\\"full\\\"\\n    swipe=\\\"left right\\\"\\n    blockBody={false}\\n    startPosition={{ x: 300, y: 0 }}\\n>\\n    <header\\n        class=\\\"flex flex-align-center flex-justify-between\\\"\\n        style=\\\"background-color: rgb(var(--color-info)); transition: .1s; color: rgb(var(--color-white))\\\"\\n    >\\n        <h2 style=\\\"padding: 15px 20px\\\">Закрити</h2>\\n        <button type=\\\"button\\\" on:click={onClick.bind(null, false)} class=\\\"close\\\">&#10005;</button>\\n    </header>\\n\\n    <section bind:this={scroller} class=\\\"container scroll-box scroll-y-center\\\" style=\\\"flex: 1 1 auto; max-height: 100%\\\">\\n        <Br/>\\n\\n        <h1>{ descriptionShort.title }</h1>\\n        <Br size=\\\"5\\\"/>\\n        <p>{ descriptionShort.title }</p>\\n        <Br size=\\\"25\\\"/>\\n        \\n        <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n            <FancyBox>\\n                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width\\\">\\n                    <Carousel items={carousel} {...propsBox}/>\\n                </section>\\n            </FancyBox>\\n        </section>\\n\\n        <DescriptionShort text={descriptionShort.text}/>\\n        <Br size=\\\"10\\\" />\\n\\n        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>\\n        <Br size=\\\"50\\\" />\\n\\n        <Trust active={organization.isLiked}/>\\n\\n        <Br/>\\n    </section>\\n</Modal>\\n\\n<style>\\n    button.close {\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 60px;\\n        height: 60px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fTGFzdE5ld3Muc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL3JvdXRlcy9vcmdhbml6YXRpb25zL19MYXN0TmV3cy5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBidXR0b24uY2xvc2Uge1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNjBweDtcbiAgICAgICAgaGVpZ2h0OiA2MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAuFI,MAAM,MAAM,eAAC,CAAC,AACV,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
 
 const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let $modals = get_store_value(modals);
 	let { items = [] } = $$props;
 	let { carousel = [] } = $$props;
+	let { iconsLine = {} } = $$props;
+	let { organization = {} } = $$props;
+	let { descriptionShort = {} } = $$props;
 	let scroller = null;
 
 	// Carousel & FancyBox
@@ -3185,6 +3188,9 @@ const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	if ($$props.carousel === void 0 && $$bindings.carousel && carousel !== void 0) $$bindings.carousel(carousel);
+	if ($$props.iconsLine === void 0 && $$bindings.iconsLine && iconsLine !== void 0) $$bindings.iconsLine(iconsLine);
+	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
+	if ($$props.descriptionShort === void 0 && $$bindings.descriptionShort && descriptionShort !== void 0) $$bindings.descriptionShort(descriptionShort);
 	$$result.css.add(css$u);
 	let modalActive = safeGet(() => $modals["modal-last-news"].open);
 
@@ -3221,6 +3227,11 @@ ${validate_component(Modal, "Modal").$$render(
 
     <section class="${"container scroll-box scroll-y-center"}" style="${"flex: 1 1 auto; max-height: 100%"}"${add_attribute("this", scroller, 1)}>
         ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+
+        <h1>${escape(descriptionShort.title)}</h1>
+        ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+        <p>${escape(descriptionShort.title)}</p>
+        ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
         
         <section class="${"flex"}" style="${"height: 240px"}">
             ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
@@ -3234,56 +3245,22 @@ ${validate_component(Modal, "Modal").$$render(
 			})}
         </section>
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="${"flex"}" style="${"height: 240px"}">
-            ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
-                    ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
-                </section>`,
-				default: () => `
-                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
-                
-            `
-			})}
-        </section>
+        ${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, { text: descriptionShort.text }, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="${"flex"}" style="${"height: 240px"}">
-            ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
-                    ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
-                </section>`,
-				default: () => `
-                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
-                
-            `
-			})}
-        </section>
+        ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+				$$result,
+				{
+					likes: iconsLine.likes,
+					views: iconsLine.views,
+					isLiked: organization.isLiked
+				},
+				{},
+				{}
+			)}
+        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="${"flex"}" style="${"height: 240px"}">
-            ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-				box: () => `<section slot="${"box"}" class="${"flex full-width"}">
-                    ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items: carousel }, propsBox), {}, {})}
-                </section>`,
-				default: () => `
-                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, dotsBelow: false }, {}, {})}
-                
-            `
-			})}
-        </section>
+        ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
 
         ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
     </section>
@@ -3709,7 +3686,18 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(LastNews, "LastNews").$$render($$result, { items: lastNews, carousel: carouselTop }, {}, {})}
+    ${validate_component(LastNews, "LastNews").$$render(
+		$$result,
+		{
+			items: lastNews,
+			carousel: carouselTop,
+			iconsLine,
+			organization,
+			descriptionShort
+		},
+		{},
+		{}
+	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(Certificates, "Certificates").$$render($$result, { items: documents }, {}, {})}
