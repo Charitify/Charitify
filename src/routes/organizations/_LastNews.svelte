@@ -4,9 +4,15 @@
     import { bodyScroll, safeGet } from '@utils'
     import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'
     import TopCarousel from './_TopCarousel.svelte'
-
+    import Trust from './_Trust.svelte'
+    import DescriptionShort from './_DescriptionShort.svelte'
+    import InteractionIndicators from './_InteractionIndicators.svelte'
+    
     export let items = []
     export let carousel = []
+    export let iconsLine = {}
+    export let organization = {}
+    export let descriptionShort = {}
 
     let scroller = null
 
@@ -51,6 +57,11 @@
 
     <section bind:this={scroller} class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
         <Br/>
+
+        <h1>{ descriptionShort.title }</h1>
+        <Br size="5"/>
+        <p>{ descriptionShort.title }</p>
+        <Br size="25"/>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
             <FancyBox>
@@ -61,47 +72,13 @@
             </FancyBox>
         </section>
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox>
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
-        </section>
+        <DescriptionShort text={descriptionShort.text}/>
+        <Br size="10" />
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox>
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
-        </section>
+        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
+        <Br size="50" />
 
-        <br>
-        <br>
-        <br>
-        <br>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox>
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
-        </section>
+        <Trust active={organization.isLiked}/>
 
         <Br/>
     </section>

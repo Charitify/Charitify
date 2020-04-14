@@ -171,7 +171,13 @@
     <Donators items={donators}/>
     <Br size="60" />
 
-    <LastNews items={lastNews} carousel={carouselTop}/>
+    <LastNews 
+        items={lastNews} 
+        carousel={carouselTop}
+        iconsLine={iconsLine}
+        organization={organization}
+        descriptionShort={descriptionShort}
+    />
     <Br size="60" />
 
     <Certificates items={documents}/>
