@@ -4,8 +4,9 @@ export function disableScroll(container) {
     disableBodyScroll(container, {
         allowTouchMove: el => {
             while (el && el !== document.body) {
+            console.log(el.getAttribute('body-scroll-lock-ignore'))
               if (el.getAttribute('body-scroll-lock-ignore') !== null) {
-                return true;
+                  return true;
               }
         
               el = el.parentNode;
