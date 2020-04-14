@@ -8,7 +8,6 @@
     export let items = []
     export let carousel = []
 
-    let modal = null
     let scroller = null
 
     function onClick(open, e) {
@@ -22,6 +21,13 @@
     }
 
     $: modalActive = safeGet(() => $modals['modal-last-news'].open)
+    $: {
+        if (modalActive && scroller) {
+            bodyScroll.disableScroll(scroller)
+        } else if (!modalActive) {
+            bodyScroll.enableScroll(scroller)
+        }
+    }
 </script>
 
 <h1>Останні новини</h1>
@@ -31,15 +37,19 @@
 <Modal
     id="last-news" 
     size="full"
-    swipe="left right" 
+    swipe="left right"
+    blockBody={false}
     startPosition={{ x: 300, y: 0 }}
 >
-    <header class="flex flex-align-center flex-justify-between" style="background-color: rgb(var(--color-info)); transition: .1s">
+    <header
+        class="flex flex-align-center flex-justify-between"
+        style="background-color: rgb(var(--color-info)); transition: .1s; color: rgb(var(--color-white))"
+    >
         <h2 style="padding: 15px 20px">Закрити</h2>
         <button type="button" on:click={onClick.bind(null, false)} class="close">&#10005;</button>
     </header>
 
-    <section body-scroll-lock-ignore class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
+    <section bind:this={scroller} class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
         <Br/>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
