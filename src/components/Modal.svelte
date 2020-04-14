@@ -39,10 +39,10 @@
 
     function blockScroll(modal) {
         if (blockBody && active && !isBodyBlocked) {
-            bodyScroll.disableScroll();
+            bodyScroll.disableScroll(modal);
             isBodyBlocked = true
         } else if (blockBody && !active && isBodyBlocked) {
-            bodyScroll.enableScroll();
+            bodyScroll.enableScroll(modal);
             isBodyBlocked = false
         }
     }
