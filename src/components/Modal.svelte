@@ -11,8 +11,8 @@
     const DURATION = 250
     const THRESHOLD = 100
     const START_POSITION = {
-        x: 0,
-        y: 20
+        x: 300,
+        y: 0
     }
 
     export let id
@@ -141,6 +141,16 @@
         const delta = Math.abs(x) > Math.abs(y) ? x : y
         el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))
     }
+
+    function appear(node, params) {
+		const existingTransform = getComputedStyle(node).transform.replace('none', '');
+        const getScale = t => .6 + .4 * t
+        const getX = t => START_POSITION.x - START_POSITION.x * t
+		return {
+			duration: DURATION,
+			css: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`
+		};
+	}
 </script>
 
 {#if active !== null}
@@ -151,7 +161,7 @@
             aria-hidden="true" 
             class={classProp}
             use:addSwipe
-            in:fly="{{ x: startPosition.x, y: startPosition.y, duration: DURATION }}"
+            in:appear
             on:click={() => setActive(false)}
         >
             <div
@@ -187,7 +197,6 @@
         outline: 50px solid rgba(var(--color-black), .75);
         transition-timing-function: ease-out;
         opacity: 0;
-        transform: translate3d(0,0,0);
         pointer-events: none;
     }
 

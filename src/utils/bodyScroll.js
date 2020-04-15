@@ -1,5 +1,9 @@
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
+/**
+ * 
+ * body-scroll-lock-ignore - to ignor lock.
+ */
 export function disableScroll(container) {
     disableBodyScroll(container, {
         allowTouchMove: el => {

@@ -34,15 +34,14 @@
 
         await tick()
 
-        const container = ref.querySelector('[body-scroll-lock-container]')
         if (active) {
             setDuration(ref, DURATION)
             setTimeout(() => setDuration(ref, 0), DURATION)
-            blockBody && bodyScroll.disableScroll(container || ref);
+            blockBody && bodyScroll.disableScroll(ref);
             dispatch('open')
         } else {
             setDuration(ref, DURATION)
-            blockBody && bodyScroll.enableScroll(container || ref);
+            blockBody && bodyScroll.enableScroll(ref);
             dispatch('close')
         }
     }
@@ -165,7 +164,7 @@
         transition-timing-function: linear;
         opacity: 0;
         padding: 0 var(--screen-padding);
-        transform: translate3d(0,20px,0);
+        transform: translate3d(0,30px,0);
         pointer-events: none;
         will-change: transform, opacity;
     }
