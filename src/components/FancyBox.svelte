@@ -33,14 +33,16 @@
         active = isActive
 
         await tick()
+
+        const container = ref.querySelector('[body-scroll-lock-container]')
         if (active) {
             setDuration(ref, DURATION)
             setTimeout(() => setDuration(ref, 0), DURATION)
-            blockBody && bodyScroll.disableScroll(ref);
+            blockBody && bodyScroll.disableScroll(container || ref);
             dispatch('open')
         } else {
             setDuration(ref, DURATION)
-            blockBody && bodyScroll.enableScroll(ref);
+            blockBody && bodyScroll.enableScroll(container || ref);
             dispatch('close')
         }
     }
