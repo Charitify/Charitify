@@ -34,14 +34,15 @@
 
         await tick()
 
+        const carousel = ref.querySelector('[carousel]')
         if (active) {
             setDuration(ref, DURATION)
             setTimeout(() => setDuration(ref, 0), DURATION)
-            blockBody && bodyScroll.disableScroll(ref);
+            blockBody && bodyScroll.disableScroll(carousel || ref);
             dispatch('open')
         } else {
             setDuration(ref, DURATION)
-            blockBody && bodyScroll.enableScroll(ref);
+            blockBody && bodyScroll.enableScroll(carousel || ref);
             dispatch('close')
         }
     }
