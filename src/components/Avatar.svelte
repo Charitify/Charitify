@@ -21,6 +21,7 @@
         display: flex;
         border-radius: 50%;
         overflow: hidden;
+        transform: translateZ(0);
     }
 
     .ava.small {
