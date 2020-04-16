@@ -135,7 +135,7 @@
         overflow-y: scroll;
         overflow-x: scroll;
         border-radius: var(--border-radius-big);
-        -webkit-overflow-scrolling: touch;
+        -webkit-overflow-scrolling: auto;
     }
 
     .carousel-dots {
