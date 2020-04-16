@@ -132,9 +132,10 @@
 
     .carousel .carousel-inner {
         width: 100%;
-        overflow-y: hidden;
+        overflow-y: scroll;
         overflow-x: scroll;
         border-radius: var(--border-radius-big);
+        -webkit-overflow-scrolling: touch;
     }
 
     .carousel-dots {
