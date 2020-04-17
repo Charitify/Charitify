@@ -145,25 +145,20 @@
         }
 
         document.documentElement.ontouchend = (e) => {
-            e.preventDefault()
             document.documentElement.scrollTop = scroll
             setTimeout(() => {
-                e.preventDefault()
                 console.log(document.documentElement.scrollTop)
                 document.documentElement.scrollTop = scroll
             }, 0) 
             setTimeout(() => {
-                e.preventDefault()
                 console.log(document.documentElement.scrollTop)
                 document.documentElement.scrollTop = scroll
             }, 100) 
             setTimeout(() => {
-                e.preventDefault()
                 console.log(document.documentElement.scrollTop)
                 document.documentElement.scrollTop = scroll
             }, 500) 
             setTimeout(() => {
-                e.preventDefault()
                 console.log(document.documentElement.scrollTop)
                 document.documentElement.scrollTop = scroll
             }, 1000) 
