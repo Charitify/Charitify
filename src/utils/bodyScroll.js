@@ -1,6 +1,6 @@
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
-const DURATION = 500
+const DURATION = 1000
 let scroll
 function preventInertialScroll() {
     function recursive() {
