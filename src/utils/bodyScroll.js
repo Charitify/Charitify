@@ -1,25 +1,25 @@
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
+const DURATION = 500
 let scroll
-function preventInertialScroll(e) {
+function preventInertialScroll() {
     function recursive() {
         if (document.documentElement.scrollTop !== scroll) {
-            // document.documentElement.scrollTop = scroll
-            document.documentElement.scrollTo({ top: scroll, behavior: 'smooth' });
+            document.documentElement.scrollTop = scroll
+            // document.documentElement.scrollTo({ top: scroll, behavior: 'smooth' });
             requestAnimationFrame(recursive)
         } else {
             let time = performance.now()
             function stopScroll() {
-                // document.documentElement.scrollTop = scroll
-                document.documentElement.scrollTo({ top: scroll, behavior: 'smooth' });
-                if (performance.now() - time < 1000) {
+                if (performance.now() - time < DURATION) {
+                    document.documentElement.scrollTop = scroll
+                    // document.documentElement.scrollTo({ top: scroll, behavior: 'smooth' });
                     requestAnimationFrame(stopScroll)
                 }
             }
             stopScroll()
         }
     }
-    e.stopPropagation()
     recursive()
 }
 
