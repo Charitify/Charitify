@@ -301,14 +301,35 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<br${add_attribute("style", `padding-bottom: ${foramttedSize}`, 0)}${add_attribute("class", $$props.class, 0)}>`;
 });
 
+let scroll;
+
 /**
  * 
  * body-scroll-lock-ignore - to ignor lock.
  */
 function disableScroll(container) {
-    if (typeof window !== 'undefined') {
-        document.documentElement.style.overflow = 'hidden';
-    }
+    document.documentElement.ontouchstart = (e) => scroll = document.documentElement.scrollTop;
+    document.documentElement.ontouchmove = (e) => document.documentElement.scrollTop = scroll;
+    document.documentElement.ontouchend = (e) => {
+        function recursive() {
+            if (document.documentElement.scrollTop !== scroll) {
+                document.documentElement.scrollTop = scroll;
+                console.log(document.documentElement.scrollTop, scroll);
+                requestAnimationFrame(recursive);
+            } else {
+                let time = performance.now();
+                function stopScroll() {
+                    document.documentElement.scrollTop = scroll;
+                    if (performance.now() - time < 1000) {
+                        requestAnimationFrame(stopScroll);
+                    }
+                }
+                stopScroll();
+            }
+        }
+        recursive();
+    };
+
     bodyScrollLock.disableBodyScroll(container, {
         allowTouchMove: el => {
             while (el && el !== document.body) {
@@ -323,9 +344,10 @@ function disableScroll(container) {
 }
 
 function enableScroll(container) {
-    if (typeof window !== 'undefined') {
-        document.documentElement.style.overflow = '';
-    }
+    document.documentElement.ontouchstart = null;
+    document.documentElement.ontouchmove = null;
+    document.documentElement.ontouchend = null;
+
     bodyScrollLock.enableBodyScroll(container);
 }
 
@@ -3492,58 +3514,12 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 	let comments = [];
 	let funds = [];
-	let scroll;
 
 	onMount(async () => {
 		await delay(2000);
 		organization = await API.getOrganization(1);
 		comments = await API.getComments();
 		funds = await API.getFunds();
-
-		document.documentElement.ontouchstart = e => {
-			scroll = document.documentElement.scrollTop;
-		};
-
-		document.documentElement.ontouchmove = e => {
-			document.documentElement.scrollTop = scroll;
-			console.log(scroll);
-		};
-
-		document.documentElement.ontouchend = e => {
-			document.documentElement.scrollTop = scroll;
-
-			setTimeout(
-				() => {
-					console.log(document.documentElement.scrollTop);
-					document.documentElement.scrollTop = scroll;
-				},
-				0
-			);
-
-			setTimeout(
-				() => {
-					console.log(document.documentElement.scrollTop);
-					document.documentElement.scrollTop = scroll;
-				},
-				100
-			);
-
-			setTimeout(
-				() => {
-					console.log(document.documentElement.scrollTop);
-					document.documentElement.scrollTop = scroll;
-				},
-				500
-			);
-
-			setTimeout(
-				() => {
-					console.log(document.documentElement.scrollTop);
-					document.documentElement.scrollTop = scroll;
-				},
-				1000
-			);
-		};
 	});
 
 	$page = get_store_value(page);
