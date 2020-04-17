@@ -121,48 +121,11 @@
         }))),
     };
 
-    function handler(entries) {
-        entries.forEach(entry => {
-            console.log(entry)
-        })
-    }
-
-    let scroll
-
     onMount(async () => {
         await delay(2000)
         organization = await API.getOrganization(1);
         comments = await API.getComments()
         funds = await API.getFunds()
-
-        document.documentElement.ontouchstart = (e) => {
-            scroll = document.documentElement.scrollTop
-        }
-
-        document.documentElement.ontouchmove = (e) => {
-            document.documentElement.scrollTop = scroll
-            console.log(scroll)
-        }
-
-        document.documentElement.ontouchend = (e) => {
-            document.documentElement.scrollTop = scroll
-            setTimeout(() => {
-                console.log(document.documentElement.scrollTop)
-                document.documentElement.scrollTop = scroll
-            }, 0) 
-            setTimeout(() => {
-                console.log(document.documentElement.scrollTop)
-                document.documentElement.scrollTop = scroll
-            }, 100) 
-            setTimeout(() => {
-                console.log(document.documentElement.scrollTop)
-                document.documentElement.scrollTop = scroll
-            }, 500) 
-            setTimeout(() => {
-                console.log(document.documentElement.scrollTop)
-                document.documentElement.scrollTop = scroll
-            }, 1000) 
-        }
     });
 </script>
 
