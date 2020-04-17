@@ -127,19 +127,47 @@
         })
     }
 
+    let scroll
+
     onMount(async () => {
         await delay(2000)
         organization = await API.getOrganization(1);
         comments = await API.getComments()
         funds = await API.getFunds()
 
-        const options = {
-            rootMargin: '0px',
-            threshold: 1.0
+        document.documentElement.ontouchstart = (e) => {
+            scroll = document.documentElement.scrollTop
         }
 
-        const observer = new IntersectionObserver(handler, options)
-        observer.observe(document.documentElement)
+        document.documentElement.ontouchmove = (e) => {
+            document.documentElement.scrollTop = scroll
+            console.log(scroll)
+        }
+
+        document.documentElement.ontouchend = (e) => {
+            e.preventDefault()
+            document.documentElement.scrollTop = scroll
+            setTimeout(() => {
+                e.preventDefault()
+                console.log(document.documentElement.scrollTop)
+                document.documentElement.scrollTop = scroll
+            }, 0) 
+            setTimeout(() => {
+                e.preventDefault()
+                console.log(document.documentElement.scrollTop)
+                document.documentElement.scrollTop = scroll
+            }, 100) 
+            setTimeout(() => {
+                e.preventDefault()
+                console.log(document.documentElement.scrollTop)
+                document.documentElement.scrollTop = scroll
+            }, 500) 
+            setTimeout(() => {
+                e.preventDefault()
+                console.log(document.documentElement.scrollTop)
+                document.documentElement.scrollTop = scroll
+            }, 1000) 
+        }
     });
 </script>
 
