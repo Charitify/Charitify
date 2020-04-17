@@ -121,11 +121,25 @@
         }))),
     };
 
+    function handler(entries) {
+        entries.forEach(entry => {
+            console.log(entry)
+        })
+    }
+
     onMount(async () => {
         await delay(2000)
         organization = await API.getOrganization(1);
         comments = await API.getComments()
         funds = await API.getFunds()
+
+        const options = {
+            rootMargin: '0px',
+            threshold: 1.0
+        }
+
+        const observer = new IntersectionObserver(handler, options)
+        observer.observe(document.documentElement)
     });
 </script>
 
