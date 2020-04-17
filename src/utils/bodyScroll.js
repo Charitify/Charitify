@@ -1,32 +1,37 @@
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 let scroll
+function preventInertialScroll(e) {
+    function recursive() {
+        if (document.documentElement.scrollTop !== scroll) {
+            document.documentElement.scrollTop = scroll
+            console.log(document.documentElement.scrollTop, scroll)
+            requestAnimationFrame(recursive)
+        } else {
+            let time = performance.now()
+            function stopScroll() {
+                document.documentElement.scrollTop = scroll
+                if (performance.now() - time < 1000) {
+                    requestAnimationFrame(stopScroll)
+                }
+            }
+            stopScroll()
+        }
+    }
+    e.stopPropagation()
+    recursive()
+}
 
 /**
  * 
  * body-scroll-lock-ignore - to ignor lock.
  */
 export function disableScroll(container) {
-    document.documentElement.ontouchstart = (e) => scroll = document.documentElement.scrollTop
-    document.documentElement.ontouchmove = (e) => document.documentElement.scrollTop = scroll
-    document.documentElement.ontouchend = (e) => {
-        function recursive() {
-            if (document.documentElement.scrollTop !== scroll) {
-                document.documentElement.scrollTop = scroll
-                console.log(document.documentElement.scrollTop, scroll)
-                requestAnimationFrame(recursive)
-            } else {
-                let time = performance.now()
-                function stopScroll() {
-                    document.documentElement.scrollTop = scroll
-                    if (performance.now() - time < 1000) {
-                        requestAnimationFrame(stopScroll)
-                    }
-                }
-                stopScroll()
-            }
-        }
-        recursive()
+    if (typeof window !== 'undefined') {
+        document.body.classList.add('body-scroll-lock')
+        document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop
+        document.documentElement.ontouchmove = preventInertialScroll
+        document.documentElement.ontouchend = preventInertialScroll
     }
 
     disableBodyScroll(container, {
@@ -35,7 +40,6 @@ export function disableScroll(container) {
                 if (el.getAttribute('body-scroll-lock-ignore') !== null) {
                     return true;
                 }
-                
                 el = el.parentNode;
             }
         },
@@ -43,9 +47,12 @@ export function disableScroll(container) {
 }
 
 export function enableScroll(container) {
-    document.documentElement.ontouchstart = null
-    document.documentElement.ontouchmove = null
-    document.documentElement.ontouchend = null
+    if (typeof window !== 'undefined') {
+        document.body.classList.remove('body-scroll-lock')
+        document.documentElement.ontouchstart = null
+        document.documentElement.ontouchmove = null
+        document.documentElement.ontouchend = null
+    }
 
     enableBodyScroll(container)
 }

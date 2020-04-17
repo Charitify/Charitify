@@ -614,13 +614,6 @@ button:not([class]):focus {
     scroll-snap-align: center;
 }
 
-.body-scroll-lock {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    -webkit-overflow-scrolling: auto;
-}
-
 .body-scroll-lock #sapper {
     opacity: .2;
 }
