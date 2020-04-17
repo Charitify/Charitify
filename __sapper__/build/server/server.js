@@ -3510,12 +3510,10 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 		};
 
 		document.documentElement.ontouchend = e => {
-			e.preventDefault();
 			document.documentElement.scrollTop = scroll;
 
 			setTimeout(
 				() => {
-					e.preventDefault();
 					console.log(document.documentElement.scrollTop);
 					document.documentElement.scrollTop = scroll;
 				},
@@ -3524,7 +3522,6 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 			setTimeout(
 				() => {
-					e.preventDefault();
 					console.log(document.documentElement.scrollTop);
 					document.documentElement.scrollTop = scroll;
 				},
@@ -3533,7 +3530,6 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 			setTimeout(
 				() => {
-					e.preventDefault();
 					console.log(document.documentElement.scrollTop);
 					document.documentElement.scrollTop = scroll;
 				},
@@ -3542,7 +3538,6 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 			setTimeout(
 				() => {
-					e.preventDefault();
 					console.log(document.documentElement.scrollTop);
 					document.documentElement.scrollTop = scroll;
 				},
