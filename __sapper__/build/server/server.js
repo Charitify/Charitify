@@ -301,7 +301,7 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<br${add_attribute("style", `padding-bottom: ${foramttedSize}`, 0)}${add_attribute("class", $$props.class, 0)}>`;
 });
 
-const DURATION = 500;
+const DURATION = 1000;
 let scroll;
 function preventInertialScroll() {
     function recursive() {
