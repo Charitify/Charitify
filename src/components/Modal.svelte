@@ -2,7 +2,7 @@
     import { createEventDispatcher, tick } from 'svelte'
     import { fly } from "svelte/transition";
     import { Swipe } from '@services'
-    import { safeGet, classnames, delay, bodyScroll } from "@utils";
+    import { safeGet, classnames, delay, bodyScroll, stopPropagationUntilEnd } from "@utils";
     import { modals } from "@store";
     import Portal from "./Portal.svelte";
 
@@ -69,8 +69,16 @@
 
     let xSwipe = 0
     let ySwipe = 0
+    let isScrollerInRange = true
+
+    function onScrollerInRange(isInRange) {
+        isScrollerInRange = isInRange
+        console.log(isInRange)
+    }
 
     function addSwipe(el) {
+        stopPropagationUntilEnd(el, onScrollerInRange)
+
         new Swipe(el)
                 .run()
                 .onUp(isSwipe.up ? handleVerticalSwipe : null)
@@ -119,11 +127,13 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
+        if (isScrollerInRange) return
         ySwipe = yUp - yDown
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
+        if (isScrollerInRange) return
         xSwipe = xUp - xDown
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
@@ -187,7 +197,8 @@
         width: 100%;
         height: 100%;
         display: flex;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         align-items: center;
         justify-content: center;
         flex-direction: column;
@@ -228,9 +239,15 @@
         border-radius: var(--border-radius-big);
     }
 
+    .full {
+        align-items: stretch;
+        justify-content: stretch;
+    }
+    
     .full .modal-inner {
+        flex: none;
         width: 100%;
-        height: 100%;
+        min-height: 100%;
         border-radius: 0;
     }
 </style>   
