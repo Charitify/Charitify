@@ -20,7 +20,7 @@
 <Card class="flex flex-column">
     
     <div style="height: 160px" class="flex">
-        <FancyBox>
+        <FancyBox extraLock={true}>
             <Picture {src} alt={title}/>
             <section 
                 slot="box" 

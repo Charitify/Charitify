@@ -18,6 +18,7 @@
     export let blockBody = true
     export let swipe = ['all']       // up down left right all
     export let disabled = false
+    export let extraLock = false
     export let startPosition = START_POSITION
 
     let active = null
@@ -45,11 +46,11 @@
         if (active) {
             setDuration(ref, DURATION)
             setTimeout(() => setDuration(ref, 0), DURATION)
-            blockBody && bodyScroll.disableScroll(ref);
+            blockBody && bodyScroll.disableScroll(ref, { extraLock });
             dispatch('open')
         } else {
             setDuration(ref, DURATION)
-            blockBody && bodyScroll.enableScroll(ref);
+            blockBody && bodyScroll.enableScroll(ref, { extraLock });
             dispatch('close')
         }
     }
