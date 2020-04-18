@@ -26,7 +26,9 @@
                 slot="box" 
                 class="flex full-width full-height" 
                 style="height: 100vw" 
+                on:touchstart={e => (e.stopPropagation(), e.preventDefault())}
                 on:touchmove={e => e.stopPropagation()}
+                on:touchend={e => (e.stopPropagation(), e.preventDefault())}
             >
                 <Carousel items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]} disableFancy={true}/>    
             </section>
