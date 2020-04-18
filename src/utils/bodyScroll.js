@@ -1,6 +1,6 @@
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
-const DURATION = 1000
+const DURATION = 500
 let scroll
 function preventInertialScroll(e) {
     if (e.touches.length !== 1) return
@@ -25,14 +25,14 @@ function preventInertialScroll(e) {
 
 /**
  * 
- * body-scroll-lock-ignore - to ignor lock.
+ * @attr body-scroll-lock-ignore - to ignor lock.
  */
 export function disableScroll(container) {
     if (typeof window !== 'undefined') {
         document.body.classList.add('body-scroll-lock')
-        document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop
-        document.documentElement.ontouchmove = preventInertialScroll
-        document.documentElement.ontouchend = preventInertialScroll
+        // document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop
+        // document.documentElement.ontouchmove = preventInertialScroll
+        // document.documentElement.ontouchend = preventInertialScroll
     }
 
     disableBodyScroll(container, {
@@ -50,9 +50,9 @@ export function disableScroll(container) {
 export function enableScroll(container) {
     if (typeof window !== 'undefined') {
         document.body.classList.remove('body-scroll-lock')
-        document.documentElement.ontouchstart = null
-        document.documentElement.ontouchmove = null
-        document.documentElement.ontouchend = null
+        // document.documentElement.ontouchstart = null
+        // document.documentElement.ontouchmove = null
+        // document.documentElement.ontouchend = null
     }
 
     enableBodyScroll(container)

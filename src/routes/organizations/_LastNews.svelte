@@ -14,18 +14,28 @@
     export let organization = {}
     export let descriptionShort = {}
 
-    let scroller = null
-
     function onClick(open, e) {
         modals.update(s => ({ ...s, ['modal-last-news']: { open, id: safeGet(() => e.detail.item.id) } }))
     }
 
-    $: modalActive = safeGet(() => $modals['modal-last-news'].open)
-    $: {
-        if (modalActive && scroller) {
-            bodyScroll.disableScroll(scroller)
-        } else if (!modalActive) {
-            bodyScroll.enableScroll(scroller)
+    function scrollUntilEnd(el) {
+        el.ontouchstart = controllScroll
+        el.ontouchmove = controllScroll
+        el.ontouchend = controllScroll
+
+        function getScrollPercent(container, child) {
+            const h = container
+            const b = child
+            const st = 'scrollTop'
+            const sh = 'scrollHeight'
+            return (h[st]||b[st]) / ((h[sh]||b[sh]) - h.clientHeight) * 100
+        }
+
+        function controllScroll(e) {
+            const scroll = getScrollPercent(el, el.children[0])
+            if (scroll >= 0 && scroll <= 100) {
+                e.stopPropagation()
+            }
         }
     }
 </script>
@@ -37,9 +47,7 @@
 <Modal
     id="last-news" 
     size="full"
-    swipe="left right"
-    blockBody={false}
-    startPosition={{ x: 300, y: 0 }}
+    swipe="all"
 >
     <header
         class="flex flex-align-center flex-justify-between"
@@ -49,27 +57,48 @@
         <button type="button" on:click={onClick.bind(null, false)} class="close">&#10005;</button>
     </header>
 
-    <section bind:this={scroller} class="container scroll-box scroll-y-center" style="flex: 1 1 auto; max-height: 100%">
-        <Br/>
+    <section 
+        body-scroll-lock-ignore
+        class="container scroll-box scroll-y-center flex flex-column"
+        style="flex: 1 1 auto; max-height: 100%"
+        use:scrollUntilEnd
+    >
+        <div class="flex-1">
+            <Br/>
 
-        <h1>{ descriptionShort.title }</h1>
-        <Br size="5"/>
-        <p>{ descriptionShort.title }</p>
-        <Br size="25"/>
-        
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <Carousel items={carousel}/>
-        </section>
+            <h1>{ descriptionShort.title }</h1>
+            <Br size="5"/>
+            <p>{ descriptionShort.title }</p>
+            <Br size="25"/>
+            
+            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+                <Carousel items={carousel}/>
+            </section>
 
-        <DescriptionShort text={descriptionShort.text}/>
-        <Br size="10" />
+            <DescriptionShort text={descriptionShort.text}/>
+            <Br size="10" />
 
-        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
-        <Br size="50" />
+            <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
+            <Br size="50" />
 
-        <Trust active={organization.isLiked}/>
+            <Trust active={organization.isLiked}/>
 
-        <Br/>
+            <Br/>
+
+            <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+                <Carousel items={carousel}/>
+            </section>
+
+            <DescriptionShort text={descriptionShort.text}/>
+            <Br size="10" />
+
+            <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
+            <Br size="50" />
+
+            <Trust active={organization.isLiked}/>
+
+            <Br/>
+        </div>
     </section>
 </Modal>
 
