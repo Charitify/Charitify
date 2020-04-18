@@ -26,13 +26,21 @@ function preventInertialScroll(e) {
 /**
  * 
  * @attr body-scroll-lock-ignore - to ignor lock.
+ * 
+ * @param {HTMLElement} container
+ * @param {{
+ *  extraLock?: boolean (false)
+ * }} config
  */
-export function disableScroll(container) {
+export function disableScroll(container, config = {}) {
     if (typeof window !== 'undefined') {
         document.body.classList.add('body-scroll-lock')
-        // document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop
-        // document.documentElement.ontouchmove = preventInertialScroll
-        // document.documentElement.ontouchend = preventInertialScroll
+
+        if (config.extraLock) {
+            document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop
+            document.documentElement.ontouchmove = preventInertialScroll
+            document.documentElement.ontouchend = preventInertialScroll
+        }
     }
 
     disableBodyScroll(container, {
@@ -47,12 +55,15 @@ export function disableScroll(container) {
     })
 }
 
-export function enableScroll(container) {
+export function enableScroll(container, config = {}) {
     if (typeof window !== 'undefined') {
         document.body.classList.remove('body-scroll-lock')
-        // document.documentElement.ontouchstart = null
-        // document.documentElement.ontouchmove = null
-        // document.documentElement.ontouchend = null
+
+        if (config.extraLock) {
+            document.documentElement.ontouchstart = null
+            document.documentElement.ontouchmove = null
+            document.documentElement.ontouchend = null
+        }
     }
 
     enableBodyScroll(container)

@@ -41,12 +41,12 @@
 
     function blockScroll(modal) {
         if (blockBody && active && !isBodyBlocked) {
-            bodyScroll.disableScroll(modal);
+            bodyScroll.disableScroll(modal, { extraLock: size === 'full' });
             isBodyBlocked = true
+            modal && (modal.scrollTop = 0)
         } else if (blockBody && !active && isBodyBlocked) {
-            bodyScroll.enableScroll(modal);
+            bodyScroll.enableScroll(modal, { extraLock: size === 'full' });
             isBodyBlocked = false
-            modal.scrollTop = 0
         }
     }
 
