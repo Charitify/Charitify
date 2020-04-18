@@ -72,7 +72,7 @@
 </script>
 
 <section aria-label="carousel" class={classProp}>
-    <ul use:carousel class="carousel-inner scroll-x-center" body-scroll-lock-ignore>
+    <ul use:carousel class="carousel-inner scroll-x-center">
         {#each items as item, index}
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
                 <slot {item} {index}>
