@@ -43,7 +43,6 @@ export function disableScroll(container, config = {}) {
             document.documentElement.ontouchmove = preventInertialScroll
             document.documentElement.ontouchend = preventInertialScroll
             scrollCheckInterval = setInterval(() => {
-                console.log(document.documentElement.scrollTop !== scroll, document.documentElement.scrollTop, scroll)
                 if (document.documentElement.scrollTop !== scroll) {
                     preventInertialScroll()
                 }

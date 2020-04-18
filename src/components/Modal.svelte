@@ -179,14 +179,6 @@
             in:appear
             on:click={() => setActive(false)}
         >
-            {#if withHeader}
-                <slot name="header">
-                    <header class="modal-header">
-                        <h2 style="padding: 15px 20px">Закрити</h2>
-                        <button type="button" on:click={setActive.bind(null, false)} class="close">&#10005;</button>
-                    </header>
-                </slot>
-            {/if}
             <div
                 class="modal-inner"
                 tabindex="-1"
@@ -195,7 +187,15 @@
                 aria-labelledby="модальне вікно"
                 on:click={e => e.stopPropagation()}
             >
-                {#if withHeader}
+                {#if withHeader && active}
+                    <slot name="header">
+                        <Portal>
+                            <header class="modal-header">
+                                <h2 style="padding: 15px 20px">Закрити</h2>
+                                <button type="button" on:click={setActive.bind(null, false)} class="close">&#10005;</button>
+                            </header>
+                        </Portal>  
+                    </slot>
                     <Br size="60"/>
                 {/if}
                 <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>
@@ -206,7 +206,7 @@
 
 <style>
     .modal {
-        z-index: 9;
+        z-index: 8;
         position: fixed;
         top: 0;
         left: 0;
@@ -269,8 +269,8 @@
 
     .modal-header {
         transform: translateZ(0);
-        z-index: 1;
-        position: absolute;
+        z-index: 9;
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
