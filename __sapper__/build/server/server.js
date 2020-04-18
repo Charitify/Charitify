@@ -303,8 +303,9 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const DURATION = 500;
 let scroll;
+let scrollCheckInterval;
 function preventInertialScroll(e) {
-    if (e.touches.length !== 1) return
+    if (e && e.touches.length !== 1) return
 
     function recursive() {
         if (document.documentElement.scrollTop !== scroll) {
@@ -338,9 +339,16 @@ function disableScroll(container, config = {}) {
         document.body.classList.add('body-scroll-lock');
 
         if (config.extraLock) {
+            scroll = document.documentElement.scrollTop;
             document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop;
             document.documentElement.ontouchmove = preventInertialScroll;
             document.documentElement.ontouchend = preventInertialScroll;
+            scrollCheckInterval = setInterval(() => {
+                console.log(document.documentElement.scrollTop !== scroll, document.documentElement.scrollTop, scroll);
+                if (document.documentElement.scrollTop !== scroll) {
+                    preventInertialScroll();
+                }
+            }, DURATION);
         }
     }
 
@@ -364,6 +372,7 @@ function enableScroll(container, config = {}) {
             document.documentElement.ontouchstart = null;
             document.documentElement.ontouchmove = null;
             document.documentElement.ontouchend = null;
+            clearInterval(scrollCheckInterval);
         }
     }
 
