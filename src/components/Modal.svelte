@@ -162,7 +162,6 @@
             class={classProp}
             use:addSwipe
             in:appear
-            body-scroll-lock-ignore
             on:click={() => setActive(false)}
         >
             <div
