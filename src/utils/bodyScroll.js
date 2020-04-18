@@ -2,13 +2,15 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 const DURATION = 1000
 let scroll
-function preventInertialScroll() {
+function preventInertialScroll(e) {
+    if (e.touches.length !== 1) return
+
     function recursive() {
         if (document.documentElement.scrollTop !== scroll) {
             document.documentElement.scrollTop = scroll
             requestAnimationFrame(recursive)
         } else {
-            let time = performance.now()
+            const time = performance.now()
             function stopScroll() {
                 if (performance.now() - time < DURATION) {
                     document.documentElement.scrollTop = scroll

@@ -17,12 +17,15 @@
     export let ref = null
     export let blockBody = true
     export let swipe = ['all']       // up down left right all
+    export let disabled = false
     export let startPosition = START_POSITION
 
     let active = null
     let slots = $$props.$$slots || {}
 
     async function onClick(e) {
+        if (disabled) return
+
         const newActive = !active
 
         setActive(newActive)
@@ -130,7 +133,7 @@
     function setDuration(el, ms) {
         el && (el.style.transitionDuration = `${ms}ms`)
     }
-   function drawOpacity(el, x, y) {
+    function drawOpacity(el, x, y) {
         const delta = Math.abs(x) > Math.abs(y) ? x : y
         el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))
     }
@@ -140,29 +143,19 @@
     <slot {active}></slot>
 </section>
 
-{#if !slots.box}
+{#if active !== null}
     <Portal>
         <section
-                bind:this={ref}
-                use:addSwipe
-                class={classProp}
-                on:touchmove={e => e.stopPropagation()}
+            bind:this={ref}
+            use:addSwipe
+            class={classProp}
         >
             <button type="button" on:click={onClick}>&#10005;</button>
-            <slot></slot>
-        </section>
-    </Portal>  
-{/if}
-
-{#if active !== null && slots.box}
-    <Portal>
-        <section
-                bind:this={ref}
-                use:addSwipe
-                class={classProp}
-        >
-            <button type="button" on:click={onClick}>&#10005;</button>
-            <slot name="box"></slot>
+            {#if slots.box}
+                <slot name="box"></slot>
+            {:else}
+                <slot></slot>
+            {/if}
         </section>
     </Portal>
 {/if}

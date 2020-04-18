@@ -76,24 +76,9 @@
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
                 <slot {item} {index}>
                     <FancyBox>
-                        <Picture
-                            id={item.id}
-                            src={item.src}
-                            size={item.size} 
-                            width={item.width} 
-                            height={item.height} 
-                            alt={item.alt || 'Фото слайду'}
-                        />
+                        <Picture key="picture" {...item} alt={item.alt || 'Фото слайду'}/>
                         <section slot="box" class="flex full-width">
-                            <Picture 
-                                id={item.id}
-                                src={item.src}
-                                srcBig={item.srcBig}
-                                size={item.size} 
-                                width={item.width} 
-                                height={item.height} 
-                                alt={item.alt || 'Фото слайду'}
-                            />
+                            <Picture key="picture" {...item} alt={item.alt || 'Фото слайду'}/>
                         </section>
                     </FancyBox>
                 </slot>

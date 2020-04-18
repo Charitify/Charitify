@@ -80,27 +80,27 @@
                 .onTouchEnd(async () => {
                     if (xSwipe > THRESHOLD) {
                         setActive(false)
-                        drawTransform(el, xSwipe + 50, ySwipe)
                         drawOpacity(el, xSwipe + 50, ySwipe)
+                        drawTransform(el, xSwipe + 50, ySwipe)
                         await delay(DURATION)
                     } else if (xSwipe < -THRESHOLD) {
                         setActive(false)
-                        drawTransform(el, xSwipe - 50, ySwipe)
                         drawOpacity(el, xSwipe - 50, ySwipe)
+                        drawTransform(el, xSwipe - 50, ySwipe)
                         await delay(DURATION)
                     }
                     
                     if (ySwipe > THRESHOLD) {
                         setActive(false)
-                        drawTransform(el, xSwipe, ySwipe + 50)
                         drawOpacity(el, xSwipe, ySwipe + 50)
+                        drawTransform(el, xSwipe, ySwipe + 50)
                         await delay(DURATION)
                     } else if (ySwipe < -THRESHOLD) {
                         setDuration(ref, DURATION)
                         setTimeout(() => setDuration(ref, 0), DURATION)
                         setActive(false)
-                        drawTransform(el, xSwipe, ySwipe - 50)
                         drawOpacity(el, xSwipe, ySwipe - 50)
+                        drawTransform(el, xSwipe, ySwipe - 50)
                         await delay(DURATION)
                     }
 

@@ -20,12 +20,6 @@
         modals.update(s => ({ ...s, ['modal-last-news']: { open, id: safeGet(() => e.detail.item.id) } }))
     }
 
-    // Carousel & FancyBox
-    let propsBox = {}
-    function onCarouselClick({ detail }) {
-        propsBox = { initIndex: detail.index }
-    }
-
     $: modalActive = safeGet(() => $modals['modal-last-news'].open)
     $: {
         if (modalActive && scroller) {
@@ -64,12 +58,7 @@
         <Br size="25"/>
         
         <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <FancyBox>
-                <Carousel items={carousel} on:click={onCarouselClick} dotsBelow={false}/>
-                <section slot="box" class="flex full-width">
-                    <Carousel items={carousel} {...propsBox}/>
-                </section>
-            </FancyBox>
+            <Carousel items={carousel}/>
         </section>
 
         <DescriptionShort text={descriptionShort.text}/>
