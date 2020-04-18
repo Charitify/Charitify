@@ -46,6 +46,7 @@
         } else if (blockBody && !active && isBodyBlocked) {
             bodyScroll.enableScroll(modal);
             isBodyBlocked = false
+            modal.scrollTop = 0
         }
     }
 
@@ -138,7 +139,6 @@
         drawOpacity(el, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
-        if (isScrollerInRange) return
         xSwipe = xUp - xDown
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
@@ -268,6 +268,7 @@
     }
 
     .modal-header {
+        transform: translateZ(0);
         z-index: 1;
         position: absolute;
         top: 0;
