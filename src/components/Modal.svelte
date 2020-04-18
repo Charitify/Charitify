@@ -5,6 +5,7 @@
     import { safeGet, classnames, delay, bodyScroll, stopPropagationUntilEnd } from "@utils";
     import { modals } from "@store";
     import Portal from "./Portal.svelte";
+    import Br from "./Br.svelte";
 
     const dispatch = createEventDispatcher()
     
@@ -22,6 +23,7 @@
     export let open = null
     export let startPosition = START_POSITION
     export let blockBody = true
+    export let withHeader = true
 
     let active
     let isBodyBlocked = false
@@ -65,6 +67,10 @@
     function setActive(isActive) {
         if (open !== null) open = isActive
         modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))
+
+        if (!isActive && !isScrollerInRange) {
+            isScrollerInRange = true
+        }
     }
 
     let xSwipe = 0
@@ -73,7 +79,6 @@
 
     function onScrollerInRange(isInRange) {
         isScrollerInRange = isInRange
-        console.log(isInRange)
     }
 
     function addSwipe(el) {
@@ -160,7 +165,7 @@
 			duration: DURATION,
 			css: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`
 		};
-	}
+    }
 </script>
 
 {#if active !== null}
@@ -174,6 +179,14 @@
             in:appear
             on:click={() => setActive(false)}
         >
+            {#if withHeader}
+                <slot name="header">
+                    <header class="modal-header">
+                        <h2 style="padding: 15px 20px">Закрити</h2>
+                        <button type="button" on:click={setActive.bind(null, false)} class="close">&#10005;</button>
+                    </header>
+                </slot>
+            {/if}
             <div
                 class="modal-inner"
                 tabindex="-1"
@@ -182,6 +195,9 @@
                 aria-labelledby="модальне вікно"
                 on:click={e => e.stopPropagation()}
             >
+                {#if withHeader}
+                    <Br size="60"/>
+                {/if}
                 <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>
             </div>
         </div>
@@ -243,11 +259,33 @@
         align-items: stretch;
         justify-content: stretch;
     }
-    
+
     .full .modal-inner {
         flex: none;
         width: 100%;
         min-height: 100%;
         border-radius: 0;
+    }
+
+    .modal-header {
+        z-index: 1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: rgb(var(--color-white));
+        background-color: rgb(var(--color-info));
+    }
+
+    .modal-header button.close {
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
     }
 </style>   

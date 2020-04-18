@@ -24,13 +24,6 @@
 <NewsList {items} on:click={onClick.bind(null, true)}/>
 
 <Modal id="last-news" size="full" swipe="all">
-    <header>
-        <h2 style="padding: 15px 20px">Закрити</h2>
-        <button type="button" on:click={onClick.bind(null, false)} class="close">&#10005;</button>
-    </header>
-
-    <Br size="60"/>
-
     <section class="container flex flex-column relative">
         <Br/>
 
@@ -70,25 +63,4 @@
 </Modal>
 
 <style>
-    header {
-        z-index: 1;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: rgb(var(--color-white));
-        background-color: rgb(var(--color-info));
-    }
-
-    button.close {
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 60px;
-        height: 60px;
-    }
 </style>
