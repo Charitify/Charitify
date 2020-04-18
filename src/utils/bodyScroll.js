@@ -6,14 +6,12 @@ function preventInertialScroll() {
     function recursive() {
         if (document.documentElement.scrollTop !== scroll) {
             document.documentElement.scrollTop = scroll
-            // document.documentElement.scrollTo({ top: scroll, behavior: 'smooth' });
             requestAnimationFrame(recursive)
         } else {
             let time = performance.now()
             function stopScroll() {
                 if (performance.now() - time < DURATION) {
                     document.documentElement.scrollTop = scroll
-                    // document.documentElement.scrollTo({ top: scroll, behavior: 'smooth' });
                     requestAnimationFrame(stopScroll)
                 }
             }

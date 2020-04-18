@@ -2,6 +2,7 @@
     import { createEventDispatcher } from 'svelte'
     import { waitUntil, classnames } from '@utils'
     import Picture from '@components/Picture.svelte'
+    import FancyBox from '@components/FancyBox.svelte'
 
     const dispatch = createEventDispatcher()
 
@@ -74,7 +75,27 @@
         {#each items as item, index}
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
                 <slot {item} {index}>
-                    <Picture {...item} alt={item.alt || 'Фото слайду'}/>
+                    <FancyBox>
+                        <Picture
+                            id={item.id}
+                            src={item.src}
+                            size={item.size} 
+                            width={item.width} 
+                            height={item.height} 
+                            alt={item.alt || 'Фото слайду'}
+                        />
+                        <section slot="box" class="flex full-width">
+                            <Picture 
+                                id={item.id}
+                                src={item.src}
+                                srcBig={item.srcBig}
+                                size={item.size} 
+                                width={item.width} 
+                                height={item.height} 
+                                alt={item.alt || 'Фото слайду'}
+                            />
+                        </section>
+                    </FancyBox>
                 </slot>
             </li>
         {/each}

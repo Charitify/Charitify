@@ -2,17 +2,22 @@
     import { createEventDispatcher, tick } from 'svelte'
     import { fly } from 'svelte/transition'
     import { Swipe } from '@services'
-    import { classnames, delay, bodyScroll } from '@utils'
+    import { classnames, delay, bodyScroll, safeGet } from '@utils'
     import Portal from './Portal.svelte';
 
     const dispatch = createEventDispatcher()
     
     const DURATION = 150
-    const START_POSITION = 20
     const THRESHOLD = 100
+    const START_POSITION = {
+        x: 0,
+        y: 20
+    }
 
     export let ref = null
     export let blockBody = true
+    export let swipe = ['all']       // up down left right all
+    export let startPosition = START_POSITION
 
     let active = null
     let slots = $$props.$$slots || {}
@@ -23,9 +28,9 @@
         setActive(newActive)
 
         if (newActive) {
-            drawTransform(ref, 0)
+            drawTransform(ref, 0, 0)
         } else {
-            drawTransform(ref, START_POSITION)
+            drawTransform(ref, startPosition.x, startPosition.y)
         }
     }
 
@@ -34,70 +39,100 @@
 
         await tick()
 
-        const carousel = ref.querySelector('[carousel]')
         if (active) {
             setDuration(ref, DURATION)
             setTimeout(() => setDuration(ref, 0), DURATION)
-            blockBody && bodyScroll.disableScroll(carousel || ref);
+            blockBody && bodyScroll.disableScroll(ref);
             dispatch('open')
         } else {
             setDuration(ref, DURATION)
-            blockBody && bodyScroll.enableScroll(carousel || ref);
+            blockBody && bodyScroll.enableScroll(ref);
             dispatch('close')
         }
     }
 
+    $: isSwipe = {
+        up: safeGet(() => swipe.includes('up') || swipe.includes('all')),
+        down: safeGet(() => swipe.includes('down') || swipe.includes('all')),
+        left: safeGet(() => swipe.includes('left') || swipe.includes('all')),
+        right: safeGet(() => swipe.includes('right') || swipe.includes('all')),
+    }
     $: classProp = classnames('fancy-box-ghost', { active })
     $: classPropWrap = classnames('fancy-box', $$props.class)
 
-    let ySwipe = START_POSITION
-    function swipe(el) {
+    let xSwipe = 0
+    let ySwipe = 0
+
+    function addSwipe(el) {
         new Swipe(el)
                 .run()
-                .onUp(handleVerticalSwipe)
-                .onDown(handleVerticalSwipe)
+                .onUp(isSwipe.up ? handleVerticalSwipe : null)
+                .onDown(isSwipe.down ? handleVerticalSwipe : null)
+                .onLeft(isSwipe.left ? handleHorizontalSwipe : null)
+                .onRight(isSwipe.right ? handleHorizontalSwipe : null)
                 .onTouchEnd(async () => {
+                    if (xSwipe > THRESHOLD) {
+                        setActive(false)
+                        drawTransform(el, xSwipe + 50, ySwipe)
+                        drawOpacity(el, xSwipe + 50, ySwipe)
+                        await delay(DURATION)
+                    } else if (xSwipe < -THRESHOLD) {
+                        setActive(false)
+                        drawTransform(el, xSwipe - 50, ySwipe)
+                        drawOpacity(el, xSwipe - 50, ySwipe)
+                        await delay(DURATION)
+                    }
+                    
                     if (ySwipe > THRESHOLD) {
                         setActive(false)
-                        drawTransform(el, ySwipe + 50)
-                        drawOpacity(el, ySwipe + 50)
+                        drawTransform(el, xSwipe, ySwipe + 50)
+                        drawOpacity(el, xSwipe, ySwipe + 50)
                         await delay(DURATION)
                     } else if (ySwipe < -THRESHOLD) {
+                        setDuration(ref, DURATION)
+                        setTimeout(() => setDuration(ref, 0), DURATION)
                         setActive(false)
-                        drawTransform(el, ySwipe - 50)
-                        drawOpacity(el, ySwipe - 50)
+                        drawTransform(el, xSwipe, ySwipe - 50)
+                        drawOpacity(el, xSwipe, ySwipe - 50)
                         await delay(DURATION)
                     }
 
-                    if (ySwipe > THRESHOLD || ySwipe < -THRESHOLD) {
-                        ySwipe = START_POSITION
-                        drawTransform(el, ySwipe)
-                        el.style.opacity = null
-                    } else {
+                    if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {
                         setDuration(ref, DURATION)
                         setTimeout(() => setDuration(ref, 0), DURATION)
-                        ySwipe = 0
-                        drawTransform(el, ySwipe)
-                        el.style.opacity = null
+                        drawTransform(el, 0, 0)
+                    } else {
+                        drawTransform(el, startPosition.x, startPosition.y)
                     }
+
+                    xSwipe = 0
+                    ySwipe = 0
+                    el.style.opacity = null
                 })
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
         ySwipe = yUp - yDown
-        drawTransform(el, ySwipe)
-        drawOpacity(el, ySwipe)
+        drawTransform(el, xSwipe, ySwipe)
+        drawOpacity(el, xSwipe, ySwipe)
+    }
+    function handleHorizontalSwipe(xDown, xUp, evt, el) {
+        xSwipe = xUp - xDown
+        drawTransform(el, xSwipe, ySwipe)
+        drawOpacity(el, xSwipe, ySwipe)
     }
 
-    function drawTransform(el, y) {
-        let scale = 1 - Math.abs(y / (window.innerHeight * 1.5))
-        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, 0, ${y})`)
+    function drawTransform(el, x, y) {
+        const delta = Math.abs(x) > Math.abs(y) ? x : y
+        let scale = 1 - Math.abs(delta / window.innerHeight)
+        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${x}, ${y})`)
     }
     function setDuration(el, ms) {
         el && (el.style.transitionDuration = `${ms}ms`)
     }
-    function drawOpacity(el, y) {
-        el && (el.style.opacity = 1 - Math.min(Math.abs(y / (THRESHOLD * 1.5)), 1))
+   function drawOpacity(el, x, y) {
+        const delta = Math.abs(x) > Math.abs(y) ? x : y
+        el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))
     }
 </script>
 
@@ -109,8 +144,7 @@
     <Portal>
         <section
                 bind:this={ref}
-                use:swipe
-                in:fly="{{ y: START_POSITION, duration: 200 }}"
+                use:addSwipe
                 class={classProp}
                 on:touchmove={e => e.stopPropagation()}
         >
@@ -124,8 +158,7 @@
     <Portal>
         <section
                 bind:this={ref}
-                use:swipe
-                in:fly="{{ y: START_POSITION, duration: 200 }}"
+                use:addSwipe
                 class={classProp}
         >
             <button type="button" on:click={onClick}>&#10005;</button>

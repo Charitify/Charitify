@@ -145,7 +145,7 @@
     function appear(node, params) {
 		const existingTransform = getComputedStyle(node).transform.replace('none', '');
         const getScale = t => .6 + .4 * t
-        const getX = t => START_POSITION.x - START_POSITION.x * t
+        const getX = t => startPosition.x - startPosition.x * t
 		return {
 			duration: DURATION,
 			css: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`
