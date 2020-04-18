@@ -301,39 +301,16 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<br${add_attribute("style", `padding-bottom: ${foramttedSize}`, 0)}${add_attribute("class", $$props.class, 0)}>`;
 });
 
-const DURATION = 1000;
-let scroll;
-function preventInertialScroll(e) {
-    if (e.touches.length !== 1) return
-
-    function recursive() {
-        if (document.documentElement.scrollTop !== scroll) {
-            document.documentElement.scrollTop = scroll;
-            requestAnimationFrame(recursive);
-        } else {
-            const time = performance.now();
-            function stopScroll() {
-                if (performance.now() - time < DURATION) {
-                    document.documentElement.scrollTop = scroll;
-                    requestAnimationFrame(stopScroll);
-                }
-            }
-            stopScroll();
-        }
-    }
-    recursive();
-}
-
 /**
  * 
- * body-scroll-lock-ignore - to ignor lock.
+ * @attr body-scroll-lock-ignore - to ignor lock.
  */
 function disableScroll(container) {
     if (typeof window !== 'undefined') {
         document.body.classList.add('body-scroll-lock');
-        document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop;
-        document.documentElement.ontouchmove = preventInertialScroll;
-        document.documentElement.ontouchend = preventInertialScroll;
+        // document.documentElement.ontouchstart = () => scroll = document.documentElement.scrollTop
+        // document.documentElement.ontouchmove = preventInertialScroll
+        // document.documentElement.ontouchend = preventInertialScroll
     }
 
     bodyScrollLock.disableBodyScroll(container, {
@@ -351,9 +328,9 @@ function disableScroll(container) {
 function enableScroll(container) {
     if (typeof window !== 'undefined') {
         document.body.classList.remove('body-scroll-lock');
-        document.documentElement.ontouchstart = null;
-        document.documentElement.ontouchmove = null;
-        document.documentElement.ontouchend = null;
+        // document.documentElement.ontouchstart = null
+        // document.documentElement.ontouchmove = null
+        // document.documentElement.ontouchend = null
     }
 
     bodyScrollLock.enableBodyScroll(container);
@@ -1062,7 +1039,7 @@ const css$4 = {
 	map: "{\"version\":3,\"file\":\"Modal.svelte\",\"sources\":[\"Modal.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, tick } from 'svelte'\\n    import { fly } from \\\"svelte/transition\\\";\\n    import { Swipe } from '@services'\\n    import { safeGet, classnames, delay, bodyScroll } from \\\"@utils\\\";\\n    import { modals } from \\\"@store\\\";\\n    import Portal from \\\"./Portal.svelte\\\";\\n\\n    const dispatch = createEventDispatcher()\\n    \\n    const DURATION = 250\\n    const THRESHOLD = 100\\n    const START_POSITION = {\\n        x: 300,\\n        y: 0\\n    }\\n\\n    export let id\\n    export let ref = null\\n    export let size = 'full'    // small/medium/big/full\\n    export let swipe = []       // up down left right all\\n    export let open = null\\n    export let startPosition = START_POSITION\\n    export let blockBody = true\\n\\n    let active\\n    let isBodyBlocked = false\\n\\n    $: isSwipe = {\\n        up: safeGet(() => swipe.includes('up') || swipe.includes('all')),\\n        down: safeGet(() => swipe.includes('down') || swipe.includes('all')),\\n        left: safeGet(() => swipe.includes('left') || swipe.includes('all')),\\n        right: safeGet(() => swipe.includes('right') || swipe.includes('all')),\\n    }\\n    $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)\\n    $: classProp = classnames('modal', size, { active })\\n    $: onActiveChange(active)\\n    $: blockScroll(ref)\\n\\n    function blockScroll(modal) {\\n        if (blockBody && active && !isBodyBlocked) {\\n            bodyScroll.disableScroll(modal);\\n            isBodyBlocked = true\\n        } else if (blockBody && !active && isBodyBlocked) {\\n            bodyScroll.enableScroll(modal);\\n            isBodyBlocked = false\\n        }\\n    }\\n\\n    async function onActiveChange(active) {\\n        if (active) {\\n            setDuration(ref, DURATION)\\n            setTimeout(() => setDuration(ref, 0), DURATION)\\n            drawTransform(ref, 0, 0)\\n            blockScroll(ref)\\n            await tick()\\n            dispatch('open')\\n        } else {\\n            blockScroll(ref)\\n            await tick()\\n            dispatch('close')\\n        }\\n    }\\n\\n    function setActive(isActive) {\\n        if (open !== null) open = isActive\\n        modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))\\n    }\\n\\n    let xSwipe = 0\\n    let ySwipe = 0\\n\\n    function addSwipe(el) {\\n        new Swipe(el)\\n                .run()\\n                .onUp(isSwipe.up ? handleVerticalSwipe : null)\\n                .onDown(isSwipe.down ? handleVerticalSwipe : null)\\n                .onLeft(isSwipe.left ? handleHorizontalSwipe : null)\\n                .onRight(isSwipe.right ? handleHorizontalSwipe : null)\\n                .onTouchEnd(async () => {\\n                    if (xSwipe > THRESHOLD) {\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe + 50, ySwipe)\\n                        drawTransform(el, xSwipe + 50, ySwipe)\\n                        await delay(DURATION)\\n                    } else if (xSwipe < -THRESHOLD) {\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe - 50, ySwipe)\\n                        drawTransform(el, xSwipe - 50, ySwipe)\\n                        await delay(DURATION)\\n                    }\\n                    \\n                    if (ySwipe > THRESHOLD) {\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe, ySwipe + 50)\\n                        drawTransform(el, xSwipe, ySwipe + 50)\\n                        await delay(DURATION)\\n                    } else if (ySwipe < -THRESHOLD) {\\n                        setDuration(ref, DURATION)\\n                        setTimeout(() => setDuration(ref, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe, ySwipe - 50)\\n                        drawTransform(el, xSwipe, ySwipe - 50)\\n                        await delay(DURATION)\\n                    }\\n\\n                    if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {\\n                        setDuration(ref, DURATION)\\n                        setTimeout(() => setDuration(ref, 0), DURATION)\\n                        drawTransform(el, 0, 0)\\n                    } else {\\n                        drawTransform(el, startPosition.x, startPosition.y)\\n                    }\\n\\n                    xSwipe = 0\\n                    ySwipe = 0\\n                    el.style.opacity = null\\n                })\\n    }\\n\\n    function handleVerticalSwipe(yDown, yUp, evt, el) {\\n        ySwipe = yUp - yDown\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n    }\\n    function handleHorizontalSwipe(xDown, xUp, evt, el) {\\n        xSwipe = xUp - xDown\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n    }\\n\\n    function drawTransform(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        let scale = 1 - Math.abs(delta / window.innerHeight)\\n        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${x}, ${y})`)\\n    }\\n     function setDuration(el, ms) {\\n        el && (el.style.transitionDuration = `${ms}ms`)\\n    }\\n    function drawOpacity(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))\\n    }\\n\\n    function appear(node, params) {\\n\\t\\tconst existingTransform = getComputedStyle(node).transform.replace('none', '');\\n        const getScale = t => .6 + .4 * t\\n        const getX = t => startPosition.x - startPosition.x * t\\n\\t\\treturn {\\n\\t\\t\\tduration: DURATION,\\n\\t\\t\\tcss: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`\\n\\t\\t};\\n\\t}\\n</script>\\n\\n{#if active !== null}\\n    <Portal>\\n        <div\\n            id={`modal-${id}`}\\n            bind:this={ref}\\n            aria-hidden=\\\"true\\\" \\n            class={classProp}\\n            use:addSwipe\\n            in:appear\\n            on:click={() => setActive(false)}\\n        >\\n            <div\\n                class=\\\"modal-inner\\\"\\n                tabindex=\\\"-1\\\"\\n                role=\\\"dialog\\\"\\n                aria-modal=\\\"true\\\"\\n                aria-labelledby=\\\"модальне вікно\\\"\\n                on:click={e => e.stopPropagation()}\\n            >\\n                <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>\\n            </div>\\n        </div>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .modal {\\n        z-index: 9;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 50px solid rgba(var(--color-black), .75);\\n        -webkit-transition-timing-function: ease-out;\\n                transition-timing-function: ease-out;\\n        opacity: 0;\\n        pointer-events: none;\\n    }\\n\\n    .modal.active {\\n        opacity: 1;\\n        pointer-events: auto;\\n    }\\n\\n    .modal-inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n        overflow: hidden;\\n        background-color: rgba(var(--theme-color-primary));\\n    }\\n    .small .modal-inner {\\n        width: 200px;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .medium .modal-inner {\\n        width: calc(100vw - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n    .big .modal-inner {\\n        width: calc(100% - var(--screen-padding) * 2);\\n        height: calc(100% - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .full .modal-inner {\\n        width: 100%;\\n        height: 100%;\\n        border-radius: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxVQUFVO1FBQ1YsZUFBZTtRQUNmLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsOEJBQTBCO1lBQTFCLDBCQUEwQjtRQUMxQix5QkFBaUI7V0FBakIsc0JBQWlCO1lBQWpCLHFCQUFpQjtnQkFBakIsaUJBQWlCO1FBQ2pCLCtDQUErQztRQUMvQyxpREFBaUQ7UUFDakQsNENBQW9DO2dCQUFwQyxvQ0FBb0M7UUFDcEMsVUFBVTtRQUNWLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLFVBQVU7UUFDVixvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHlCQUF3QjtZQUF4QixzQkFBd0I7Z0JBQXhCLHdCQUF3QjtRQUN4QixnQkFBZ0I7UUFDaEIsa0RBQWtEO0lBQ3REO0lBQ0E7UUFDSSxZQUFZO1FBQ1osdUNBQXVDO0lBQzNDOztJQUVBO1FBQ0ksOENBQThDO1FBQzlDLHVDQUF1QztJQUMzQztJQUNBO1FBQ0ksNkNBQTZDO1FBQzdDLDhDQUE4QztRQUM5Qyx1Q0FBdUM7SUFDM0M7O0lBRUE7UUFDSSxXQUFXO1FBQ1gsWUFBWTtRQUNaLGdCQUFnQjtJQUNwQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9Nb2RhbC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAubW9kYWwge1xuICAgICAgICB6LWluZGV4OiA5O1xuICAgICAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIHRvdWNoLWFjdGlvbjogbWFuaXB1bGF0aW9uO1xuICAgICAgICB1c2VyLXNlbGVjdDogbm9uZTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC43NSk7XG4gICAgICAgIG91dGxpbmU6IDUwcHggc29saWQgcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC43NSk7XG4gICAgICAgIHRyYW5zaXRpb24tdGltaW5nLWZ1bmN0aW9uOiBlYXNlLW91dDtcbiAgICAgICAgb3BhY2l0eTogMDtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLm1vZGFsLmFjdGl2ZSB7XG4gICAgICAgIG9wYWNpdHk6IDE7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBhdXRvO1xuICAgIH1cblxuICAgIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3ItcHJpbWFyeSkpO1xuICAgIH1cbiAgICAuc21hbGwgLm1vZGFsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDIwMHB4O1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLm1lZGl1bSAubW9kYWwtaW5uZXIge1xuICAgICAgICB3aWR0aDogY2FsYygxMDB2dyAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuICAgIC5iaWcgLm1vZGFsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IGNhbGMoMTAwJSAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLmZ1bGwgLm1vZGFsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogMDtcbiAgICB9XG4iXX0= */</style>   \"],\"names\":[],\"mappings\":\"AAqLI,MAAM,8BAAC,CAAC,AACJ,OAAO,CAAE,CAAC,CACV,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,mBAAmB,CAAE,IAAI,CACtB,gBAAgB,CAAE,IAAI,CACrB,eAAe,CAAE,IAAI,CACjB,WAAW,CAAE,IAAI,CACzB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAC/C,OAAO,CAAE,IAAI,CAAC,KAAK,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CACjD,kCAAkC,CAAE,QAAQ,CACpC,0BAA0B,CAAE,QAAQ,CAC5C,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,OAAO,8BAAC,CAAC,AACX,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,YAAY,8BAAC,CAAC,AACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,CAChC,QAAQ,CAAE,MAAM,CAChB,gBAAgB,CAAE,KAAK,IAAI,qBAAqB,CAAC,CAAC,AACtD,CAAC,AACD,qBAAM,CAAC,YAAY,eAAC,CAAC,AACjB,KAAK,CAAE,KAAK,CACZ,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,sBAAO,CAAC,YAAY,eAAC,CAAC,AAClB,KAAK,CAAE,KAAK,KAAK,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AACD,mBAAI,CAAC,YAAY,eAAC,CAAC,AACf,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7C,MAAM,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,oBAAK,CAAC,YAAY,eAAC,CAAC,AAChB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,CAAC,AACpB,CAAC\"}"
 };
 
-const DURATION$1 = 250;
+const DURATION = 250;
 
 function drawTransform(el, x, y) {
 	const delta = Math.abs(x) > Math.abs(y) ? x : y;
@@ -1100,8 +1077,8 @@ const Modal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 	async function onActiveChange(active) {
 		if (active) {
-			setDuration(ref, DURATION$1);
-			setTimeout(() => setDuration(ref, 0), DURATION$1);
+			setDuration(ref, DURATION);
+			setTimeout(() => setDuration(ref, 0), DURATION);
 			drawTransform(ref, 0, 0);
 			blockScroll(ref);
 			await tick();
@@ -3211,34 +3188,21 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
 const css$u = {
 	code: "button.close.svelte-1x3icg0{font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:60px;height:60px}",
-	map: "{\"version\":3,\"file\":\"_LastNews.svelte\",\"sources\":[\"_LastNews.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { modals } from '@store'\\n    import { bodyScroll, safeGet } from '@utils'\\n    import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'\\n    import TopCarousel from './_TopCarousel.svelte'\\n    import Trust from './_Trust.svelte'\\n    import DescriptionShort from './_DescriptionShort.svelte'\\n    import InteractionIndicators from './_InteractionIndicators.svelte'\\n    \\n    export let items = []\\n    export let carousel = []\\n    export let iconsLine = {}\\n    export let organization = {}\\n    export let descriptionShort = {}\\n\\n    let scroller = null\\n\\n    function onClick(open, e) {\\n        modals.update(s => ({ ...s, ['modal-last-news']: { open, id: safeGet(() => e.detail.item.id) } }))\\n    }\\n\\n    $: modalActive = safeGet(() => $modals['modal-last-news'].open)\\n    $: {\\n        if (modalActive && scroller) {\\n            bodyScroll.disableScroll(scroller)\\n        } else if (!modalActive) {\\n            bodyScroll.enableScroll(scroller)\\n        }\\n    }\\n</script>\\n\\n<h1>Останні новини</h1>\\n<Br size=\\\"20\\\" />\\n<NewsList {items} on:click={onClick.bind(null, true)}/>\\n\\n<Modal\\n    id=\\\"last-news\\\" \\n    size=\\\"full\\\"\\n    swipe=\\\"left right\\\"\\n    blockBody={false}\\n    startPosition={{ x: 300, y: 0 }}\\n>\\n    <header\\n        class=\\\"flex flex-align-center flex-justify-between\\\"\\n        style=\\\"background-color: rgb(var(--color-info)); transition: .1s; color: rgb(var(--color-white))\\\"\\n    >\\n        <h2 style=\\\"padding: 15px 20px\\\">Закрити</h2>\\n        <button type=\\\"button\\\" on:click={onClick.bind(null, false)} class=\\\"close\\\">&#10005;</button>\\n    </header>\\n\\n    <section bind:this={scroller} class=\\\"container scroll-box scroll-y-center\\\" style=\\\"flex: 1 1 auto; max-height: 100%\\\">\\n        <Br/>\\n\\n        <h1>{ descriptionShort.title }</h1>\\n        <Br size=\\\"5\\\"/>\\n        <p>{ descriptionShort.title }</p>\\n        <Br size=\\\"25\\\"/>\\n        \\n        <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n            <Carousel items={carousel}/>\\n        </section>\\n\\n        <DescriptionShort text={descriptionShort.text}/>\\n        <Br size=\\\"10\\\" />\\n\\n        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>\\n        <Br size=\\\"50\\\" />\\n\\n        <Trust active={organization.isLiked}/>\\n\\n        <Br/>\\n    </section>\\n</Modal>\\n\\n<style>\\n    button.close {\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 60px;\\n        height: 60px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fTGFzdE5ld3Muc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL3JvdXRlcy9vcmdhbml6YXRpb25zL19MYXN0TmV3cy5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBidXR0b24uY2xvc2Uge1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNjBweDtcbiAgICAgICAgaGVpZ2h0OiA2MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AA4EI,MAAM,MAAM,eAAC,CAAC,AACV,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"_LastNews.svelte\",\"sources\":[\"_LastNews.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { modals } from '@store'\\n    import { bodyScroll, safeGet } from '@utils'\\n    import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'\\n    import TopCarousel from './_TopCarousel.svelte'\\n    import Trust from './_Trust.svelte'\\n    import DescriptionShort from './_DescriptionShort.svelte'\\n    import InteractionIndicators from './_InteractionIndicators.svelte'\\n    \\n    export let items = []\\n    export let carousel = []\\n    export let iconsLine = {}\\n    export let organization = {}\\n    export let descriptionShort = {}\\n\\n    function onClick(open, e) {\\n        modals.update(s => ({ ...s, ['modal-last-news']: { open, id: safeGet(() => e.detail.item.id) } }))\\n    }\\n\\n    function scrollUntilEnd(el) {\\n        el.ontouchstart = controllScroll\\n        el.ontouchmove = controllScroll\\n        el.ontouchend = controllScroll\\n\\n        function getScrollPercent(container, child) {\\n            const h = container\\n            const b = child\\n            const st = 'scrollTop'\\n            const sh = 'scrollHeight'\\n            return (h[st]||b[st]) / ((h[sh]||b[sh]) - h.clientHeight) * 100\\n        }\\n\\n        function controllScroll(e) {\\n            const scroll = getScrollPercent(el, el.children[0])\\n            if (scroll >= 0 && scroll <= 100) {\\n                e.stopPropagation()\\n            }\\n        }\\n    }\\n</script>\\n\\n<h1>Останні новини</h1>\\n<Br size=\\\"20\\\" />\\n<NewsList {items} on:click={onClick.bind(null, true)}/>\\n\\n<Modal\\n    id=\\\"last-news\\\" \\n    size=\\\"full\\\"\\n    swipe=\\\"all\\\"\\n>\\n    <header\\n        class=\\\"flex flex-align-center flex-justify-between\\\"\\n        style=\\\"background-color: rgb(var(--color-info)); transition: .1s; color: rgb(var(--color-white))\\\"\\n    >\\n        <h2 style=\\\"padding: 15px 20px\\\">Закрити</h2>\\n        <button type=\\\"button\\\" on:click={onClick.bind(null, false)} class=\\\"close\\\">&#10005;</button>\\n    </header>\\n\\n    <section \\n        body-scroll-lock-ignore\\n        class=\\\"container scroll-box scroll-y-center flex flex-column\\\"\\n        style=\\\"flex: 1 1 auto; max-height: 100%\\\"\\n        use:scrollUntilEnd\\n    >\\n        <div class=\\\"flex-1\\\">\\n            <Br/>\\n\\n            <h1>{ descriptionShort.title }</h1>\\n            <Br size=\\\"5\\\"/>\\n            <p>{ descriptionShort.title }</p>\\n            <Br size=\\\"25\\\"/>\\n            \\n            <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n                <Carousel items={carousel}/>\\n            </section>\\n\\n            <DescriptionShort text={descriptionShort.text}/>\\n            <Br size=\\\"10\\\" />\\n\\n            <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>\\n            <Br size=\\\"50\\\" />\\n\\n            <Trust active={organization.isLiked}/>\\n\\n            <Br/>\\n\\n            <section class=\\\"flex\\\" style=\\\"height: 240px\\\" on:touchmove={e => e.stopPropagation()}>\\n                <Carousel items={carousel}/>\\n            </section>\\n\\n            <DescriptionShort text={descriptionShort.text}/>\\n            <Br size=\\\"10\\\" />\\n\\n            <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>\\n            <Br size=\\\"50\\\" />\\n\\n            <Trust active={organization.isLiked}/>\\n\\n            <Br/>\\n        </div>\\n    </section>\\n</Modal>\\n\\n<style>\\n    button.close {\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 60px;\\n        height: 60px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fTGFzdE5ld3Muc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL3JvdXRlcy9vcmdhbml6YXRpb25zL19MYXN0TmV3cy5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBidXR0b24uY2xvc2Uge1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNjBweDtcbiAgICAgICAgaGVpZ2h0OiA2MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAyGI,MAAM,MAAM,eAAC,CAAC,AACV,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
 
 const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let $modals = get_store_value(modals);
 	let { items = [] } = $$props;
 	let { carousel = [] } = $$props;
 	let { iconsLine = {} } = $$props;
 	let { organization = {} } = $$props;
 	let { descriptionShort = {} } = $$props;
-	let scroller = null;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	if ($$props.carousel === void 0 && $$bindings.carousel && carousel !== void 0) $$bindings.carousel(carousel);
 	if ($$props.iconsLine === void 0 && $$bindings.iconsLine && iconsLine !== void 0) $$bindings.iconsLine(iconsLine);
 	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
 	if ($$props.descriptionShort === void 0 && $$bindings.descriptionShort && descriptionShort !== void 0) $$bindings.descriptionShort(descriptionShort);
 	$$result.css.add(css$u);
-	let modalActive = safeGet(() => $modals["modal-last-news"].open);
-
-	 {
-		{
-			if (modalActive && scroller) {
-				disableScroll(scroller);
-			} else if (!modalActive) {
-				enableScroll(scroller);
-			}
-		}
-	}
 
 	return `<h1>Останні новини</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
@@ -3249,9 +3213,7 @@ ${validate_component(Modal, "Modal").$$render(
 		{
 			id: "last-news",
 			size: "full",
-			swipe: "left right",
-			blockBody: false,
-			startPosition: { x: 300, y: 0 }
+			swipe: "all"
 		},
 		{},
 		{
@@ -3261,22 +3223,23 @@ ${validate_component(Modal, "Modal").$$render(
         <button type="${"button"}" class="${"close svelte-1x3icg0"}">✕</button>
     </header>
 
-    <section class="${"container scroll-box scroll-y-center"}" style="${"flex: 1 1 auto; max-height: 100%"}"${add_attribute("this", scroller, 1)}>
-        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+    <section body-scroll-lock-ignore class="${"container scroll-box scroll-y-center flex flex-column"}" style="${"flex: 1 1 auto; max-height: 100%"}">
+        <div class="${"flex-1"}">
+            ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
 
-        <h1>${escape(descriptionShort.title)}</h1>
-        ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-        <p>${escape(descriptionShort.title)}</p>
-        ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
-        
-        <section class="${"flex"}" style="${"height: 240px"}">
-            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel }, {}, {})}
-        </section>
+            <h1>${escape(descriptionShort.title)}</h1>
+            ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+            <p>${escape(descriptionShort.title)}</p>
+            ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
+            
+            <section class="${"flex"}" style="${"height: 240px"}">
+                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel }, {}, {})}
+            </section>
 
-        ${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, { text: descriptionShort.text }, {}, {})}
-        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+            ${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, { text: descriptionShort.text }, {}, {})}
+            ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-        ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+            ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
 				$$result,
 				{
 					likes: iconsLine.likes,
@@ -3286,11 +3249,35 @@ ${validate_component(Modal, "Modal").$$render(
 				{},
 				{}
 			)}
-        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
+            ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-        ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
+            ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
 
-        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+            ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+
+            <section class="${"flex"}" style="${"height: 240px"}">
+                ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel }, {}, {})}
+            </section>
+
+            ${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, { text: descriptionShort.text }, {}, {})}
+            ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+
+            ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+				$$result,
+				{
+					likes: iconsLine.likes,
+					views: iconsLine.views,
+					isLiked: organization.isLiked
+				},
+				{},
+				{}
+			)}
+            ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
+
+            ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
+
+            ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+        </div>
     </section>
 `
 		}
