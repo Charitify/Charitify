@@ -58,7 +58,6 @@
     </header>
 
     <section 
-        body-scroll-lock-ignore
         class="container scroll-box scroll-y-center flex flex-column"
         style="flex: 1 1 auto; max-height: 100%"
         use:scrollUntilEnd
