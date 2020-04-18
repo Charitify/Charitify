@@ -20,6 +20,7 @@
     export let dotsBelow = true
     export let size = 'stretch'
     export let initIndex = 0
+    export let disableFancy = false
 
     let parent = null
 
@@ -75,7 +76,7 @@
         {#each items as item, index}
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
                 <slot {item} {index}>
-                    <FancyBox>
+                    <FancyBox disabled={disableFancy}>
                         <Picture key="picture" {...item} alt={item.alt || 'Фото слайду'}/>
                         <section slot="box" class="flex full-width">
                             <Picture key="picture" {...item} alt={item.alt || 'Фото слайду'}/>

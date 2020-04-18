@@ -6,6 +6,7 @@
     import Picture from '@components/Picture.svelte'
     import Progress from '@components/Progress.svelte'
     import FancyBox from '@components/FancyBox.svelte'
+    import Carousel from '@components/Carousel.svelte'
 
     export let id = undefined
     export let src = undefined
@@ -21,10 +22,13 @@
     <div style="height: 160px" class="flex">
         <FancyBox>
             <Picture {src} alt={title}/>
-            <section slot="box" class="flex full-width full-height" style="height: 100vw">
-                <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
-                    <Picture {src} alt={title}/>
-                </div>
+            <section 
+                slot="box" 
+                class="flex full-width full-height" 
+                style="height: 100vw" 
+                on:touchmove={e => e.stopPropagation()}
+            >
+                <Carousel items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]} disableFancy={true}/>    
             </section>
         </FancyBox>
     </div>
