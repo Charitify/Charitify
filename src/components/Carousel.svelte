@@ -139,6 +139,7 @@
     }
 
     .carousel.stretch .fluid {
+        flex: none;
         width: 100%;
     }
 
