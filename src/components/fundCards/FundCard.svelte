@@ -19,15 +19,13 @@
 <Card class="flex flex-column">
     
     <div style="height: 160px" class="flex">
-        <section class="flex full-width full-height">
-            <Carousel 
-                items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]}
-                disableFancy={true}
-                dotsBelow={false}
-                rounded={false}
-                stopPropagation={true}
-            />    
-        </section>
+        <Carousel 
+            items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]}
+            disableFancy={true}
+            dotsBelow={false}
+            rounded={false}
+            stopPropagation={true}
+        />    
     </div>
 
     <section class="container flex flex-column flex-justify-between flex-1">
