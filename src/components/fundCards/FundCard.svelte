@@ -3,7 +3,6 @@
     import Icon from '@components/Icon.svelte'
     import Card from '@components/Card.svelte'
     import Button from '@components/Button.svelte'
-    import Picture from '@components/Picture.svelte'
     import Progress from '@components/Progress.svelte'
     import FancyBox from '@components/FancyBox.svelte'
     import Carousel from '@components/Carousel.svelte'
@@ -20,17 +19,17 @@
 <Card class="flex flex-column">
     
     <div style="height: 160px" class="flex">
-        <FancyBox extraLock={true}>
-            <Picture {src} alt={title}/>
-            <section 
-                slot="box" 
-                class="flex full-width full-height" 
-                style="height: 100vw" 
-                on:touchmove={e => e.stopPropagation()}
-            >
-                <Carousel items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]} disableFancy={true}/>    
-            </section>
-        </FancyBox>
+        <section 
+            class="flex full-width full-height" 
+            on:touchmove={e => e.stopPropagation()}
+        >
+            <Carousel 
+                items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]}
+                disableFancy={true}
+                dotsBelow={false}
+                rounded={false}
+            />    
+        </section>
     </div>
 
     <section class="container flex flex-column flex-justify-between flex-1">

@@ -18,6 +18,7 @@
     export let items = []
     export let dots = true
     export let dotsBelow = true
+    export let rounded = true
     export let size = 'stretch'
     export let initIndex = 0
     export let disableFancy = false
@@ -25,7 +26,7 @@
     let parent = null
 
     $: activeDot = initIndex
-    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow })
+    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow, rounded })
     $: setScrollPosition(parent, initIndex)
 
     function carousel(node) {
@@ -98,6 +99,10 @@
 </section>
 
 <style>
+    .carousel.rounded > .carousel-inner {
+       border-radius: var(--border-radius-big);
+    }
+
     .carousel, .carousel-inner, .carousel-inner li {
         position: relative;
         flex: none;
@@ -141,7 +146,6 @@
         width: 100%;
         overflow-y: hidden;
         overflow-x: scroll;
-        border-radius: var(--border-radius-big);
     }
 
     .carousel-dots {
