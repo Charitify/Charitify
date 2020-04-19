@@ -27,8 +27,7 @@
     export let withHeader = true
 
     let active
-    let scrollY = 0
-    let isMoving = false
+    let refHeader
     let isBodyBlocked = false
     let isAllowed = {
         up: true,
@@ -69,8 +68,11 @@
     async function onActiveChange(active) {
         if (active) {
             setDuration(ref, DURATION)
+            setDuration(refHeader, DURATION)
             setTimeout(() => setDuration(ref, 0), DURATION)
+            setTimeout(() => setDuration(refHeader, 0), DURATION)
             drawTransform(ref, 0, 0)
+            drawTransform(refHeader, 0, 0)
             blockScroll(ref)
             await tick()
             dispatch('open')
@@ -86,20 +88,10 @@
         modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))
     }
 
-    function handleScrollY(el, moving) {
-        scrollY = el.scrollTop
-        if (!isMoving && moving || isMoving && !moving) {
-            isMoving = moving 
-        }
-    }
-
     let xSwipe = 0
     let ySwipe = 0
 
     function addSwipe(el) {
-        el.addEventListener('touchmove', handleScrollY.bind(null, el, true), false)
-        el.addEventListener('touchend', handleScrollY.bind(null, el, false), false)
-
         stopPropagationInRanges(el, THRESHOLD_RANGES, ({ x, y }) => {
             isAllowed = {
                 up: y <= THRESHOLD_RANGES.y[0],
@@ -119,48 +111,56 @@
                     if (xSwipe > THRESHOLD) {
                         setActive(false)
                         drawOpacity(el, xSwipe + 50, ySwipe)
+                        drawOpacity(refHeader, xSwipe + 50, ySwipe)
                         drawTransform(el, xSwipe + 50, ySwipe)
+                        drawTransform(refHeader, xSwipe + 50, ySwipe)
                         await delay(DURATION)
                     } else if (xSwipe < -THRESHOLD) {
                         setActive(false)
                         drawOpacity(el, xSwipe - 50, ySwipe)
+                        drawOpacity(refHeader, xSwipe - 50, ySwipe)
                         drawTransform(el, xSwipe - 50, ySwipe)
+                        drawTransform(refHeader, xSwipe - 50, ySwipe)
                         await delay(DURATION)
                     }
                     
                     if (ySwipe > THRESHOLD) {
                         setActive(false)
                         drawOpacity(el, xSwipe, ySwipe + 50)
+                        drawOpacity(refHeader, xSwipe, ySwipe + 50)
                         drawTransform(el, xSwipe, ySwipe + 50)
+                        drawTransform(refHeader, xSwipe, ySwipe + 50)
                         await delay(DURATION)
                     } else if (ySwipe < -THRESHOLD) {
-                        setDuration(ref, DURATION)
-                        setTimeout(() => setDuration(ref, 0), DURATION)
+                        setDuration(el, DURATION)
+                        setDuration(refHeader, DURATION)
+                        setTimeout(() => setDuration(el, 0), DURATION)
+                        setTimeout(() => setDuration(refHeader, 0), DURATION)
                         setActive(false)
                         drawOpacity(el, xSwipe, ySwipe - 50)
+                        drawOpacity(refHeader, xSwipe, ySwipe - 50)
                         drawTransform(el, xSwipe, ySwipe - 50)
+                        drawTransform(refHeader, xSwipe, ySwipe - 50)
                         await delay(DURATION)
                     }
 
                     if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {
-                        setDuration(ref, DURATION)
-                        setTimeout(() => setDuration(ref, 0), DURATION)
+                        setDuration(el, DURATION)
+                        setDuration(refHeader, DURATION)
+                        setTimeout(() => setDuration(el, 0), DURATION)
+                        setTimeout(() => setDuration(refHeader, 0), DURATION)
                         drawTransform(el, 0, 0)
+                        drawTransform(refHeader, 0, 0)
                     } else {
                         drawTransform(el, startPosition.x, startPosition.y)
+                        drawTransform(refHeader, startPosition.x, startPosition.y)
                     }
 
                     xSwipe = 0
                     ySwipe = 0
                     el.style.opacity = null
+                    refHeader.style.opacity = null
                 })
-
-                return {
-                    destroy() {
-                        el.removeEventListener('touchmove', handleScrollY.bind(null, el, true), false)
-                        el.removeEventListener('touchend', handleScrollY.bind(null, el, false), false)
-                    },
-                }
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
@@ -168,14 +168,18 @@
         if (!isAllowed.up && dir > 0 || !isAllowed.down && dir < 0) return
         ySwipe = dir
         drawTransform(el, xSwipe, ySwipe)
+        drawTransform(refHeader, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
+        drawOpacity(refHeader, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
         const dir = xUp - xDown
         if (!isAllowed.left && dir > 0 || !isAllowed.right && dir < 0) return
         xSwipe = dir
         drawTransform(el, xSwipe, ySwipe)
+        drawTransform(refHeader, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
+        drawOpacity(refHeader, xSwipe, ySwipe)
     }
 
     function drawTransform(el, x, y) {
@@ -214,12 +218,20 @@
             on:click={() => setActive(false)}
         >
             {#if withHeader}
-                <slot name="header">
-                    <header class={`modal-header ${!isMoving ? 'active' : ''}`} style={`top: ${scrollY}px`}>
-                        <h2 style="padding: 15px 20px">Закрити</h2>
-                        <button type="button" on:click={setActive.bind(null, false)} class="close">&#10005;</button>
-                    </header>
-                </slot>
+                <Portal>
+                    <slot name="header">
+                        <button 
+                            type="button"
+                            class={classnames('modal-header', { active })}
+                            in:appear
+                            bind:this={refHeader}
+                            on:click={setActive.bind(null, false)}
+                        >
+                            <h2 style="padding: 15px 20px">Закрити</h2>
+                            <span class="close">&#10005;</span>
+                        </button>
+                    </slot>
+                </Portal>   
                 <Br size="60"/>
             {/if}
             <div
@@ -259,7 +271,7 @@
         pointer-events: none;
     }
 
-    .modal.active {
+    .modal.active, .modal-header.active {
         opacity: 1;
         pointer-events: auto;
     }
@@ -310,15 +322,13 @@
         align-items: center;
         justify-content: space-between;
         color: rgb(var(--color-white));
-        transform: translateY(-100%);
         background-color: rgb(var(--color-info));
+        opacity: 0;
+        pointer-events: none;
+        transform-origin: 50% 50vh;
     }
 
-    .modal-header.active {
-        transform: none;
-    }
-
-    .modal-header button.close {
+    .modal-header .close {
         font-size: 24px;
         display: flex;
         align-items: center;

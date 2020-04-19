@@ -21,7 +21,9 @@
     <div style="height: 160px" class="flex">
         <section 
             class="flex full-width full-height" 
-            on:touchmove={e => e.stopPropagation()}
+            on:touchstart={e => (e.stopPropagation(), false)}
+            on:touchmove={e => (e.stopPropagation(), false)}
+            on:touchend={e => (e.stopPropagation(), false)}
         >
             <Carousel 
                 items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]}

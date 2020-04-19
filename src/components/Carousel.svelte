@@ -103,7 +103,7 @@
        border-radius: var(--border-radius-big);
     }
 
-    .carousel, .carousel-inner, .carousel-inner li {
+    .carousel, .carousel-inner, .carousel-inner > li {
         position: relative;
         flex: none;
         display: flex;
@@ -175,7 +175,7 @@
         opacity: .5;
     }
 
-    li.active {
+    .carousel-dots li.active {
         transform: scale(1.5);
     }
 </style>
