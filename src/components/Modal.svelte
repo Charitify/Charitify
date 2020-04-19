@@ -27,6 +27,8 @@
     export let withHeader = true
 
     let active
+    let scrollY = 0
+    let isMoving = false
     let isBodyBlocked = false
     let isAllowed = {
         up: true,
@@ -41,6 +43,7 @@
         left: safeGet(() => swipe.includes('left') || swipe.includes('all')),
         right: safeGet(() => swipe.includes('right') || swipe.includes('all')),
     }
+    $: scrollY = ref && ref.scrollTop
     $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)
     $: classProp = classnames('modal', size, { active })
     $: onActiveChange(active)
@@ -83,10 +86,20 @@
         modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))
     }
 
+    function handleScrollY(el, moving) {
+        scrollY = el.scrollTop
+        if (!isMoving && moving || isMoving && !moving) {
+            isMoving = moving 
+        }
+    }
+
     let xSwipe = 0
     let ySwipe = 0
 
     function addSwipe(el) {
+        el.addEventListener('touchmove', handleScrollY.bind(null, el, true), false)
+        el.addEventListener('touchend', handleScrollY.bind(null, el, false), false)
+
         stopPropagationInRanges(el, THRESHOLD_RANGES, ({ x, y }) => {
             isAllowed = {
                 up: y <= THRESHOLD_RANGES.y[0],
@@ -141,6 +154,13 @@
                     ySwipe = 0
                     el.style.opacity = null
                 })
+
+                return {
+                    destroy() {
+                        el.removeEventListener('touchmove', handleScrollY.bind(null, el, true), false)
+                        el.removeEventListener('touchend', handleScrollY.bind(null, el, false), false)
+                    },
+                }
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
@@ -180,10 +200,6 @@
 			css: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`
 		};
     }
-
-    function scringify(a) {
-        return JSON.stringify(arguments, null, 2)
-    }
 </script>
 
 {#if active !== null}
@@ -197,6 +213,15 @@
             in:appear
             on:click={() => setActive(false)}
         >
+            {#if withHeader}
+                <slot name="header">
+                    <header class={`modal-header ${!isMoving ? 'active' : ''}`} style={`top: ${scrollY}px`}>
+                        <h2 style="padding: 15px 20px">Закрити</h2>
+                        <button type="button" on:click={setActive.bind(null, false)} class="close">&#10005;</button>
+                    </header>
+                </slot>
+                <Br size="60"/>
+            {/if}
             <div
                 class="modal-inner"
                 tabindex="-1"
@@ -205,18 +230,6 @@
                 aria-labelledby="модальне вікно"
                 on:click={e => e.stopPropagation()}
             >
-                {#if withHeader && active}
-                    <slot name="header">
-                        <Portal>
-                            <header class="modal-header">
-                                <h2 style="padding: 15px 20px">Закрити</h2>
-                                <button type="button" on:click={setActive.bind(null, false)} class="close">&#10005;</button>
-                                { scringify(isAllowed) }
-                            </header>
-                        </Portal>  
-                    </slot>
-                    <Br size="60"/>
-                {/if}
                 <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>
             </div>
         </div>
@@ -297,7 +310,12 @@
         align-items: center;
         justify-content: space-between;
         color: rgb(var(--color-white));
+        transform: translateY(-100%);
         background-color: rgb(var(--color-info));
+    }
+
+    .modal-header.active {
+        transform: none;
     }
 
     .modal-header button.close {
