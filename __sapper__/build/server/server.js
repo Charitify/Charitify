@@ -2602,8 +2602,7 @@ const FundCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 		default: () => `
     
     <div style="${"height: 160px"}" class="${"flex"}">
-        <section class="${"flex full-width full-height"}">
-            ${validate_component(Carousel, "Carousel").$$render(
+        ${validate_component(Carousel, "Carousel").$$render(
 			$$result,
 			{
 				items: [{ src, alt: title }, { src, alt: title }, { src, alt: title }],
@@ -2615,7 +2614,6 @@ const FundCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 			{},
 			{}
 		)}    
-        </section>
     </div>
 
     <section class="${"container flex flex-column flex-justify-between flex-1"}">
