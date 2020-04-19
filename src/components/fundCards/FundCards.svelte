@@ -16,7 +16,7 @@
     export let items = []
 </script>
 
-<Carousel {items} size="auto" let:index={index} let:item={item}  class="charities">
+<Carousel {items} size="auto" let:index={index} let:item={item} class="charities">
     <div class={!index ? 'start' : index === items.length - 1 ? 'end' : ''} key={item.id}>
        <FundCard
             src={item.src}
