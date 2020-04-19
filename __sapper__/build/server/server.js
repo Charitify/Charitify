@@ -307,15 +307,24 @@ let scrollCheckInterval;
 function preventInertialScroll(e) {
     if (e && e.touches.length !== 1) return
 
+    function scrollTo(top) {
+        // document.documentElement.scrollTop = scroll
+        window.scrollTo({
+            top,
+            left: 0,
+            behavior: 'smooth'
+        });
+    }
+
     function recursive() {
         if (document.documentElement.scrollTop !== scroll) {
-            document.documentElement.scrollTop = scroll;
+            scrollTo(scroll);
             requestAnimationFrame(recursive);
         } else {
             const time = performance.now();
             function stopScroll() {
                 if (performance.now() - time < DURATION) {
-                    document.documentElement.scrollTop = scroll;
+                    scrollTo(scroll);
                     requestAnimationFrame(stopScroll);
                 }
             }
