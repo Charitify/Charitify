@@ -31,9 +31,9 @@
     $: setScrollPosition(parent, initIndex)
 
     function carousel(node) {
-        node.ontouchstart = e => stopPropagation && (e.stopPropagation(), false)
-        node.ontouchmove = e => stopPropagation && (e.stopPropagation(), false)
-        node.ontouchend = e => stopPropagation && (e.stopPropagation(), false)
+        node.ontouchstart = e => stopPropagation && (e.stopPropagation())
+        node.ontouchmove = e => stopPropagation && (e.stopPropagation())
+        node.ontouchend = e => stopPropagation && (e.stopPropagation())
 
         parent = node
         setScrollPosition(node, activeDot)
