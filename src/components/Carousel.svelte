@@ -31,12 +31,19 @@
     $: setScrollPosition(parent, initIndex)
 
     function carousel(node) {
+        node.ontouchstart = e => stopPropagation && (e.stopPropagation(), false)
+        node.ontouchmove = e => stopPropagation && (e.stopPropagation(), false)
+        node.ontouchend = e => stopPropagation && (e.stopPropagation(), false)
+
         parent = node
         setScrollPosition(node, activeDot)
         node.addEventListener('scroll', onScroll)
         return { 
             destroy: () => {
                 node.removeEventListener('scroll', onScroll)
+                node.ontouchstart= null
+                node.ontouchmove= null
+                node.ontouchend= null
             }
         }
     }
@@ -78,9 +85,6 @@
         use:carousel
         class="carousel-inner scroll-x-center"
         body-scroll-lock-ignore
-        on:touchstart={e => stopPropagation && (e.stopPropagation(), false)}
-        on:touchmove={e => stopPropagation && (e.stopPropagation(), false)}
-        on:touchend={e => stopPropagation && (e.stopPropagation(), false)}
     >
         {#each items as item, index}
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>

@@ -47,7 +47,7 @@
         <Br/>
 
         <section class="flex" style="height: 240px">
-            <Carousel items={carousel}/>
+            <Carousel items={carousel} stopPropagation={true}/>
         </section>
 
         <DescriptionShort text={descriptionShort.text}/>

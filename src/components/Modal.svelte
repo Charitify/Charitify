@@ -73,6 +73,8 @@
             setTimeout(() => setDuration(refHeader, 0), DURATION)
             drawTransform(ref, 0, 0)
             drawTransform(refHeader, 0, 0)
+            drawOpacity(ref, 0, 0)
+            drawOpacity(refHeader, 0, 0)
             blockScroll(ref)
             await tick()
             dispatch('open')
@@ -152,8 +154,7 @@
                         drawTransform(el, 0, 0)
                         drawTransform(refHeader, 0, 0)
                     } else {
-                        drawTransform(el, startPosition.x, startPosition.y)
-                        drawTransform(refHeader, startPosition.x, startPosition.y)
+                        setStartPosition()
                     }
 
                     xSwipe = 0
@@ -182,6 +183,11 @@
         drawOpacity(refHeader, xSwipe, ySwipe)
     }
 
+    function setStartPosition() {
+        drawTransform(ref, startPosition.x, startPosition.y)
+        drawTransform(refHeader, startPosition.x, startPosition.y)
+    }
+
     function drawTransform(el, x, y) {
         const delta = Math.abs(x) > Math.abs(y) ? x : y
         let scale = 1 - Math.abs(delta / window.innerHeight)
@@ -204,6 +210,17 @@
 			css: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`
 		};
     }
+
+    function onCloseModal() {
+        setDuration(ref, DURATION)
+        setDuration(refHeader, DURATION)
+        setTimeout(() => setDuration(ref, 0), DURATION)
+        setTimeout(() => setDuration(refHeader, 0), DURATION)
+        setStartPosition()
+        drawOpacity(ref, startPosition.x, startPosition.y)
+        drawOpacity(refHeader, startPosition.x, startPosition.y)
+        setTimeout(() => setActive(false), DURATION)
+    }
 </script>
 
 {#if active !== null}
@@ -215,7 +232,7 @@
             class={classProp}
             use:addSwipe
             in:appear
-            on:click={() => setActive(false)}
+            on:click={setActive.bind(null, false)}
         >
             {#if withHeader}
                 <Portal>
@@ -225,7 +242,7 @@
                             class={classnames('modal-header', { active })}
                             in:appear
                             bind:this={refHeader}
-                            on:click={setActive.bind(null, false)}
+                            on:click={onCloseModal}
                         >
                             <h2 style="padding: 15px 20px">Закрити</h2>
                             <span class="close">&#10005;</span>
