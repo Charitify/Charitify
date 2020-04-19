@@ -2,7 +2,7 @@
     import { createEventDispatcher, tick } from 'svelte'
     import { fly } from "svelte/transition";
     import { Swipe } from '@services'
-    import { safeGet, classnames, delay, bodyScroll, stopPropagationUntilEnd } from "@utils";
+    import { safeGet, classnames, delay, bodyScroll, stopPropagationInRanges } from "@utils";
     import { modals } from "@store";
     import Portal from "./Portal.svelte";
     import Br from "./Br.svelte";
@@ -11,6 +11,7 @@
     
     const DURATION = 250
     const THRESHOLD = 100
+    const THRESHOLD_RANGES = { x: [0, 100], y: [1, 99] }
     const START_POSITION = {
         x: 300,
         y: 0
@@ -27,6 +28,12 @@
 
     let active
     let isBodyBlocked = false
+    let isAllowed = {
+        up: true,
+        down: true,
+        left: true,
+        right: true,
+    }
 
     $: isSwipe = {
         up: safeGet(() => swipe.includes('up') || swipe.includes('all')),
@@ -83,7 +90,14 @@
     }
 
     function addSwipe(el) {
-        stopPropagationUntilEnd(el, onScrollerInRange)
+        stopPropagationInRanges(el, THRESHOLD_RANGES, ({ x, y }) => {
+            isAllowed = {
+                up: y <= THRESHOLD_RANGES.y[0],
+                down: y >= THRESHOLD_RANGES.y[1],
+                left: x <= THRESHOLD_RANGES.x[0] || x >= THRESHOLD_RANGES.x[1],
+                right: x <= THRESHOLD_RANGES.x[0] || x >= THRESHOLD_RANGES.x[1],
+            } 
+        })
 
         new Swipe(el)
                 .run()
@@ -133,13 +147,16 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
-        if (isScrollerInRange) return
-        ySwipe = yUp - yDown
+        const dir = yUp - yDown
+        if (!isAllowed.up && dir > 0 || !isAllowed.down && dir < 0) return
+        ySwipe = dir
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
-        xSwipe = xUp - xDown
+        const dir = xUp - xDown
+        if (!isAllowed.left && dir > 0 || !isAllowed.right && dir < 0) return
+        xSwipe = dir
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
@@ -165,6 +182,10 @@
 			duration: DURATION,
 			css: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`
 		};
+    }
+
+    function scringify(a) {
+        return JSON.stringify(arguments, null, 2)
     }
 </script>
 
@@ -193,6 +214,7 @@
                             <header class="modal-header">
                                 <h2 style="padding: 15px 20px">Закрити</h2>
                                 <button type="button" on:click={setActive.bind(null, false)} class="close">&#10005;</button>
+                                { scringify(isAllowed) }
                             </header>
                         </Portal>  
                     </slot>

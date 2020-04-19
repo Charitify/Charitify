@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte'
     import { modals } from '@store'
-    import { bodyScroll, safeGet, stopPropagationUntilEnd } from '@utils'
+    import { bodyScroll, safeGet } from '@utils'
     import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'
     import TopCarousel from './_TopCarousel.svelte'
     import Trust from './_Trust.svelte'

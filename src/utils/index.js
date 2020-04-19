@@ -9,5 +9,5 @@ export { default as toCSSString } from './toCSSString'
 export { default as getScrollPercent } from './getScrollPercent'
 export { default as disablePinchZoom } from './disablePinchZoom'
 export { default as disableDoubleTapZoom } from './disableDoubleTapZoom'
-export { default as stopPropagationUntilEnd } from './stopPropagationUntilEnd'
+export { default as stopPropagationInRanges } from './stopPropagationInRanges'
 
