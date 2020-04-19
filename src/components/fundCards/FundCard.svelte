@@ -18,7 +18,7 @@
 
 <Card class="flex flex-column">
     
-    <div style="height: 160px" class="flex full-width">
+    <div style="height: 160px" class="flex">
         <Carousel 
             items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]}
             disableFancy={true}

@@ -138,12 +138,12 @@
         background-color: rgba(var(--theme-bg-color-opposite));
     }
 
-    .carousel.stretch .fluid {
+    .carousel.stretch > .carousel-inner > .fluid {
         flex: none;
         width: 100%;
     }
 
-    .carousel.auto .fluid {
+    .carousel.auto > .carousel-inner > .fluid {
         width: auto;
     }
 
@@ -155,7 +155,7 @@
         display: none;
     }
 
-    .carousel .carousel-inner {
+    .carousel > .carousel-inner {
         width: 100%;
         overflow-y: hidden;
         overflow-x: scroll;
