@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { waitUntil, classnames } from '@utils'
+    import { Swipe } from '@services'
     import Picture from '@components/Picture.svelte'
     import FancyBox from '@components/FancyBox.svelte'
 
@@ -30,6 +31,12 @@
 
     function carousel(node) {
         parent = node
+
+        new Swipe(parent)
+                .run()
+                .onUp(handleVerticalSwipe)
+                .onDown(handleVerticalSwipe)
+
         setScrollPosition(node, activeDot)
         node.addEventListener('scroll', onScroll)
         return { 
@@ -37,6 +44,12 @@
                 node.removeEventListener('scroll', onScroll)
             }
         }
+    }
+
+    function handleVerticalSwipe(_yUp, _yDown, evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        return false
     }
 
     function onScroll(e) {

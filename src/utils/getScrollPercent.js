@@ -9,7 +9,13 @@ export default function getScrollPercent(container, child) {
     const sh = 'scrollHeight'
     const sw = 'scrollWidth'
     return {
-       x:  (p[sl] || c[sl]) / (((p[sw] || c[sw]) - p.clientWidth) || 1) * 100,
-       y:  (p[st] || c[st]) / (((p[sh] || c[sh]) - p.clientHeight) || 1) * 100,
+        x:  (p[sl] || c[sl]) / (((p[sw] || c[sw]) - p.clientWidth) || 1) * 100,
+        y:  (p[st] || c[st]) / (((p[sh] || c[sh]) - p.clientHeight) || 1) * 100,
+        p,
+        c,
+        st,
+        sl,
+        sh,
+        sw,
     }
 }

@@ -97,15 +97,15 @@ export default class Swipe {
     try {
       if ( Math.abs( this.xDiff ) > Math.abs( this.yDiff ) ) { // Most significant.
         if ( this.xDiff < 0 ) {
-          this.onLeft(this.xDown, xUp, evt, this.element);
+          return this.onLeft(this.xDown, xUp, evt, this.element);
         } else {
-          this.onRight(this.xDown, xUp, evt, this.element);
+          return this.onRight(this.xDown, xUp, evt, this.element);
         }
       } else {
         if ( this.yDiff < 0 ) {
-          this.onUp(this.yDown, yUp, evt, this.element);
+          return this.onUp(this.yDown, yUp, evt, this.element);
         } else {
-          this.onDown(this.yDown, yUp, evt, this.element);
+          return this.onDown(this.yDown, yUp, evt, this.element);
         }
       }
     } catch(err) { /* ignore throwing of unknown functions */ }

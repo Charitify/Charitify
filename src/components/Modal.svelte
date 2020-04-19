@@ -30,7 +30,7 @@
     let isBodyBlocked = false
     let isAllowed = {
         up: true,
-        down: true,
+        down: false,
         left: true,
         right: true,
     }
@@ -51,6 +51,12 @@
             bodyScroll.disableScroll(modal, { extraLock: size === 'full' });
             isBodyBlocked = true
             modal && (modal.scrollTop = 0)
+            isAllowed = {
+                up: true,
+                down: false,
+                left: true,
+                right: true,
+            }
         } else if (blockBody && !active && isBodyBlocked) {
             bodyScroll.enableScroll(modal, { extraLock: size === 'full' });
             isBodyBlocked = false
@@ -75,19 +81,10 @@
     function setActive(isActive) {
         if (open !== null) open = isActive
         modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))
-
-        if (!isActive && !isScrollerInRange) {
-            isScrollerInRange = true
-        }
     }
 
     let xSwipe = 0
     let ySwipe = 0
-    let isScrollerInRange = true
-
-    function onScrollerInRange(isInRange) {
-        isScrollerInRange = isInRange
-    }
 
     function addSwipe(el) {
         stopPropagationInRanges(el, THRESHOLD_RANGES, ({ x, y }) => {
