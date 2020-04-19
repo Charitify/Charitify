@@ -22,6 +22,7 @@
     export let size = 'stretch'
     export let initIndex = 0
     export let disableFancy = false
+    export let stopPropagation = undefined
 
     let parent = null
 
@@ -73,7 +74,14 @@
 </script>
 
 <section aria-label="carousel" class={classProp}>
-    <ul use:carousel class="carousel-inner scroll-x-center" body-scroll-lock-ignore>
+    <ul 
+        use:carousel
+        class="carousel-inner scroll-x-center"
+        body-scroll-lock-ignore
+        on:touchstart={e => stopPropagation && (e.stopPropagation(), false)}
+        on:touchmove={e => stopPropagation && (e.stopPropagation(), false)}
+        on:touchend={e => stopPropagation && (e.stopPropagation(), false)}
+    >
         {#each items as item, index}
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
                 <slot {item} {index}>

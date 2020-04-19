@@ -32,8 +32,8 @@
         <p>{ descriptionShort.title }</p>
         <Br size="25"/>
         
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
-            <Carousel items={carousel}/>
+        <section class="flex" style="height: 240px">
+            <Carousel items={carousel} stopPropagation={true}/>
         </section>
 
         <DescriptionShort text={descriptionShort.text}/>
@@ -46,7 +46,7 @@
 
         <Br/>
 
-        <section class="flex" style="height: 240px" on:touchmove={e => e.stopPropagation()}>
+        <section class="flex" style="height: 240px">
             <Carousel items={carousel}/>
         </section>
 
