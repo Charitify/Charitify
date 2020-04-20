@@ -1,14 +1,27 @@
 <script>
-    import { Br } from '@components'
+    import { Br, Loader } from '@components'
 
     export let title
     export let text
+
+    let active = false
+    setInterval(() => active = !active, 3000)
 </script>
 
-{#if title}
+{#if title && active}
     <h2>{title}</h2>
+{:else}
+    <div style="width: 85%"><Loader type="h2"/>  </div>
 {/if}
 <Br size="10" />
+
+{#if text && active}
 <pre class="font-w-300">
     {text}
 </pre>
+{:else}
+    <Loader type="pre"/>  
+    <Loader type="pre"/>  
+    <Loader type="pre"/>  
+    <div style="width: 60%"><Loader type="pre"/></div>
+{/if}

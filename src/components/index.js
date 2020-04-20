@@ -15,6 +15,7 @@ export { default as FancyBox } from './FancyBox.svelte'
 
 export * from './app'
 export * from './map'
+export * from './loader'
 export * from './fields'
 export * from './comments'
 export * from './donators'

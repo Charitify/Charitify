@@ -111,8 +111,8 @@
     --font-line-height-h2: calc(var(--font-line-height) * 1.4);
     --font-line-height-h3: calc(var(--font-line-height) * 1.15);
     --font-line-height-h4: calc(var(--font-line-height) * 1.15);
-    --font-line-height-h5: calc(var(--font-line-height) * 1.2);
-    --font-line-height-h6: calc(var(--font-line-height) * 1.2);    
+    --font-line-height-h5: calc(var(--font-line-height) * 1.15);
+    --font-line-height-h6: calc(var(--font-line-height) * 1.15);    
 
     /* -----------========( Other )=========----------- */
 
