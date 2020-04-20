@@ -8,7 +8,7 @@
     import DescriptionShort from './_DescriptionShort.svelte'
     import InteractionIndicators from './_InteractionIndicators.svelte'
     
-    export let items = []
+    export let items
     export let carousel = []
     export let iconsLine = {}
     export let organization = {}

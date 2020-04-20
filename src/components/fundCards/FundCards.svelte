@@ -13,7 +13,7 @@
      *  title: string,
      * }}
      */
-    export let items = []
+    export let items = [{}, {}, {}]
 </script>
 
 <Carousel {items} size="auto" let:index={index} let:item={item} class="charities">

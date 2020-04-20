@@ -1,7 +1,7 @@
 <script>
   import { Br, Comments } from "@components";
 
-  export let items = []
+  export let items
 </script>
 
 <h1>Коментарі</h1>

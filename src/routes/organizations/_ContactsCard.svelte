@@ -1,7 +1,7 @@
 <script>
-    import { Br, Card, Icon, Avatar, FancyBox } from '@components'
+    import { Br, Card, Icon, Avatar, FancyBox, Loader } from '@components'
 
-    export let items = []
+    export let items = null
     export let orgName = null
     export let avatar = null
     export let avatarBig = null
@@ -16,8 +16,8 @@
         viber: 'viber',
     }
 
-    $: topItems = items.filter(i => !top.includes(i.type))
-    $: bottomItems = items.filter(i => top.includes(i.type))
+    $: topItems = items !== null ? items.filter(i => !top.includes(i.type)) : new Array(3).fill(null)
+    $: bottomItems = items !== null ? items.filter(i => top.includes(i.type)) : new Array(3).fill(null)
 </script>
 
 <Card>
@@ -40,9 +40,16 @@
             <Br size="20" />
             <h2>Наші контакти</h2>
             <Br size="5" />
-            <p class="h3 font-secondary font-w-500" style="opacity: .7">
-                {orgName}
-            </p>
+
+            {#if orgName !== null}
+                <p class="h3 font-secondary font-w-500" style="opacity: .7">
+                    {orgName}
+                </p>
+            {:else}
+                <p style="width: 60%">
+                    <Loader type="h3"/>
+                </p>
+            {/if}
         </div>
 
         <Br size="30" />
@@ -50,13 +57,19 @@
         <ul>
             {#each topItems as item}
                 <li>
-                    <a href={item.href} class="flex flex-align-center" style="padding: 7px 0" title={item.title}>
-                        <Icon type={icons[item.type]} size="medium"/>
-                        <s></s>
-                        <s></s>
-                        <s></s>
-                        <p class="h3">{item.title}</p>
-                    </a>
+                    {#if item !== null}
+                        <a href={item.href} class="flex flex-align-center" style="padding: 7px 0" title={item.title}>
+                            <Icon type={icons[item.type]} size="medium"/>
+                            <s></s>
+                            <s></s>
+                            <s></s>
+                            <p class="h3">{item.title}</p>
+                        </a>
+                    {:else}
+                        <span class="flex flex-align-center" style="padding: 7px 0">
+                            <Loader type="h3"/>
+                        </span>
+                    {/if}
                 </li>
             {/each}
         </ul>
@@ -65,11 +78,17 @@
 
         <ul class="flex flex-justify-center social-icons">
             {#each bottomItems as item}
-                <li style="padding: 0 10px" class={item.type}>
-                    <a href={item.value} target="_blank" title={item.title}>
-                        <Icon type={item.type} size="large" class="custom"/>
-                    </a>
-                </li>
+                {#if item !== null}
+                    <li style="padding: 0 10px" class={item.type}>
+                        <a href={item.value} target="_blank" title={item.title}>
+                            <Icon type={item.type} size="large" class="custom"/>
+                        </a>
+                    </li>
+                {:else}
+                    <li style="padding: 0 10px; width: 60px; height: 45px; overflow: hidden">
+                        <Loader type="avatar"/>
+                    </li>
+                {/if}
             {/each}
         </ul>
 

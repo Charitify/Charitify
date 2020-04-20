@@ -5,6 +5,7 @@
     import { onMount } from 'svelte'
     import { classnames } from '@utils'
     import Text from './Text.svelte'
+    import Circle from './Circle.svelte'
 
     export let width = '100%' 
     export let height = '100%'
@@ -12,7 +13,8 @@
     export let dark = '#555555';
     export let opacity = .2;
     export let border = false;
-    export let type = 'p'; // h1, h2, h3, h4, h5, h6, p, pre
+    export let absolute = false;
+    export let type; // h1, h2, h3, h4, h5, h6, p, pre, avatar
 
     let hTypes = {
         p: 21,
@@ -27,9 +29,6 @@
 
     onMount(() => {
         const style = getComputedStyle(document.body);
-        console.log(style.getPropertyValue('font-size'));
-        console.log();
-
         const lh = Number.parseInt(style.getPropertyValue('line-height'))
         const balance = -2
 
@@ -37,19 +36,17 @@
             p: lh * 1.15 + balance,
             h1: lh * 1.85 + balance,
             h2: lh * 1.4 + balance,
-            h3: lh * 1.15 + balance,
+            h3: lh * 1.3 + balance,
             h4: lh * 1.15 + balance,
             h5: lh * 1.15 + balance,
             h6: lh * 1.15 + balance,
             pre: lh * 1.15 + balance,
         }
-
-        console.log(hTypes)
     })
 
     $: areaWidth = width.replace('%', '')
-    $: areaHeight = hTypes[type] || height.replace('%', '')
-    $: classProp = classnames('loader', { border })
+    $: areaHeight = hTypes[type] || height
+    $: classProp = classnames('loader', { border, absolute })
 </script>
 
 <section 
@@ -76,7 +73,9 @@
         <defs>
             <clipPath id="clip-path">
                 <slot>
-                    {#if type}
+                    {#if 'avatar'.includes(type)}
+                        <Circle/>
+                    {:else if 'h1,h2,h3,h4,h5,h6,p,pre'.includes(type)}
                         <Text/>
                     {/if}
                 </slot>
@@ -136,6 +135,14 @@
     .loader svg {
         flex: 1 1 auto;
         align-self: stretch;
+    }
+
+    .loader.absolute {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
 
     .loader.border {

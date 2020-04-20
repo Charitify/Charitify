@@ -27,7 +27,7 @@
     let parent = null
 
     $: activeDot = initIndex
-    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow, rounded })
+    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow, rounded, filled: items.length })
     $: setScrollPosition(parent, initIndex)
 
     function carousel(node) {
@@ -127,6 +127,10 @@
 
     .carousel.dotsBelow {
         padding-bottom: 40px;
+    }
+
+    .carousel.filled > .carousel-inner {
+        background-color: transparent;
     }
 
     .carousel.dotsBelow .carousel-dots {

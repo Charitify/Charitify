@@ -29,8 +29,8 @@
 
     // Entities
     let organization = {};
-    let comments = []
-    let funds = []
+    let comments
+    let funds
     
     $: organizationBlock = {
         id: organization.id,
@@ -82,7 +82,7 @@
         title: `${d.currency} ${d.amount}`,
         subtitle: d.name,
         checked: d.checked,
-    })), [], true);
+    })));
     $: lastNews = safeGet(() => organization.news.map(n => ({
         id: n.id,
         src: n.src,
@@ -91,13 +91,13 @@
         title: n.title,
         subtitle: n.subtitle,
         created_at: n.created_at,
-    })), [], true).slice(0, 3);
+    })).slice(0, 3));
     $: documents = safeGet(() => organization.documents.map(d => ({
         id: d.id,
         alt: d.title,
         src: d.src,
         src2x: d.src2x,
-    })), [], true);
+    })));
     $: media = safeGet(() => organization.media.map(d => ({
         id: d.id,
         alt: d.title,
@@ -122,7 +122,7 @@
     };
 
     onMount(async () => {
-        await delay(2000)
+        await delay(20000)
         organization = await API.getOrganization(1);
         comments = await API.getComments()
         funds = await API.getFunds()
@@ -156,7 +156,7 @@
     <FundList title="Фонди тварин" items={animalFunds}/>
     <Br size="45" />
 
-    <FundList title="Інші фонди" items={animalFunds}/>
+    <FundList title="Інші фонди" items={othersFunds}/>
     <Br size="45" />
 
     <Description title={descriptionBlock.title} text={descriptionBlock.text}/>

@@ -12,11 +12,12 @@
     export let width = undefined
     export let height = undefined
 
-    let isError = false
     let loadingSrcSmall = true
     let loadingSrcBig = true
+    let isErrorSmall = false
+    let isErrorBig = false
 
-    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isError })
+    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isErrorSmall, isErrorBig })
 
     function imgService(node, postFix) {
         if (node.complete) {
@@ -29,7 +30,7 @@
 
     function onLoad(node, postFix) {
         changeLoading(postFix, false)
-        isError = false
+        changeError(postFix, false)
         dispatch(`load${postFix}`, node)
 
         if (!srcBig || !loadingSrcBig) {
@@ -39,7 +40,7 @@
 
     function onError(node, postFix) {
         changeLoading(postFix, false)
-        isError = true
+        changeError(postFix, true)
         dispatch(`error${postFix}`, node)
     }
 
@@ -50,6 +51,17 @@
                 break
             case 'Big':
                 loadingSrcBig = isLoading
+                break
+        }
+    }
+
+    function changeError(type, isError) {
+        switch (type) {
+            case 'Small':
+                isErrorSmall = isError
+                break
+            case 'Big':
+                isErrorBig = isError
                 break
         }
     }
@@ -119,8 +131,11 @@
         object-fit: contain;
     }
 
-    .picture.isError .pic-1x,
-    .picture.isError .pic-2x,
+    .picture.isErrorBig {
+        opacity: 0;
+    }
+    .picture.isErrorSmall .pic-1x,
+    .picture.isErrorBig .pic-2x,
     .picture.loadingSrcSmall .pic-1x,
     .picture.loadingSrcBig .pic-2x {
         opacity: 0;

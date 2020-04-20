@@ -1,3 +1,4 @@
+
 export { default as Br } from './Br.svelte'
 export { default as Icon } from './Icon.svelte'
 export { default as Rate } from './Rate.svelte'
@@ -13,9 +14,10 @@ export { default as Progress } from './Progress.svelte'
 export { default as Carousel } from './Carousel.svelte'
 export { default as FancyBox } from './FancyBox.svelte'
 
+export { default as Loader } from './loader'
+
 export * from './app'
 export * from './map'
-export * from './loader'
 export * from './fields'
 export * from './comments'
 export * from './donators'

@@ -655,6 +655,18 @@ button:not([class]):focus {
     align-self: stretch;
 }
 
+.flex-self-start {
+    align-self: flex-start;
+}
+
+.flex-self-end {
+    align-self: flex-end;
+}
+
+.flex-self-baseline {
+    align-self: baseline;
+}
+
 .flex {
     display: flex;
 }

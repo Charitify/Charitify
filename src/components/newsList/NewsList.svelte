@@ -20,7 +20,7 @@
     *   created_at: string,
     * }}
     */
-    export let items = []
+    export let items = new Array(3).fill({ title: null, subtitle: null, created_at: null, likes: null })
 </script>
 
 <section class="news-list">
@@ -33,7 +33,7 @@
                         likes={item.likes}
                         isLiked={item.isLiked}
                         subtitle={item.subtitle}
-                        date={Dates(item.created_at).fromNow()}
+                        date={item.created_at === null ? null : Dates(item.created_at).fromNow()}
                 />
 
                 <span class="arrow h2">→</span>

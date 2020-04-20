@@ -5,12 +5,13 @@
     import Card from '@components/Card.svelte'
     import Avatar from '@components/Avatar.svelte'
     import FancyBox from '@components/FancyBox.svelte'
+    import Loader from '@components/loader'
 
-    export let src = undefined
-    export let date = undefined
-    export let title = undefined
-    export let amount = undefined
-    export let checked = undefined
+    export let src = null
+    export let date = null
+    export let title = null
+    export let amount = null
+    export let checked = null
 
     $: classProp = classnames($$props.class)
 </script>
@@ -44,7 +45,12 @@
         <s></s>
 
         <div class="flex flex-column flex-1" style="overflow: hidden">
-            <h3 class="text-ellipsis font-w-500">{ title }</h3>
+
+            {#if title !== null}
+                <h3 class="text-ellipsis font-w-500">{ title }</h3>
+            {:else}
+                <div style="width: 60%"><Loader type="h3" /></div>
+            {/if}
 
             <Br size="5"/>
 
@@ -57,13 +63,17 @@
             <Br size="10"/>
 
             <div class="flex flex-align-center flex-justify-between">
-                <p>
-                    <span class="h4" style="opacity: .3">{ date }</span>
-                    <s></s>
+                <p class="flex flex-align-center flex-justify-between">
+                    {#if date !== null}
+                        <span class="h4" style="opacity: .3">{ date }</span>
+                    {:else}
+                        <div style="width: 40%"><Loader type="h4" /></div>
+                    {/if}
                     <s></s>
                     <s></s>
                     <s></s>
                     <span class="h4" style="opacity: .7">Відповісти</span>
+                    <s></s>
                     <s></s>
                     <s></s>
                 </p>
@@ -73,8 +83,13 @@
                     </span>
                     <s></s>
                     <s></s>
-                    {#if amount}
+                    {#if amount !== null}
                         <h4>{ amount }</h4>
+                    {:else}
+                        <span class="h4 relative flex-self-start">
+                            <span style="visibility: hidden">99</span>
+                            <Loader type="h4" absolute/>
+                        </span>  
                     {/if}
                 </span>
             </div>

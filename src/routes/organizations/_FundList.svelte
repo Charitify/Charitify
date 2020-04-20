@@ -2,7 +2,7 @@
     import { Br, FundCards, Modal } from '@components'
 
     export let title
-    export let items = []
+    export let items
 </script>
 
 <h1>{title}</h1>
