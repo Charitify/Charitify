@@ -45,20 +45,6 @@
         <Trust active={organization.isLiked}/>
 
         <Br/>
-
-        <section class="flex" style="height: 240px">
-            <Carousel items={carousel} stopPropagation={true}/>
-        </section>
-
-        <DescriptionShort text={descriptionShort.text}/>
-        <Br size="10" />
-
-        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
-        <Br size="50" />
-
-        <Trust active={organization.isLiked}/>
-
-        <Br/>
     </section>
 </Modal>
 
