@@ -158,6 +158,7 @@
         width: 100%;
         overflow-y: hidden;
         overflow-x: scroll;
+        background-color: rgba(var(--color-black), .04);
     }
 
     .carousel-dots {

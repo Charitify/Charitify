@@ -8,9 +8,9 @@
 
     export let width = '100%' 
     export let height = '100%'
-    export let light = '#636363';
-    export let dark = '#000000';
-    export let opacity = .1;
+    export let light = '#999999';
+    export let dark = '#555555';
+    export let opacity = .2;
     export let border = false;
     export let type = 'p'; // h1, h2, h3, h4, h5, h6, p, pre
 
@@ -38,14 +38,14 @@
 
 <section 
     class={classProp}
-    style={`opacity: ${opacity}; border-color: ${light};`}
+    style={`opacity: ${opacity}; outline-color: ${light};`}
 >  
     <svg
         role="img"
         width="100%"
         height={areaHeight}
         aria-labelledby="loading-aria"
-        viewBox={`0 0 ${areaWidth} ${areaHeight}`}
+        viewBox={`0 0 ${areaWidth} 100`}
         preserveAspectRatio="none"
     >
         <title id="loading-aria">Loading...</title>
@@ -123,7 +123,7 @@
     }
 
     .loader.border {
-        border-width: 1px;
-        border-style: solid;
+        outline-width: 1px;
+        outline-style: solid;
     }
 </style>
