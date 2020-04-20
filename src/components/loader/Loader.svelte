@@ -15,20 +15,36 @@
     export let type = 'p'; // h1, h2, h3, h4, h5, h6, p, pre
 
     let hTypes = {
-        p: 23,
-        h1: 37,
-        h2: 29,
-        h3: 23,
-        h4: 23,
-        h5: 23,
-        h6: 23,
-        pre: 20,
+        p: 21,
+        h1: 35,
+        h2: 26,
+        h3: 21,
+        h4: 21,
+        h5: 21,
+        h6: 21,
+        pre: 21,
     }
 
     onMount(() => {
         const style = getComputedStyle(document.body);
         console.log(style.getPropertyValue('font-size'));
-        console.log(style.getPropertyValue('line-height'));
+        console.log();
+
+        const lh = Number.parseInt(style.getPropertyValue('line-height'))
+        const balance = -2
+
+        hTypes = {
+            p: lh * 1.15 + balance,
+            h1: lh * 1.85 + balance,
+            h2: lh * 1.4 + balance,
+            h3: lh * 1.15 + balance,
+            h4: lh * 1.15 + balance,
+            h5: lh * 1.15 + balance,
+            h6: lh * 1.15 + balance,
+            pre: lh * 1.15 + balance,
+        }
+
+        console.log(hTypes)
     })
 
     $: areaWidth = width.replace('%', '')
