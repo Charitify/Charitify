@@ -84,7 +84,6 @@
     <ul 
         use:carousel
         class="carousel-inner scroll-x-center"
-        body-scroll-lock-ignore
     >
         {#each items as item, index}
             <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
