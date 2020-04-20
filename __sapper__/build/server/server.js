@@ -3335,29 +3335,6 @@ ${validate_component(Modal, "Modal").$$render(
         ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
 
         ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
-
-        <section class="${"flex"}" style="${"height: 240px"}">
-            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, stopPropagation: true }, {}, {})}
-        </section>
-
-        ${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, { text: descriptionShort.text }, {}, {})}
-        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-        ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
-				$$result,
-				{
-					likes: iconsLine.likes,
-					views: iconsLine.views,
-					isLiked: organization.isLiked
-				},
-				{},
-				{}
-			)}
-        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
-
-        ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
-
-        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
     </section>
 `
 		}
