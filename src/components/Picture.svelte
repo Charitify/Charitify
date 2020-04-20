@@ -92,7 +92,7 @@
         flex-direction: column;
         align-items: stretch;
         justify-content: stretch;
-        background-color: rgba(var(--color-black), .04);
+        background-color: rgba(var(--theme-bg-color-opposite), .04);
     }
 
     .picture .pic {
