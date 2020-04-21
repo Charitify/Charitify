@@ -15,10 +15,30 @@
         <li style="padding-bottom: 5px">Купити вакцінацію для Волтера</li>
         <li style="padding-bottom: 5px">Допомогти любим інщим способом</li>
     {:else}
-        <li style="padding-botton: 5px"><Loader type="p"/></li>
-        <li style="padding-botton: 5px"><Loader type="p"/></li>
-        <li style="padding-botton: 5px"><Loader type="p"/></li>
-        <li style="padding-botton: 5px"><Loader type="p"/></li>
+        <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-600 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="p" absolute/>
+            </span>  
+        </li>
+       <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-600 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="p" absolute/>
+            </span>  
+        </li>
+       <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-600 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="p" absolute/>
+            </span>  
+        </li>
+       <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-600 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="p" absolute/>
+            </span>  
+        </li>
     {/if}
 </ul>
 <Br size="30"/>
