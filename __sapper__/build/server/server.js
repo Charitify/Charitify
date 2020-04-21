@@ -4614,10 +4614,30 @@ ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
         <li style="${"padding-bottom: 5px"}">Можете особисто відвідати його у нас</li>
         <li style="${"padding-bottom: 5px"}">Купити вакцінацію для Волтера</li>
         <li style="${"padding-bottom: 5px"}">Допомогти любим інщим способом</li>`
-	: `<li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</li>
-        <li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</li>
-        <li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</li>
-        <li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</li>`}
+	: `<li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>  
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>  
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>  
+        </li>`}
 </ul>
 ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 <div class="${"flex"}">
@@ -4636,7 +4656,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
         <s></s>
         ${data.phone !== null
 	? `<h2>${escape(data.phone)}</h2>`
-	: `<span style="${"width: 240px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}</span>`}
+	: `<span style="${"width: 240px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</span>`}
     </div>
 </div>
 ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
