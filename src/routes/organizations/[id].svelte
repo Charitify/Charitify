@@ -39,8 +39,8 @@
     };
     $: carouselTop = (organization.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
     $: descriptionShort = {
-        title: organization.title,
-        text: organization.subtitle,
+        title: organization.title || null,
+        text: organization.subtitle || null,
     };
     $: animalFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
         id: f.id,
@@ -141,7 +141,7 @@
     <Br size="var(--header-height)" />
     <Br size="30" />
 
-    <OrganizationButton organization={organizationBlock}/>
+    <OrganizationButton id={organizationBlock.id} src={organizationBlock.avatar} title={organizationBlock.name}/>
     <Br size="20" />
 
     <TopCarousel items={carouselTop}/>

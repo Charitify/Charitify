@@ -1,31 +1,30 @@
 <script>
-  import { Picture, Button } from "@components";
+  import { Picture, Button, Loader } from "@components";
 
-  /**
-   * @type {{
-   *  id: sring,
-   *  name: string,
-   *  avatar: string
-   * }}
-   */
-  export let organization = {}
+  export let id = null
+  export let src = null
+  export let title = null
 </script>
 
-<Button rel="prefetch" href={organization.id} class="white">
+<Button rel="prefetch" href={id} class="white">
   <div class="flex flex-align-center flex-justify-between full-width">
 
     <div class="flex flex-align-center">
       <s />
       <div class="flex" style="max-width: 45px; height: 40px; overflow: hidden">
         <Picture
-          src={organization.avatar}
+          {src}
           size="contain"
-          alt="фото організації" />
+          alt="якесь фото організації" />
       </div>
       <s />
-      <s />
-      <s />
-      <h3>{organization.name}</h3>
+      {#if title !== null}
+        <s />
+        <s />
+        <h3>{title}</h3>
+      {:else}
+        <span><Loader type="h3"/></span>
+      {/if}
     </div>
     
   </div>

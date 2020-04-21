@@ -217,6 +217,7 @@
     }
 
     function appear(node, params) {
+        if (!active) return
 		const existingTransform = getComputedStyle(node).transform.replace('none', '');
         const getScale = t => .9 + .1 * t
         const getX = t => startPosition.x - startPosition.x * t
@@ -232,8 +233,8 @@
         setTimeout(() => setDuration(ref, 0), DURATION)
         setTimeout(() => setDuration(refHeader, 0), DURATION)
         setStartPosition()
-        drawOpacity(ref, startPosition.x, startPosition.y)
-        drawOpacity(refHeader, startPosition.x, startPosition.y)
+        drawOpacity(ref, startPosition.x * 2, startPosition.y)
+        drawOpacity(refHeader, startPosition.x * 2, startPosition.y)
         setTimeout(() => setActive(false), DURATION)
     }
 </script>
