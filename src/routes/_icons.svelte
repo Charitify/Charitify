@@ -1,6 +1,6 @@
 <section>
     <svg style="display: none">
-
+    
         <!--    Heard filled   -->
         <svg id="ico-heart-filled" class="ico-heart-filled" viewBox="0 0 52 46">
             <path stroke="none"

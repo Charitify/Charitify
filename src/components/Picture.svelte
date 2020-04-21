@@ -69,7 +69,8 @@
 </script>
 
 <figure class={wrapClassProp}>
-    <img
+    {#if src}
+        <img
             use:imgService={'Small'}
             {id}
             {alt}
@@ -77,16 +78,17 @@
             {width}
             {height}
             class="pic pic-1x"
-    />
+        />
+    {/if}
 
     {#if srcBig && !loadingSrcSmall}
         <img
-                use:imgService={'Big'}
-                {alt}
-                {width}
-                {height}
-                src={srcBig}
-                class="pic pic-2x"
+            use:imgService={'Big'}
+            {alt}
+            {width}
+            {height}
+            src={srcBig}
+            class="pic pic-2x"
         />
     {/if}
 
@@ -136,6 +138,5 @@
     .picture.loadingSrcSmall .pic-1x,
     .picture.loadingSrcBig .pic-2x {
         opacity: 0;
-        visibility: hidden;
     }
 </style>

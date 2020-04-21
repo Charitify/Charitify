@@ -68,7 +68,7 @@
             width="100%"
             height="100%"
             clip-path="url(#clip-path)"
-            style='fill: url("#fill");'
+            style='fill: url("#loader-fill");'
         ></rect>
         <defs>
             <clipPath id="clip-path">
@@ -80,46 +80,46 @@
                     {/if}
                 </slot>
             </clipPath>
-            <linearGradient id="fill">
-            <stop
-                offset="0.599964"
-                stop-color={light}
-                stop-opacity="1"
-            >
-                <animate
-                attributeName="offset"
-                values="-2; -2; 1"
-                keyTimes="0; 0.25; 1"
-                dur="2s"
-                repeatCount="indefinite"
-                ></animate>
-            </stop>
-            <stop
-                offset="1.59996"
-                stop-color={dark}
-                stop-opacity="1"
-            >
-                <animate
-                attributeName="offset"
-                values="-1; -1; 2"
-                keyTimes="0; 0.25; 1"
-                dur="2s"
-                repeatCount="indefinite"
-                ></animate>
-            </stop>
-            <stop
-                offset="2.59996"
-                stop-color={light}
-                stop-opacity="1"
-            >
-                <animate
-                attributeName="offset"
-                values="0; 0; 3"
-                keyTimes="0; 0.25; 1"
-                dur="2s"
-                repeatCount="indefinite"
-                ></animate>
-            </stop>
+            <linearGradient id="loader-fill">
+                <stop
+                    offset="0.599964"
+                    stop-color={light}
+                    stop-opacity="1"
+                >
+                    <animate
+                    attributeName="offset"
+                    values="-2; -2; 1"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                    ></animate>
+                </stop>
+                <stop
+                    offset="1.59996"
+                    stop-color={dark}
+                    stop-opacity="1"
+                >
+                    <animate
+                    attributeName="offset"
+                    values="-1; -1; 2"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                    ></animate>
+                </stop>
+                <stop
+                    offset="2.59996"
+                    stop-color={light}
+                    stop-opacity="1"
+                >
+                    <animate
+                    attributeName="offset"
+                    values="0; 0; 3"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                    ></animate>
+                </stop>
             </linearGradient>
         </defs>
     </svg>
