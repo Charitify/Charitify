@@ -3,7 +3,7 @@
     // See here for generating: https://danilowoz.com/create-content-loader/
     
     import { onMount } from 'svelte'
-    import { classnames } from '@utils'
+    import { classnames, uuid } from '@utils'
     import Text from './Text.svelte'
     import Circle from './Circle.svelte'
 
@@ -15,6 +15,8 @@
     export let border = false;
     export let absolute = false;
     export let type; // h1, h2, h3, h4, h5, h6, p, pre, avatar
+
+    const uid = uuid()
 
     let hTypes = {
         p: 21,
@@ -52,7 +54,7 @@
 <section 
     class={classProp}
     style={`opacity: ${opacity}; outline-color: ${light};`}
->  
+>
     <svg
         role="img"
         width="100%"
@@ -67,11 +69,11 @@
             y="0"
             width="100%"
             height="100%"
-            clip-path="url(#clip-path)"
+            clip-path={`url(#clip-path-${uid})`}
             style='fill: url("#loader-fill");'
         ></rect>
         <defs>
-            <clipPath id="clip-path">
+            <clipPath id={`clip-path-${uid}`}>
                 <slot>
                     {#if 'avatar'.includes(type)}
                         <Circle/>

@@ -66,16 +66,16 @@
                 <p class="flex flex-align-center flex-justify-between">
                     {#if date !== null}
                         <span class="h4" style="opacity: .3">{ date }</span>
+                        <s></s>
+                        <s></s>
+                        <s></s>
+                        <s></s>
+                        <span class="h4" style="opacity: .7">Відповісти</span>
+                        <s></s>
+                        <s></s>
                     {:else}
-                        <div style="width: 40%"><Loader type="h4" /></div>
+                        <div style="width: 80%"><Loader type="h4" /></div>
                     {/if}
-                    <s></s>
-                    <s></s>
-                    <s></s>
-                    <span class="h4" style="opacity: .7">Відповісти</span>
-                    <s></s>
-                    <s></s>
-                    <s></s>
                 </p>
                 <span class="h5 flex flex-align-center font-secondary" style="min-width: 4em">
                     <span style={`opacity: ${amount > 2 ? 1 : .5}`}>
