@@ -4608,7 +4608,6 @@ const HowToHelp = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 
 	return `<h1>Як допомогти</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
-
 <ul style="${"list-style: disc outside none; padding-left: var(--screen-padding)"}" class="${"h3 font-w-500 font-secondary"}">
     ${data.phone !== null
 	? `<li style="${"padding-bottom: 5px"}">Ви пожете купити йому поїсти</li>
