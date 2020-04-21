@@ -10,7 +10,7 @@
     const dispatch = createEventDispatcher()
     
     const DURATION = 250
-    const THRESHOLD = 100
+    const THRESHOLD = 50
     const THRESHOLD_RANGES = { x: [0, 100], y: [1, 99] }
     const START_POSITION = {
         x: 300,
@@ -284,7 +284,7 @@
         touch-action: manipulation;
         user-select: none;
         background-color: rgba(var(--color-black), .75);
-        outline: 50px solid rgba(var(--color-black), .75);
+        outline: 100px solid rgba(var(--color-black), .75);
         transition-timing-function: ease-out;
         opacity: 0;
         pointer-events: none;
