@@ -4614,10 +4614,30 @@ ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
         <li style="${"padding-bottom: 5px"}">Можете особисто відвідати його у нас</li>
         <li style="${"padding-bottom: 5px"}">Купити вакцінацію для Волтера</li>
         <li style="${"padding-bottom: 5px"}">Допомогти любим інщим способом</li>`
-	: `<li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
-        <li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
-        <li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
-        <li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>`}
+	: `<li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-600 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "p", absolute: true }, {}, {})}
+            </span>  
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-600 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "p", absolute: true }, {}, {})}
+            </span>  
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-600 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "p", absolute: true }, {}, {})}
+            </span>  
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-600 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "p", absolute: true }, {}, {})}
+            </span>  
+        </li>`}
 </ul>
 ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 <div class="${"flex"}">
@@ -4670,7 +4690,7 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	let comments;
 
 	onMount(async () => {
-		await delay(20000);
+		await delay(200000);
 		charity = await API.getFund(1);
 		comments = await API.getComments();
 	});

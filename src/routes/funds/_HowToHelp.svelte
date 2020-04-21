@@ -16,27 +16,27 @@
         <li style="padding-bottom: 5px">Допомогти любим інщим способом</li>
     {:else}
         <li style="padding-bottom: 5px">
-            <span class="font-secondary font-w-600 p relative">
+            <span class="font-secondary font-w-500 p relative">
                 <span style="visibility: hidden">Допомогти любим способом</span>
-                <Loader type="p" absolute/>
+                <Loader type="h3" absolute/>
             </span>  
         </li>
        <li style="padding-bottom: 5px">
-            <span class="font-secondary font-w-600 p relative">
+            <span class="font-secondary font-w-500 p relative">
                 <span style="visibility: hidden">Допомогти любим способом</span>
-                <Loader type="p" absolute/>
+                <Loader type="h3" absolute/>
             </span>  
         </li>
        <li style="padding-bottom: 5px">
-            <span class="font-secondary font-w-600 p relative">
+            <span class="font-secondary font-w-500 p relative">
                 <span style="visibility: hidden">Допомогти любим способом</span>
-                <Loader type="p" absolute/>
-            </span>  
+                <Loader type="h3" absolute/>
+            </span>
         </li>
        <li style="padding-bottom: 5px">
-            <span class="font-secondary font-w-600 p relative">
+            <span class="font-secondary font-w-500 p relative">
                 <span style="visibility: hidden">Допомогти любим способом</span>
-                <Loader type="p" absolute/>
+                <Loader type="h3" absolute/>
             </span>  
         </li>
     {/if}

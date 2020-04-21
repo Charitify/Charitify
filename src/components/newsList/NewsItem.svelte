@@ -66,7 +66,7 @@
                             <h4>{ likes }</h4>
                         {:else}
                             <span class="h4 relative">
-                                <span style="visibility: hidden">99</span>
+                                <span style="visibility: hidden">199</span>
                                 <Loader type="h4" absolute/>
                             </span>  
                         {/if}

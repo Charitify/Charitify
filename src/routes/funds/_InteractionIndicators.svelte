@@ -14,7 +14,7 @@
             <span class="font-secondary font-w-600 h3">{likes}</span>
         {:else}
             <span class="font-secondary font-w-600 h3 relative">
-                <span style="visibility: hidden">99</span>
+                <span style="visibility: hidden">199</span>
                 <Loader type="h3" absolute/>
             </span>  
         {/if}
@@ -27,7 +27,7 @@
             <span class="font-secondary font-w-600 h3">{views}</span>
         {:else}
             <span class="font-secondary font-w-600 h3 relative">
-                <span style="visibility: hidden">99</span>
+                <span style="visibility: hidden">199</span>
                 <Loader type="h3" absolute/>
             </span>  
         {/if}

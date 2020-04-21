@@ -87,7 +87,7 @@
                         <h4>{ amount }</h4>
                     {:else}
                         <span class="h4 relative flex-self-start">
-                            <span style="visibility: hidden">99</span>
+                            <span style="visibility: hidden">199</span>
                             <Loader type="h4" absolute/>
                         </span>  
                     {/if}

@@ -21,8 +21,8 @@
     let hTypes = {
         p: 21,
         h1: 35,
-        h2: 26,
-        h3: 21,
+        h2: 29,
+        h3: 26,
         h4: 21,
         h5: 21,
         h6: 21,
@@ -32,7 +32,7 @@
     onMount(() => {
         const style = getComputedStyle(document.body);
         const lh = Number.parseInt(style.getPropertyValue('line-height'))
-        const balance = -2
+        const balance = 0
 
         hTypes = {
             p: lh * 1.15 + balance,
