@@ -9,6 +9,7 @@
     
     const DURATION = 250
     const THRESHOLD = 50
+    const SWIPE_SPEED = .5
     const START_POSITION = {
         x: 0,
         y: 20
@@ -122,12 +123,12 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
-        ySwipe = (yUp - yDown) / 3
+        ySwipe = (yUp - yDown) * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
-        xSwipe = (xUp - xDown) / 3
+        xSwipe = (xUp - xDown) * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }

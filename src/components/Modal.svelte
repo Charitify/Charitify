@@ -11,9 +11,10 @@
     
     const DURATION = 250
     const THRESHOLD = 50
+    const SWIPE_SPEED = .5
     const THRESHOLD_RANGES = { x: [0, 100], y: [1, 99] }
     const START_POSITION = {
-        x: 300,
+        x: 50,
         y: 0
     }
 
@@ -181,7 +182,7 @@
     function handleVerticalSwipe(yDown, yUp, evt, el) {
         const dir = yUp - yDown
         if (!isAllowed.up && dir > 0 || !isAllowed.down && dir < 0) return
-        ySwipe = dir / 3
+        ySwipe = dir * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawTransform(refHeader, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
@@ -190,7 +191,7 @@
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
         const dir = xUp - xDown
         if (!isAllowed.left && dir > 0 || !isAllowed.right && dir < 0) return
-        xSwipe = dir / 3
+        xSwipe = dir * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawTransform(refHeader, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
@@ -217,7 +218,7 @@
 
     function appear(node, params) {
 		const existingTransform = getComputedStyle(node).transform.replace('none', '');
-        const getScale = t => .6 + .4 * t
+        const getScale = t => .9 + .1 * t
         const getX = t => startPosition.x - startPosition.x * t
 		return {
 			duration: DURATION,
