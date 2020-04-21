@@ -15,10 +15,30 @@
         <li style="padding-bottom: 5px">Купити вакцінацію для Волтера</li>
         <li style="padding-bottom: 5px">Допомогти любим інщим способом</li>
     {:else}
-        <li style="padding-bottom: 5px"><Loader type="h3"/></li>
-        <li style="padding-bottom: 5px"><Loader type="h3"/></li>
-        <li style="padding-bottom: 5px"><Loader type="h3"/></li>
-        <li style="padding-bottom: 5px"><Loader type="h3"/></li>
+        <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-500 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="h3" absolute/>
+            </span>  
+        </li>
+       <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-500 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="h3" absolute/>
+            </span>  
+        </li>
+       <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-500 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="h3" absolute/>
+            </span>
+        </li>
+       <li style="padding-bottom: 5px">
+            <span class="font-secondary font-w-500 p relative">
+                <span style="visibility: hidden">Допомогти любим способом</span>
+                <Loader type="h3" absolute/>
+            </span>  
+        </li>
     {/if}
 </ul>
 <Br size="30"/>
@@ -30,7 +50,7 @@
         {#if data.phone !== null}
             <h2>{data.phone}</h2>
         {:else}
-            <span style="width: 240px"><Loader type="h1"/></span>
+            <span style="width: 240px"><Loader type="h2"/></span>
         {/if}
     </div>
 </div>
