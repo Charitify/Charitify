@@ -4614,10 +4614,10 @@ ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
         <li style="${"padding-bottom: 5px"}">Можете особисто відвідати його у нас</li>
         <li style="${"padding-bottom: 5px"}">Купити вакцінацію для Волтера</li>
         <li style="${"padding-bottom: 5px"}">Допомогти любим інщим способом</li>`
-	: `<li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
-        <li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
-        <li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
-        <li style="${"padding-bottom: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>`}
+	: `<li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
+        <li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
+        <li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>
+        <li style="${"padding-botton: 5px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</li>`}
 </ul>
 ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 <div class="${"flex"}">
