@@ -131,13 +131,11 @@
         object-fit: contain;
     }
 
-    .picture.isErrorBig {
-        opacity: 0;
-    }
     .picture.isErrorSmall .pic-1x,
     .picture.isErrorBig .pic-2x,
     .picture.loadingSrcSmall .pic-1x,
     .picture.loadingSrcBig .pic-2x {
         opacity: 0;
+        visibility: hidden;
     }
 </style>
