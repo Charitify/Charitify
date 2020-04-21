@@ -15,10 +15,10 @@
         <li style="padding-bottom: 5px">Купити вакцінацію для Волтера</li>
         <li style="padding-bottom: 5px">Допомогти любим інщим способом</li>
     {:else}
-        <li style="padding-bottom: 5px"><Loader type="p"/></li>
-        <li style="padding-bottom: 5px"><Loader type="p"/></li>
-        <li style="padding-bottom: 5px"><Loader type="p"/></li>
-        <li style="padding-bottom: 5px"><Loader type="p"/></li>
+        <li style="padding-botton: 5px"><Loader type="p"/></li>
+        <li style="padding-botton: 5px"><Loader type="p"/></li>
+        <li style="padding-botton: 5px"><Loader type="p"/></li>
+        <li style="padding-botton: 5px"><Loader type="p"/></li>
     {/if}
 </ul>
 <Br size="30"/>
