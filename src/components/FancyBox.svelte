@@ -217,13 +217,14 @@
 
     button {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 0;
+        right: 0;
         font-size: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: var(--min-interactive-size);
-        height: var(--min-interactive-size);
+        width: 60px;
+        height: 60px;
+        color: rgb(var(--color-white));
     }
 </style>
