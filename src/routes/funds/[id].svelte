@@ -24,55 +24,54 @@
     let charityId = $page.params.id
 
     // Entities
-    let charity = {}
-    let comments = []
+    let charity
+    let comments
     
-    $: carouselTop = (charity.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
-    $: organization = (charity.organization || {});
-    $: cardTop = {
+    $: carouselTop = safeGet(() => charity.avatars.map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title })));
+    $: organization = safeGet(() => charity.organization, {});
+    $: cardTop = safeGet(() => ({
         title: charity.title,
         subtitle: charity.subtitle,
         currentSum: charity.curremt_sum,
         neededSum: charity.need_sum,
         currency: charity.currency,
-    };
+    }));
     $: iconsLine = {
-        likes: charity.likes,
-        views: charity.views,
+        likes: safeGet(() => charity.likes),
+        views: safeGet(() => charity.views),
     };
     $: trust = {
-        isLiked: charity.is_liked,
+        isLiked: safeGet(() => charity.is_liked),
     };
     $: descriptionBlock = {
-        title: charity.title,
-        text: charity.description,
+        title: safeGet(() => charity.title),
+        text: safeGet(() => charity.description),
     };
-    $: animal = {
-        avatar: safeGet(() => charity.animal.avatars[0].src),
-        avatar2x: safeGet(() => charity.animal.avatars2x[0].src2x),
-        name: safeGet(() => charity.animal.name),
-        breed: safeGet(() => charity.animal.breed),
-        age: safeGet(() => (new Date().getFullYear()) - (new Date(charity.animal.birth).getFullYear()), 0, true),
-        sex: safeGet(() => charity.animal.sex),
-        sterilization: safeGet(() => charity.animal.sterilization),
-        character: safeGet(() => charity.animal.character),
-        characterShort: safeGet(() => charity.animal.character_short),
-        lifestory: safeGet(() => charity.animal.lifestory.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() })), [], true),
-        vaccination: safeGet(() => charity.animal.vaccination, [], true),
-    };
+    $: animal = safeGet(() => ({
+        avatar: charity.animal.avatars[0].src,
+        name: charity.animal.name,
+        breed: charity.animal.breed,
+        age: (new Date().getFullYear()) - (new Date(charity.animal.birth).getFullYear()),
+        sex: charity.animal.sex,
+        sterilization: charity.animal.sterilization,
+        character: charity.animal.character,
+        characterShort: charity.animal.character_short,
+        lifestory: charity.animal.lifestory.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() })),
+        vaccination: charity.animal.vaccination,
+    }));
     $: donators = safeGet(() => charity.donators.map(d => ({
         id: d.id,
         title: `${d.currency} ${d.amount}`,
         subtitle: d.name,
         src: d.avatar,
         src2x: d.avatar2x,
-    })), [], true);
+    })));
     $: documents = safeGet(() => charity.documents.map(d => ({
         id: d.id,
         title: d.title,
         src: d.src,
         src2x: d.src2x,
-    })), [], true);
+    })));
     $: media = safeGet(() => charity.media.map(d => ({
         id: d.id,
         alt: d.title,
@@ -80,9 +79,9 @@
         srcBig: d.src2x,
         description: d.description,
     })), [], true);
-    $: howToHelp = {
-        phone: organization.phone,
-    };
+    $: howToHelp = safeGet(() => ({
+        phone: charity.organization.phone,
+    }));
     $: commentsData = {
         comments: safeGet(() => comments.map(c => ({
             likes: c.likes,
@@ -96,7 +95,7 @@
     };
 
     onMount(async () => {
-        await delay(2000)
+        await delay(20000)
         charity = await API.getFund(1)
         comments = await API.getComments()
     })
@@ -118,7 +117,7 @@
     <TopCarousel items={carouselTop}/>
     <Br size="40"/>
 
-    <OrganizationButton organization={organization}/>
+    <OrganizationButton id={organization.id} src={organization.avatar} title={organization.name}/>
     <Br size="20"/>
 
     <QuickInfoCard cardTop={cardTop}/>

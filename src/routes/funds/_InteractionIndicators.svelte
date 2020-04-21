@@ -1,8 +1,8 @@
 <script>
-    import { Icon } from '@components'
+    import { Icon, Loader } from '@components'
 
-    export let likes = 0
-    export let views = 0
+    export let likes = null
+    export let views = null
 </script>
 
 <p class="container flex flex-justify-between flex-align-center">
@@ -10,12 +10,26 @@
         <Icon is="danger" type="heart-filled" size="medium"/>
         <s></s>
         <s></s>
-        <span class="font-secondary font-w-600 h3">{likes}</span>
+        {#if likes !== null}
+            <span class="font-secondary font-w-600 h3">{likes}</span>
+        {:else}
+            <span class="font-secondary font-w-600 h3 relative">
+                <span style="visibility: hidden">99</span>
+                <Loader type="h3" absolute/>
+            </span>  
+        {/if}
     </span>
     <span class="flex flex-align-center">
         <Icon type="eye" size="medium" class="theme-svg-fill"/>
         <s></s>
         <s></s>
-        <span class="font-secondary font-w-600 h3">{views}</span>
+        {#if views !== null}
+            <span class="font-secondary font-w-600 h3">{views}</span>
+        {:else}
+            <span class="font-secondary font-w-600 h3 relative">
+                <span style="visibility: hidden">99</span>
+                <Loader type="h3" absolute/>
+            </span>  
+        {/if}
     </span>
 </p>
