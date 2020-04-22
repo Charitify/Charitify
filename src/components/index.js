@@ -14,7 +14,7 @@ export { default as Progress } from './Progress.svelte'
 export { default as Carousel } from './Carousel.svelte'
 export { default as FancyBox } from './FancyBox.svelte'
 
-export { default as Loader } from './loader'
+export { default as Loader } from './Loader'
 
 export * from './app'
 export * from './map'

@@ -1,5 +1,5 @@
 <script>
-    import { Br, Card, Icon, Avatar, FancyBox, Loader } from '@components'
+    import { Br, Card, Icon, Avatar, FancyBox, Loader, SocialsX, SocialsY } from '@components'
 
     export let items = null
     export let orgName = null
@@ -7,17 +7,9 @@
     export let avatarBig = null
 
     const top = ['telegram', 'facebook', 'viber']
-    const icons = {
-        phone: 'phone-filled',
-        email: 'email',
-        location: 'location-mark-filled',
-        telegram: 'telegram',
-        facebook: 'facebook',
-        viber: 'viber',
-    }
 
-    $: topItems = items !== null ? items.filter(i => !top.includes(i.type)) : new Array(3).fill(null)
-    $: bottomItems = items !== null ? items.filter(i => top.includes(i.type)) : new Array(3).fill(null)
+    $: topItems = items === null ? undefined : items.filter(i => !top.includes(i.type))
+    $: bottomItems = items === null ? undefined : items.filter(i => top.includes(i.type))
 </script>
 
 <Card>
@@ -54,56 +46,15 @@
 
         <Br size="30" />
 
-        <ul>
-            {#each topItems as item}
-                <li>
-                    {#if item !== null}
-                        <a href={item.href} class="flex flex-align-center" style="padding: 7px 0" title={item.title}>
-                            <Icon type={icons[item.type]} size="medium"/>
-                            <s></s>
-                            <s></s>
-                            <s></s>
-                            <p class="h3">{item.title}</p>
-                        </a>
-                    {:else}
-                        <span class="flex flex-align-center" style="padding: 7px 0">
-                            <Loader type="h3"/>
-                        </span>
-                    {/if}
-                </li>
-            {/each}
-        </ul>
+        <SocialsY items={topItems} />   
 
         <Br size="30" />
 
-        <ul class="flex flex-justify-center social-icons">
-            {#each bottomItems as item}
-                {#if item !== null}
-                    <li style="padding: 0 10px" class={item.type}>
-                        <a href={item.value} target="_blank" title={item.title}>
-                            <Icon type={item.type} size="large" class="custom"/>
-                        </a>
-                    </li>
-                {:else}
-                    <li style="padding: 0 10px; width: 60px; height: 45px; overflow: hidden">
-                        <Loader type="avatar"/>
-                    </li>
-                {/if}
-            {/each}
-        </ul>
+        <SocialsX items={bottomItems} />
 
         <Br size="30" />
     </section>
 </Card>
 
 <style>
-    .social-icons .telegram * {
-        fill: #2197D2;
-    }
-    .social-icons .facebook * {
-        fill: #4267B2;
-    }
-    .social-icons .viber * {
-        fill: #665CAC;
-    }
 </style>

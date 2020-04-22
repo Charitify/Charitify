@@ -1,5 +1,7 @@
 export { default as Header } from './Header.svelte'
 export { default as Footer } from './Footer.svelte'
+export { default as SocialsX } from './SocialsX.svelte'
+export { default as SocialsY } from './SocialsY.svelte'
 export { default as Documents } from './Documents.svelte'
 export { default as ListItems } from './ListItems.svelte'
 export { default as SearchLine } from './SearchLine.svelte'

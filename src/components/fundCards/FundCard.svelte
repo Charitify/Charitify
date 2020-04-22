@@ -8,7 +8,6 @@
     import FancyBox from '@components/FancyBox.svelte'
     import Carousel from '@components/Carousel.svelte'
 
-    export let id = null
     export let src = null
     export let city = null
     export let title = null
@@ -71,11 +70,7 @@
             <Progress value={Math.floor(current / total * 100)}/>
             <Br size="40"/>  
 
-            <Button size="big" is="success" href={id}>
-                <span class="h2 font-secondary font-w-600">
-                    Допомогти
-                </span>
-            </Button>
+            <slot name="button"></slot>
 
             <Br size="30"/>     
         </div>
