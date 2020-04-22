@@ -100,12 +100,12 @@
     --font-family-primary: 'Roboto', sans-serif;
     --font-family-secondary: 'Montserrat', sans-serif;
     
-    --font-size-h1: 2.25em;
-    --font-size-h2: 1.7em;
-    --font-size-h3: 1.15em;
-    --font-size-h4: 1em;
-    --font-size-h5: .825em;
-    --font-size-h6: .675em;
+    --font-size-h1: 2.25em; /* 32 */
+    --font-size-h2: 1.7em;  /* 24 */
+    --font-size-h3: 1.15em; /* 16 */
+    --font-size-h4: 1em;    /* 14 */
+    --font-size-h5: .825em; /* 12 */
+    --font-size-h6: .675em; /* 10 */
 
     --font-line-height-h1: calc(var(--font-line-height) * 1.85);
     --font-line-height-h2: calc(var(--font-line-height) * 1.4);
