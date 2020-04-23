@@ -59,7 +59,7 @@
     <div class="full-container">
         <FundCards items={animalFunds}>
             <div slot="button" let:id={id}>
-                <Button size="small" is="theme-border" href={id}>
+                <Button size="small" is="info" href={id}>
                     <span class="h3 font-secondary font-w-500">
                         Редагувати
                     </span>
@@ -81,7 +81,7 @@
     <div class="full-container">
         <FundCards items={othersFunds}>
             <div slot="button" let:id={id}>
-                <Button size="small" is="theme-border" href={id}>
+                <Button size="small" is="info" href={id}>
                     <span class="h3 font-secondary font-w-500">
                         Редагувати
                     </span>

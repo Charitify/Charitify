@@ -259,6 +259,25 @@
         box-shadow: var(--shadow-primary);
     }
 
+    /* Info */
+
+    :global(.btn).info {
+        color: rgba(var(--color-font-light));
+        background-color: rgba(var(--color-info));
+    }
+
+    :global(.btn).info:focus {
+        background-color: rgba(var(--color-info), .85);
+    }
+
+    :global(.btn).info:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).info:active {
+        box-shadow: var(--shadow-primary);
+    }
+
     /* Danger */
 
     :global(.btn).danger {

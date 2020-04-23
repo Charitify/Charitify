@@ -132,11 +132,13 @@
         display: flex;
         flex: 1 1 auto;
         align-self: stretch;
+        transform: translateZ(0);
     }
 
     .loader svg {
         flex: 1 1 auto;
         align-self: stretch;
+        transform: translateZ(0);
     }
 
     .loader.absolute {
