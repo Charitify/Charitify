@@ -3246,6 +3246,11 @@ const Icons = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
             <path stroke="${"none"}" fill-rule="${"evenodd"}" clip-rule="${"evenodd"}" d="${"M26 13C26 20.1797 20.1797 26 13 26C5.8203 26 0 20.1797 0 13C0 5.8203 5.8203 0 13 0C20.1797 0 26 5.8203 26 13ZM13.015 20.8C13.015 20.8 9.52516 15.5808 8.28982 12.6792C7.97559 12.0028 7.8 11.2478 7.8 10.4513C7.8 7.55108 10.1281 5.2 13 5.2C15.8719 5.2 18.2 7.55108 18.2 10.4513C18.2 11.0895 18.0873 11.7011 17.8808 12.2669H17.8863C17.0585 14.4684 13.015 20.8 13.015 20.8Z"}"></path>
             <path stroke="${"none"}" fill-rule="${"evenodd"}" clip-rule="${"evenodd"}" d="${"M13.0001 13.4334C14.6754 13.4334 16.0335 12.0753 16.0335 10.4C16.0335 8.72477 14.6754 7.3667 13.0001 7.3667C11.3249 7.3667 9.9668 8.72477 9.9668 10.4C9.9668 12.0753 11.3249 13.4334 13.0001 13.4334V13.4334Z"}"></path>
         </svg>
+
+        
+        <svg id="${"ico-edit"}" viewBox="${"0 0 19 20"}">
+            <path stroke="${"none"}" d="${"M11.7903 3.71468L15.6473 7.5717L5.88407 17.335L2.02921 13.4779L11.7903 3.71468ZM18.5741 2.78446L16.854 1.06436C16.1892 0.399606 15.1098 0.399606 14.4428 1.06436L12.7951 2.71204L16.6522 6.5691L18.5741 4.64717C19.0897 4.13154 19.0897 3.30005 18.5741 2.78446ZM0.0107333 18.8993C-0.0594602 19.2152 0.225759 19.4983 0.541701 19.4214L4.83974 18.3793L0.984873 14.5223L0.0107333 18.8993Z"}"></path>
+        </svg>
     </svg>
 </section>`;
 });
@@ -5093,13 +5098,26 @@ const Usercard = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
     ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
-    ${validate_component(SocialsY, "SocialsY").$$render($$result, { items: topItems }, {}, {})}  
+    ${validate_component(SocialsX, "SocialsX").$$render($$result, { items: bottomItems }, {}, {})}
 
     ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
-    ${validate_component(SocialsX, "SocialsX").$$render($$result, { items: bottomItems }, {}, {})}  
+    ${validate_component(SocialsY, "SocialsY").$$render($$result, { items: topItems }, {}, {})}
 
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}  
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+    ${validate_component(Button, "Button").$$render($$result, { size: "small", is: "info" }, {}, {
+			default: () => `
+        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+            Редагувати
+            <s></s>
+            <s></s>
+            ${validate_component(Icon, "Icon").$$render($$result, { type: "edit", size: "small", is: "light" }, {}, {})}
+        </span>
+    `
+		})}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 `
 	})}`;
 });
@@ -5170,8 +5188,11 @@ const Me = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 		button: ({ id }) => `<div slot="${"button"}">
                 ${validate_component(Button, "Button").$$render($$result, { size: "small", is: "info", href: id }, {}, {
 			default: () => `
-                    <span class="${"h3 font-secondary font-w-500"}">
+                    <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
                         Редагувати
+                        <s></s>
+                        <s></s>
+                        ${validate_component(Icon, "Icon").$$render($$result, { type: "edit", size: "small", is: "light" }, {}, {})}
                     </span>
                 `
 		})}
@@ -5199,8 +5220,11 @@ const Me = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 		button: ({ id }) => `<div slot="${"button"}">
                 ${validate_component(Button, "Button").$$render($$result, { size: "small", is: "info", href: id }, {}, {
 			default: () => `
-                    <span class="${"h3 font-secondary font-w-500"}">
+                    <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
                         Редагувати
+                        <s></s>
+                        <s></s>
+                        ${validate_component(Icon, "Icon").$$render($$result, { type: "edit", size: "small", is: "light" }, {}, {})}
                     </span>
                 `
 		})}
