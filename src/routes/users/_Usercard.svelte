@@ -1,5 +1,5 @@
  <script>
-    import { Br, Card, Avatar, Loader, SocialsX, SocialsY } from '@components'
+    import { Br, Card, Icon, Button, Avatar, Loader, SocialsX, SocialsY } from '@components'
 
     export let src = null
     export let items = null
@@ -33,11 +33,22 @@
 
     <Br size="30"/>
 
-    <SocialsY items={topItems}/>  
+    <SocialsX items={bottomItems}/>
 
     <Br size="30"/>
 
-    <SocialsX items={bottomItems}/>  
+    <SocialsY items={topItems}/>
 
-    <Br size="30"/>  
+    <Br size="30"/>
+
+    <Button size="small" is="info">
+        <span class="h3 font-secondary font-w-500 flex flex-align-center">
+            Редагувати
+            <s></s>
+            <s></s>
+            <Icon type="edit" size="small" is="light"/>
+        </span>
+    </Button>
+
+    <Br size="30"/>
 </Card>

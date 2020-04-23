@@ -2,7 +2,7 @@
     import { onMount } from 'svelte'
     import { API } from '@services'
     import { delay, safeGet } from '@utils'
-    import { Br, Card, Avatar, Button, FundCards } from '@components'
+    import { Br, Icon, Card, Avatar, Button, FundCards } from '@components'
     import Usercard from './_Usercard.svelte'
 
     let href = '.'
@@ -60,8 +60,11 @@
         <FundCards items={animalFunds}>
             <div slot="button" let:id={id}>
                 <Button size="small" is="info" href={id}>
-                    <span class="h3 font-secondary font-w-500">
+                    <span class="h3 font-secondary font-w-500 flex flex-align-center">
                         Редагувати
+                        <s></s>
+                        <s></s>
+                        <Icon type="edit" size="small" is="light"/>
                     </span>
                 </Button>
             </div>
@@ -82,8 +85,11 @@
         <FundCards items={othersFunds}>
             <div slot="button" let:id={id}>
                 <Button size="small" is="info" href={id}>
-                    <span class="h3 font-secondary font-w-500">
+                    <span class="h3 font-secondary font-w-500 flex flex-align-center">
                         Редагувати
+                        <s></s>
+                        <s></s>
+                        <Icon type="edit" size="small" is="light"/>
                     </span>
                 </Button>
             </div>
