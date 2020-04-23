@@ -5063,11 +5063,13 @@ const Users = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const Usercard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { src = null } = $$props;
+	let { srcBig = null } = $$props;
 	let { items = null } = $$props;
 	let { title = null } = $$props;
 	let { subtitle = null } = $$props;
 	const top = ["telegram", "facebook", "viber"];
 	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.srcBig === void 0 && $$bindings.srcBig && srcBig !== void 0) $$bindings.srcBig(srcBig);
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.subtitle === void 0 && $$bindings.subtitle && subtitle !== void 0) $$bindings.subtitle(subtitle);
@@ -5085,7 +5087,20 @@ const Usercard = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
     <div class="${"text-center flex flex-column flex-align-center"}">
-        ${validate_component(Avatar, "Avatar").$$render($$result, { src, size: "big" }, {}, {})}
+        <span>
+            ${validate_component(FancyBox, "FancyBox").$$render($$result, { class: "flex-justify-center" }, {}, {
+			box: () => `<section slot="${"box"}" class="${"flex full-width full-height"}" style="${"height: 100vw"}">
+                    <div class="${"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch"}" style="${"padding: var(--screen-padding) 0"}">
+                        ${validate_component(Avatar, "Avatar").$$render($$result, { src, srcBig, alt: "ava" }, {}, {})}
+                    </div>
+                </section>`,
+			default: () => `
+                ${validate_component(Avatar, "Avatar").$$render($$result, { size: "big", src, alt: "Організація" }, {}, {})}
+                
+            `
+		})}
+        </span>
+
         ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
         ${title !== null
 		? `<h2>${escape(title)}</h2>`
@@ -5130,8 +5145,9 @@ const Me = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let funds;
 
 	onMount(async () => {
-		await delay(20000);
+		// await delay(2000)
 		organization = await API.getOrganization(1);
+
 		funds = await API.getFunds();
 	});
 
@@ -5174,7 +5190,10 @@ const Me = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 		$$result,
 		{
 			items: contacts,
-			src: safeGet(() => organization.avatars[0])
+			title: safeGet(() => organization.name),
+			subtitle: safeGet(() => organization.title),
+			src: safeGet(() => organization.avatar),
+			srcBig: safeGet(() => organization.avatarBig)
 		},
 		{},
 		{}
