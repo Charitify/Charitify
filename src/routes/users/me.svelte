@@ -38,7 +38,7 @@
     })))
 
     onMount(async () => {
-        await delay(20000)
+        // await delay(2000)
         organization = await API.getOrganization(1);
         funds = await API.getFunds()
     });
@@ -51,7 +51,13 @@
     <h1 class="text-center">Про мене</h1>
     <Br size="20"/>
 
-    <Usercard items={contacts} src={safeGet(() => organization.avatars[0])}/>
+    <Usercard
+            items={contacts}
+            title={safeGet(() => organization.name)}
+            subtitle={safeGet(() => organization.title)}
+            src={safeGet(() => organization.avatar)}
+            srcBig={safeGet(() => organization.avatarBig)}
+    />
 
     <Br size="55" />
     <h1>Мої організації</h1>

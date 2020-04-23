@@ -1,7 +1,8 @@
  <script>
-    import { Br, Card, Icon, Button, Avatar, Loader, SocialsX, SocialsY } from '@components'
+    import { Br, Card, Icon, Button, Avatar, Loader, FancyBox, SocialsX, SocialsY } from '@components'
 
     export let src = null
+    export let srcBig = null
     export let items = null
     export let title = null
     export let subtitle = null
@@ -16,7 +17,17 @@
     <Br size="30"/>
 
     <div class="text-center flex flex-column flex-align-center">
-        <Avatar {src} size="big"/>
+        <span>
+            <FancyBox class="flex-justify-center">
+                <Avatar size="big" {src} alt="Організація"/>
+                <section slot="box" class="flex full-width full-height" style="height: 100vw">
+                    <div class="flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch" style="padding: var(--screen-padding) 0">
+                        <Avatar {src} {srcBig} alt="ava"/>
+                    </div>
+                </section>
+            </FancyBox>
+        </span>
+
         <Br size="20"/>
         {#if title !== null}
             <h2>{title}</h2>
