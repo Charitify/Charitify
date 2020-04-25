@@ -10,16 +10,26 @@
      *  type: Config.Icons,
      * }[]}
      */
-    export let items = [null, null, null]
+    export let items
+
+    $: list = items === null ? [null, null, null] : items || []
 </script>
 
 <ul class="flex flex-justify-center social-icons">
-    {#each items as item}
+    {#each list as item}
         {#if item !== null}
             <li style="padding: 0 10px" class={item.type}>
-                <a href={item.href} target="_blank" title={item.title}>
-                    <Icon type={item.type} size="large" class="custom"/>
-                </a>
+                <slot {item}>
+                    {#if item.href}
+                        <a href={item.href} target="_blank" title={item.title}>
+                            <Icon type={item.type} size="large" class="custom"/>
+                        </a>
+                    {:else}
+                        <span on:click>
+                            <Icon type={item.type} size="large" class="custom"/>
+                        </span>
+                    {/if}
+                </slot>
             </li>
         {:else}
             <li style="padding: 0 10px; width: 60px; height: 45px; overflow: hidden">

@@ -15,7 +15,7 @@
         title: c.title,
         href: c.value,
         type: c.type,
-    })))
+    })), null)
     $: animalFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
         id: f.id,
         src: f.avatars[0].src,
@@ -25,7 +25,7 @@
         current: f.curremt_sum,
         currency: f.currency,
         city: f.location.city,
-    })))
+    })), null)
     $: othersFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
         id: f.id,
         src: f.avatars[0].src,
@@ -35,10 +35,10 @@
         current: f.curremt_sum,
         currency: f.currency,
         city: f.location.city,
-    })))
+    })), null)
 
     onMount(async () => {
-        // await delay(2000)
+        await delay(2000)
         organization = await API.getOrganization(1);
         funds = await API.getFunds()
     });

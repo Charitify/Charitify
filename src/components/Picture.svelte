@@ -23,8 +23,8 @@
         if (node.complete) {
             onLoad(node, postFix)
         } else {
-            node.onload = () => onLoad(node, postFix)
-            node.onerror = () => onError(node, postFix)
+            node.onload = onLoad.bind(null, node, postFix)
+            node.onerror = onError.bind(null, node, postFix)
         }
     }
 

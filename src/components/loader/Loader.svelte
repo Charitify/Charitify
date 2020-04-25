@@ -14,7 +14,7 @@
     export let opacity = .2;
     export let border = false;
     export let absolute = false;
-    export let type; // h1, h2, h3, h4, h5, h6, p, pre, avatar
+    export let type = undefined; // h1, h2, h3, h4, h5, h6, p, pre, avatar
 
     const uid = uuid()
 
@@ -79,6 +79,8 @@
                         <Circle/>
                     {:else if 'h1,h2,h3,h4,h5,h6,p,pre'.includes(type)}
                         <Text/>
+                    {:else}
+                        <rect x="0" y="0" rx="3" ry="3" width="100%" height="100%" />
                     {/if}
                 </slot>
             </clipPath>

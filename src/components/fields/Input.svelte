@@ -111,7 +111,7 @@
         border-radius: var(--border-radius-small);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
-        background-color: rgba(var(--color-white));
+        background-color: rgba(var(--color-white), .2);
         box-shadow: var(--shadow-field-inset)
     }
 </style>

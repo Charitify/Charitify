@@ -1,10 +1,7 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
     import { classnames } from '@utils'
 
-    const dispatch = createEventDispatcher()
-
-    export let name
+    export let name = undefined
     export let id = undefined
     export let title = undefined
     export let ariaLabel = undefined
@@ -24,7 +21,7 @@
         class={classProp}
         aria-label={ariaLabelProp}
         autocomplete={autocompleteProp}
-        on:submit|preventDefault={e => dispatch('submit', e)}
+        on:submit|preventDefault
 >
     <slot></slot>
 </form>
