@@ -258,8 +258,25 @@ export default new ApiClass({
 
     if (rej && rej.error && rej.error.message === 'Failed to fetch') {
       console.log('Lost internet connection')
+      showOfflineMessage()
     }
 
     throw rej
   },
 })
+
+function showOfflineMessage() {
+  try {
+    let timer = null
+    const offlineEl = document.querySelector('#offline-message')
+    if (!timer) {
+      offlineEl.classList.add('active')
+      timer = setTimeout(() => {
+        offlineEl.classList.remove('active')
+        clearTimeout(timer)
+      }, 5000)
+    }
+  } catch (err) {
+    console.warn(err)
+  }
+}

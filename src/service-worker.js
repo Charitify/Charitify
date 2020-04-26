@@ -72,6 +72,22 @@ self.addEventListener('fetch', event => {
 					cache.put(event.request, response.clone());
 					return response;
 				} catch(err) {
+					if (err.message === 'Failed to fetch') {
+						try {
+							let timer = null
+							const offlineEl = document.querySelector('#offline-message')
+							if (!timer) {
+								offlineEl.classList.add('active')
+								timer = setTimeout(() => {
+									offlineEl.classList.remove('active')
+									clearTimeout(timer)
+								}, 5000)
+							}
+						} catch (err) {
+							console.warn(err)
+						}
+					}
+
 					const response = await cache.match(event.request);
 					if (response) return response;
 
