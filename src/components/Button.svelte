@@ -20,7 +20,6 @@
 
     let titleProp = title || ariaLabel
     let ariaLabelProp = ariaLabel || title
-    let audio
 
     $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })
 
@@ -33,13 +32,6 @@
         e.stopPropagation();
         !disabled && dispatch('click', e)
     }
-
-    function onTouchStart() {
-        audio.playbackRate = 2
-        audio.play()
-    }
-
-    function onTouchEnd() {}
 </script>
 
 {#if href}
@@ -52,8 +44,6 @@
             class={classProp}
             aria-label={ariaLabelProp}
             on:click={onClick}
-            on:touchstart={onTouchStart}
-            on:touchend={onTouchEnd}
     >
         <slot></slot>
     </a>
@@ -67,8 +57,6 @@
             class={classProp}
             aria-label={ariaLabelProp}
             on:click={onLabelClick}
-            on:touchstart={onTouchStart}
-            on:touchend={onTouchEnd}
     >
         <slot></slot>
     </label>
@@ -83,14 +71,10 @@
             class={classProp}
             aria-label={ariaLabelProp}
             on:click={onClick}
-            on:touchstart={onTouchStart}
-            on:touchend={onTouchEnd}
     >
         <slot></slot>
     </button>
 {/if}
-
-<audio bind:this={audio} src="./button_click.mp3"></audio>
 
 <style>
     .btn:not(.auto) {

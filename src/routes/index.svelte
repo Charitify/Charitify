@@ -69,7 +69,7 @@
         <h3 class="h2 text-right">Comments:</h3>
         <Divider size="20"/>
 
-        <Comments withFrom={false}/>
+        <Comments withForm={false}/>
 
             <br>
             <br>
