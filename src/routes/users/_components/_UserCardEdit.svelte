@@ -7,22 +7,42 @@
     // export let itemsX
     // export let itemsY
 
-    let values = {
+    let formValues = {
         password: 'asd',
         full_name: 'some value',
     }
 
+    let formErrors = {
+        password: 'Обов\'язкове поле',
+        full_name: 'Мало символів',
+    }
+
     let formFields = [
         {
+            label: 'Моє ім\'я',
             type: 'text',
             name: 'full_name',
-            label: 'Моє ім\'я',
         },
         {
-            type: 'password',
-            name: 'password',
-            label: 'Пароль',
-        }
+            label: 'Телефон',
+            type: 'tel',
+            name: 'phone',
+        },
+        {
+            label: 'Email',
+            type: 'email',
+            name: 'email',
+        },
+        {
+            label: 'День народження',
+            type: 'date',
+            name: 'birth',
+        },
+        {
+            label: 'Стать',
+            type: 'radio',
+            name: 'sex',
+        },
     ]
 </script>
 
@@ -53,7 +73,8 @@
     <section class="full-width">
         <FormBuilder
                 items={formFields}
-                data={values}
+                data={formValues}
+                errors={formErrors}
         />
     </section>
 </div>

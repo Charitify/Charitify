@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { classnames, toCSSString } from '@utils'
+    import FieldErrors from '@components/FieldErrors.svelte'
 
     const dispatch = createEventDispatcher()
 
@@ -26,15 +27,15 @@
     export let autoselect = false
     export let ariaLabel = undefined
     export let placeholder = undefined
+    export let errors = undefined
 
-    let idProp = id || name
-    let typeProp = type === 'number' ? 'text' : type
-    let titleProp = title || ariaLabel || placeholder
-    let ariaLabelProp = ariaLabel || title || placeholder
-    let autocompleteProp = autocomplete ? 'on' : 'off'
-    let styleProp = toCSSString({ ...style, textAlign: align })
-    let patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
-
+    $: idProp = id || name
+    $: typeProp = type === 'number' ? 'text' : type
+    $: titleProp = title || ariaLabel || placeholder
+    $: ariaLabelProp = ariaLabel || title || placeholder
+    $: autocompleteProp = autocomplete ? 'on' : 'off'
+    $: styleProp = toCSSString({ ...style, textAlign: align })
+    $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
     $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
 
     /**
@@ -102,6 +103,8 @@
             on:click='{onClick}'
     />
 {/if}
+
+<FieldErrors items={errors}/>
 
 <style>
     .inp {

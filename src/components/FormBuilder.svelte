@@ -19,6 +19,7 @@
      */
     export let items = []
     export let data = {}
+    export let errors = {}
 </script>
 
 <Form {id} on:submit>
@@ -33,6 +34,7 @@
                         name={item.name}
                         label={item.label}
                         value={_.get(data, item.name)}
+                        errors={_.get(errors, item.name)}
                         disabled={_.get(item, 'meta.disabled')}
                         required={_.get(item, 'meta.required')}
                 />
