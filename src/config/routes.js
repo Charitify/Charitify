@@ -1,3 +1,3 @@
 export default {
-  BASE_PATH: '/',
+  BASE_PATH: 'Charitify/',
 }
