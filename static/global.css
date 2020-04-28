@@ -125,6 +125,27 @@
     --border-radius-big: 10px;
 }
 
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --theme-color-primary: var(--color-dark-second);
+        --theme-color-primary-opposite: var(--color-white);
+        --theme-color-secondary: var(--color-dark);
+
+        --theme-bg-color: var(--color-dark);
+        --theme-bg-color-opposite: var(--color-light);
+
+        --theme-svg-fill: var(--color-white);
+        --theme-svg-fill-opposite: var(--color-black);
+
+        --theme-font-color: var(--color-font-light);
+        --theme-font-color-opposite: var(--color-font-dark);
+
+        --shadow-primary: 0px 0px 10px rgba(var(--color-black), 5);
+        --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.2);
+        --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.1);
+        --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.3);
+    }
+}
 
 
 /* ---------------------===================( Reset/Normalize )===================--------------------- */
