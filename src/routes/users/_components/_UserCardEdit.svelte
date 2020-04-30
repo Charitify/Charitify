@@ -22,21 +22,33 @@
             label: 'Моє ім\'я',
             type: 'text',
             name: 'full_name',
+            meta: {
+                placeholder: 'Віталій Бублик',
+            },
         },
         {
             label: 'Телефон',
             type: 'tel',
             name: 'phone',
+            meta: {
+                placeholder: '+380974354532',
+            },
         },
         {
             label: 'Email',
             type: 'email',
             name: 'email',
+            meta: {
+                placeholder: 'mylovedmail@gmail.com',
+            },
         },
         {
             label: 'День народження',
             type: 'date',
             name: 'birth',
+            meta: {
+                placeholder: '10.10.2010',
+            },
         },
         {
             label: 'Стать',

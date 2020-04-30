@@ -117,4 +117,9 @@
         background-color: rgba(var(--color-white), .2);
         box-shadow: var(--shadow-field-inset)
     }
+
+    .inp::placeholder {
+        color: rgba(var(--theme-color-primary-opposite));
+        opacity: .2;
+    }
 </style>

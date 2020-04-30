@@ -37,6 +37,7 @@
                         errors={_.get(errors, item.name)}
                         disabled={_.get(item, 'meta.disabled')}
                         required={_.get(item, 'meta.required')}
+                        placeholder={_.get(item, 'meta.placeholder')}
                 />
             {:else}
                 <div>
