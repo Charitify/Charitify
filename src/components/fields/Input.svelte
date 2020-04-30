@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { classnames, toCSSString } from '@utils'
+    import Br from '@components/Br.svelte'
     import FieldErrors from '@components/FieldErrors.svelte'
 
     const dispatch = createEventDispatcher()
@@ -14,7 +15,7 @@
     export let maxlength = 1000
     export let rows = undefined
     export let disabled = false
-    export let title = undefined
+    export let label = undefined
     export let invalid = undefined
     export let min = undefined // Specifies a minimum value for an <input> element
     export let max = undefined // Specifies the maximum value for an <input> element
@@ -31,8 +32,8 @@
 
     $: idProp = id || name
     $: typeProp = type === 'number' ? 'text' : type
-    $: titleProp = title || ariaLabel || placeholder
-    $: ariaLabelProp = ariaLabel || title || placeholder
+    $: titleProp = label || ariaLabel
+    $: ariaLabelProp = ariaLabel || label || placeholder
     $: autocompleteProp = autocomplete ? 'on' : 'off'
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
@@ -49,6 +50,13 @@
         !disabled && autoselect && e.target.select()
     }
 </script>
+
+{#if titleProp}
+    <label for={idProp} class="block h2 font-w-500 full-width text-left">
+        { titleProp }
+    </label>
+    <Br size="10"/>
+{/if}
 
 {#if rows}
     <textarea

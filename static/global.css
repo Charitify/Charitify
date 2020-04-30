@@ -572,6 +572,29 @@ button:not([class]):focus {
     transform: translate(-50%, -50%);
 }
 
+
+/* ----------=========( Displaying )=========----------- */
+.flex {
+    display: flex;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.inline {
+    display: inline;
+}
+
+
 /* ----------=========( Font )=========----------- */
 .font-primary {
     font-family: var(--font-family-primary);
@@ -686,14 +709,6 @@ button:not([class]):focus {
 
 .flex-self-baseline {
     align-self: baseline;
-}
-
-.flex {
-    display: flex;
-}
-
-.inline-flex {
-    display: inline-flex;
 }
 
 .flex-column {

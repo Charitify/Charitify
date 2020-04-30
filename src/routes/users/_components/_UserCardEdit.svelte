@@ -19,7 +19,7 @@
 
     let formFields = [
         {
-            label: 'Моє ім\'я',
+            label: 'Моє ім\'я:',
             type: 'text',
             name: 'full_name',
             meta: {
@@ -27,7 +27,7 @@
             },
         },
         {
-            label: 'Телефон',
+            label: 'Телефон:',
             type: 'tel',
             name: 'phone',
             meta: {
@@ -35,7 +35,7 @@
             },
         },
         {
-            label: 'Email',
+            label: 'Email:',
             type: 'email',
             name: 'email',
             meta: {
@@ -43,7 +43,7 @@
             },
         },
         {
-            label: 'День народження',
+            label: 'День народження:',
             type: 'date',
             name: 'birth',
             meta: {
@@ -51,7 +51,7 @@
             },
         },
         {
-            label: 'Стать',
+            label: 'Стать:',
             type: 'radio',
             name: 'sex',
         },

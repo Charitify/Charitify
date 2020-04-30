@@ -28,13 +28,13 @@
             <Br size="30"/>
         {/if}
         {#if ['text', 'email', 'password', 'tel', 'date', 'datetime-local', 'search', 'time'].includes(item.type)}
-            {#if _.get(data, item.name) !== null}
+            {#if _.get(data, 'item.name') !== null}
                 <Input
                         type={item.type}
                         name={item.name}
                         label={item.label}
-                        value={_.get(data, item.name)}
-                        errors={_.get(errors, item.name)}
+                        value={_.get(data, 'item.name')}
+                        errors={_.get(errors, 'item.name')}
                         disabled={_.get(item, 'meta.disabled')}
                         required={_.get(item, 'meta.required')}
                         placeholder={_.get(item, 'meta.placeholder')}
@@ -46,10 +46,11 @@
                 </div>
             {/if}
         {:else}
-            {#if _.get(data, item.name) !== null}
-                <div>
-                    <h2>{item.label}</h2>
-                    <p>{data[item.name]}</p>
+            {#if _.get(data, 'item.name') !== null}
+                <div class="block full-width text-left">
+                    <h2 class="block full-width">{item.label}</h2>
+                    <Br size="10"/>
+                    <p class="block full-width">{data[item.name] || '—'}</p>
                 </div>
             {:else}
                 <div>
