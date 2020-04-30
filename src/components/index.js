@@ -13,6 +13,7 @@ export { default as Divider } from './Divider.svelte'
 export { default as Progress } from './Progress.svelte'
 export { default as Carousel } from './Carousel.svelte'
 export { default as FancyBox } from './FancyBox.svelte'
+export { default as EditArea } from './EditArea.svelte'
 export { default as FormBuilder } from './FormBuilder.svelte'
 export { default as FieldErrors } from './FieldErrors.svelte'
 
