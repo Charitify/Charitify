@@ -27,11 +27,11 @@
         {#if i}
             <Br size="30"/>
         {/if}
-        {#if ['text', 'email', 'password', 'tel', 'date', 'datetime-local', 'search', 'time'].includes(item.type)}
+        {#if ['text', 'textarea', 'email', 'password', 'tel', 'date', 'datetime-local', 'search', 'time'].includes(item.type)}
             {#if _.get(data, 'item.name') !== null}
                 <Input
                         {...item.meta}
-                        name={item.name}
+                        name={item.name}å
                         type={item.type}
                         label={item.label}
                         value={_.get(data, 'item.name')}

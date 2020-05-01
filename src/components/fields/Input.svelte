@@ -58,7 +58,7 @@
     <Br size="10"/>
 {/if}
 
-{#if rows}
+{#if rows || type === 'textarea'}
     <textarea
             {min}
             {max}

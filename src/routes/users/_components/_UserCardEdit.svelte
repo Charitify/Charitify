@@ -45,10 +45,20 @@
             },
         },
         {
+            label: 'Опис фонду:',
+            type: 'textarea',
+            name: 'description',
+            meta: {
+                rows: 6,
+                placeholder: 'Збираємо гроші на допомогу...',
+            },
+        },
+        {
             label: 'День народження:',
             type: 'date',
             name: 'bday',
             meta: {
+                pattern: "\\d{4}-\\d{2}-\\d{2}",
                 placeholder: '10.10.2010',
                 min: "2020-04-01",
                 max: "2020-05-30",
