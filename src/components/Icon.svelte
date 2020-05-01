@@ -1,4 +1,7 @@
 <script>
+    /**
+     * @info see more icons: https://www.svelte-icons.gibdig.com/
+     */
     import { classnames, toCSSString } from '@utils'
 
     export let type

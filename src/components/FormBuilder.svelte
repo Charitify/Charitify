@@ -3,7 +3,7 @@
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
-    import { Input, ReadField } from '@components/fields'
+    import { Input, Select, ReadField } from '@components/fields'
 
     export let id = undefined
     /**
@@ -32,6 +32,22 @@
                 <Input
                         {...item.meta}
                         name={item.name}å
+                        type={item.type}
+                        label={item.label}
+                        value={_.get(data, 'item.name')}
+                        errors={_.get(errors, 'item.name')}
+                />
+            {:else}
+                <div>
+                    <Loader type="h2" />
+                    <Loader height="50"/>
+                </div>
+            {/if}
+        {:else if ['select'].includes(item.type)}
+            {#if _.get(data, 'item.name') !== null}
+                <Select
+                        {...item.meta}
+                        name={item.name}
                         type={item.type}
                         label={item.label}
                         value={_.get(data, 'item.name')}

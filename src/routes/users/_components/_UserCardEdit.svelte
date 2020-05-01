@@ -45,6 +45,32 @@
             },
         },
         {
+            label: 'Організація:',
+            type: 'select',
+            name: 'organization',
+            meta: {
+                placeholder: 'Виберіть організацію...',
+                options: [
+                    {
+                        value: null,
+                        label: null,
+                    },
+                    {
+                        value: 'org1',
+                        label: 'Дім Сірка',
+                    },
+                    {
+                        value: 'org2',
+                            label: 'Милосердя',
+                    },
+                    {
+                        value: 'org3',
+                        label: 'Добрі люди',
+                    }
+                ]
+            },
+        },
+        {
             label: 'Опис фонду:',
             type: 'textarea',
             name: 'description',

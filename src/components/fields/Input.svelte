@@ -119,6 +119,9 @@
         width: 100%;
         flex: 1 1 0;
         color: inherit;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
         border-radius: var(--border-radius-small);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
