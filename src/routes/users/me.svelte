@@ -38,7 +38,7 @@
     })), null)
 
     onMount(async () => {
-        await delay(2000)
+        await delay(7000)
         organization = await API.getOrganization(1);
         funds = await API.getFunds()
     });

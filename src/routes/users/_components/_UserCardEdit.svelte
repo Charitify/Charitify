@@ -8,14 +8,15 @@
     // export let itemsY
 
     let formValues = {
-        password: 'asd',
+        pwd: 'asd',
         full_name: 'some value',
         sex: 'Female',
+        organization: 'org2',
 
     }
 
     let formErrors = {
-        password: 'Обов\'язкове поле',
+        pwd: 'Обов\'язкове поле',
         full_name: 'Мало символів',
     }
 
@@ -37,6 +38,16 @@
             },
         },
         {
+            label: 'Пароль:',
+            type: 'password',
+            name: 'pwd',
+            meta: {
+                minlength: 8,
+                required: 'required',
+                placeholder: 'Введіть пароль...',
+            },
+        },
+        {
             label: 'Email:',
             type: 'email',
             name: 'email',
@@ -52,8 +63,8 @@
                 placeholder: 'Виберіть організацію...',
                 options: [
                     {
-                        value: null,
-                        label: null,
+                        value: '',
+                        label: 'Вибрати...',
                     },
                     {
                         value: 'org1',
@@ -61,7 +72,7 @@
                     },
                     {
                         value: 'org2',
-                            label: 'Милосердя',
+                        label: 'Милосердя',
                     },
                     {
                         value: 'org3',
@@ -124,9 +135,12 @@
     <Br size="40"/>
     <section class="full-width">
         <FormBuilder
+                id="user-form"
                 items={formFields}
                 data={formValues}
                 errors={formErrors}
         />
+
+        <button type="submit" form="user-form">Зберегти</button>
     </section>
 </div>

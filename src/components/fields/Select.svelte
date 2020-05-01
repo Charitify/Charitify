@@ -62,9 +62,11 @@
         on:blur='{e => !disabled && dispatch("blur", e)}'
         on:focus='{e => !disabled && dispatch("focus", e)}'
 >
-    {#each options as option}
-        {#if option.value !== undefined && option.label !== undefined}
-            <option value={option.value}>{option.label}</option>
+    {#each options as { label: text, ...option }}
+        {#if option.value !== undefined && text !== undefined}
+            <option {...option}>
+                {text}
+            </option>
         {/if}
     {/each}
 </select>
@@ -83,7 +85,8 @@
         background-color: rgba(var(--theme-bg-color));
     }
 
-    .inp::placeholder {
+    .select option[default],
+    .select::placeholder {
         color: rgba(var(--theme-color-primary-opposite));
         opacity: .2;
     }

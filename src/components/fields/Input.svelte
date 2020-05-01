@@ -12,6 +12,7 @@
     export let type = 'text'
     export let id = undefined
     export let align = undefined
+    export let minlength = 0
     export let maxlength = 1000
     export let rows = undefined
     export let disabled = false
@@ -69,6 +70,7 @@
             {readonly}
             {disabled}
             {required}
+            {minlength}
             {maxlength}
             {placeholder}
             id={idProp}
@@ -95,6 +97,7 @@
             {readonly}
             {disabled}
             {required}
+            {minlength}
             {maxlength}
             {placeholder}
             id={idProp}

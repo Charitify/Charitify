@@ -1,5 +1,4 @@
 <script>
-    import { _ } from '@utils'
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
@@ -28,14 +27,14 @@
             <Br size="30"/>
         {/if}
         {#if ['text', 'textarea', 'email', 'password', 'tel', 'date', 'datetime-local', 'search', 'time'].includes(item.type)}
-            {#if _.get(data, 'item.name') !== null}
+            {#if data[item.name] !== null}
                 <Input
                         {...item.meta}
-                        name={item.name}å
+                        name={item.name}
                         type={item.type}
                         label={item.label}
-                        value={_.get(data, 'item.name')}
-                        errors={_.get(errors, 'item.name')}
+                        value={data[item.name]}
+                        errors={errors[item.name]}
                 />
             {:else}
                 <div>
@@ -44,14 +43,14 @@
                 </div>
             {/if}
         {:else if ['select'].includes(item.type)}
-            {#if _.get(data, 'item.name') !== null}
+            {#if data[item.name] !== null}
                 <Select
                         {...item.meta}
                         name={item.name}
                         type={item.type}
                         label={item.label}
-                        value={_.get(data, 'item.name')}
-                        errors={_.get(errors, 'item.name')}
+                        value={data[item.name]}
+                        errors={errors[item.name]}
                 />
             {:else}
                 <div>
@@ -60,10 +59,10 @@
                 </div>
             {/if}
         {:else}
-            {#if _.get(data, 'item.name') !== null}
+            {#if data[item.name] !== null}
                 <ReadField
                         label={item.label}
-                        value={_.get(data, 'item.name')}
+                        value={data[item.name]}
                 />
             {:else}
                 <div>
