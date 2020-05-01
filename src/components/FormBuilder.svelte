@@ -3,7 +3,7 @@
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
-    import { Input } from '@components/fields'
+    import { Input, ReadField } from '@components/fields'
 
     export let id = undefined
     /**
@@ -30,14 +30,12 @@
         {#if ['text', 'email', 'password', 'tel', 'date', 'datetime-local', 'search', 'time'].includes(item.type)}
             {#if _.get(data, 'item.name') !== null}
                 <Input
-                        type={item.type}
+                        {...item.meta}
                         name={item.name}
+                        type={item.type}
                         label={item.label}
                         value={_.get(data, 'item.name')}
                         errors={_.get(errors, 'item.name')}
-                        disabled={_.get(item, 'meta.disabled')}
-                        required={_.get(item, 'meta.required')}
-                        placeholder={_.get(item, 'meta.placeholder')}
                 />
             {:else}
                 <div>
@@ -47,11 +45,10 @@
             {/if}
         {:else}
             {#if _.get(data, 'item.name') !== null}
-                <div class="block full-width text-left">
-                    <h2 class="block full-width">{item.label}</h2>
-                    <Br size="10"/>
-                    <p class="block full-width">{data[item.name] || '—'}</p>
-                </div>
+                <ReadField
+                        label={item.label}
+                        value={_.get(data, 'item.name')}
+                />
             {:else}
                 <div>
                     <Loader type="h2" />

@@ -122,8 +122,8 @@
         border-radius: var(--border-radius-small);
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
-        background-color: rgba(var(--color-white), .2);
-        box-shadow: var(--shadow-field-inset)
+        box-shadow: var(--shadow-field-inset);
+        background-color: rgba(var(--theme-bg-color));
     }
 
     .inp::placeholder {

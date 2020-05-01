@@ -10,6 +10,8 @@
     let formValues = {
         password: 'asd',
         full_name: 'some value',
+        sex: 'Female',
+
     }
 
     let formErrors = {
@@ -45,9 +47,11 @@
         {
             label: 'День народження:',
             type: 'date',
-            name: 'birth',
+            name: 'bday',
             meta: {
                 placeholder: '10.10.2010',
+                min: "2020-04-01",
+                max: "2020-05-30",
             },
         },
         {
