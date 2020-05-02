@@ -83,7 +83,7 @@
         </label>
     {/if}
 
-    <div class="inp-inner-wrap">
+<!--    <div class="inp-inner-wrap">-->
         {#if rows || type === 'textarea'}
             <textarea
                     {min}
@@ -147,7 +147,7 @@
                 <Icon type=""/>
             </slot>
         </div>
-    </div>
+<!--    </div>-->
 
     <FieldErrors items={errors} class="inp-errors">
         <div slot="before">
