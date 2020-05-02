@@ -139,7 +139,7 @@
     <Br size="40"/>
     <section class="full-width">
         <FormBuilder
-                id="user-form"
+                id="usrForm"
                 items={formFields}
                 data={formValues}
                 errors={formErrors}

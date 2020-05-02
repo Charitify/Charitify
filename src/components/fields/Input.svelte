@@ -13,7 +13,7 @@
     export let type = 'text'
     export let id = undefined
     export let align = undefined
-    export let minlength = 0
+    export let minlength = undefined
     export let maxlength = 1000
     export let rows = undefined
     export let disabled = false
@@ -30,13 +30,14 @@
     export let autoselect = false
     export let ariaLabel = undefined
     export let placeholder = undefined
-    export let autocorrect = 'on'
     export let errors = undefined
 
     const nameTypes = {
         'sex': { autocomplete: 'sex', id: 'frmSexA' },
         'bday': { autocomplete: 'on', id: 'frmBirthA' },
         'name': { autocomplete: 'name', id: 'frmNameA' },
+        'fname': { autocomplete: 'on', id: 'fname' },
+        'lname': { autocomplete: 'on', id: 'lname' },
         'username': { autocomplete: 'username', id: 'user-text-field' },
         'email': { autocomplete: 'email', id: 'frmEmailA' },
         'phone': { autocomplete: 'tel', id: 'frmPhoneNumA' },
@@ -61,7 +62,7 @@
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
     $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
-    $: autocompleteProp = autocomplete || inputPredict.autocomplete || 'on'
+    $: autocompleteProp = autocomplete || inputPredict.autocomplete
 
     /**
      *
@@ -83,7 +84,7 @@
         </label>
     {/if}
 
-<!--    <div class="inp-inner-wrap">-->
+    <div class="inp-inner-wrap">
         {#if rows || type === 'textarea'}
             <textarea
                     {min}
@@ -98,7 +99,6 @@
                     {minlength}
                     {maxlength}
                     {placeholder}
-                    {autocorrect}
                     id={idProp}
                     class="inp-inner"
                     title={titleProp}
@@ -126,7 +126,6 @@
                     {minlength}
                     {maxlength}
                     {placeholder}
-                    {autocorrect}
                     id={idProp}
                     class="inp-inner"
                     title={titleProp}
@@ -147,7 +146,7 @@
                 <Icon type=""/>
             </slot>
         </div>
-<!--    </div>-->
+    </div>
 
     <FieldErrors items={errors} class="inp-errors">
         <div slot="before">
