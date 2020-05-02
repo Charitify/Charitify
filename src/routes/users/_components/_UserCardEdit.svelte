@@ -8,10 +8,6 @@
     // export let itemsY
 
     let formValues = {
-        pwd: 'asd',
-        full_name: 'some value',
-        sex: 'Female',
-        organization: 'org2',
 
     }
 

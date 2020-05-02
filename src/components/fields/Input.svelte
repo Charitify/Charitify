@@ -30,7 +30,12 @@
     export let autoselect = false
     export let ariaLabel = undefined
     export let placeholder = undefined
+    export let autocorrect = 'on'
     export let errors = undefined
+
+    const autocompleteByNames = {
+
+    }
 
     $: idProp = id || name
     $: typeProp = type === 'number' ? 'text' : type
@@ -52,12 +57,12 @@
     }
 </script>
 
-<label for={idProp} class={classProp}>
+<section class={classProp}>
     {#if titleProp}
-        <h2 class="inp-label text-left">
+        <label for={idProp} class="inp-label h2 font-secondary font-w-500 text-left">
             { titleProp }
             <Br size="10"/>
-        </h2>
+        </label>
     {/if}
 
     <div class="inp-inner-wrap">
@@ -75,6 +80,7 @@
                     {minlength}
                     {maxlength}
                     {placeholder}
+                    {autocorrect}
                     {autocomplete}
                     id={idProp}
                     class="inp-inner"
@@ -102,6 +108,7 @@
                     {minlength}
                     {maxlength}
                     {placeholder}
+                    {autocorrect}
                     {autocomplete}
                     id={idProp}
                     class="inp-inner"
@@ -129,7 +136,7 @@
             <Br size="5"/>
         </div>
     </FieldErrors>
-</label>
+</section>
 
 <style>
     .inp {
