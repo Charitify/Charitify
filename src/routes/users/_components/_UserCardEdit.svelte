@@ -20,7 +20,7 @@
         {
             label: 'Моє ім\'я:',
             type: 'text',
-            name: 'full_name',
+            name: 'name',
             meta: {
                 placeholder: 'Віталій Бублик',
             },

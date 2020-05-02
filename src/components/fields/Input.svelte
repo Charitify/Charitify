@@ -37,11 +37,9 @@
         'sex': { autocomplete: 'sex', id: 'frmSexA' },
         'bday': { autocomplete: 'on', id: 'frmBirthA' },
         'name': { autocomplete: 'name', id: 'frmNameA' },
-        'full_name': { autocomplete: 'on', id: 'frmFullNameA' },
         'email': { autocomplete: 'email', id: 'frmEmailA' },
         'phone': { autocomplete: 'tel', id: 'frmPhoneNumA' },
-        'pwd': { autocomplete: 'password', id: 'frmPassA' },
-        'current-password': { autocomplete: 'password', id: 'frmPassA' },
+        'new-password': { autocomplete: 'password', id: 'userPassword' },
         'ship-address': { autocomplete: 'shipping street-address', id: 'frmAddressS' },
         'ship-city': { autocomplete: 'shipping locality', id: 'frmCityS' },
         'ship-state': { autocomplete: 'shipping region', id: 'frmStateS' },
@@ -76,9 +74,9 @@
     }
 </script>
 
-<section class={classProp}>
+<fieldset class={classProp}>
     {#if titleProp}
-        <label for={idProp} class="inp-label h2 font-secondary font-w-500 text-left">
+        <label for={idProp} class="inp-label h2 font-secondary font-w-600 text-left">
             { titleProp }
             <Br size="10"/>
         </label>
@@ -155,7 +153,7 @@
             <Br size="5"/>
         </div>
     </FieldErrors>
-</section>
+</fieldset>
 
 <style>
     .inp {
