@@ -37,6 +37,7 @@
         'sex': { autocomplete: 'sex', id: 'frmSexA' },
         'bday': { autocomplete: 'on', id: 'frmBirthA' },
         'name': { autocomplete: 'name', id: 'frmNameA' },
+        'username': { autocomplete: 'username', id: 'user-text-field' },
         'email': { autocomplete: 'email', id: 'frmEmailA' },
         'phone': { autocomplete: 'tel', id: 'frmPhoneNumA' },
         'new-password': { autocomplete: 'password', id: 'userPassword' },

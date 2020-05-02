@@ -20,7 +20,7 @@
         {
             label: 'Моє ім\'я:',
             type: 'text',
-            name: 'name',
+            name: 'username',
             meta: {
                 placeholder: 'Віталій Бублик',
             },
@@ -52,7 +52,7 @@
         {
             label: 'Пароль:',
             type: 'password',
-            name: 'pwd',
+            name: 'new-password',
             meta: {
                 minlength: 8,
                 required: 'required',
