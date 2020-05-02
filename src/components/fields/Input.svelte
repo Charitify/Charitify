@@ -33,17 +33,31 @@
     export let autocorrect = 'on'
     export let errors = undefined
 
-    const autocompleteByNames = {
-
+    const nameTypes = {
+        'name': { autocomplete: 'name', id: 'frmNameA' },
+        'email': { autocomplete: 'email', id: 'frmEmailA' },
+        'phone': { autocomplete: 'tel', id: 'frmPhoneNumA' },
+        'ship-address': { autocomplete: 'shipping street-address', id: 'frmAddressS' },
+        'ship-city': { autocomplete: 'shipping locality', id: 'frmCityS' },
+        'ship-state': { autocomplete: 'shipping region', id: 'frmStateS' },
+        'ship-zip': { autocomplete: 'shipping postal-code', id: 'frmZipS' },
+        'ship-country': { autocomplete: 'shipping country', id: 'frmCountryS' },
+        'ccname': { autocomplete: 'cc-name', id: 'frmNameCC' },
+        'cardnumber': { autocomplete: 'cc-number', id: 'frmCCNum' },
+        'cvc': { autocomplete: 'cc-csc', id: 'frmCCCVC' },
+        'cc-exp': { autocomplete: 'cc-exp', id: 'frmCCExp' },
     }
 
-    $: idProp = id || name
+    $: inputPredict = nameTypes[name] || {}
+
+    $: idProp = id || inputPredict.id || name
     $: typeProp = type === 'number' ? 'text' : type
     $: titleProp = label || ariaLabel
     $: ariaLabelProp = ariaLabel || label || placeholder
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
     $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
+    $: autocompleteProp = inputPredict.autocomplete || autocomplete
 
     /**
      *
@@ -81,13 +95,13 @@
                     {maxlength}
                     {placeholder}
                     {autocorrect}
-                    {autocomplete}
                     id={idProp}
                     class="inp-inner"
                     title={titleProp}
                     style={styleProp}
                     pattern={patternProp}
                     aria-label={ariaLabelProp}
+                    autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
                     on:blur='{e => !disabled && dispatch("blur", e)}'
@@ -109,13 +123,13 @@
                     {maxlength}
                     {placeholder}
                     {autocorrect}
-                    {autocomplete}
                     id={idProp}
                     class="inp-inner"
                     title={titleProp}
                     style={styleProp}
                     pattern={patternProp}
                     aria-label={ariaLabelProp}
+                    autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
                     on:blur='{e => !disabled && dispatch("blur", e)}'

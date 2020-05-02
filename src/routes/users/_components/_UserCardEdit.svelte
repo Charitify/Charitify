@@ -36,15 +36,13 @@
             },
         },
         {
-            label: 'Пароль:',
-            type: 'password',
-            name: 'pwd',
+            label: 'Місто:',
+            type: 'text',
+            name: 'ship-city',
             meta: {
-                minlength: 8,
-                required: 'required',
-                autocomplete: 'current-password',
-                placeholder: 'Введіть пароль...',
-            },
+                placeholder: 'Львів...',
+                autocomplete: 'shipping locality',
+            }
         },
         {
             label: 'Email:',
@@ -53,6 +51,17 @@
             meta: {
                 autocomplete: 'email',
                 placeholder: 'mylovedmail@gmail.com',
+            },
+        },
+        {
+            label: 'Пароль:',
+            type: 'password',
+            name: 'pwd',
+            meta: {
+                minlength: 8,
+                required: 'required',
+                autocomplete: 'current-password',
+                placeholder: 'Введіть пароль...',
             },
         },
         {
