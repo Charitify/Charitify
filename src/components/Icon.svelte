@@ -3,6 +3,8 @@
      * @info see more icons: https://www.svelte-icons.gibdig.com/
      */
     import { classnames, toCSSString } from '@utils'
+    import { icons } from '@config'
+
 
     export let type
     export let is = null // primary|warning|danger|light|dark
@@ -20,29 +22,30 @@
     $: classProp = classnames('ico', is, size, $$props.class)
 </script>
 
-<svg
-        {id}
-        title={titleProp}
-        class={classProp}
-        style={styleProp}
-        aria-label={ariaLabelProp}
->
-    <use xlink:href={`#ico-${type}`} class="ico-use"/>
-</svg>
+<i {id} title={titleProp} style={styleProp} class={classProp}>
+    <svelte:component this={icons[type]}/>
+</i>
 
 <style>
-    svg {
-        display: inherit;
+    .ico {
         flex-grow: 1;
         align-self: stretch;
+        display: inline-flex;
     }
 
-    svg:not(.custom) * {
+    .ico:not(.custom) * {
         fill: rgba(var(--theme-svg-fill));
         stroke: rgba(var(--theme-svg-fill));
     }
 
     /* ------------=========( Size )=========------------ */
+    .tiny {
+        width: 13px;
+        height: 13px;
+        flex: none;
+        align-self: auto;
+    }
+
     .small {
         width: 18px;
         height: 18px;
@@ -72,27 +75,27 @@
     }
 
     /* ------------=========( Color )=========------------ */
-    svg.primary * {
+    .ico.primary * {
         fill: rgb(var(--color-success));
         stroke: rgb(var(--color-success));
     }
 
-    svg.danger * {
+    .ico.danger * {
         fill: rgb(var(--color-danger));
         stroke: rgb(var(--color-danger));
     }
 
-    svg.info * {
+    .ico.info * {
         fill: rgb(var(--color-info));
         stroke: rgb(var(--color-info));
     }
 
-    svg.light * {
+    .ico.light * {
         fill: rgb(var(--color-white));
         stroke: rgb(var(--color-white));
     }
 
-    svg.dark * {
+    .ico.dark * {
         fill: rgb(var(--color-black));
         stroke: rgb(var(--color-black));
     }

@@ -2,6 +2,7 @@
     import { createEventDispatcher } from 'svelte'
     import { classnames, toCSSString } from '@utils'
     import Br from '@components/Br.svelte'
+    import Icon from '@components/Icon.svelte'
     import FieldErrors from '@components/FieldErrors.svelte'
 
     const dispatch = createEventDispatcher()
@@ -25,7 +26,7 @@
     export let readonly = undefined // undefined|readonly
     export let required = undefined // undefined|required
     export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)
-    export let autocomplete = true // on|off
+    export let autocomplete = "on" // on|off
     export let autoselect = false
     export let ariaLabel = undefined
     export let placeholder = undefined
@@ -35,7 +36,6 @@
     $: typeProp = type === 'number' ? 'text' : type
     $: titleProp = label || ariaLabel
     $: ariaLabelProp = ariaLabel || label || placeholder
-    $: autocompleteProp = autocomplete ? 'on' : 'off'
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
     $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
@@ -52,87 +52,121 @@
     }
 </script>
 
-{#if titleProp}
-    <label for={idProp} class="block h2 font-w-500 full-width text-left">
-        { titleProp }
-    </label>
-    <Br size="10"/>
-{/if}
+<label for={idProp} class={classProp}>
+    {#if titleProp}
+        <h2 class="inp-label text-left">
+            { titleProp }
+            <Br size="10"/>
+        </h2>
+    {/if}
 
-{#if rows || type === 'textarea'}
-    <textarea
-            {min}
-            {max}
-            {rows}
-            {name}
-            {form}
-            {align}
-            {readonly}
-            {disabled}
-            {required}
-            {minlength}
-            {maxlength}
-            {placeholder}
-            id={idProp}
-            class={classProp}
-            title={titleProp}
-            style={styleProp}
-            pattern={patternProp}
-            aria-label={ariaLabelProp}
-            autocomplete={autocompleteProp}
-            {...{ type: typeProp }}
-            bind:value
-            on:blur='{e => !disabled && dispatch("blur", e)}'
-            on:focus='{e => !disabled && dispatch("focus", e)}'
-            on:click='{onClick}'
-    ></textarea>
-{:else}
-    <input
-            {min}
-            {max}
-            {name}
-            {list}
-            {form}
-            {align}
-            {readonly}
-            {disabled}
-            {required}
-            {minlength}
-            {maxlength}
-            {placeholder}
-            id={idProp}
-            class={classProp}
-            title={titleProp}
-            style={styleProp}
-            pattern={patternProp}
-            aria-label={ariaLabelProp}
-            autocomplete={autocompleteProp}
-            {...{ type: typeProp }}
-            bind:value
-            on:blur='{e => !disabled && dispatch("blur", e)}'
-            on:focus='{e => !disabled && dispatch("focus", e)}'
-            on:click='{onClick}'
-    />
-{/if}
+    <div class="inp-inner-wrap">
+        {#if rows || type === 'textarea'}
+            <textarea
+                    {min}
+                    {max}
+                    {rows}
+                    {name}
+                    {form}
+                    {align}
+                    {readonly}
+                    {disabled}
+                    {required}
+                    {minlength}
+                    {maxlength}
+                    {placeholder}
+                    {autocomplete}
+                    id={idProp}
+                    class="inp-inner"
+                    title={titleProp}
+                    style={styleProp}
+                    pattern={patternProp}
+                    aria-label={ariaLabelProp}
+                    {...{ type: typeProp }}
+                    bind:value
+                    on:blur='{e => !disabled && dispatch("blur", e)}'
+                    on:focus='{e => !disabled && dispatch("focus", e)}'
+                    on:click='{onClick}'
+            ></textarea>
+        {:else}
+            <input
+                    {min}
+                    {max}
+                    {name}
+                    {list}
+                    {form}
+                    {align}
+                    {readonly}
+                    {disabled}
+                    {required}
+                    {minlength}
+                    {maxlength}
+                    {placeholder}
+                    {autocomplete}
+                    id={idProp}
+                    class="inp-inner"
+                    title={titleProp}
+                    style={styleProp}
+                    pattern={patternProp}
+                    aria-label={ariaLabelProp}
+                    {...{ type: typeProp }}
+                    bind:value
+                    on:blur='{e => !disabled && dispatch("blur", e)}'
+                    on:focus='{e => !disabled && dispatch("focus", e)}'
+                    on:click='{onClick}'
+            />
+        {/if}
 
-<FieldErrors items={errors}/>
+        <div class="inp-post-icon">
+            <slot name="post-icon">
+                <Icon type=""/>
+            </slot>
+        </div>
+    </div>
+
+    <FieldErrors items={errors} class="inp-errors">
+        <div slot="before">
+            <Br size="5"/>
+        </div>
+    </FieldErrors>
+</label>
 
 <style>
     .inp {
         width: 100%;
-        flex: 1 1 0;
-        color: inherit;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-        border-radius: var(--border-radius-small);
-        min-width: var(--min-interactive-size);
-        min-height: var(--min-interactive-size);
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .inp .inp-inner-wrap {
+        display: flex;
+        align-self: stretch;
         box-shadow: var(--shadow-field-inset);
+        border-radius: var(--border-radius-small);
         background-color: rgba(var(--theme-bg-color));
     }
 
-    .inp::placeholder {
+    .inp .inp-inner {
+        flex-grow: 1;
+        color: inherit;
+        overflow-y: auto;
+        overflow-x: hidden;
+        background-color: transparent;
+        -webkit-overflow-scrolling: touch;
+        min-width: var(--min-interactive-size);
+        min-height: var(--min-interactive-size);
+    }
+
+    .inp .inp-post-icon {
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .inp .inp-inner::placeholder {
         color: rgba(var(--theme-color-primary-opposite));
         opacity: .2;
     }

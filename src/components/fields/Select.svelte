@@ -20,6 +20,7 @@
     export let required = undefined // undefined|required
     export let ariaLabel = undefined
     export let placeholder = undefined
+    export let autocomplete = 'on'
     export let errors = undefined
     /**
      *
@@ -53,6 +54,7 @@
         {disabled}
         {required}
         {placeholder}
+        {autocomplete}
         id={idProp}
         class={classProp}
         title={titleProp}

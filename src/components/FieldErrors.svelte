@@ -7,9 +7,11 @@
 </script>
 
 {#if list && list.length}
-    <ul class="font-primary font-w-500 h4 text-danger text-left">
+    <slot name="before"></slot>
+    <ul class={`font-primary font-w-500 h4 text-danger text-left ${$$props.class || ''}`}>
         {#each list as item}
             <li in:slide>* {item}</li>
         {/each}
     </ul>
+    <slot name="after"></slot>
 {/if}

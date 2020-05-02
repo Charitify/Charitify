@@ -1,7 +1,6 @@
 <script>
     import Icon from '../Icon.svelte'
     import Loader from '../Loader/Loader.svelte'
-    import { icons } from '../../config/index.js'
 
     /**
      * @type {{
@@ -18,15 +17,15 @@
 <ul class="flex flex-justify-center social-icons">
     {#each list as item}
         {#if item !== null}
-            <li style="padding: 0 10px" class={item.type}>
+            <li class={item.type}>
                 <slot {item}>
                     {#if item.href}
                         <a href={item.href} target="_blank" title={item.title}>
-                            <Icon type={item.type} size="large" class="custom"/>
+                            <Icon type={item.type} size="medium"/>
                         </a>
                     {:else}
                         <span on:click>
-                            <Icon type={item.type} size="large" class="custom"/>
+                            <Icon type={item.type} size="medium"/>
                         </span>
                     {/if}
                 </slot>
@@ -40,13 +39,24 @@
 </ul>
 
 <style>
-    .social-icons .telegram * {
-        fill: #2197D2;
+    .social-icons li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 10px;
     }
-    .social-icons .facebook * {
-        fill: #4267B2;
+
+    .social-icons .telegram {
+        background-color: #2197D2;
     }
-    .social-icons .viber * {
-        fill: #665CAC;
+    .social-icons .facebook {
+        background-color: #4267B2;
+    }
+    .social-icons .viber {
+        background-color: #665CAC;
     }
 </style>

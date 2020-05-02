@@ -27,6 +27,7 @@
             name: 'full_name',
             meta: {
                 placeholder: 'Віталій Бублик',
+                autocomplete: 'name',
             },
         },
         {
@@ -35,6 +36,7 @@
             name: 'phone',
             meta: {
                 placeholder: '+380974354532',
+                autocomplete: 'tel',
             },
         },
         {
@@ -44,6 +46,7 @@
             meta: {
                 minlength: 8,
                 required: 'required',
+                autocomplete: 'current-password',
                 placeholder: 'Введіть пароль...',
             },
         },
@@ -52,6 +55,7 @@
             type: 'email',
             name: 'email',
             meta: {
+                autocomplete: 'email',
                 placeholder: 'mylovedmail@gmail.com',
             },
         },
@@ -97,6 +101,7 @@
             meta: {
                 pattern: "\\d{4}-\\d{2}-\\d{2}",
                 placeholder: '10.10.2010',
+                autocomplete: 'bday',
                 min: "2020-04-01",
                 max: "2020-05-30",
             },
@@ -105,6 +110,9 @@
             label: 'Стать:',
             type: 'radio',
             name: 'sex',
+            meta: {
+              autocomplete: 'sex'
+            }
         },
     ]
 </script>

@@ -2,7 +2,6 @@
 <script>
     import Icon from '../Icon.svelte'
     import Loader from '../Loader/Loader.svelte'
-    import { icons } from '../../config'
 
     /**
      * @type {{
@@ -16,22 +15,22 @@
     $: list = items === null ? [null, null, null] : items || []
 </script>
 
-<ul>
+<ul class="social-icons">
     {#each list as item}
         <li>
             {#if item !== null}
                 <slot {item}>
                     {#if item.href}
-                        <a href={item.href} class="flex flex-align-center" style="padding: 7px 0" title={item.title}>
-                            <Icon type={icons[item.type]} size="medium"/>
+                        <a href={item.href} target="_blank" class="inner" title={item.title}>
+                            <Icon type={item.type} size="tiny"/>
                             <s></s>
                             <s></s>
                             <s></s>
                             <p class="h3">{item.title}</p>
                         </a>
                     {:else}
-                        <div on:click class="flex flex-align-center" style="padding: 7px 0">
-                            <Icon type={icons[item.type]} size="medium"/>
+                        <div on:click class="inner" title={item.title}>
+                            <Icon type={item.type} size="tiny"/>
                             <s></s>
                             <s></s>
                             <s></s>
@@ -47,3 +46,21 @@
         </li>
     {/each}
 </ul>
+
+<style>
+    .social-icons li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 7px 0;
+    }
+
+    .social-icons .inner {
+        display: flex;
+        align-items: center;
+        width: 26px;
+        height: 26px;
+    }
+</style>
