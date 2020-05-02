@@ -25,14 +25,14 @@
                 placeholder: 'Віталій Бублик',
             },
         },
-        {
-            label: 'Телефон:',
-            type: 'tel',
-            name: 'phone',
-            meta: {
-                placeholder: '+380974354532',
-            },
-        },
+        // {
+        //     label: 'Телефон:',
+        //     type: 'tel',
+        //     name: 'phone',
+        //     meta: {
+        //         placeholder: '+380974354532',
+        //     },
+        // },
         {
             label: 'Місто:',
             type: 'text',
