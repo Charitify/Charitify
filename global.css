@@ -232,6 +232,12 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
 /* Inherit fonts for inputs and buttons, remove controls */
 input,
 select,
