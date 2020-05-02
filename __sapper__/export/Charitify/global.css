@@ -175,7 +175,7 @@ a {
     outline: none;
     color: inherit;
     cursor: pointer;
-    display: inline-block;
+    display: inline-flex;
     text-decoration: none;
     /*text-decoration-skip-ink: auto; !* (1) *!*/
 }
