@@ -34,8 +34,10 @@
     export let errors = undefined
 
     const nameTypes = {
+        'sex': { autocomplete: 'sex', id: 'frmSexA' },
         'bday': { autocomplete: 'on', id: 'frmBirthA' },
         'name': { autocomplete: 'name', id: 'frmNameA' },
+        'full_name': { autocomplete: 'name', id: 'frmFullNameA' },
         'email': { autocomplete: 'email', id: 'frmEmailA' },
         'phone': { autocomplete: 'tel', id: 'frmPhoneNumA' },
         'pwd': { autocomplete: 'password', id: 'frmPassA' },
