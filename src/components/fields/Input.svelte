@@ -26,7 +26,7 @@
     export let readonly = undefined // undefined|readonly
     export let required = undefined // undefined|required
     export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)
-    export let autocomplete = "on" // on|off
+    export let autocomplete = undefined// on|off
     export let autoselect = false
     export let ariaLabel = undefined
     export let placeholder = undefined
@@ -34,9 +34,11 @@
     export let errors = undefined
 
     const nameTypes = {
+        'bday': { autocomplete: 'on', id: 'frmBirthA' },
         'name': { autocomplete: 'name', id: 'frmNameA' },
         'email': { autocomplete: 'email', id: 'frmEmailA' },
         'phone': { autocomplete: 'tel', id: 'frmPhoneNumA' },
+        'current-password': { autocomplete: 'on', id: 'frmPassA' },
         'ship-address': { autocomplete: 'shipping street-address', id: 'frmAddressS' },
         'ship-city': { autocomplete: 'shipping locality', id: 'frmCityS' },
         'ship-state': { autocomplete: 'shipping region', id: 'frmStateS' },
@@ -57,7 +59,7 @@
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
     $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
-    $: autocompleteProp = inputPredict.autocomplete || autocomplete
+    $: autocompleteProp = autocomplete || inputPredict.autocomplete || 'on'
 
     /**
      *
