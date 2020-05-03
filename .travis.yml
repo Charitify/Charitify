@@ -1,5 +1,4 @@
 language: bash
-services: 
 
 env:
   - SERVER_IP_ADDRESS=77.123.130.167
@@ -16,7 +15,7 @@ jobs:
       - chmod 600 ./deploy_key
       - sudo echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
       - ssh-add ./deploy_key
-      - ssh -i ./deploy_key TravisCIDeployKey@35.184.79.30 < ./deploy.sh
+      - ssh -i ./deploy_key TravisCIDeployKey@$SERVER_IP_ADDRESS < ./deploy.sh
 
 notifications:
   email: false
