@@ -150,7 +150,7 @@
             <fieldset>
                 <legend>Contact Info</legend>
                 <label for="frmNameA">Name</label>
-                <input name="name" id="frmNameA" placeholder="Full name" required="" autocomplete="name">
+                <input name="fname" id="frmNameA" placeholder="Full name" required="" autocomplete="fname">
                 <label for="frmEmailA">Email</label>
                 <input type="email" name="email" id="frmEmailA" placeholder="name@example.com" required="" autocomplete="email">
                 <label for="frmEmailC">Confirm Email</label>
