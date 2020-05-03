@@ -23,9 +23,9 @@
 
 <Form {id} on:submit>
     {#each items as item, i}
-<!--        {#if i}-->
-<!--            <Br size="30"/>-->
-<!--        {/if}-->
+        {#if i}
+            <Br size="30"/>
+        {/if}
         {#if ['text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Input

@@ -30,7 +30,7 @@
     export let autoselect = false
     export let ariaLabel = undefined
     export let placeholder = undefined
-    // export let errors = undefined
+    export let errors = undefined
 
     const nameTypes = {
         'sex': { autocomplete: 'sex' },
@@ -75,15 +75,15 @@
     }
 </script>
 
-<!--<div class={classProp}>-->
-<!--    {#if titleProp}-->
-<!--        <label for={idProp} class="inp-label h2 font-secondary font-w-600 text-left">-->
-<!--            { titleProp }-->
-<!--            <Br size="10"/>-->
-<!--        </label>-->
-<!--    {/if}-->
+<div class={classProp}>
+    {#if titleProp}
+        <label for={idProp} class="inp-label h2 font-secondary font-w-600 text-left">
+            { titleProp }
+            <Br size="10"/>
+        </label>
+    {/if}
 
-<!--    <div class="inp-inner-wrap">-->
+    <div class="inp-inner-wrap">
         {#if rows || type === 'textarea'}
             <textarea
                     {min}
@@ -161,19 +161,19 @@
                     on:focus='{e => !disabled && dispatch("focus", e)}'
                     on:click='{onClick}'
 -->
-<!--        <div class="inp-post-icon">-->
-<!--            <slot name="post-icon">-->
-<!--                <Icon type=""/>-->
-<!--            </slot>-->
-<!--        </div>-->
-<!--    </div>-->
+        <div class="inp-post-icon">
+            <slot name="post-icon">
+                <Icon type=""/>
+            </slot>
+        </div>
+    </div>
 
-<!--    <FieldErrors items={errors} class="inp-errors">-->
-<!--        <div slot="before">-->
-<!--            <Br size="5"/>-->
-<!--        </div>-->
-<!--    </FieldErrors>-->
-<!--</div>-->
+    <FieldErrors items={errors} class="inp-errors">
+        <div slot="before">
+            <Br size="5"/>
+        </div>
+    </FieldErrors>
+</div>
 
 <style>
     .inp {
