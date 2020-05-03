@@ -26,7 +26,7 @@
         {#if i}
             <Br size="30"/>
         {/if}
-        {#if ['text', 'textarea', 'email', 'password', 'tel', 'date', 'datetime-local', 'search', 'time'].includes(item.type)}
+        {#if ['text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Input
                         {...item.meta}
@@ -61,6 +61,7 @@
         {:else}
             {#if data[item.name] !== null}
                 <ReadField
+                        {...item.meta}
                         label={item.label}
                         value={data[item.name]}
                 />
