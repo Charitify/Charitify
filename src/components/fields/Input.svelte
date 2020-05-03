@@ -27,7 +27,6 @@
     export let required = undefined // undefined|required
     export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)
     export let autocomplete = undefined// on|off
-    export let autoselect = false
     export let ariaLabel = undefined
     export let placeholder = undefined
     export let errors = undefined
@@ -62,17 +61,6 @@
     $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
     $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
     $: autocompleteProp = autocomplete || inputPredict.autocomplete
-
-    /**
-     *
-     * @description Emit click and select content when "autoselect" is enabled.
-     *
-     * @param {MouseEvent} e - Native mouse event.
-     */
-    function onClick(e) {
-        !disabled && dispatch("click", e)
-        !disabled && autoselect && e.target.select()
-    }
 </script>
 
 <div class={classProp}>
@@ -107,9 +95,8 @@
                     autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
-                    on:blur='{e => !disabled && dispatch("blur", e)}'
-                    on:focus='{e => !disabled && dispatch("focus", e)}'
-                    on:click='{onClick}'
+                    on:blur
+                    on:focus
             ></textarea>
         {:else}
             <input
@@ -133,36 +120,11 @@
                     aria-label={ariaLabelProp}
                     {...{ type: typeProp }}
                     bind:value
-                    on:blur='{e => !disabled && dispatch("blur", e)}'
-                    on:focus='{e => !disabled && dispatch("focus", e)}'
+                    on:blur
+                    on:focus
             />
         {/if}
 
-<!--
-                    {min}
-                    {max}
-                    {name}
-                    {list}
-                    {form}
-                    {align}
-                    {readonly}
-                    {disabled}
-                    {required}
-                    {minlength}
-                    {maxlength}
-                    {placeholder}
-                    id={idProp}
-                    class="inp-inner"
-                    title={titleProp}
-                    style={styleProp}
-                    pattern={patternProp}
-                    aria-label={ariaLabelProp}
-                    {...{ type: typeProp }}
-                    bind:value
-                    on:blur='{e => !disabled && dispatch("blur", e)}'
-                    on:focus='{e => !disabled && dispatch("focus", e)}'
-                    on:click='{onClick}'
--->
         <div class="inp-post-icon">
             <slot name="post-icon">
                 <Icon type=""/>
