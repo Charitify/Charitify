@@ -22,7 +22,7 @@
 </script>
 
 <Form {id} on:submit>
-    <input type="tel" name="phone" id="frmPhoneNumA" placeholder="+1-650-450-1212" required="" autocomplete="tel"/>
+    <input type="tel" name="phone" id="frmPhoneNumA" placeholder="+1-650-450-1212" required="" autocomplete="tel">
     {#each items as item, i}
         {#if i}
             <Br size="30"/>
