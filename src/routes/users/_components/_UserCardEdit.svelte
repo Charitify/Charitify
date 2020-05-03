@@ -137,18 +137,17 @@
     <section class="full-width">
 
         <FormBuilder
-                id="usrForm"
                 items={formFields}
                 data={formValues}
                 errors={formErrors}
         />
 
-        <form method="post" id="usrForm">
-            <input type="text" name="fname" id="frmNameA" placeholder="Full name" required="" autocomplete="fname">
-            <input type="email" name="email" id="frmEmailA" placeholder="name@example.com" required="" autocomplete="email">
-            <input type="tel" name="phone" id="frmPhoneNumA" placeholder="+1-650-450-1212" required="" autocomplete="tel">
-            <input type="date" name="date" required="" id="frmBDayA" autocomplete="bday">
-            <input type="text" name="ship-city" required="" id="frmStateS" placeholder="NY" autocomplete="shipping locality">
+        <form>
+            <input type="text" name="fname" placeholder="Full name" autocomplete="fname">
+            <input type="email" name="email" placeholder="name@example.com" autocomplete="email">
+            <input type="tel" name="phone" placeholder="+1-650-450-1212" autocomplete="tel">
+            <input type="date" name="date" autocomplete="bday">
+            <input type="text" name="ship-city" placeholder="NY" autocomplete="shipping locality">
         </form>
 
         <button type="submit" form="user-form">Зберегти</button>
