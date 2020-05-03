@@ -103,7 +103,7 @@
                     autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
-            />
+            >
 <!--
                     {min}
                     {max}
