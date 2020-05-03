@@ -33,13 +33,13 @@
 
     const nameTypes = {
         'sex': { autocomplete: 'sex' },
-        'bday': { autocomplete: 'on' },
+        'bday': { autocomplete: 'bday' },
         'name': { autocomplete: 'name' },
         'fname': { autocomplete: 'name' },
         'lname': { autocomplete: 'name' },
         'email': { autocomplete: 'email' },
         'phone': { autocomplete: 'tel' },
-        'new-password': { autocomplete: 'password' },
+        'password': { autocomplete: 'new-password' },
         'ship-address': { autocomplete: 'shipping street-address' },
         'ship-city': { autocomplete: 'shipping locality' },
         'ship-state': { autocomplete: 'shipping region' },

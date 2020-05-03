@@ -60,7 +60,7 @@
         {
             label: 'Пароль:',
             type: 'password',
-            name: 'new-password',
+            name: 'password',
             meta: {
                 minlength: 8,
                 required: 'required',

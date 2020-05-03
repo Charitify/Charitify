@@ -22,6 +22,7 @@
 </script>
 
 <form>
+    <input type="email" name="email" placeholder="name@example.com" autocomplete="email">
     {#each items as item, i}
 <!--        {#if i}-->
 <!--            <Br size="30"/>-->
