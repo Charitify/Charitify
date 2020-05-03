@@ -25,6 +25,14 @@
                 placeholder: 'Віталій Бублик',
             },
         },
+        {
+            label: 'Email:',
+            type: 'email',
+            name: 'email',
+            meta: {
+                placeholder: 'mylovedmail@gmail.com',
+            },
+        },
         // {
         //     label: 'Телефон:',
         //     type: 'tel',
@@ -40,14 +48,6 @@
             meta: {
                 placeholder: 'Львів...',
             }
-        },
-        {
-            label: 'Email:',
-            type: 'email',
-            name: 'email',
-            meta: {
-                placeholder: 'mylovedmail@gmail.com',
-            },
         },
         {
             label: 'Пароль:',
@@ -138,19 +138,6 @@
 
     <Br size="40"/>
     <section class="full-width">
-        <form method="post" id="usrForm1">
-            <fieldset>
-                <legend>Contact Info</legend>
-                <label for="frmNameA">Name</label>
-                <input name="name" id="frmNameA" placeholder="Full name" required="" autocomplete="name">
-                <label for="frmEmailA">Email</label>
-                <input type="email" name="email" id="frmEmailA" placeholder="name@example.com" required="" autocomplete="email">
-                <label for="frmEmailC">Confirm Email</label>
-                <input type="email" name="emailC" id="frmEmailC" placeholder="name@example.com" required="" autocomplete="email">
-                <label for="frmPhoneNumA">Phone</label>
-                <input type="tel" name="phone" id="frmPhoneNumA" placeholder="+1-650-450-1212" required="" autocomplete="tel">
-            </fieldset>
-        </form>
 
         <FormBuilder
                 id="usrForm"
