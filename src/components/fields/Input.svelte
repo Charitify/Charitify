@@ -133,6 +133,8 @@
                     aria-label={ariaLabelProp}
                     {...{ type: typeProp }}
                     bind:value
+                    on:blur='{e => !disabled && dispatch("blur", e)}'
+                    on:focus='{e => !disabled && dispatch("focus", e)}'
             />
         {/if}
 
