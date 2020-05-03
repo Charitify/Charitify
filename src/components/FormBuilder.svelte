@@ -16,61 +16,67 @@
      *    }
      * }[]}
      */
-    export let items = []
-    export let data = {}
-    export let errors = {}
+    // export let items = []
+    // export let data = {}
+    // export let errors = {}
 </script>
 
 <Form {id} on:submit>
-    {#each items as item, i}
-        {#if i}
-            <Br size="30"/>
-        {/if}
-        {#if ['text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
-            {#if data[item.name] !== null}
-                <Input
-                        {...item.meta}
-                        name={item.name}
-                        type={item.type}
-                        label={item.label}
-                        value={data[item.name]}
-                        errors={errors[item.name]}
-                />
-            {:else}
-                <div>
-                    <Loader type="h2" />
-                    <Loader height="50"/>
-                </div>
-            {/if}
-        {:else if ['select'].includes(item.type)}
-            {#if data[item.name] !== null}
-                <Select
-                        {...item.meta}
-                        name={item.name}
-                        type={item.type}
-                        label={item.label}
-                        value={data[item.name]}
-                        errors={errors[item.name]}
-                />
-            {:else}
-                <div>
-                    <Loader type="h2" />
-                    <Loader height="50"/>
-                </div>
-            {/if}
-        {:else}
-            {#if data[item.name] !== null}
-                <ReadField
-                        {...item.meta}
-                        label={item.label}
-                        value={data[item.name]}
-                />
-            {:else}
-                <div>
-                    <Loader type="h2" />
-                    <Loader type="p" />
-                </div>
-            {/if}
-        {/if}
-    {/each}
+    <input type="text" name="name" placeholder="Full name" autocomplete="name">
+    <input type="email" name="email" placeholder="name@example.com" autocomplete="email">
+    <input type="tel" name="phone" placeholder="+1-650-450-1212" autocomplete="tel">
+    <input type="date" name="date" autocomplete="bday">
+    <input type="text" name="ship-city" placeholder="NY" autocomplete="shipping locality">
+
+<!--    {#each items as item, i}-->
+<!--        {#if i}-->
+<!--            <Br size="30"/>-->
+<!--        {/if}-->
+<!--        {#if ['text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}-->
+<!--            {#if data[item.name] !== null}-->
+<!--                <Input-->
+<!--                        {...item.meta}-->
+<!--                        name={item.name}-->
+<!--                        type={item.type}-->
+<!--                        label={item.label}-->
+<!--                        value={data[item.name]}-->
+<!--                        errors={errors[item.name]}-->
+<!--                />-->
+<!--            {:else}-->
+<!--                <div>-->
+<!--                    <Loader type="h2" />-->
+<!--                    <Loader height="50"/>-->
+<!--                </div>-->
+<!--            {/if}-->
+<!--        {:else if ['select'].includes(item.type)}-->
+<!--            {#if data[item.name] !== null}-->
+<!--                <Select-->
+<!--                        {...item.meta}-->
+<!--                        name={item.name}-->
+<!--                        type={item.type}-->
+<!--                        label={item.label}-->
+<!--                        value={data[item.name]}-->
+<!--                        errors={errors[item.name]}-->
+<!--                />-->
+<!--            {:else}-->
+<!--                <div>-->
+<!--                    <Loader type="h2" />-->
+<!--                    <Loader height="50"/>-->
+<!--                </div>-->
+<!--            {/if}-->
+<!--        {:else}-->
+<!--            {#if data[item.name] !== null}-->
+<!--                <ReadField-->
+<!--                        {...item.meta}-->
+<!--                        label={item.label}-->
+<!--                        value={data[item.name]}-->
+<!--                />-->
+<!--            {:else}-->
+<!--                <div>-->
+<!--                    <Loader type="h2" />-->
+<!--                    <Loader type="p" />-->
+<!--                </div>-->
+<!--            {/if}-->
+<!--        {/if}-->
+<!--    {/each}-->
 </Form>
