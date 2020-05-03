@@ -136,27 +136,11 @@
     <Br size="40"/>
     <section class="full-width">
 
-        <form>
-            <input type="text" name="fname" placeholder="Full name" autocomplete="fname">
-            <input type="email" name="email" placeholder="name@example.com" autocomplete="email">
-            <input type="tel" name="phone" placeholder="+1-650-450-1212" autocomplete="tel">
-            <input type="date" name="date" autocomplete="bday">
-            <input type="text" name="ship-city" placeholder="NY" autocomplete="shipping locality">
-        </form>
-
         <FormBuilder
                 items={formFields}
                 data={formValues}
                 errors={formErrors}
         />
-
-        <form>
-            <input type="text" name="fname" placeholder="Full name" autocomplete="fname">
-            <input type="email" name="email" placeholder="name@example.com" autocomplete="email">
-            <input type="tel" name="phone" placeholder="+1-650-450-1212" autocomplete="tel">
-            <input type="date" name="date" autocomplete="bday">
-            <input type="text" name="ship-city" placeholder="NY" autocomplete="shipping locality">
-        </form>
 
         <button type="submit" form="user-form">Зберегти</button>
     </section>
