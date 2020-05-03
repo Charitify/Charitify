@@ -21,7 +21,7 @@
     export let invalid = undefined
     export let min = undefined // Specifies a minimum value for an <input> element
     export let max = undefined // Specifies the maximum value for an <input> element
-    // export let list = undefined // Refers to a <datalist> element that contains pre-defined options for an <input> element
+    export let list = undefined // Refers to a <datalist> element that contains pre-defined options for an <input> element
     export let form = undefined // Specifies the form the <input> element belongs to
     export let readonly = undefined // undefined|readonly
     export let required = undefined // undefined|required
@@ -98,13 +98,6 @@
             ></textarea>
         {:else}
             <input
-                    {name}
-                    {placeholder}
-                    autocomplete={autocompleteProp}
-                    {...{ type: typeProp }}
-                    bind:value
-            >
-<!--
                     {min}
                     {max}
                     {name}
@@ -125,7 +118,7 @@
                     aria-label={ariaLabelProp}
                     {...{ type: typeProp }}
                     bind:value
-                    -->
+            >
         {/if}
 
         <div class="inp-post-icon">
