@@ -4,7 +4,7 @@
     import Loader from '@components/Loader'
     import { Input, Select, ReadField } from '@components/fields'
 
-    // export let id = undefined
+    export let id = undefined
     /**
      * @type {{
      *    name: string,
@@ -21,11 +21,11 @@
     export let errors = {}
 </script>
 
-<form>
+<Form {id} on:submit>
     {#each items as item, i}
-<!--        {#if i}-->
-<!--            <Br size="30"/>-->
-<!--        {/if}-->
+        {#if i}
+            <Br size="30"/>
+        {/if}
         {#if ['text', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Input
@@ -42,35 +42,35 @@
                     <Loader height="50"/>
                 </div>
             {/if}
-<!--        {:else if ['select'].includes(item.type)}-->
-<!--            {#if data[item.name] !== null}-->
-<!--                <Select-->
-<!--                        {...item.meta}-->
-<!--                        name={item.name}-->
-<!--                        type={item.type}-->
-<!--                        label={item.label}-->
-<!--                        value={data[item.name]}-->
-<!--                        errors={errors[item.name]}-->
-<!--                />-->
-<!--            {:else}-->
-<!--                <div>-->
-<!--                    <Loader type="h2" />-->
-<!--                    <Loader height="50"/>-->
-<!--                </div>-->
-<!--            {/if}-->
-<!--        {:else}-->
-<!--            {#if data[item.name] !== null}-->
-<!--                <ReadField-->
-<!--                        {...item.meta}-->
-<!--                        label={item.label}-->
-<!--                        value={data[item.name]}-->
-<!--                />-->
-<!--            {:else}-->
-<!--                <div>-->
-<!--                    <Loader type="h2" />-->
-<!--                    <Loader type="p" />-->
-<!--                </div>-->
-<!--            {/if}-->
+        {:else if ['select'].includes(item.type)}
+            {#if data[item.name] !== null}
+                <Select
+                        {...item.meta}
+                        name={item.name}
+                        type={item.type}
+                        label={item.label}
+                        value={data[item.name]}
+                        errors={errors[item.name]}
+                />
+            {:else}
+                <div>
+                    <Loader type="h2" />
+                    <Loader height="50"/>
+                </div>
+            {/if}
+        {:else}
+            {#if data[item.name] !== null}
+                <ReadField
+                        {...item.meta}
+                        label={item.label}
+                        value={data[item.name]}
+                />
+            {:else}
+                <div>
+                    <Loader type="h2" />
+                    <Loader type="p" />
+                </div>
+            {/if}
         {/if}
     {/each}
-</form>
+</Form>
