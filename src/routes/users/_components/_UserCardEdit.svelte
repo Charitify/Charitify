@@ -144,19 +144,18 @@
         />
 
         <form method="post" id="usrForm">
-            <fieldset>
-                <legend>Contact Info</legend>
-                <label for="frmNameA">Name</label>
-                <input name="fname" id="frmNameA" placeholder="Full name" required="" autocomplete="fname">
-                <label for="frmEmailA">Email</label>
-                <input type="email" name="email" id="frmEmailA" placeholder="name@example.com" required="" autocomplete="email">
+            <label for="frmNameA">Name</label>
+            <input name="fname" id="frmNameA" placeholder="Full name" required="" autocomplete="fname">
+            <label for="frmEmailA">Email</label>
+            <input type="email" name="email" id="frmEmailA" placeholder="name@example.com" required="" autocomplete="email">
+            <div>
                 <label for="frmPhoneNumA">Phone</label>
                 <input type="tel" name="phone" id="frmPhoneNumA" placeholder="+1-650-450-1212" required="" autocomplete="tel">
-                <label for="frmBDayA">Bday</label>
-                <input name="date" required="" id="frmBDayA" autocomplete="bday">
-                <label for="frmStateS">State</label>
-                <input name="ship-city" required="" id="frmStateS" placeholder="NY" autocomplete="shipping locality">
-            </fieldset>
+            </div>
+            <label for="frmBDayA">Bday</label>
+            <input name="date" required="" id="frmBDayA" autocomplete="bday">
+            <label for="frmStateS">State</label>
+            <input name="ship-city" required="" id="frmStateS" placeholder="NY" autocomplete="shipping locality">
         </form>
 
         <button type="submit" form="user-form">Зберегти</button>

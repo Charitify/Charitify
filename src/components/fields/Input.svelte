@@ -75,7 +75,7 @@
     }
 </script>
 
-<fieldset class={classProp}>
+<div class={classProp}>
     {#if titleProp}
         <label for={idProp} class="inp-label h2 font-secondary font-w-600 text-left">
             { titleProp }
@@ -152,7 +152,7 @@
             <Br size="5"/>
         </div>
     </FieldErrors>
-</fieldset>
+</div>
 
 <style>
     .inp {
