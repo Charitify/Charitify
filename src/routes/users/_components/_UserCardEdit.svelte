@@ -138,7 +138,7 @@
 
     <Br size="40"/>
     <section class="full-width">
-        <form method="post" id="usrForm">
+        <form method="post" id="usrForm1">
             <fieldset>
                 <legend>Contact Info</legend>
                 <label for="frmNameA">Name</label>
