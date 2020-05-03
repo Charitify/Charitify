@@ -642,6 +642,7 @@ const Form = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { id = undefined } = $$props;
 	let { title = undefined } = $$props;
 	let { ariaLabel = undefined } = $$props;
+	let { method = "post" } = $$props;
 	let { autocomplete = undefined } = $$props;
 	let titleProp = title || ariaLabel;
 	let ariaLabelProp = ariaLabel || title;
@@ -649,10 +650,11 @@ const Form = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
+	if ($$props.method === void 0 && $$bindings.method && method !== void 0) $$bindings.method(method);
 	if ($$props.autocomplete === void 0 && $$bindings.autocomplete && autocomplete !== void 0) $$bindings.autocomplete(autocomplete);
 	let classProp = classnames("form", $$props.class);
 
-	return `<form${add_attribute("id", id, 0)}${add_attribute("name", name, 0)}${add_attribute("autocomplete", autocomplete, 0)}${add_attribute("title", titleProp, 0)}${add_attribute("class", classProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)}>
+	return `<form${add_attribute("id", id, 0)}${add_attribute("name", name, 0)}${add_attribute("method", method, 0)}${add_attribute("autocomplete", autocomplete, 0)}${add_attribute("title", titleProp, 0)}${add_attribute("class", classProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)}>
     ${$$slots.default ? $$slots.default({}) : ``}
 </form>`;
 });
