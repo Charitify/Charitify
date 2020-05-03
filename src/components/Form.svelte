@@ -1,6 +1,4 @@
 <script>
-    import { classnames } from '@utils'
-
     export let name = undefined
     export let id = undefined
     export let title = undefined
@@ -10,8 +8,6 @@
 
     let titleProp = title || ariaLabel
     let ariaLabelProp = ariaLabel || title
-
-    $: classProp = classnames($$props.class)
 </script>
 
 <form
@@ -20,7 +16,7 @@
         {method}
         {autocomplete}
         title={titleProp}
-        class={classProp}
+        class={$$props.class}
         aria-label={ariaLabelProp}
         on:submit|preventDefault
 >

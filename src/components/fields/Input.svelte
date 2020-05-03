@@ -133,12 +133,34 @@
                     aria-label={ariaLabelProp}
                     {...{ type: typeProp }}
                     bind:value
-                    on:blur='{e => !disabled && dispatch("blur", e)}'
-                    on:focus='{e => !disabled && dispatch("focus", e)}'
-                    on:click='{onClick}'
             />
         {/if}
 
+<!--
+                    {min}
+                    {max}
+                    {name}
+                    {list}
+                    {form}
+                    {align}
+                    {readonly}
+                    {disabled}
+                    {required}
+                    {minlength}
+                    {maxlength}
+                    {placeholder}
+                    id={idProp}
+                    class="inp-inner"
+                    title={titleProp}
+                    style={styleProp}
+                    pattern={patternProp}
+                    aria-label={ariaLabelProp}
+                    {...{ type: typeProp }}
+                    bind:value
+                    on:blur='{e => !disabled && dispatch("blur", e)}'
+                    on:focus='{e => !disabled && dispatch("focus", e)}'
+                    on:click='{onClick}'
+-->
 <!--        <div class="inp-post-icon">-->
 <!--            <slot name="post-icon">-->
 <!--                <Icon type=""/>-->

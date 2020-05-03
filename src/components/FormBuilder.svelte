@@ -31,7 +31,7 @@
                 <Input
                         {...item.meta}
                         name={item.name}
-                        type={item.type}
+                        type={item.type}s
                         label={item.label}
                         value={data[item.name]}
                         errors={errors[item.name]}
