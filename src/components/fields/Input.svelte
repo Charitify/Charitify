@@ -95,8 +95,6 @@
                     autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
-                    on:blur
-                    on:focus
             ></textarea>
         {:else}
             <input
@@ -120,8 +118,6 @@
                     aria-label={ariaLabelProp}
                     {...{ type: typeProp }}
                     bind:value
-                    on:blur
-                    on:focus
             />
         {/if}
 
