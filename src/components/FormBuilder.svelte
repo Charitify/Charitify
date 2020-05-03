@@ -4,7 +4,7 @@
     import Loader from '@components/Loader'
     import { Input, Select, ReadField } from '@components/fields'
 
-    export let id = undefined
+    // export let id = undefined
     /**
      * @type {{
      *    name: string,
@@ -21,7 +21,7 @@
     export let errors = {}
 </script>
 
-<Form {id} on:submit>
+<form>
     {#each items as item, i}
 <!--        {#if i}-->
 <!--            <Br size="30"/>-->
@@ -73,4 +73,4 @@
 <!--            {/if}-->
         {/if}
     {/each}
-</Form>
+</form>
