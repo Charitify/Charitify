@@ -12,8 +12,8 @@
     }
 
     let formErrors = {
-        pwd: 'Обов\'язкове поле',
-        full_name: 'Мало символів',
+        password: 'Обов\'язкове поле',
+        name: 'Мало символів',
     }
 
     let formFields = [
