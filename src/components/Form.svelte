@@ -5,6 +5,7 @@
     export let id = undefined
     export let title = undefined
     export let ariaLabel = undefined
+    export let method = 'post'
     export let autocomplete = undefined
 
     let titleProp = title || ariaLabel
@@ -16,6 +17,7 @@
 <form
         {id}
         {name}
+        {method}
         {autocomplete}
         title={titleProp}
         class={classProp}
