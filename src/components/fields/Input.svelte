@@ -103,6 +103,7 @@
                     {placeholder}
                     id={idProp}
                     class="inp-inner"
+                    autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
             />

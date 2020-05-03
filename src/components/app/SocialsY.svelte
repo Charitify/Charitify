@@ -22,7 +22,9 @@
                 <slot {item}>
                     {#if item.href}
                         <a href={item.href} target="_blank" class="inner" title={item.title}>
-                            <Icon type={item.type} size="tiny"/>
+                            <span class="icon-wrap">
+                                <Icon type={item.type} size="tiny"/>
+                            </span>
                             <s></s>
                             <s></s>
                             <s></s>
@@ -30,7 +32,9 @@
                         </a>
                     {:else}
                         <div on:click class="inner" title={item.title}>
-                            <Icon type={item.type} size="tiny"/>
+                            <span class="icon-wrap">
+                                <Icon type={item.type} size="tiny"/>
+                            </span>
                             <s></s>
                             <s></s>
                             <s></s>
@@ -51,8 +55,6 @@
     .social-icons li {
         display: flex;
         align-items: center;
-        justify-content: center;
-        border-radius: 50%;
         overflow: hidden;
         margin: 7px 0;
     }
@@ -60,7 +62,15 @@
     .social-icons .inner {
         display: flex;
         align-items: center;
+    }
+
+    .social-icons .icon-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 26px;
         height: 26px;
+        border-radius: 50%;
+        background-color: rgba(var(--color-dark));
     }
 </style>
