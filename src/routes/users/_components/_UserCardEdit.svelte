@@ -14,6 +14,7 @@
     let formErrors = {
         password: 'Обов\'язкове поле',
         name: 'Мало символів',
+        email: 'Некоректний email',
     }
 
     let formFields = [

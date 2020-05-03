@@ -95,6 +95,8 @@
                     autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
+                    on:blur='{e => !disabled && dispatch("blur", e)}'
+                    on:focus='{e => !disabled && dispatch("focus", e)}'
             ></textarea>
         {:else}
             <input
@@ -119,6 +121,8 @@
                     autocomplete={autocompleteProp}
                     {...{ type: typeProp }}
                     bind:value
+                    on:blur='{e => !disabled && dispatch("blur", e)}'
+                    on:focus='{e => !disabled && dispatch("focus", e)}'
             >
         {/if}
 
