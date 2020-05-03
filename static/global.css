@@ -253,7 +253,6 @@ textarea {
     -moz-appearance: none;
     appearance: none;
     text-indent: 1px;
-    text-overflow: '';
 }
 
 /* Remove control arrows from input fields */
