@@ -79,7 +79,7 @@
                 </p>
                 <span class="h5 flex flex-align-center font-secondary" style="min-width: 4em">
                     <span style={`opacity: ${amount > 2 ? 1 : .5}`}>
-                        <Icon type="heart-filled" is="danger" size="small"/>
+                        <Icon type="heart" is="danger" size="small"/>
                     </span>
                     <s></s>
                     <s></s>

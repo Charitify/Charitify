@@ -1,5 +1,5 @@
 <script>
-  import { Picture, Button, Loader } from "@components";
+  import { Picture, Button, Loader, Icon } from "@components";
 
   export let id = null
   export let src = null
@@ -27,6 +27,6 @@
       {/if}
     </div>
     
-    <span style="font-size: 24px">→</span>
+    <Icon type="arrow-right" size="medium"/>
   </div>
 </Button>

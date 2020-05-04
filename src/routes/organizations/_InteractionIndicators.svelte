@@ -17,7 +17,7 @@
     style={`opacity: ${isLiked ? 1 : .5}`}
     on:click={() => dispatch('click', !isLiked)}
 >
-    <Icon is="danger" type="heart-filled" size="medium" />
+    <Icon is="danger" type="heart" size="medium" />
     <s />
     <s />
     {#if likes !== null}

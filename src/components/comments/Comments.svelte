@@ -60,8 +60,8 @@
     <Br size="20"/>  
 
     <p class="h3 font-w-500 font-secondary underline text-center">
-        <span>All comments</span>
-        <span class="font-w-600">⋁</span>
+        <span>Всі коментарі</span>
+        <Icon type="caret-down" size="small"/>
     </p>
 
     {#if withForm}

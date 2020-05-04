@@ -21,11 +21,11 @@
                 <slot {item}>
                     {#if item.href}
                         <a href={item.href} target="_blank" title={item.title}>
-                            <Icon type={item.type} size="medium"/>
+                            <Icon type={item.type} is="light" size="medium"/>
                         </a>
                     {:else}
                         <span on:click>
-                            <Icon type={item.type} size="medium"/>
+                            <Icon type={item.type} is="light" size="medium"/>
                         </span>
                     {/if}
                 </slot>

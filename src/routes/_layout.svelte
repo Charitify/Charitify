@@ -3,7 +3,6 @@
 	import { Header, OfflineMessage } from '@components';
 	import { Storages } from '@services'
 	import { safeGet, disableDoubleTapZoom } from '@utils'
-	import Icons from './_icons.svelte';
 
 	export let segment;
 
@@ -13,8 +12,6 @@
 		disableDoubleTapZoom([document])
 	})
 </script>
-
-<Icons/>
 
 <main id="main" class={theme}>
 	<Header {segment}/>

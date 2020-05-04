@@ -6,6 +6,7 @@
     import { modals } from "@store";
     import Portal from "./Portal.svelte";
     import Br from "./Br.svelte";
+    import Icon from "./Icon.svelte";
 
     const dispatch = createEventDispatcher()
     
@@ -261,7 +262,9 @@
                             on:click={onCloseModal}
                         >
                             <h2 style="padding: 15px 20px">Закрити</h2>
-                            <span class="close">&#10005;</span>
+                            <span class="close">
+                                 <Icon type="close" size="big"/>
+                            </span>
                         </button>
                     </slot>
                 </Portal>   

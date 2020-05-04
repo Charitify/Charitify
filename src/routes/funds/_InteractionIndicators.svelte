@@ -7,7 +7,7 @@
 
 <p class="container flex flex-justify-between flex-align-center">
     <span class="flex flex-align-center">
-        <Icon is="danger" type="heart-filled" size="medium"/>
+        <Icon is="danger" type="heart" size="medium"/>
         <s></s>
         <s></s>
         {#if likes !== null}

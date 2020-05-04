@@ -23,7 +23,7 @@
                     {#if item.href}
                         <a href={item.href} target="_blank" class="inner" title={item.title}>
                             <span class="icon-wrap">
-                                <Icon type={item.type} size="tiny"/>
+                                <Icon type={item.type} is="light" size="tiny"/>
                             </span>
                             <s></s>
                             <s></s>
@@ -33,7 +33,7 @@
                     {:else}
                         <div on:click class="inner" title={item.title}>
                             <span class="icon-wrap">
-                                <Icon type={item.type} size="tiny"/>
+                                <Icon type={item.type} is="light" size="tiny"/>
                             </span>
                             <s></s>
                             <s></s>

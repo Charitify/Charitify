@@ -3,6 +3,7 @@
     import { fly } from 'svelte/transition'
     import { Swipe } from '@services'
     import { classnames, delay, bodyScroll, safeGet } from '@utils'
+    import Icon from '@components/Icon.svelte';
     import Portal from './Portal.svelte';
 
     const dispatch = createEventDispatcher()
@@ -158,7 +159,9 @@
             use:addSwipe
             class={classProp}
         >
-            <button type="button" on:click={onClick}>&#10005;</button>
+            <button type="button" on:click={onClick}>
+                <Icon type="close" size="big"/>
+            </button>
             {#if slots.box}
                 <slot name="box"></slot>
             {:else}

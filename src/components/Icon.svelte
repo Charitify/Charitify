@@ -31,11 +31,11 @@
         flex-grow: 1;
         align-self: stretch;
         display: inline-flex;
+        vertical-align: middle;
     }
 
     .ico:not(.custom) * {
-        fill: rgba(var(--theme-svg-fill));
-        stroke: rgba(var(--theme-svg-fill));
+        color: rgba(var(--theme-svg-fill));
     }
 
     /* ------------=========( Size )=========------------ */
@@ -75,28 +75,23 @@
     }
 
     /* ------------=========( Color )=========------------ */
-    .ico.primary * {
-        fill: rgb(var(--color-success));
-        stroke: rgb(var(--color-success));
+    .ico.primary {
+        color: rgb(var(--color-success));
     }
 
-    .ico.danger * {
-        fill: rgb(var(--color-danger));
-        stroke: rgb(var(--color-danger));
+    .ico.danger {
+        color: rgb(var(--color-danger));
     }
 
-    .ico.info * {
-        fill: rgb(var(--color-info));
-        stroke: rgb(var(--color-info));
+    .ico.info {
+        color: rgb(var(--color-info));
     }
 
-    .ico.light * {
-        fill: rgb(var(--color-white));
-        stroke: rgb(var(--color-white));
+    .ico.light {
+        color: rgb(var(--color-white));
     }
 
-    .ico.dark * {
-        fill: rgb(var(--color-black));
-        stroke: rgb(var(--color-black));
+    .ico.dark {
+        color: rgb(var(--color-black));
     }
 </style>

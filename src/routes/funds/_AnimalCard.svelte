@@ -58,7 +58,7 @@
     <Br size="35"/>
 
     <section class="flex flex-justify-center">
-        <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
+        <div class="flex flex-center relative" style="width: 120px; height: 120px">
             <Icon type="polygon" is="primary"/>
 
             {#if animal.age !== null}
@@ -69,7 +69,7 @@
             {/if}
         </div>
 
-        <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
+        <div class="flex flex-center relative" style="width: 120px; height: 120px">
             <Icon type="polygon" is="info"/>
 
             {#if animal.sex !== null}
@@ -83,7 +83,7 @@
             {/if}
         </div>
 
-        <div class="flex flex-center relative" style="width: 90px; height: 90px; margin: 0 .8em">
+        <div class="flex flex-center relative" style="width: 120px; height: 120px">
             <Icon type="polygon" is="primary"/>
 
             {#if animal.sterilization !== null}

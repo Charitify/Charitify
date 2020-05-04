@@ -15,7 +15,9 @@
 </script>
 
 <button type="button" class={classPropDonateBtn} on:click={onDonate}>
-    <Icon type="coin" size="big" is="light"/>
+    <span>
+        <Icon type="coin" size="medium" is="primary"/>
+    </span>
     <s></s>
     <s></s>
     Допомогти
@@ -41,6 +43,18 @@
         transition: .3s ease-in-out;
         transform: translateY(100%);
         background-color: rgba(var(--color-success));
+    }
+
+    span {
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: rgba(var(--color-white));
     }
 
     .donate-btn.active {
