@@ -56,8 +56,6 @@
         'cc-exp': { autocomplete: 'cc-exp' },
     }
 
-    'text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'
-
     const typePostIcons = {
       date: 'calendar',
       search: 'search',
