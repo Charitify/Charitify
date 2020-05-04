@@ -31,6 +31,10 @@
     export let placeholder = undefined
     export let errors = undefined
 
+    /**
+     * autocomplete - https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
+     * names - https://developers.google.com/web/updates/2015/06/checkout-faster-with-autofill
+     */
     const nameTypes = {
         'sex': { autocomplete: 'sex' },
         'bday': { autocomplete: 'bday' },

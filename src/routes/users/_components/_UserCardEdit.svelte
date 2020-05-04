@@ -136,7 +136,6 @@
 
     <Br size="40"/>
     <section class="full-width">
-
         <FormBuilder
                 items={formFields}
                 data={formValues}

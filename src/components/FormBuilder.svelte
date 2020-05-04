@@ -26,7 +26,7 @@
         {#if i}
             <Br size="30"/>
         {/if}
-        {#if ['text', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
+        {#if ['text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Input
                         {...item.meta}
