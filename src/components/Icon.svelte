@@ -7,7 +7,7 @@
 
 
     export let type
-    export let is = null // primary|warning|danger|light|dark
+    export let is = null // primary|info|danger|light|dark
     export let size = null // small|medium|big
     export let rotate = 0
     export let style = undefined

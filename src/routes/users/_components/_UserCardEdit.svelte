@@ -47,6 +47,7 @@
             type: 'text',
             name: 'ship-city',
             meta: {
+                postIcon: 'search',
                 placeholder: 'Львів...',
             }
         },

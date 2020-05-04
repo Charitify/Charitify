@@ -29,6 +29,7 @@
     export let autocomplete = undefined// on|off
     export let ariaLabel = undefined
     export let placeholder = undefined
+    export let postIcon = undefined
     export let errors = undefined
 
     /**
@@ -55,7 +56,15 @@
         'cc-exp': { autocomplete: 'cc-exp' },
     }
 
+    'text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'
+
+    const typePostIcons = {
+      date: 'calendar',
+      search: 'search',
+    }
+
     $: inputPredict = nameTypes[name] || {}
+    $: iconType = postIcon || typePostIcons[type]
 
     $: idProp = id || inputPredict.id || name
     $: typeProp = type === 'number' ? 'text' : type
@@ -130,11 +139,15 @@
             >
         {/if}
 
-        <div class="inp-post-icon">
+        <label for={idProp} class="inp-post-icon">
             <slot name="post-icon">
-                <Icon type=""/>
+                {#if iconType}
+                    <span class="inp-post-icon-inner">
+                        <Icon type={iconType} is="info" size="medium"/>
+                    </span>
+                {/if}
             </slot>
-        </div>
+        </label>
     </div>
 
     <FieldErrors items={errors} class="inp-errors">
@@ -169,6 +182,13 @@
         -webkit-overflow-scrolling: touch;
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
+    }
+
+    .inp .inp-post-icon-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--min-interactive-size);
     }
 
     .inp .inp-post-icon {
