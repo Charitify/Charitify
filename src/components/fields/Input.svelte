@@ -148,7 +148,7 @@
         </label>
     </div>
 
-    <FieldErrors items={errors} class="inp-errors">
+    <FieldErrors items={errors}>
         <div slot="before">
             <Br size="5"/>
         </div>

@@ -70,6 +70,27 @@
             },
         },
         {
+            label: 'Вакцинація:',
+            type: 'checkbox',
+            name: 'vaccines',
+            meta: {
+                options: [
+                    {
+                        value: 'org1',
+                        label: 'Дім Сірка',
+                    },
+                    {
+                        value: 'org2',
+                        label: 'Милосердя',
+                    },
+                    {
+                        value: 'org3',
+                        label: 'Добрі люди Добрі люди Добрі люди Добрі люди Добрі люди Добрі люди Добрі люди',
+                    }
+                ]
+            },
+        },
+        {
             label: 'Організація:',
             type: 'select',
             name: 'organization',

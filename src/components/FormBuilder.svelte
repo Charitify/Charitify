@@ -2,7 +2,7 @@
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
-    import { Input, Select, ReadField } from '@components/fields'
+    import { Input, Select, ReadField, Checkbox } from '@components/fields'
 
     export let id = undefined
     /**
@@ -42,6 +42,15 @@
                     <Loader height="50"/>
                 </div>
             {/if}
+
+        {:else if ['checkbox'].includes(item.type)}
+            <Checkbox
+                    {...item.meta}
+                    name={item.name}
+                    label={item.label}
+                    value={data[item.name]}
+                    errors={errors[item.name]}
+            />
         {:else if ['select'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Select
