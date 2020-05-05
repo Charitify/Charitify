@@ -2,7 +2,7 @@
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
-    import { Input, Select, ReadField, Checkbox } from '@components/fields'
+    import { Input, Select, ReadField, CheckboxGroup } from '@components/fields'
 
     export let id = undefined
     /**
@@ -44,7 +44,7 @@
             {/if}
 
         {:else if ['checkbox'].includes(item.type)}
-            <Checkbox
+            <CheckboxGroup
                     {...item.meta}
                     name={item.name}
                     label={item.label}

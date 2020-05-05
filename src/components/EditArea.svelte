@@ -1,9 +1,22 @@
 <script>
-
+    import Br from './Br.svelte'
+    import Icon from './Icon.svelte'
+    import Button from './Button.svelte'
 </script>
 
 <section class="edit-area">
     <slot></slot>
+
+    <Br size="20"/>
+    <Button size="small" is="info" class="no-filter">
+        <span class="h3 font-secondary font-w-500 flex flex-align-center">
+            Редагувати
+            <s></s>
+            <s></s>
+            <Icon type="edit" size="small" is="light"/>
+        </span>
+    </Button>
+    <Br size="30"/>
 </section>
 
 <style>

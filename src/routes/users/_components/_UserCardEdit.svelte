@@ -15,7 +15,9 @@
         password: 'Обов\'язкове поле',
         name: 'Мало символів',
         email: 'Некоректний email',
+        bday: 'Некоректний email',
         organization: 'Некоректно',
+        vaccines: 'Некоректно',
     }
 
     let formFields = [
@@ -71,66 +73,66 @@
             },
         },
         {
-            label: 'Вакцинація:',
-            type: 'checkbox',
-            name: 'vaccines',
-            meta: {
-                options: [
-                    {
-                        value: 'org1',
-                        label: 'Дім Сірка',
-                    },
-                    {
-                        value: 'org2',
-                        label: 'Милосердя',
-                    },
-                    {
-                        value: 'org3',
-                        label: 'Добрі люди Добрі люди Добрі люди Добрі люди Добрі люди Добрі люди Добрі люди',
-                    }
-                ]
-            },
-        },
-        {
-            label: 'Організація:',
-            type: 'select',
-            name: 'organization',
-            meta: {
-                placeholder: 'Виберіть організацію...',
-                options: [
-                    {
-                        value: '',
-                        label: 'Вибрати...',
-                    },
-                    {
-                        value: 'org1',
-                        label: 'Дім Сірка',
-                    },
-                    {
-                        value: 'org2',
-                        label: 'Милосердя',
-                    },
-                    {
-                        value: 'org3',
-                        label: 'Добрі люди',
-                    }
-                ]
-            },
-        },
-        {
-            label: 'Опис фонду:',
-            type: 'textarea',
-            name: 'description',
-            meta: {
-                rows: 6,
-                placeholder: 'Збираємо гроші на допомогу...',
-            },
-        },
-        {
             label: 'Стать:',
             type: 'radio',
             name: 'sex',
         },
+        // {
+        //     label: 'Вакцинація:',
+        //     type: 'checkbox',
+        //     name: 'vaccines',
+        //     meta: {
+        //         options: [
+        //             {
+        //                 value: 'org1',
+        //                 text: 'Від кліщів',
+        //             },
+        //             {
+        //                 value: 'org2',
+        //                 text: 'Від парвовірусного ентерита Від парвовірусного ентерита Від парвовірусного ентерита',
+        //             },
+        //             {
+        //                 value: 'org3',
+        //                 text: 'Від кліщів',
+        //             }
+        //         ]
+        //     },
+        // },
+        // {
+        //     label: 'Організація:',
+        //     type: 'select',
+        //     name: 'organization',
+        //     meta: {
+        //         placeholder: 'Виберіть організацію...',
+        //         options: [
+        //             {
+        //                 value: '',
+        //                 label: 'Вибрати...',
+        //             },
+        //             {
+        //                 value: 'org1',
+        //                 label: 'Дім Сірка',
+        //             },
+        //             {
+        //                 value: 'org2',
+        //                 label: 'Милосердя',
+        //             },
+        //             {
+        //                 value: 'org3',
+        //                 label: 'Добрі люди',
+        //             }
+        //         ]
+        //     },
+        // },
+        // {
+        //     label: 'Опис фонду:',
+        //     type: 'textarea',
+        //     name: 'description',
+        //     meta: {
+        //         rows: 6,
+        //         placeholder: 'Збираємо гроші на допомогу...',
+        //     },
+        // },
     ]
 </script>
 

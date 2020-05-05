@@ -82,7 +82,7 @@
             </div>
 
             <Br size="35" />
-            <Button size="big" is="success" href={href} class="no-filter">
+            <Button size="big" is="success" href={href}>
                 <span class="h2 font-secondary font-w-600">
                     Додати
                 </span>

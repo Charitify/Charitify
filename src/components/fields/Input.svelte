@@ -199,6 +199,16 @@
         color: rgb(var(--color-info));
     }
 
+
+    .inp .inp-inner:invalid + .inp-post-icon :global(.ico),
+    .inp.error .inp-post-icon :global(.ico) {
+        color: rgb(var(--color-danger)) !important;
+    }
+
+    .inp .inp-inner:focus + .inp-post-icon :global(.ico) {
+        color: rgb(var(--color-info)) !important;
+    }
+
     .inp .inp-post-icon-inner {
         display: flex;
         align-items: center;

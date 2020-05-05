@@ -13,9 +13,11 @@ import GoSearch from 'svelte-icons/go/GoSearch.svelte'
 import IoMdClose from 'svelte-icons/io/IoMdClose.svelte'
 import FaPhoneAlt from 'svelte-icons/fa/FaPhoneAlt.svelte'
 import FaFacebookF from 'svelte-icons/fa/FaFacebookF.svelte'
+import FaRegSquare from 'svelte-icons/fa/FaRegSquare.svelte'
 import TiStarburst from 'svelte-icons/ti/TiStarburst.svelte'
 import FaDollarSign from 'svelte-icons/fa/FaDollarSign.svelte'
 import FaCalendarAlt from 'svelte-icons/fa/FaCalendarAlt.svelte'
+import FaCheckSquare from 'svelte-icons/fa/FaCheckSquare.svelte'
 import MdRemoveRedEye from 'svelte-icons/md/MdRemoveRedEye.svelte'
 import FaMapMarkerAlt from 'svelte-icons/fa/FaMapMarkerAlt.svelte'
 import FaTelegramPlane from 'svelte-icons/fa/FaTelegramPlane.svelte'
@@ -41,6 +43,7 @@ export default {
     heart: FaHeart,
     viber: FaViber,
     close: IoMdClose,
+    box: FaRegSquare,
     search: GoSearch,
     female: GiFemale,
     phone: FaPhoneAlt,
@@ -52,6 +55,7 @@ export default {
     calendar: FaCalendarAlt,
     location: FaMapMarkerAlt,
     telegram: FaTelegramPlane,
+    'box-checked': FaCheckSquare,
     'arrow-up': FaLongArrowAltUp,
     'arrow-left': FaLongArrowAltLeft,
     'arrow-down': FaLongArrowAltDown,
