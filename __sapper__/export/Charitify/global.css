@@ -216,8 +216,8 @@ button {
     color: inherit;
     cursor: pointer;
     -webkit-appearance: button;
-    -moz-appearance: none;
-    appearance: none;
+    -moz-appearance: button;
+    appearance: button;
     background-color: transparent;
 }
 
