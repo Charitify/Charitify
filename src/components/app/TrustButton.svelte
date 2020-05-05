@@ -73,6 +73,7 @@
     }
 
     span {
+        display: flex;
         width: 50%;
         height: 50%;
         margin-top: 3px;
