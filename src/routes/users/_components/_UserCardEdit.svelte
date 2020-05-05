@@ -15,6 +15,7 @@
         password: 'Обов\'язкове поле',
         name: 'Мало символів',
         email: 'Некоректний email',
+        organization: 'Некоректно',
     }
 
     let formFields = [

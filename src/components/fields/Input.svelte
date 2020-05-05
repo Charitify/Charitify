@@ -64,13 +64,14 @@
     $: inputPredict = nameTypes[name] || {}
     $: iconType = postIcon || typePostIcons[type]
 
+    $: error = invalid !== undefined ? invalid : !!(errors || []).length
     $: idProp = id || inputPredict.id || name
     $: typeProp = type === 'number' ? 'text' : type
     $: titleProp = label || ariaLabel
     $: ariaLabelProp = ariaLabel || label || placeholder
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern
-    $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, invalid })
+    $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, error, postIcon: iconType })
     $: autocompleteProp = autocomplete || inputPredict.autocomplete
 </script>
 
@@ -164,6 +165,7 @@
     }
 
     .inp .inp-inner-wrap {
+        position: relative;
         display: flex;
         align-self: stretch;
         box-shadow: var(--shadow-field-inset);
@@ -180,6 +182,21 @@
         -webkit-overflow-scrolling: touch;
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
+        border-radius: var(--border-radius-small);
+    }
+
+    .inp.postIcon .inp-inner {
+        padding-right: var(--min-interactive-size);
+    }
+
+    .inp .inp-inner:invalid, .inp.error .inp-inner {
+        box-shadow: 0 0 0 1px rgb(var(--color-danger));
+        color: rgb(var(--color-danger));
+    }
+
+    .inp .inp-inner:focus {
+        box-shadow: 0 0 0 1px rgb(var(--color-info));
+        color: rgb(var(--color-info));
     }
 
     .inp .inp-post-icon-inner {
@@ -190,6 +207,11 @@
     }
 
     .inp .inp-post-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: var(--min-interactive-size);
         flex: none;
         display: flex;
         align-items: center;
