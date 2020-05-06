@@ -2,17 +2,25 @@
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
-    import { Input, Select, ReadField, CheckboxGroup } from '@components/fields'
+    import { 
+        Input,
+        Select,
+        ReadField,
+        UploadBox,
+        CheckboxGroup,
+        UploadBoxGroup,
+    } from '@components/fields'
 
     export let id = undefined
     /**
      * @type {{
      *    name: string,
-     *    type: string, (types of native input: https://www.w3schools.com/tags/att_input_type.asp)
+     *    type: string, 'files'(types of native input: https://www.w3schools.com/tags/att_input_type.asp)
      *    label: string,
      *    meta: {
      *        required: boolean,
      *        disabled: boolean,
+     *        ...
      *    }
      * }[]}
      */
@@ -26,7 +34,7 @@
         {#if i}
             <Br size="30"/>
         {/if}
-        {#if ['text', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
+        {#if ['text', 'number', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Input
                         {...item.meta}
@@ -35,6 +43,7 @@
                         label={item.label}
                         value={data[item.name]}
                         errors={errors[item.name]}
+                        on:change
                 />
             {:else}
                 <div>
@@ -50,6 +59,7 @@
                     label={item.label}
                     value={data[item.name]}
                     errors={errors[item.name]}
+                    on:change
             />
         {:else if ['select'].includes(item.type)}
             {#if data[item.name] !== null}
@@ -60,6 +70,7 @@
                         label={item.label}
                         value={data[item.name]}
                         errors={errors[item.name]}
+                        on:change
                 />
             {:else}
                 <div>
@@ -67,6 +78,24 @@
                     <Loader height="50"/>
                 </div>
             {/if}
+        {:else if ['file'].includes(item.type)}
+            <UploadBox
+                    {...item.meta}
+                    name={item.name}
+                    label={item.label}
+                    value={data[item.name]}
+                    errors={errors[item.name]}
+                    on:change
+            />
+        {:else if ['files'].includes(item.type)}
+            <UploadBoxGroup
+                    {...item.meta}
+                    name={item.name}
+                    label={item.label}
+                    value={data[item.name]}
+                    errors={errors[item.name]}
+                    on:change
+            />
         {:else}
             {#if data[item.name] !== null}
                 <ReadField

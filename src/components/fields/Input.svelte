@@ -66,7 +66,7 @@
 
     $: error = invalid !== undefined ? invalid : !!(errors || []).length
     $: idProp = id || inputPredict.id || name
-    $: typeProp = type === 'number' ? 'text' : type
+    $: typeProp = type
     $: titleProp = label || ariaLabel
     $: ariaLabelProp = ariaLabel || label || placeholder
     $: styleProp = toCSSString({ ...style, textAlign: align })

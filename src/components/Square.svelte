@@ -1,0 +1,27 @@
+<section class={`square ${$$props.class || ''}`}>
+    <div>
+        <slot></slot>
+    </div>
+</section>
+
+<style>
+    section {
+        position: relative;
+        width: 100%;
+    }
+
+    section:after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+    }
+
+    div {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: grid;
+    }
+</style>

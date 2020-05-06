@@ -73,9 +73,19 @@
             },
         },
         {
+            label: 'Фотогалерея:',
+            type: 'files',
+            name: 'photos',
+        },
+        {
             label: 'Стать:',
             type: 'radio',
             name: 'sex',
+        },
+        {
+            label: 'Фото:',
+            type: 'file',
+            name: 'photo',
         },
         // {
         //     label: 'Вакцинація:',

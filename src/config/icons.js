@@ -18,6 +18,7 @@ import TiStarburst from 'svelte-icons/ti/TiStarburst.svelte'
 import FaDollarSign from 'svelte-icons/fa/FaDollarSign.svelte'
 import FaCalendarAlt from 'svelte-icons/fa/FaCalendarAlt.svelte'
 import FaCheckSquare from 'svelte-icons/fa/FaCheckSquare.svelte'
+import MdCloudUpload from 'svelte-icons/md/MdCloudUpload.svelte'
 import MdRemoveRedEye from 'svelte-icons/md/MdRemoveRedEye.svelte'
 import FaMapMarkerAlt from 'svelte-icons/fa/FaMapMarkerAlt.svelte'
 import FaTelegramPlane from 'svelte-icons/fa/FaTelegramPlane.svelte'
@@ -51,6 +52,7 @@ export default {
     eye: MdRemoveRedEye,
     polygon: TiStarburst,
     facebook: FaFacebookF,
+    upload: MdCloudUpload,
     'check-flag': MdCheck,
     calendar: FaCalendarAlt,
     location: FaMapMarkerAlt,

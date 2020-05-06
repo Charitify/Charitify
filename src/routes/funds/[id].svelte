@@ -3,25 +3,31 @@
     import { onMount } from 'svelte'
     import { API } from '@services'
     import { delay, safeGet, _ } from '@utils'
-    import { Br, Footer, DonationButton } from '@components'
-
-    import TopCarousel from './_TopCarousel.svelte'
-    import OrganizationButton from './_OrganizationButton.svelte'
-    import QuickInfoCard from './_QuickInfoCard.svelte'
-    import InteractionIndicators from './_InteractionIndicators.svelte'
-    import Description from './_Description.svelte'
-    import Share from './_Share.svelte'
-    import Trust from './_Trust.svelte'
-    import AnimalCard from './_AnimalCard.svelte'
-    import Donators from './_Donators.svelte'
-    import Documents from './_Documents.svelte'
-    import Media from './_Media.svelte'
-    import HowToHelp from './_HowToHelp.svelte'
-    import Comments from './_Comments.svelte'
+    import { Br, Icon, Footer, Button, EditArea, DonationButton } from '@components'
+    import {
+        Media,
+        Trust,
+        Share,
+        Comments,
+        Donators,
+        Documents,
+        HowToHelp,
+        AnimalCard,
+        Description,
+        InteractionIndicators,
+    } from './components'
+    import { 
+        TopInfoView,
+    } from './view'
+    import { 
+        TopInfoEdit,
+    } from './edit'
 
     const { page } = stores()
 
     let charityId = $page.params.id
+    let isEdit = false
+    let isEditMode = false
 
     // Entities
     let charity
@@ -112,15 +118,36 @@
 
 <section class="container theme-bg-color-secondary">
     <Br size="var(--header-height)"/>
-    <Br size="30"/>
 
-    <TopCarousel items={carouselTop}/>
-    <Br size="40"/>
+    <div>
+        <Br size="30"/>
+        <Button size="small" is="info" on:click={() => (isEditMode = !isEditMode, isEdit = false)}>
+            <span class="h3 font-secondary font-w-500 flex flex-align-center">
+                {isEditMode ? 'Зберегти' : 'Редагувати'}
+                <s></s>
+                <s></s>
+                {#if !isEditMode}
+                    <Icon type="edit" size="small" is="light"/>
+                {/if}
+            </span>
+        </Button>
+        <Br size="40"/>
+    </div>
 
-    <OrganizationButton id={organization.id} src={organization.avatar} title={organization.name}/>
-    <Br size="20"/>
-
-    <QuickInfoCard cardTop={cardTop}/>
+    {#if isEdit}
+        <Br size="30"/>
+        <TopInfoEdit on:change submit={() => isEdit = !isEdit}/>
+    {/if}
+    <div class={`full-container ${isEdit ? 'hidden' : ''}`}> 
+        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+            <Br size="30"/>
+            <TopInfoView 
+                {cardTop}
+                {carouselTop}
+                {organization}
+            />
+        </EditArea>
+    </div>
     <Br size="20"/>
 
     <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
