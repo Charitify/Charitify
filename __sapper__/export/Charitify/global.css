@@ -516,6 +516,15 @@ button:not([class]):focus {
     text-transform: uppercase;
 }
 
+/* ----------=========( Pointer events )=========----------- */
+.pointer-none {
+    pointer-events: none;
+}
+
+.pointer-auto {
+    pointer-events: auto;
+}
+
 /* ----------=========( Containers )=========----------- */
 .container {
     padding-left: var(--screen-padding);

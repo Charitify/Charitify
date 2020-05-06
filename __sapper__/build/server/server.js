@@ -301,6 +301,1089 @@ const Br = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<br${add_attribute("style", `padding-bottom: ${foramttedSize}`, 0)}${add_attribute("class", $$props.class, 0)}>`;
 });
 
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+/** Built-in value references. */
+var Symbol$1 = root.Symbol;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol$1 ? Symbol$1.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+/** Used for built-in method references. */
+var objectProto$1 = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString$1 = objectProto$1.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString$1.call(value);
+}
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag$1 = Symbol$1 ? Symbol$1.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag$1 && symToStringTag$1 in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/;
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
+}
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto$1 = Function.prototype,
+    objectProto$2 = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString$1 = funcProto$1.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$1 = objectProto$2.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString$1.call(hasOwnProperty$1).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate = getNative(Object, 'create');
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto$3 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty$2.call(data, key) ? data[key] : undefined;
+}
+
+/** Used for built-in method references. */
+var objectProto$4 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty$3.call(data, key);
+}
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED$1 : value;
+  return this;
+}
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+/* Built-in method references that are verified to be native. */
+var Map$1 = getNative(root, 'Map');
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map$1 || ListCache),
+    'string': new Hash
+  };
+}
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Expose `MapCache`.
+memoize.Cache = MapCache;
+
+/** Used as the maximum memoize cache size. */
+var MAX_MEMOIZE_SIZE = 500;
+
+/**
+ * A specialized version of `_.memoize` which clears the memoized function's
+ * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+ *
+ * @private
+ * @param {Function} func The function to have its output memoized.
+ * @returns {Function} Returns the new memoized function.
+ */
+function memoizeCapped(func) {
+  var result = memoize(func, function(key) {
+    if (cache.size === MAX_MEMOIZE_SIZE) {
+      cache.clear();
+    }
+    return key;
+  });
+
+  var cache = result.cache;
+  return result;
+}
+
+/** Used to match property names within property paths. */
+var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoizeCapped(function(string) {
+  var result = [];
+  if (string.charCodeAt(0) === 46 /* . */) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, subString) {
+    result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol$1 ? Symbol$1.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
+}
+
+/** Used as references for various `Number` constants. */
+var INFINITY$1 = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY$1) ? '-0' : result;
+}
+
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+function baseGet(object, path) {
+  path = castPath(path, object);
+
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+  return (index && index == length) ? object : undefined;
+}
+
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
 const DURATION = 500;
 let scroll;
 let scrollCheckInterval;
@@ -727,6 +1810,16 @@ const FaCheckSquare = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	})}`;
 });
 
+/* node_modules/svelte-icons/md/MdCloudUpload.svelte generated by Svelte v3.18.1 */
+
+const MdCloudUpload = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `${validate_component(IconBase, "IconBase").$$render($$result, Object.assign({ viewBox: "0 0 24 24" }, $$props), {}, {
+		default: () => `
+          <path d="${"M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"}"></path>
+        `
+	})}`;
+});
+
 /* node_modules/svelte-icons/md/MdRemoveRedEye.svelte generated by Svelte v3.18.1 */
 
 const MdRemoveRedEye = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -877,6 +1970,7 @@ var icons = {
     eye: MdRemoveRedEye,
     polygon: TiStarburst,
     facebook: FaFacebookF,
+    upload: MdCloudUpload,
     'check-flag': MdCheck,
     calendar: FaCalendarAlt,
     location: FaMapMarkerAlt,
@@ -1459,7 +2553,7 @@ function generator(storage) {
 }
 
 const storage = typeof window !== 'undefined' ? window.localStorage : undefined;
-const { readable, writable: writable$1, derived, get } = generator(storage);
+const { readable, writable: writable$1, derived, get: get$1 } = generator(storage);
 
 const organization = writable$1('organization', null);
 const organizations = writable$1('organizations', null);
@@ -1629,9 +2723,26 @@ const Modal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	: ``}`;
 });
 
-/* src/components/Picture.svelte generated by Svelte v3.18.1 */
+/* src/components/Square.svelte generated by Svelte v3.18.1 */
 
 const css$6 = {
+	code: "section.svelte-1hii7tq{position:relative;width:100%}section.svelte-1hii7tq:after{content:\"\";display:block;padding-bottom:100%}div.svelte-1hii7tq{position:absolute;top:0;left:0;right:0;bottom:0;display:grid}",
+	map: "{\"version\":3,\"file\":\"Square.svelte\",\"sources\":[\"Square.svelte\"],\"sourcesContent\":[\"<section class={`square ${$$props.class || ''}`}>\\n    <div>\\n        <slot></slot>\\n    </div>\\n</section>\\n\\n<style>\\n    section {\\n        position: relative;\\n        width: 100%;\\n    }\\n\\n    section:after {\\n        content: \\\"\\\";\\n        display: block;\\n        padding-bottom: 100%;\\n    }\\n\\n    div {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        right: 0;\\n        bottom: 0;\\n        display: grid;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1NxdWFyZS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7SUFDZjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO1FBQ2Qsb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLE1BQU07UUFDTixPQUFPO1FBQ1AsUUFBUTtRQUNSLFNBQVM7UUFDVCxhQUFhO0lBQ2pCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1NxdWFyZS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBzZWN0aW9uIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICBzZWN0aW9uOmFmdGVyIHtcbiAgICAgICAgY29udGVudDogXCJcIjtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgICAgIHBhZGRpbmctYm90dG9tOiAxMDAlO1xuICAgIH1cblxuICAgIGRpdiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICByaWdodDogMDtcbiAgICAgICAgYm90dG9tOiAwO1xuICAgICAgICBkaXNwbGF5OiBncmlkO1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAOI,OAAO,eAAC,CAAC,AACL,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,sBAAO,MAAM,AAAC,CAAC,AACX,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,KAAK,CACd,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,GAAG,eAAC,CAAC,AACD,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,CACT,OAAO,CAAE,IAAI,AACjB,CAAC\"}"
+};
+
+const Square = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	$$result.css.add(css$6);
+
+	return `<section class="${escape(null_to_empty(`square ${$$props.class || ""}`)) + " svelte-1hii7tq"}">
+    <div class="${"svelte-1hii7tq"}">
+        ${$$slots.default ? $$slots.default({}) : ``}
+    </div>
+</section>`;
+});
+
+/* src/components/Picture.svelte generated by Svelte v3.18.1 */
+
+const css$7 = {
 	code: ".picture.svelte-dk028u.svelte-dk028u{position:relative;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch;background-color:rgba(var(--theme-bg-color-opposite), .04)}.picture.svelte-dk028u .pic.svelte-dk028u{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;overflow:hidden;-ms-flex-item-align:stretch;align-self:stretch;-o-object-position:center;object-position:center;-webkit-transition:opacity .3s ease-in;transition:opacity .3s ease-in}.picture.svelte-dk028u .pic-2x.svelte-dk028u{position:absolute;top:0;left:0;width:100%;height:100%}.picture.cover.svelte-dk028u .pic.svelte-dk028u{-o-object-fit:cover;object-fit:cover}.picture.contain.svelte-dk028u .pic.svelte-dk028u{-o-object-fit:contain;object-fit:contain}.picture.isErrorSmall.svelte-dk028u .pic-1x.svelte-dk028u,.picture.isErrorBig.svelte-dk028u .pic-2x.svelte-dk028u,.picture.loadingSrcSmall.svelte-dk028u .pic-1x.svelte-dk028u,.picture.loadingSrcBig.svelte-dk028u .pic-2x.svelte-dk028u{opacity:0}",
 	map: "{\"version\":3,\"file\":\"Picture.svelte\",\"sources\":[\"Picture.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let src\\n    export let alt\\n    export let size = 'cover'\\n    export let srcBig = undefined\\n    export let id = undefined\\n    export let width = undefined\\n    export let height = undefined\\n\\n    let loadingSrcSmall = true\\n    let loadingSrcBig = true\\n    let isErrorSmall = false\\n    let isErrorBig = false\\n\\n    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isErrorSmall, isErrorBig })\\n\\n    function imgService(node, postFix) {\\n        if (node.complete) {\\n            onLoad(node, postFix)\\n        } else {\\n            node.onload = onLoad.bind(null, node, postFix)\\n            node.onerror = onError.bind(null, node, postFix)\\n        }\\n    }\\n\\n    function onLoad(node, postFix) {\\n        changeLoading(postFix, false)\\n        changeError(postFix, false)\\n        dispatch(`load${postFix}`, node)\\n\\n        if (!srcBig || !loadingSrcBig) {\\n            dispatch('load', node)\\n        }\\n    }\\n\\n    function onError(node, postFix) {\\n        changeLoading(postFix, false)\\n        changeError(postFix, true)\\n        dispatch(`error${postFix}`, node)\\n    }\\n\\n    function changeLoading(type, isLoading) {\\n        switch (type) {\\n            case 'Small':\\n                loadingSrcSmall = isLoading\\n                break\\n            case 'Big':\\n                loadingSrcBig = isLoading\\n                break\\n        }\\n    }\\n\\n    function changeError(type, isError) {\\n        switch (type) {\\n            case 'Small':\\n                isErrorSmall = isError\\n                break\\n            case 'Big':\\n                isErrorBig = isError\\n                break\\n        }\\n    }\\n\\n</script>\\n\\n<figure class={wrapClassProp}>\\n    {#if src}\\n        <img\\n            use:imgService={'Small'}\\n            {id}\\n            {alt}\\n            {src}\\n            {width}\\n            {height}\\n            class=\\\"pic pic-1x\\\"\\n        />\\n    {/if}\\n\\n    {#if srcBig && !loadingSrcSmall}\\n        <img\\n            use:imgService={'Big'}\\n            {alt}\\n            {width}\\n            {height}\\n            src={srcBig}\\n            class=\\\"pic pic-2x\\\"\\n        />\\n    {/if}\\n\\n    <figcaption>\\n        <slot></slot>\\n    </figcaption>\\n</figure>\\n\\n<style>\\n    .picture {\\n        position: relative;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n    .picture .pic {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        overflow: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -o-object-position: center;\\n           object-position: center;\\n        -webkit-transition: opacity .3s ease-in;\\n        transition: opacity .3s ease-in;\\n    }\\n\\n    .picture .pic-2x {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n    .picture.cover .pic {\\n        -o-object-fit: cover;\\n           object-fit: cover;\\n    }\\n\\n    .picture.contain .pic {\\n        -o-object-fit: contain;\\n           object-fit: contain;\\n    }\\n\\n    .picture.isErrorSmall .pic-1x,\\n    .picture.isErrorBig .pic-2x,\\n    .picture.loadingSrcSmall .pic-1x,\\n    .picture.loadingSrcBig .pic-2x {\\n        opacity: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1BpY3R1cmUuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGtCQUFrQjtRQUNsQixtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWiw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHlCQUF3QjtZQUF4QixzQkFBd0I7Z0JBQXhCLHdCQUF3QjtRQUN4QiwyREFBMkQ7SUFDL0Q7O0lBRUE7UUFDSSxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBdUI7V0FBdkIsdUJBQXVCO1FBQ3ZCLHVDQUErQjtRQUEvQiwrQkFBK0I7SUFDbkM7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLE9BQU87UUFDUCxXQUFXO1FBQ1gsWUFBWTtJQUNoQjs7SUFFQTtRQUNJLG9CQUFpQjtXQUFqQixpQkFBaUI7SUFDckI7O0lBRUE7UUFDSSxzQkFBbUI7V0FBbkIsbUJBQW1CO0lBQ3ZCOztJQUVBOzs7O1FBSUksVUFBVTtJQUNkIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1BpY3R1cmUuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnBpY3R1cmUge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3Itb3Bwb3NpdGUpLCAuMDQpO1xuICAgIH1cblxuICAgIC5waWN0dXJlIC5waWMge1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIG9iamVjdC1wb3NpdGlvbjogY2VudGVyO1xuICAgICAgICB0cmFuc2l0aW9uOiBvcGFjaXR5IC4zcyBlYXNlLWluO1xuICAgIH1cblxuICAgIC5waWN0dXJlIC5waWMtMngge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICB9XG5cbiAgICAucGljdHVyZS5jb3ZlciAucGljIHtcbiAgICAgICAgb2JqZWN0LWZpdDogY292ZXI7XG4gICAgfVxuXG4gICAgLnBpY3R1cmUuY29udGFpbiAucGljIHtcbiAgICAgICAgb2JqZWN0LWZpdDogY29udGFpbjtcbiAgICB9XG5cbiAgICAucGljdHVyZS5pc0Vycm9yU21hbGwgLnBpYy0xeCxcbiAgICAucGljdHVyZS5pc0Vycm9yQmlnIC5waWMtMngsXG4gICAgLnBpY3R1cmUubG9hZGluZ1NyY1NtYWxsIC5waWMtMXgsXG4gICAgLnBpY3R1cmUubG9hZGluZ1NyY0JpZyAucGljLTJ4IHtcbiAgICAgICAgb3BhY2l0eTogMDtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAoGI,QAAQ,4BAAC,CAAC,AACN,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,CACpB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,CAChC,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,CAAC,GAAG,CAAC,AAC/D,CAAC,AAED,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,QAAQ,CAAE,MAAM,CAChB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,MAAM,CACvB,eAAe,CAAE,MAAM,CAC1B,kBAAkB,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,CACvC,UAAU,CAAE,OAAO,CAAC,GAAG,CAAC,OAAO,AACnC,CAAC,AAED,sBAAQ,CAAC,OAAO,cAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,QAAQ,oBAAM,CAAC,IAAI,cAAC,CAAC,AACjB,aAAa,CAAE,KAAK,CACjB,UAAU,CAAE,KAAK,AACxB,CAAC,AAED,QAAQ,sBAAQ,CAAC,IAAI,cAAC,CAAC,AACnB,aAAa,CAAE,OAAO,CACnB,UAAU,CAAE,OAAO,AAC1B,CAAC,AAED,QAAQ,2BAAa,CAAC,qBAAO,CAC7B,QAAQ,yBAAW,CAAC,qBAAO,CAC3B,QAAQ,8BAAgB,CAAC,qBAAO,CAChC,QAAQ,4BAAc,CAAC,OAAO,cAAC,CAAC,AAC5B,OAAO,CAAE,CAAC,AACd,CAAC\"}"
 };
@@ -1657,7 +2768,7 @@ const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
 	if ($$props.height === void 0 && $$bindings.height && height !== void 0) $$bindings.height(height);
-	$$result.css.add(css$6);
+	$$result.css.add(css$7);
 
 	let wrapClassProp = classnames("picture", $$props.class, size, {
 		loadingSrcSmall,
@@ -1683,7 +2794,7 @@ const Picture = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 
 /* src/components/Avatar.svelte generated by Svelte v3.18.1 */
 
-const css$7 = {
+const css$8 = {
 	code: ".ava.svelte-1vccfih{position:relative;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;border-radius:50%;overflow:hidden;-webkit-transform:translateZ(0);transform:translateZ(0)}.ava.small.svelte-1vccfih{-webkit-box-flex:0;-ms-flex:none;flex:none;width:30px;height:30px}.ava.medium.svelte-1vccfih{-webkit-box-flex:0;-ms-flex:none;flex:none;width:60px;height:60px}.ava.big.svelte-1vccfih{-webkit-box-flex:0;-ms-flex:none;flex:none;width:130px;height:130px}",
 	map: "{\"version\":3,\"file\":\"Avatar.svelte\",\"sources\":[\"Avatar.svelte\"],\"sourcesContent\":[\"<script>\\n    import { classnames } from '@utils'\\n    import Picture from './Picture.svelte'\\n\\n    export let src\\n    export let alt\\n    export let size = null // small|medium|big\\n    export let srcBig = undefined\\n\\n    $: classProp = classnames('ava', size, $$props.class)\\n</script>\\n\\n<div class={classProp}>\\n    <Picture {src} {srcBig} {alt}/>\\n</div>\\n\\n<style>\\n    .ava {\\n        position: relative;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .ava.small {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 30px;\\n        height: 30px;\\n    }\\n    .ava.medium {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 60px;\\n        height: 60px;\\n    }\\n    .ava.big {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 130px;\\n        height: 130px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0F2YXRhci5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFZO1lBQVosb0JBQVk7Z0JBQVosWUFBWTtRQUNaLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isa0JBQWtCO1FBQ2xCLGdCQUFnQjtRQUNoQixnQ0FBd0I7Z0JBQXhCLHdCQUF3QjtJQUM1Qjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLFlBQVk7SUFDaEI7SUFDQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLFlBQVk7SUFDaEI7SUFDQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsWUFBWTtRQUNaLGFBQWE7SUFDakIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvQXZhdGFyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5hdmEge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmF2YS5zbWFsbCB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIHdpZHRoOiAzMHB4O1xuICAgICAgICBoZWlnaHQ6IDMwcHg7XG4gICAgfVxuICAgIC5hdmEubWVkaXVtIHtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICAgICAgd2lkdGg6IDYwcHg7XG4gICAgICAgIGhlaWdodDogNjBweDtcbiAgICB9XG4gICAgLmF2YS5iaWcge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICB3aWR0aDogMTMwcHg7XG4gICAgICAgIGhlaWdodDogMTMwcHg7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAiBI,IAAI,eAAC,CAAC,AACF,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,IAAI,MAAM,eAAC,CAAC,AACR,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AACD,IAAI,OAAO,eAAC,CAAC,AACT,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC,AACD,IAAI,IAAI,eAAC,CAAC,AACN,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,AACjB,CAAC\"}"
 };
@@ -1697,7 +2808,7 @@ const Avatar = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	if ($$props.alt === void 0 && $$bindings.alt && alt !== void 0) $$bindings.alt(alt);
 	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
 	if ($$props.srcBig === void 0 && $$bindings.srcBig && srcBig !== void 0) $$bindings.srcBig(srcBig);
-	$$result.css.add(css$7);
+	$$result.css.add(css$8);
 	let classProp = classnames("ava", size, $$props.class);
 
 	return `<div class="${escape(null_to_empty(classProp)) + " svelte-1vccfih"}">
@@ -1707,7 +2818,7 @@ const Avatar = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 /* src/components/Button.svelte generated by Svelte v3.18.1 */
 
-const css$8 = {
+const css$9 = {
 	code: ".btn.svelte-1kjrxjx:not(.auto){width:100%;padding:5px 15px}.btn{-webkit-box-flex:0;-ms-flex:none;flex:none;cursor:pointer;max-width:100%;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-weight:bold;text-align:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;color:rgba(var(--theme-font-color));border-radius:var(--border-radius-medium)}.btn.small{padding:5px;min-width:calc(var(--min-interactive-size) / 1.3);min-height:calc(var(--min-interactive-size) / 1.3)}.btn.medium{padding:5px 10px;min-width:var(--min-interactive-size);min-height:var(--min-interactive-size)}.btn.big{padding:5px 15px;min-width:calc(var(--min-interactive-size) * 1.3);min-height:calc(var(--min-interactive-size) * 1.3)}.btn:focus{background-color:rgba(var(--color-black), 0.1)}.btn:hover{background-color:rgba(var(--color-black), 0.1)}.btn:active{background-color:rgba(var(--color-black), 0.1)}.btn.theme{color:rgba(var(--theme-font-color));background-color:rgba(var(--theme-color-secondary))}.btn.theme:focus{background-color:rgba(var(--theme-color-secondary), .85)}.btn.theme:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.theme:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.theme-border{color:rgba(var(--theme-font-color));border:2px solid rgba(var(--theme-color-primary-opposite))}.btn.theme-border:focus{background-color:rgba(var(--theme-color-secondary), .85)}.btn.them-border:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.theme-border:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.white{color:rgba(var(--color-font-dark));background-color:rgba(var(--color-white))}.btn.white:focus{background-color:rgba(var(--color-white), .85)}.btn.white:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.white:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.dark{color:rgba(var(--color-font-light));background-color:rgba(var(--color-dark))}.btn.dark:focus{background-color:rgba(var(--color-dark), .85)}.btn.dark:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.dark:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.dark-border{color:rgba(var(--color-font-dark));border:2px solid rgba(var(--color-dark))}.btn.dark-border:focus{background-color:rgba(var(--color-dark), .85)}.btn.dark-border:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.dark-border:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success{color:rgba(var(--color-font-light));background-color:rgba(var(--color-success))}.btn.success:focus{background-color:rgba(var(--color-success), .85)}.btn.success:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.success:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning{color:rgba(var(--color-font-light));background-color:rgba(var(--color-warning))}.btn.warning:focus{background-color:rgba(var(--color-warning), .85)}.btn.warning:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.warning:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.info{color:rgba(var(--color-font-light));background-color:rgba(var(--color-info))}.btn.info:focus{background-color:rgba(var(--color-info), .85)}.btn.info:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.info:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger{color:rgba(var(--color-font-light));background-color:rgba(var(--color-danger))}.btn.danger:focus{background-color:rgba(var(--color-danger), .85)}.btn.danger:hover{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.btn.danger:active{-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}",
 	map: "{\"version\":3,\"file\":\"Button.svelte\",\"sources\":[\"Button.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let is = undefined // theme, theme-border, white, success, warning, danger, dark, dark-border\\n    export let id = undefined\\n    export let rel = undefined\\n    export let href = undefined\\n    export let auto = false\\n    export let type = 'button'\\n    export let form = undefined\\n    export let size = undefined\\n    export let title = undefined\\n    export let style = undefined\\n    export let htmlFor = undefined\\n    export let disabled = false\\n    export let ariaLabel = undefined\\n\\n    let titleProp = title || ariaLabel\\n    let ariaLabelProp = ariaLabel || title\\n\\n    $: classProp = classnames('btn', is, size, $$props.class, { auto, disabled })\\n\\n    function onLabelClick(e) {\\n        document.getElementById(htmlFor).click()\\n        !disabled && dispatch('click', e)\\n    }\\n\\n    function onClick(e) {\\n        e.stopPropagation();\\n        !disabled && dispatch('click', e)\\n    }\\n</script>\\n\\n{#if href}\\n    <a\\n            {id}\\n            {rel}\\n            {href}\\n            {style}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </a>\\n{:else if htmlFor}\\n    <label\\n            {id}\\n            {style}\\n            {disabled}\\n            for={htmlFor}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onLabelClick}\\n    >\\n        <slot></slot>\\n    </label>\\n{:else}\\n    <button\\n            {id}\\n            {form}\\n            {type}\\n            {style}\\n            {disabled}\\n            title={titleProp}\\n            class={classProp}\\n            aria-label={ariaLabelProp}\\n            on:click={onClick}\\n    >\\n        <slot></slot>\\n    </button>\\n{/if}\\n\\n<style>\\n    .btn:not(.auto) {\\n        width: 100%;\\n        padding: 5px 15px;\\n    }\\n\\n    :global(.btn) {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        cursor: pointer;\\n        max-width: 100%;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        font-weight: bold;\\n        text-align: center;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        color: rgba(var(--theme-font-color));\\n        border-radius: var(--border-radius-medium);\\n    }\\n\\n    :global(.btn.small) {\\n        padding: 5px;\\n        min-width: calc(var(--min-interactive-size) / 1.3);\\n        min-height: calc(var(--min-interactive-size) / 1.3);\\n    }\\n\\n    :global(.btn.medium) {\\n        padding: 5px 10px;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n    }\\n\\n    :global(.btn.big) {\\n        padding: 5px 15px;\\n        min-width: calc(var(--min-interactive-size) * 1.3);\\n        min-height: calc(var(--min-interactive-size) * 1.3);\\n    }\\n\\n    :global(.btn:focus) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:hover) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    :global(.btn:active) {\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n    /* theme */\\n\\n    :global(.btn).theme {\\n        color: rgba(var(--theme-font-color));\\n        background-color: rgba(var(--theme-color-secondary));\\n    }\\n\\n    :global(.btn).theme:focus {\\n        background-color: rgba(var(--theme-color-secondary), .85);\\n    }\\n\\n    :global(.btn).theme:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).theme:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* theme */\\n\\n    :global(.btn).theme-border {\\n        color: rgba(var(--theme-font-color));\\n        border: 2px solid rgba(var(--theme-color-primary-opposite));\\n    }\\n\\n    :global(.btn).theme-border:focus {\\n        background-color: rgba(var(--theme-color-secondary), .85);\\n    }\\n\\n    :global(.btn).them-border:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).theme-border:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* White */\\n\\n    :global(.btn).white {\\n        color: rgba(var(--color-font-dark));\\n        background-color: rgba(var(--color-white));\\n    }\\n\\n    :global(.btn).white:focus {\\n        background-color: rgba(var(--color-white), .85);\\n    }\\n\\n    :global(.btn).white:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).white:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Dark */\\n\\n    :global(.btn).dark {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-dark));\\n    }\\n\\n    :global(.btn).dark:focus {\\n        background-color: rgba(var(--color-dark), .85);\\n    }\\n\\n    :global(.btn).dark:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).dark:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Dark-border */\\n\\n    :global(.btn).dark-border {\\n        color: rgba(var(--color-font-dark));\\n        border: 2px solid rgba(var(--color-dark));\\n    }\\n\\n    :global(.btn).dark-border:focus {\\n        background-color: rgba(var(--color-dark), .85);\\n    }\\n\\n    :global(.btn).dark-border:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).dark-border:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Success */\\n\\n    :global(.btn).success {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n    :global(.btn).success:focus {\\n        background-color: rgba(var(--color-success), .85);\\n    }\\n\\n    :global(.btn).success:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).success:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Warning */\\n\\n    :global(.btn).warning {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-warning));\\n    }\\n\\n    :global(.btn).warning:focus {\\n        background-color: rgba(var(--color-warning), .85);\\n    }\\n\\n    :global(.btn).warning:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).warning:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Info */\\n\\n    :global(.btn).info {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-info));\\n    }\\n\\n    :global(.btn).info:focus {\\n        background-color: rgba(var(--color-info), .85);\\n    }\\n\\n    :global(.btn).info:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).info:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    /* Danger */\\n\\n    :global(.btn).danger {\\n        color: rgba(var(--color-font-light));\\n        background-color: rgba(var(--color-danger));\\n    }\\n\\n    :global(.btn).danger:focus {\\n        background-color: rgba(var(--color-danger), .85);\\n    }\\n\\n    :global(.btn).danger:hover {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    :global(.btn).danger:active {\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0J1dHRvbi5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGlCQUFpQjtJQUNyQjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsZUFBZTtRQUNmLGVBQWU7UUFDZix5QkFBaUI7V0FBakIsc0JBQWlCO1lBQWpCLHFCQUFpQjtnQkFBakIsaUJBQWlCO1FBQ2pCLGlCQUFpQjtRQUNqQixrQkFBa0I7UUFDbEIseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixvQ0FBb0M7UUFDcEMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksWUFBWTtRQUNaLGtEQUFrRDtRQUNsRCxtREFBbUQ7SUFDdkQ7O0lBRUE7UUFDSSxpQkFBaUI7UUFDakIsc0NBQXNDO1FBQ3RDLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLGlCQUFpQjtRQUNqQixrREFBa0Q7UUFDbEQsbURBQW1EO0lBQ3ZEOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksK0NBQStDO0lBQ25EOztJQUVBLFVBQVU7O0lBRVY7UUFDSSxvQ0FBb0M7UUFDcEMsb0RBQW9EO0lBQ3hEOztJQUVBO1FBQ0kseURBQXlEO0lBQzdEOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQSxVQUFVOztJQUVWO1FBQ0ksb0NBQW9DO1FBQ3BDLDJEQUEyRDtJQUMvRDs7SUFFQTtRQUNJLHlEQUF5RDtJQUM3RDs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUEsVUFBVTs7SUFFVjtRQUNJLG1DQUFtQztRQUNuQywwQ0FBMEM7SUFDOUM7O0lBRUE7UUFDSSwrQ0FBK0M7SUFDbkQ7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBLFNBQVM7O0lBRVQ7UUFDSSxvQ0FBb0M7UUFDcEMseUNBQXlDO0lBQzdDOztJQUVBO1FBQ0ksOENBQThDO0lBQ2xEOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQSxnQkFBZ0I7O0lBRWhCO1FBQ0ksbUNBQW1DO1FBQ25DLHlDQUF5QztJQUM3Qzs7SUFFQTtRQUNJLDhDQUE4QztJQUNsRDs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUEsWUFBWTs7SUFFWjtRQUNJLG9DQUFvQztRQUNwQyw0Q0FBNEM7SUFDaEQ7O0lBRUE7UUFDSSxpREFBaUQ7SUFDckQ7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBLFlBQVk7O0lBRVo7UUFDSSxvQ0FBb0M7UUFDcEMsNENBQTRDO0lBQ2hEOztJQUVBO1FBQ0ksaURBQWlEO0lBQ3JEOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQSxTQUFTOztJQUVUO1FBQ0ksb0NBQW9DO1FBQ3BDLHlDQUF5QztJQUM3Qzs7SUFFQTtRQUNJLDhDQUE4QztJQUNsRDs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDOztJQUVBO1FBQ0kseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUEsV0FBVzs7SUFFWDtRQUNJLG9DQUFvQztRQUNwQywyQ0FBMkM7SUFDL0M7O0lBRUE7UUFDSSxnREFBZ0Q7SUFDcEQ7O0lBRUE7UUFDSSx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztJQUNyQzs7SUFFQTtRQUNJLHlDQUFpQztnQkFBakMsaUNBQWlDO0lBQ3JDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0J1dHRvbi5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuYnRuOm5vdCguYXV0bykge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgcGFkZGluZzogNXB4IDE1cHg7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKSB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgbWF4LXdpZHRoOiAxMDAlO1xuICAgICAgICB1c2VyLXNlbGVjdDogbm9uZTtcbiAgICAgICAgZm9udC13ZWlnaHQ6IGJvbGQ7XG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1mb250LWNvbG9yKSk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLWJvcmRlci1yYWRpdXMtbWVkaXVtKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4uc21hbGwpIHtcbiAgICAgICAgcGFkZGluZzogNXB4O1xuICAgICAgICBtaW4td2lkdGg6IGNhbGModmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpIC8gMS4zKTtcbiAgICAgICAgbWluLWhlaWdodDogY2FsYyh2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSkgLyAxLjMpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bi5tZWRpdW0pIHtcbiAgICAgICAgcGFkZGluZzogNXB4IDEwcHg7XG4gICAgICAgIG1pbi13aWR0aDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgICAgICBtaW4taGVpZ2h0OiB2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuLmJpZykge1xuICAgICAgICBwYWRkaW5nOiA1cHggMTVweDtcbiAgICAgICAgbWluLXdpZHRoOiBjYWxjKHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKSAqIDEuMyk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IGNhbGModmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpICogMS4zKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG46Zm9jdXMpIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIDAuMSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuOmhvdmVyKSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwLjEpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bjphY3RpdmUpIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIDAuMSk7XG4gICAgfVxuXG4gICAgLyogdGhlbWUgKi9cblxuICAgIDpnbG9iYWwoLmJ0bikudGhlbWUge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1mb250LWNvbG9yKSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3Itc2Vjb25kYXJ5KSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS50aGVtZTpmb2N1cyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3Itc2Vjb25kYXJ5KSwgLjg1KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLnRoZW1lOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikudGhlbWU6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIHRoZW1lICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLnRoZW1lLWJvcmRlciB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWZvbnQtY29sb3IpKTtcbiAgICAgICAgYm9yZGVyOiAycHggc29saWQgcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS50aGVtZS1ib3JkZXI6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXNlY29uZGFyeSksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS50aGVtLWJvcmRlcjpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLnRoZW1lLWJvcmRlcjphY3RpdmUge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgLyogV2hpdGUgKi9cblxuICAgIDpnbG9iYWwoLmJ0bikud2hpdGUge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWRhcmspKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci13aGl0ZSkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2hpdGU6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdoaXRlKSwgLjg1KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLndoaXRlOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2hpdGU6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIERhcmsgKi9cblxuICAgIDpnbG9iYWwoLmJ0bikuZGFyayB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWZvbnQtbGlnaHQpKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1kYXJrKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYXJrOmZvY3VzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1kYXJrKSwgLjg1KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLmRhcms6aG92ZXIge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYXJrOmFjdGl2ZSB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICAvKiBEYXJrLWJvcmRlciAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS5kYXJrLWJvcmRlciB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWZvbnQtZGFyaykpO1xuICAgICAgICBib3JkZXI6IDJweCBzb2xpZCByZ2JhKHZhcigtLWNvbG9yLWRhcmspKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLmRhcmstYm9yZGVyOmZvY3VzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1kYXJrKSwgLjg1KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLmRhcmstYm9yZGVyOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuZGFyay1ib3JkZXI6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIFN1Y2Nlc3MgKi9cblxuICAgIDpnbG9iYWwoLmJ0bikuc3VjY2VzcyB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWZvbnQtbGlnaHQpKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1zdWNjZXNzKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5zdWNjZXNzOmZvY3VzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1zdWNjZXNzKSwgLjg1KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLnN1Y2Nlc3M6aG92ZXIge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5zdWNjZXNzOmFjdGl2ZSB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICAvKiBXYXJuaW5nICovXG5cbiAgICA6Z2xvYmFsKC5idG4pLndhcm5pbmcge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itd2FybmluZykpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2FybmluZzpmb2N1cyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itd2FybmluZyksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS53YXJuaW5nOmhvdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikud2FybmluZzphY3RpdmUge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgLyogSW5mbyAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS5pbmZvIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZm9udC1saWdodCkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLmluZm86Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuODUpO1xuICAgIH1cblxuICAgIDpnbG9iYWwoLmJ0bikuaW5mbzpob3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICB9XG5cbiAgICA6Z2xvYmFsKC5idG4pLmluZm86YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cblxuICAgIC8qIERhbmdlciAqL1xuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXIge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6Zm9jdXMge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC44NSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6aG92ZXIge1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgOmdsb2JhbCguYnRuKS5kYW5nZXI6YWN0aXZlIHtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
 };
@@ -1743,7 +2854,7 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	if ($$props.htmlFor === void 0 && $$bindings.htmlFor && htmlFor !== void 0) $$bindings.htmlFor(htmlFor);
 	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
-	$$result.css.add(css$8);
+	$$result.css.add(css$9);
 	let classProp = classnames("btn", is, size, $$props.class, { auto, disabled });
 
 	return `${href
@@ -1761,7 +2872,7 @@ const Button = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 /* src/components/Divider.svelte generated by Svelte v3.18.1 */
 
-const css$9 = {
+const css$a = {
 	code: ".divider.svelte-16jxdsi{margin:0;border:none;-webkit-box-sizing:content-box;box-sizing:content-box;background-clip:content-box}.info.svelte-16jxdsi{background-color:rgb(var(--color-info))}.success.svelte-16jxdsi{background-color:rgb(var(--color-success))}.warning.svelte-16jxdsi{background-color:rgb(var(--color-warning))}.danger.svelte-16jxdsi{background-color:rgb(var(--color-danger))}",
 	map: "{\"version\":3,\"file\":\"Divider.svelte\",\"sources\":[\"Divider.svelte\"],\"sourcesContent\":[\"<script>\\n    import { toCSSString, classnames } from '@utils'\\n\\n    export let is = 'info'\\n    export let size = 0\\n    export let width = 2\\n\\n    $: classProp = classnames('divider', is, $$props.class)\\n    $: styleProp = toCSSString({ padding: `${size / 2}px 0`, height: `${width}px` })\\n</script>\\n\\n<hr class={classProp} style={styleProp}>\\n\\n<style>\\n    .divider {\\n        margin: 0;\\n        border: none;\\n        -webkit-box-sizing: content-box;\\n                box-sizing: content-box;\\n        background-clip: content-box;\\n    }\\n\\n    .info {\\n        background-color: rgb(var(--color-info));\\n    }\\n\\n    .success {\\n        background-color: rgb(var(--color-success));\\n    }\\n\\n    .warning {\\n        background-color: rgb(var(--color-warning));\\n    }\\n\\n    .danger {\\n        background-color: rgb(var(--color-danger));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0RpdmlkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFNBQVM7UUFDVCxZQUFZO1FBQ1osK0JBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQTRCO0lBQ2hDOztJQUVBO1FBQ0ksd0NBQXdDO0lBQzVDOztJQUVBO1FBQ0ksMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksMkNBQTJDO0lBQy9DOztJQUVBO1FBQ0ksMENBQTBDO0lBQzlDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL0RpdmlkZXIuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmRpdmlkZXIge1xuICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgICAgYm94LXNpemluZzogY29udGVudC1ib3g7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLmluZm8ge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2IodmFyKC0tY29sb3ItaW5mbykpO1xuICAgIH1cblxuICAgIC5zdWNjZXNzIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiKHZhcigtLWNvbG9yLXN1Y2Nlc3MpKTtcbiAgICB9XG5cbiAgICAud2FybmluZyB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci13YXJuaW5nKSk7XG4gICAgfVxuXG4gICAgLmRhbmdlciB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci1kYW5nZXIpKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAcI,QAAQ,eAAC,CAAC,AACN,MAAM,CAAE,CAAC,CACT,MAAM,CAAE,IAAI,CACZ,kBAAkB,CAAE,WAAW,CACvB,UAAU,CAAE,WAAW,CAC/B,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,KAAK,eAAC,CAAC,AACH,gBAAgB,CAAE,IAAI,IAAI,YAAY,CAAC,CAAC,AAC5C,CAAC,AAED,QAAQ,eAAC,CAAC,AACN,gBAAgB,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC/C,CAAC,AAED,QAAQ,eAAC,CAAC,AACN,gBAAgB,CAAE,IAAI,IAAI,eAAe,CAAC,CAAC,AAC/C,CAAC,AAED,OAAO,eAAC,CAAC,AACL,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,AAC9C,CAAC\"}"
 };
@@ -1773,7 +2884,7 @@ const Divider = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 	if ($$props.is === void 0 && $$bindings.is && is !== void 0) $$bindings.is(is);
 	if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
 	if ($$props.width === void 0 && $$bindings.width && width !== void 0) $$bindings.width(width);
-	$$result.css.add(css$9);
+	$$result.css.add(css$a);
 	let classProp = classnames("divider", is, $$props.class);
 
 	let styleProp = toCSSString({
@@ -1786,7 +2897,7 @@ const Divider = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 
 /* src/components/Progress.svelte generated by Svelte v3.18.1 */
 
-const css$a = {
+const css$b = {
 	code: ".progress.medium.svelte-108d5jc.svelte-108d5jc{--progress-height:10px;--progress-padding-point:1px}.progress.svelte-108d5jc.svelte-108d5jc{-webkit-box-flex:0;-ms-flex:0;flex:0;width:100%;border-radius:9999px;height:var(--progress-height)}.progress-inner-frame.svelte-108d5jc.svelte-108d5jc{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;width:100%;height:100%;border-radius:9999px;overflow:hidden;padding:var(--progress-padding-point) 0;background-color:rgba(var(--theme-color-primary-opposite), .1);background-clip:content-box}.progress-core.svelte-108d5jc.svelte-108d5jc{position:absolute;top:0;left:0;height:100%;-webkit-box-flex:0;-ms-flex:none;flex:none;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transition:1s ease-in-out;transition:1s ease-in-out;border-radius:9999px;background-color:rgba(var(--color-info))}.progress[aria-valuenow=\"100\"].svelte-108d5jc .progress-core.svelte-108d5jc{background-color:rgba(var(--color-success))}",
 	map: "{\"version\":3,\"file\":\"Progress.svelte\",\"sources\":[\"Progress.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, onMount } from 'svelte'\\n    import { classnames, safeGet } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let value = 0 // 0 - 100\\n    export let size = 'medium'\\n    export let title = undefined\\n    export let ariaLabel = undefined\\n    export let borderRadius = undefined\\n\\n    $: val = Number.isFinite(+value) ? Math.max(0, Math.min(+value, 100)) : 0\\n    $: titleProp = title || `Progress - ${val}%`\\n    $: ariaLabelProp = ariaLabel || `Progress - ${val}%`\\n    $: classProp = classnames('progress', size, $$props.class)\\n\\n    function getBorderRadius(borders, defaults = '99999px') {\\n        const brDefault = new Array(4).fill(defaults)\\n        const bds = safeGet(() => borders.split(' '), [], true)\\n        const rule = 'border-radius'\\n        return `${rule}:${brDefault.map((def, i) => `${bds[i] || def}`).join(' ')}`\\n    }\\n</script>\\n\\n\\n<div\\n        {id}\\n        class={classProp}\\n        title={titleProp}\\n        aria-label={ariaLabelProp}\\n        role=\\\"progressbar\\\"\\n        aria-valuemin=\\\"0\\\"\\n        aria-valuemax=\\\"100\\\"\\n        aria-valuenow={val}\\n        style={getBorderRadius(borderRadius)}\\n>\\n    <div class=\\\"progress-inner-frame\\\">\\n        <div class=\\\"progress-core\\\" style={`width:${val}%`}></div>\\n    </div>\\n</div>\\n\\n<style>\\n    .progress.medium {\\n        --progress-height: 10px;\\n        --progress-padding-point: 1px;\\n    }\\n\\n    .progress {\\n        -webkit-box-flex: 0;\\n            -ms-flex: 0;\\n                flex: 0;\\n        width: 100%;\\n        border-radius: 9999px;\\n        height: var(--progress-height);\\n    }\\n\\n    .progress-inner-frame {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        width: 100%;\\n        height: 100%;\\n        border-radius: 9999px;\\n        overflow: hidden;\\n        padding: var(--progress-padding-point) 0;\\n        background-color: rgba(var(--theme-color-primary-opposite), .1);\\n        background-clip: content-box;\\n    }\\n\\n    .progress-core {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        height: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transition: 1s ease-in-out;\\n        transition: 1s ease-in-out;\\n        border-radius: 9999px;\\n        background-color: rgba(var(--color-info));\\n    }\\n\\n    .progress[aria-valuenow=\\\"100\\\"] .progress-core {\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSx1QkFBdUI7UUFDdkIsNkJBQTZCO0lBQ2pDOztJQUVBO1FBQ0ksbUJBQU87WUFBUCxXQUFPO2dCQUFQLE9BQU87UUFDUCxXQUFXO1FBQ1gscUJBQXFCO1FBQ3JCLDhCQUE4QjtJQUNsQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLFdBQVc7UUFDWCxZQUFZO1FBQ1oscUJBQXFCO1FBQ3JCLGdCQUFnQjtRQUNoQix3Q0FBd0M7UUFDeEMsK0RBQStEO1FBQy9ELDRCQUE0QjtJQUNoQzs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFlBQVk7UUFDWixtQkFBVTtZQUFWLGNBQVU7Z0JBQVYsVUFBVTtRQUNWLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsa0NBQTBCO1FBQTFCLDBCQUEwQjtRQUMxQixxQkFBcUI7UUFDckIseUNBQXlDO0lBQzdDOztJQUVBO1FBQ0ksNENBQTRDO0lBQ2hEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1Byb2dyZXNzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5wcm9ncmVzcy5tZWRpdW0ge1xuICAgICAgICAtLXByb2dyZXNzLWhlaWdodDogMTBweDtcbiAgICAgICAgLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50OiAxcHg7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzIHtcbiAgICAgICAgZmxleDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDk5OTlweDtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1wcm9ncmVzcy1oZWlnaHQpO1xuICAgIH1cblxuICAgIC5wcm9ncmVzcy1pbm5lci1mcmFtZSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBwYWRkaW5nOiB2YXIoLS1wcm9ncmVzcy1wYWRkaW5nLXBvaW50KSAwO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMSk7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgLnByb2dyZXNzLWNvcmUge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICB0cmFuc2l0aW9uOiAxcyBlYXNlLWluLW91dDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogOTk5OXB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICAucHJvZ3Jlc3NbYXJpYS12YWx1ZW5vdz1cIjEwMFwiXSAucHJvZ3Jlc3MtY29yZSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itc3VjY2VzcykpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA4CI,SAAS,OAAO,8BAAC,CAAC,AACd,iBAAiB,CAAE,IAAI,CACvB,wBAAwB,CAAE,GAAG,AACjC,CAAC,AAED,SAAS,8BAAC,CAAC,AACP,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CACP,IAAI,CAAE,CAAC,CACf,KAAK,CAAE,IAAI,CACX,aAAa,CAAE,MAAM,CACrB,MAAM,CAAE,IAAI,iBAAiB,CAAC,AAClC,CAAC,AAED,qBAAqB,8BAAC,CAAC,AACnB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,MAAM,CACrB,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,IAAI,wBAAwB,CAAC,CAAC,CAAC,CACxC,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CAC/D,eAAe,CAAE,WAAW,AAChC,CAAC,AAED,cAAc,8BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,CACZ,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,EAAE,CAAC,WAAW,CAClC,UAAU,CAAE,EAAE,CAAC,WAAW,CAC1B,aAAa,CAAE,MAAM,CACrB,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAC7C,CAAC,AAED,SAAS,CAAC,aAAa,CAAC,KAAK,gBAAC,CAAC,cAAc,eAAC,CAAC,AAC3C,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC\"}"
 };
@@ -1812,7 +2923,7 @@ const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
 	if ($$props.borderRadius === void 0 && $$bindings.borderRadius && borderRadius !== void 0) $$bindings.borderRadius(borderRadius);
-	$$result.css.add(css$a);
+	$$result.css.add(css$b);
 
 	let val = Number.isFinite(+value)
 	? Math.max(0, Math.min(+value, 100))
@@ -1831,7 +2942,7 @@ const Progress = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/FancyBox.svelte generated by Svelte v3.18.1 */
 
-const css$b = {
+const css$c = {
 	code: ".fancy-box.svelte-a2sdhd.svelte-a2sdhd{position:relative;width:100%;-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.fancy-box-ghost.svelte-a2sdhd.svelte-a2sdhd{z-index:10;position:fixed;top:0;left:0;width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-ms-touch-action:manipulation;touch-action:manipulation;background-color:rgba(var(--color-black), .75);outline:150px solid rgba(var(--color-black), .75);-webkit-transition-timing-function:linear;transition-timing-function:linear;opacity:0;padding:0 var(--screen-padding);-webkit-transform:translate3d(0,30px,0);transform:translate3d(0,30px,0);pointer-events:none;will-change:transform, opacity}.fancy-box-ghost.svelte-a2sdhd>.svelte-a2sdhd{max-width:100%;max-height:100%}.fancy-box-ghost.active.svelte-a2sdhd.svelte-a2sdhd{opacity:1;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);pointer-events:auto}button.svelte-a2sdhd.svelte-a2sdhd{position:absolute;top:0;right:0;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:60px;height:60px;color:rgb(var(--color-white))}",
 	map: "{\"version\":3,\"file\":\"FancyBox.svelte\",\"sources\":[\"FancyBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, tick } from 'svelte'\\n    import { fly } from 'svelte/transition'\\n    import { Swipe } from '@services'\\n    import { classnames, delay, bodyScroll, safeGet } from '@utils'\\n    import Icon from '@components/Icon.svelte';\\n    import Portal from './Portal.svelte';\\n\\n    const dispatch = createEventDispatcher()\\n    \\n    const DURATION = 250\\n    const THRESHOLD = 50\\n    const SWIPE_SPEED = .5\\n    const START_POSITION = {\\n        x: 0,\\n        y: 20\\n    }\\n\\n    export let ref = null\\n    export let blockBody = true\\n    export let swipe = ['all']       // up down left right all\\n    export let disabled = false\\n    export let extraLock = false\\n    export let startPosition = START_POSITION\\n\\n    let active = null\\n    let slots = $$props.$$slots || {}\\n\\n    async function onClick(e) {\\n        if (disabled) return\\n\\n        const newActive = !active\\n\\n        setActive(newActive)\\n\\n        if (newActive) {\\n            drawTransform(ref, 0, 0)\\n        } else {\\n            drawTransform(ref, startPosition.x, startPosition.y)\\n        }\\n    }\\n\\n    async function setActive(isActive) {\\n        active = isActive\\n\\n        await tick()\\n\\n        if (active) {\\n            setDuration(ref, DURATION)\\n            setTimeout(() => setDuration(ref, 0), DURATION)\\n            blockBody && bodyScroll.disableScroll(ref, { extraLock });\\n            dispatch('open')\\n        } else {\\n            setDuration(ref, DURATION)\\n            blockBody && bodyScroll.enableScroll(ref, { extraLock });\\n            dispatch('close')\\n        }\\n    }\\n\\n    $: isSwipe = {\\n        up: safeGet(() => swipe.includes('up') || swipe.includes('all')),\\n        down: safeGet(() => swipe.includes('down') || swipe.includes('all')),\\n        left: safeGet(() => swipe.includes('left') || swipe.includes('all')),\\n        right: safeGet(() => swipe.includes('right') || swipe.includes('all')),\\n    }\\n    $: classProp = classnames('fancy-box-ghost', { active })\\n    $: classPropWrap = classnames('fancy-box', $$props.class)\\n\\n    let xSwipe = 0\\n    let ySwipe = 0\\n\\n    function addSwipe(el) {\\n        new Swipe(el)\\n                .run()\\n                .onUp(isSwipe.up ? handleVerticalSwipe : null)\\n                .onDown(isSwipe.down ? handleVerticalSwipe : null)\\n                .onLeft(isSwipe.left ? handleHorizontalSwipe : null)\\n                .onRight(isSwipe.right ? handleHorizontalSwipe : null)\\n                .onTouchEnd(async () => {\\n                    if (xSwipe > THRESHOLD) {\\n                        setDuration(ref, DURATION)\\n                        setTimeout(() => setDuration(ref, 0), DURATION)\\n                        setActive(false)\\n                        drawTransform(el, xSwipe + 50, ySwipe)\\n                        drawOpacity(el, xSwipe + 50, ySwipe)\\n                        await delay(DURATION)\\n                    } else if (xSwipe < -THRESHOLD) {\\n                        setDuration(ref, DURATION)\\n                        setTimeout(() => setDuration(ref, 0), DURATION)\\n                        setActive(false)\\n                        drawTransform(el, xSwipe - 50, ySwipe)\\n                        drawOpacity(el, xSwipe - 50, ySwipe)\\n                        await delay(DURATION)\\n                    }\\n                    \\n                    if (ySwipe > THRESHOLD) {\\n                        setDuration(ref, DURATION)\\n                        setTimeout(() => setDuration(ref, 0), DURATION)\\n                        setActive(false)\\n                        drawTransform(el, xSwipe, ySwipe + 50)\\n                        drawOpacity(el, xSwipe, ySwipe + 50)\\n                        await delay(DURATION)\\n                    } else if (ySwipe < -THRESHOLD) {\\n                        setDuration(ref, DURATION)\\n                        setTimeout(() => setDuration(ref, 0), DURATION)\\n                        setActive(false)\\n                        drawTransform(el, xSwipe, ySwipe - 50)\\n                        drawOpacity(el, xSwipe, ySwipe - 50)\\n                        await delay(DURATION)\\n                    }\\n\\n                    if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {\\n                        setDuration(ref, DURATION)\\n                        setTimeout(() => setDuration(ref, 0), DURATION)\\n                        drawTransform(el, 0, 0)\\n                    } else {\\n                        drawTransform(el, startPosition.x, startPosition.y)\\n                    }\\n\\n                    xSwipe = 0\\n                    ySwipe = 0\\n                    el.style.opacity = null\\n                })\\n    }\\n\\n    function handleVerticalSwipe(yDown, yUp, evt, el) {\\n        ySwipe = (yUp - yDown) * SWIPE_SPEED\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n    }\\n    function handleHorizontalSwipe(xDown, xUp, evt, el) {\\n        xSwipe = (xUp - xDown) * SWIPE_SPEED\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n    }\\n\\n    function drawTransform(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        let scale = 1 - Math.abs(delta / window.innerHeight)\\n        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${x}, ${y})`)\\n    }\\n    function setDuration(el, ms) {\\n        el && (el.style.transitionDuration = `${ms}ms`)\\n    }\\n    function drawOpacity(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))\\n    }\\n</script>\\n\\n<section role=\\\"button\\\" class={classPropWrap} on:click={onClick}>\\n    <slot {active}></slot>\\n</section>\\n\\n{#if active !== null}\\n    <Portal>\\n        <section\\n            bind:this={ref}\\n            use:addSwipe\\n            class={classProp}\\n        >\\n            <button type=\\\"button\\\" on:click={onClick}>\\n                <Icon type=\\\"close\\\" size=\\\"big\\\"/>\\n            </button>\\n            {#if slots.box}\\n                <slot name=\\\"box\\\"></slot>\\n            {:else}\\n                <slot></slot>\\n            {/if}\\n        </section>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .fancy-box {\\n        position: relative;\\n        width: 100%;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .fancy-box-ghost {\\n        z-index: 10;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 150px solid rgba(var(--color-black), .75);\\n        -webkit-transition-timing-function: linear;\\n                transition-timing-function: linear;\\n        opacity: 0;\\n        padding: 0 var(--screen-padding);\\n        -webkit-transform: translate3d(0,30px,0);\\n                transform: translate3d(0,30px,0);\\n        pointer-events: none;\\n        will-change: transform, opacity;\\n    }\\n\\n    .fancy-box-ghost > * {\\n        max-width: 100%;\\n        max-height: 100%;\\n    }\\n\\n    .fancy-box-ghost.active {\\n        opacity: 1;\\n        -webkit-transform: translate3d(0,0,0);\\n                transform: translate3d(0,0,0);\\n        pointer-events: auto;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 60px;\\n        height: 60px;\\n        color: rgb(var(--color-white));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0ZhbmN5Qm94LnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsV0FBVztRQUNYLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztRQUNYLGVBQWU7UUFDZixNQUFNO1FBQ04sT0FBTztRQUNQLFdBQVc7UUFDWCxZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2Qiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLHlCQUFpQjtXQUFqQixzQkFBaUI7WUFBakIscUJBQWlCO2dCQUFqQixpQkFBaUI7UUFDakIsOEJBQTBCO1lBQTFCLDBCQUEwQjtRQUMxQiwrQ0FBK0M7UUFDL0Msa0RBQWtEO1FBQ2xELDBDQUFrQztnQkFBbEMsa0NBQWtDO1FBQ2xDLFVBQVU7UUFDVixnQ0FBZ0M7UUFDaEMsd0NBQWdDO2dCQUFoQyxnQ0FBZ0M7UUFDaEMsb0JBQW9CO1FBQ3BCLCtCQUErQjtJQUNuQzs7SUFFQTtRQUNJLGVBQWU7UUFDZixnQkFBZ0I7SUFDcEI7O0lBRUE7UUFDSSxVQUFVO1FBQ1YscUNBQTZCO2dCQUE3Qiw2QkFBNkI7UUFDN0Isb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLE1BQU07UUFDTixRQUFRO1FBQ1IsZUFBZTtRQUNmLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixXQUFXO1FBQ1gsWUFBWTtRQUNaLDhCQUE4QjtJQUNsQyIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9GYW5jeUJveC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuZmFuY3ktYm94IHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgYWxpZ24taXRlbXM6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogc3RyZXRjaDtcbiAgICB9XG5cbiAgICAuZmFuY3ktYm94LWdob3N0IHtcbiAgICAgICAgei1pbmRleDogMTA7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBhbGlnbi1pdGVtczogc3RyZXRjaDtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIHVzZXItc2VsZWN0OiBub25lO1xuICAgICAgICB0b3VjaC1hY3Rpb246IG1hbmlwdWxhdGlvbjtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC43NSk7XG4gICAgICAgIG91dGxpbmU6IDE1MHB4IHNvbGlkIHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAuNzUpO1xuICAgICAgICB0cmFuc2l0aW9uLXRpbWluZy1mdW5jdGlvbjogbGluZWFyO1xuICAgICAgICBvcGFjaXR5OiAwO1xuICAgICAgICBwYWRkaW5nOiAwIHZhcigtLXNjcmVlbi1wYWRkaW5nKTtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUzZCgwLDMwcHgsMCk7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgICAgICB3aWxsLWNoYW5nZTogdHJhbnNmb3JtLCBvcGFjaXR5O1xuICAgIH1cblxuICAgIC5mYW5jeS1ib3gtZ2hvc3QgPiAqIHtcbiAgICAgICAgbWF4LXdpZHRoOiAxMDAlO1xuICAgICAgICBtYXgtaGVpZ2h0OiAxMDAlO1xuICAgIH1cblxuICAgIC5mYW5jeS1ib3gtZ2hvc3QuYWN0aXZlIHtcbiAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUzZCgwLDAsMCk7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBhdXRvO1xuICAgIH1cblxuICAgIGJ1dHRvbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICByaWdodDogMDtcbiAgICAgICAgZm9udC1zaXplOiAyNHB4O1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDYwcHg7XG4gICAgICAgIGhlaWdodDogNjBweDtcbiAgICAgICAgY29sb3I6IHJnYih2YXIoLS1jb2xvci13aGl0ZSkpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
 };
@@ -1854,7 +2965,7 @@ const FancyBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
 	if ($$props.extraLock === void 0 && $$bindings.extraLock && extraLock !== void 0) $$bindings.extraLock(extraLock);
 	if ($$props.startPosition === void 0 && $$bindings.startPosition && startPosition !== void 0) $$bindings.startPosition(startPosition);
-	$$result.css.add(css$b);
+	$$result.css.add(css$c);
 
 	let isSwipe = {
 		up: safeGet(() => swipe.includes("up") || swipe.includes("all")),
@@ -1875,7 +2986,7 @@ ${ ``}`;
 
 /* src/components/Carousel.svelte generated by Svelte v3.18.1 */
 
-const css$c = {
+const css$d = {
 	code: ".carousel.rounded.svelte-10wgcs4.svelte-10wgcs4>.carousel-inner.svelte-10wgcs4.svelte-10wgcs4{border-radius:var(--border-radius-big)}.carousel.svelte-10wgcs4.svelte-10wgcs4.svelte-10wgcs4,.carousel-inner.svelte-10wgcs4.svelte-10wgcs4.svelte-10wgcs4,.carousel-inner.svelte-10wgcs4.svelte-10wgcs4>li.svelte-10wgcs4.svelte-10wgcs4{position:relative;-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;text-align:left;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.carousel.dotsBelow.svelte-10wgcs4.svelte-10wgcs4.svelte-10wgcs4{padding-bottom:40px}.carousel.filled.svelte-10wgcs4.svelte-10wgcs4>.carousel-inner.svelte-10wgcs4.svelte-10wgcs4{background-color:transparent}.carousel.dotsBelow.svelte-10wgcs4.svelte-10wgcs4 .carousel-dots.svelte-10wgcs4.svelte-10wgcs4{bottom:0}.carousel.dotsBelow.svelte-10wgcs4.svelte-10wgcs4 .carousel-dots li.svelte-10wgcs4.svelte-10wgcs4{background-color:rgba(var(--theme-bg-color-opposite))}.carousel.stretch.svelte-10wgcs4>.carousel-inner.svelte-10wgcs4>.fluid.svelte-10wgcs4{-webkit-box-flex:0;-ms-flex:none;flex:none;width:100%}.carousel.auto.svelte-10wgcs4>.carousel-inner.svelte-10wgcs4>.fluid.svelte-10wgcs4{width:auto}.carousel.svelte-10wgcs4.svelte-10wgcs4.svelte-10wgcs4{width:100%}.carousel-inner.svelte-10wgcs4.svelte-10wgcs4.svelte-10wgcs4::-webkit-scrollbar{display:none}.carousel.svelte-10wgcs4.svelte-10wgcs4>.carousel-inner.svelte-10wgcs4.svelte-10wgcs4{width:100%;overflow-y:hidden;overflow-x:scroll;background-color:rgba(var(--theme-bg-color-opposite), .04)}.carousel-dots.svelte-10wgcs4.svelte-10wgcs4.svelte-10wgcs4{position:absolute;left:0;bottom:10px;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;justify-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;pointer-events:none}.carousel-dots.svelte-10wgcs4.svelte-10wgcs4 li.svelte-10wgcs4.svelte-10wgcs4{position:relative;width:8px;height:8px;margin:5px;border-radius:50%;overflow:hidden;-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary);background-color:rgba(var(--color-light))}.carousel-dots.svelte-10wgcs4.svelte-10wgcs4 li.svelte-10wgcs4.svelte-10wgcs4:not(.active){opacity:.5}.carousel-dots.svelte-10wgcs4.svelte-10wgcs4 li.active.svelte-10wgcs4.svelte-10wgcs4{-webkit-transform:scale(1.5);transform:scale(1.5)}",
 	map: "{\"version\":3,\"file\":\"Carousel.svelte\",\"sources\":[\"Carousel.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { waitUntil, classnames } from '@utils'\\n    import Picture from '@components/Picture.svelte'\\n    import FancyBox from '@components/FancyBox.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    /**\\n     *\\n     * @type {number | {\\n     *     src: string,\\n     *     srcBig: string,\\n     *     alt: string,\\n     *     onClick?: function,\\n     * }[]}\\n     */\\n    export let items = []\\n    export let dots = true\\n    export let dotsBelow = true\\n    export let rounded = true\\n    export let size = 'stretch'\\n    export let initIndex = 0\\n    export let disableFancy = false\\n    export let stopPropagation = undefined\\n\\n    let parent = null\\n\\n    $: activeDot = initIndex\\n    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow, rounded, filled: items && items.length })\\n    $: setScrollPosition(parent, initIndex)\\n\\n    function carousel(node) {\\n        node.ontouchstart = e => stopPropagation && (e.stopPropagation())\\n        node.ontouchmove = e => stopPropagation && (e.stopPropagation())\\n        node.ontouchend = e => stopPropagation && (e.stopPropagation())\\n\\n        parent = node\\n        setScrollPosition(node, activeDot)\\n        node.addEventListener('scroll', onScroll)\\n        return { \\n            destroy: () => {\\n                node.removeEventListener('scroll', onScroll)\\n                node.ontouchstart= null\\n                node.ontouchmove= null\\n                node.ontouchend= null\\n            }\\n        }\\n    }\\n\\n    function onScroll(e) {\\n        try {\\n            getActiveDot(e.target)\\n        } catch (err) { console.warn('Carousel does not work.', err) }\\n    }\\n\\n    function getActiveDot(parent) {\\n        const { scrollLeft, scrollWidth, offsetWidth } = parent\\n        const dotAmount = Array.from(parent.children).length\\n        const scrollX = scrollLeft / (scrollWidth - offsetWidth)\\n        const newActiveDot = Math.round(scrollX * (dotAmount - 1))\\n        if (activeDot !== newActiveDot && !isNaN(newActiveDot)) activeDot = newActiveDot\\n    }\\n\\n    function setScrollPosition(parent, activeDot) {\\n        if (!parent) return\\n        const { width } = parent.getBoundingClientRect()\\n        waitUntil(() => {\\n            parent.scrollLeft = Math.round(width * activeDot)\\n            if (parent.scrollLeft !== Math.round(width * activeDot)) {\\n              throw new Error('Not set.')\\n            }\\n        }, { interval: 50 })\\n    }\\n\\n    function onClick(item, index, e) {\\n        dispatch('click', { item, index, e })\\n        if (typeof item.onClick === 'function') item.onClick(item, index, e)\\n    }\\n\\n</script>\\n\\n<section aria-label=\\\"carousel\\\" class={classProp}>\\n    <ul \\n        use:carousel\\n        class=\\\"carousel-inner scroll-x-center\\\"\\n    >\\n        {#if items !== null}\\n            {#each items as item, index}\\n                <li class=\\\"fluid\\\" role=\\\"button\\\" on:click={onClick.bind(null, item, index)}>\\n                    <slot {item} {index}>\\n                        <FancyBox disabled={disableFancy}>\\n                            <Picture key=\\\"picture\\\" {...item} alt={item.alt || 'Фото слайду'}/>\\n                            <section slot=\\\"box\\\" class=\\\"flex full-width\\\">\\n                                <Picture key=\\\"picture\\\" {...item} alt={item.alt || 'Фото слайду'}/>\\n                            </section>\\n                        </FancyBox>\\n                    </slot>\\n                </li>\\n            {/each}\\n        {/if}\\n    </ul>\\n\\n\\n    {#if dots && Array.isArray(items)}\\n        <ul class=\\\"carousel-dots\\\">\\n            {#each items as _item, i}\\n                <li class={i === activeDot ? 'active' : ''}></li>\\n            {/each}\\n        </ul>\\n    {/if}\\n</section>\\n\\n<style>\\n    .carousel.rounded > .carousel-inner {\\n       border-radius: var(--border-radius-big);\\n    }\\n\\n    .carousel, .carousel-inner, .carousel-inner > li {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        text-align: left;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .carousel.dotsBelow {\\n        padding-bottom: 40px;\\n    }\\n\\n    .carousel.filled > .carousel-inner {\\n        background-color: transparent;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots {\\n        bottom: 0;\\n    }\\n\\n    .carousel.dotsBelow .carousel-dots li {\\n        background-color: rgba(var(--theme-bg-color-opposite));\\n    }\\n\\n    .carousel.stretch > .carousel-inner > .fluid {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 100%;\\n    }\\n\\n    .carousel.auto > .carousel-inner > .fluid {\\n        width: auto;\\n    }\\n\\n    .carousel {\\n        width: 100%;\\n    }\\n\\n    .carousel-inner::-webkit-scrollbar {\\n        display: none;\\n    }\\n\\n    .carousel > .carousel-inner {\\n        width: 100%;\\n        overflow-y: hidden;\\n        overflow-x: scroll;\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n    .carousel-dots {\\n        position: absolute;\\n        left: 0;\\n        bottom: 10px;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        justify-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        pointer-events: none;\\n    }\\n\\n    .carousel-dots li {\\n        position: relative;\\n        width: 8px;\\n        height: 8px;\\n        margin: 5px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n        background-color: rgba(var(--color-light));\\n    }\\n\\n    .carousel-dots li:not(.active) {\\n        opacity: .5;\\n    }\\n\\n    .carousel-dots li.active {\\n        -webkit-transform: scale(1.5);\\n                transform: scale(1.5);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0Nhcm91c2VsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7T0FDRyx1Q0FBdUM7SUFDMUM7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGdCQUFnQjtRQUNoQixnQkFBZ0I7UUFDaEIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksNkJBQTZCO0lBQ2pDOztJQUVBO1FBQ0ksU0FBUztJQUNiOztJQUVBO1FBQ0ksc0RBQXNEO0lBQzFEOztJQUVBO1FBQ0ksbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixXQUFXO0lBQ2Y7O0lBRUE7UUFDSSxXQUFXO0lBQ2Y7O0lBRUE7UUFDSSxXQUFXO0lBQ2Y7O0lBRUE7UUFDSSxhQUFhO0lBQ2pCOztJQUVBO1FBQ0ksV0FBVztRQUNYLGtCQUFrQjtRQUNsQixrQkFBa0I7UUFDbEIsMkRBQTJEO0lBQy9EOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLE9BQU87UUFDUCxZQUFZO1FBQ1osV0FBVztRQUNYLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHFCQUFxQjtRQUNyQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFVBQVU7UUFDVixXQUFXO1FBQ1gsV0FBVztRQUNYLGtCQUFrQjtRQUNsQixnQkFBZ0I7UUFDaEIseUNBQWlDO2dCQUFqQyxpQ0FBaUM7UUFDakMsMENBQTBDO0lBQzlDOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksNkJBQXFCO2dCQUFyQixxQkFBcUI7SUFDekIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvQ2Fyb3VzZWwuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmNhcm91c2VsLnJvdW5kZWQgPiAuY2Fyb3VzZWwtaW5uZXIge1xuICAgICAgIGJvcmRlci1yYWRpdXM6IHZhcigtLWJvcmRlci1yYWRpdXMtYmlnKTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwsIC5jYXJvdXNlbC1pbm5lciwgLmNhcm91c2VsLWlubmVyID4gbGkge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLmRvdHNCZWxvdyB7XG4gICAgICAgIHBhZGRpbmctYm90dG9tOiA0MHB4O1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC5maWxsZWQgPiAuY2Fyb3VzZWwtaW5uZXIge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuZG90c0JlbG93IC5jYXJvdXNlbC1kb3RzIHtcbiAgICAgICAgYm90dG9tOiAwO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC5kb3RzQmVsb3cgLmNhcm91c2VsLWRvdHMgbGkge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWJnLWNvbG9yLW9wcG9zaXRlKSk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLnN0cmV0Y2ggPiAuY2Fyb3VzZWwtaW5uZXIgPiAuZmx1aWQge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICB9XG5cbiAgICAuY2Fyb3VzZWwuYXV0byA+IC5jYXJvdXNlbC1pbm5lciA+IC5mbHVpZCB7XG4gICAgICAgIHdpZHRoOiBhdXRvO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC1pbm5lcjo6LXdlYmtpdC1zY3JvbGxiYXIge1xuICAgICAgICBkaXNwbGF5OiBub25lO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbCA+IC5jYXJvdXNlbC1pbm5lciB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBvdmVyZmxvdy15OiBoaWRkZW47XG4gICAgICAgIG92ZXJmbG93LXg6IHNjcm9sbDtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS10aGVtZS1iZy1jb2xvci1vcHBvc2l0ZSksIC4wNCk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIGJvdHRvbTogMTBweDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktaXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgIH1cblxuICAgIC5jYXJvdXNlbC1kb3RzIGxpIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICB3aWR0aDogOHB4O1xuICAgICAgICBoZWlnaHQ6IDhweDtcbiAgICAgICAgbWFyZ2luOiA1cHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXByaW1hcnkpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWxpZ2h0KSk7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMgbGk6bm90KC5hY3RpdmUpIHtcbiAgICAgICAgb3BhY2l0eTogLjU7XG4gICAgfVxuXG4gICAgLmNhcm91c2VsLWRvdHMgbGkuYWN0aXZlIHtcbiAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxLjUpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
 };
@@ -1916,7 +3027,7 @@ const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	if ($$props.initIndex === void 0 && $$bindings.initIndex && initIndex !== void 0) $$bindings.initIndex(initIndex);
 	if ($$props.disableFancy === void 0 && $$bindings.disableFancy && disableFancy !== void 0) $$bindings.disableFancy(disableFancy);
 	if ($$props.stopPropagation === void 0 && $$bindings.stopPropagation && stopPropagation !== void 0) $$bindings.stopPropagation(stopPropagation);
-	$$result.css.add(css$c);
+	$$result.css.add(css$d);
 	let activeDot = initIndex;
 
 	let classProp = classnames("carousel", size, $$props.class, {
@@ -1961,38 +3072,45 @@ const Carousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/EditArea.svelte generated by Svelte v3.18.1 */
 
-const css$d = {
-	code: ".edit-area.svelte-kzlbkn{--color-bg:rgba(var(--theme-color-primary-opposite), .1);--color-lines:rgba(var(--theme-color-primary-opposite));padding:var(--screen-padding);background-image:-webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0))),\n                          -webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0)));background-image:linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%),\n                          linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%);background-color:var(--color-bg);background-position:top, bottom;background-size:20px 1px;background-repeat:repeat-x}.edit-area.svelte-kzlbkn *:not(.no-filter){-webkit-filter:grayscale(100%);filter:grayscale(100%)}",
-	map: "{\"version\":3,\"file\":\"EditArea.svelte\",\"sources\":[\"EditArea.svelte\"],\"sourcesContent\":[\"<script>\\n    import Br from './Br.svelte'\\n    import Icon from './Icon.svelte'\\n    import Button from './Button.svelte'\\n</script>\\n\\n<section class=\\\"edit-area\\\">\\n    <slot></slot>\\n\\n    <Br size=\\\"20\\\"/>\\n    <Button size=\\\"small\\\" is=\\\"info\\\" class=\\\"no-filter\\\">\\n        <span class=\\\"h3 font-secondary font-w-500 flex flex-align-center\\\">\\n            Редагувати\\n            <s></s>\\n            <s></s>\\n            <Icon type=\\\"edit\\\" size=\\\"small\\\" is=\\\"light\\\"/>\\n        </span>\\n    </Button>\\n    <Br size=\\\"30\\\"/>\\n</section>\\n\\n<style>\\n    .edit-area {\\n        --color-bg: rgba(var(--theme-color-primary-opposite), .1);\\n        --color-lines: rgba(var(--theme-color-primary-opposite));\\n\\n        padding: var(--screen-padding);\\n        background-image: -webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0))),\\n                          -webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0)));\\n        background-image: linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%),\\n                          linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%);\\n        background-color: var(--color-bg);\\n        background-position: top, bottom;\\n        background-size: 20px 1px;\\n        background-repeat: repeat-x;\\n    }\\n\\n    .edit-area :global(*:not(.no-filter)) {\\n        -webkit-filter: grayscale(100%);\\n                filter: grayscale(100%);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0VkaXRBcmVhLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSx5REFBeUQ7UUFDekQsd0RBQXdEOztRQUV4RCw4QkFBOEI7UUFDOUI7eUpBQ21HO1FBRG5HOzJHQUNtRztRQUNuRyxpQ0FBaUM7UUFDakMsZ0NBQWdDO1FBQ2hDLHlCQUF5QjtRQUN6QiwyQkFBMkI7SUFDL0I7O0lBRUE7UUFDSSwrQkFBdUI7Z0JBQXZCLHVCQUF1QjtJQUMzQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9FZGl0QXJlYS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuZWRpdC1hcmVhIHtcbiAgICAgICAgLS1jb2xvci1iZzogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjEpO1xuICAgICAgICAtLWNvbG9yLWxpbmVzOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpKTtcblxuICAgICAgICBwYWRkaW5nOiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCh0byByaWdodCwgdmFyKC0tY29sb3ItbGluZXMpIDUwJSwgcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIDApIDAlKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCB2YXIoLS1jb2xvci1saW5lcykgNTAlLCByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgMCkgMCUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1jb2xvci1iZyk7XG4gICAgICAgIGJhY2tncm91bmQtcG9zaXRpb246IHRvcCwgYm90dG9tO1xuICAgICAgICBiYWNrZ3JvdW5kLXNpemU6IDIwcHggMXB4O1xuICAgICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogcmVwZWF0LXg7XG4gICAgfVxuXG4gICAgLmVkaXQtYXJlYSA6Z2xvYmFsKCo6bm90KC5uby1maWx0ZXIpKSB7XG4gICAgICAgIGZpbHRlcjogZ3JheXNjYWxlKDEwMCUpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,UAAU,cAAC,CAAC,AACR,UAAU,CAAE,6CAA6C,CACzD,aAAa,CAAE,yCAAyC,CAExD,OAAO,CAAE,IAAI,gBAAgB,CAAC,CAC9B,gBAAgB,CAAE,iBAAiB,MAAM,CAAC,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC,WAAW,GAAG,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,WAAW,EAAE,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;0BAChI,iBAAiB,MAAM,CAAC,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC,WAAW,GAAG,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,WAAW,EAAE,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACjJ,gBAAgB,CAAE,gBAAgB,EAAE,CAAC,KAAK,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,GAAG,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC;0BAClF,gBAAgB,EAAE,CAAC,KAAK,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,GAAG,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CACnG,gBAAgB,CAAE,IAAI,UAAU,CAAC,CACjC,mBAAmB,CAAE,GAAG,CAAC,CAAC,MAAM,CAChC,eAAe,CAAE,IAAI,CAAC,GAAG,CACzB,iBAAiB,CAAE,QAAQ,AAC/B,CAAC,AAED,wBAAU,CAAC,AAAQ,iBAAiB,AAAE,CAAC,AACnC,cAAc,CAAE,UAAU,IAAI,CAAC,CACvB,MAAM,CAAE,UAAU,IAAI,CAAC,AACnC,CAAC\"}"
+const css$e = {
+	code: ".edit-area.svelte-12fpoxx{--color-bg:rgba(var(--theme-color-primary-opposite), .1);--color-lines:rgba(var(--theme-color-primary-opposite));padding:0 var(--screen-padding);background-image:-webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0))),\n                          -webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0)));background-image:linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%),\n                          linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%);background-color:var(--color-bg);background-position:top, bottom;background-size:20px 1px;background-repeat:repeat-x}.edit-area.svelte-12fpoxx:not(.off)>*{pointer-events:none}.edit-area.off.svelte-12fpoxx{background:none}.edit-area.svelte-12fpoxx:not(.off) *:not(.no-filter){-webkit-filter:grayscale(100%);filter:grayscale(100%)}",
+	map: "{\"version\":3,\"file\":\"EditArea.svelte\",\"sources\":[\"EditArea.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    import Br from './Br.svelte'\\n    import Icon from './Icon.svelte'\\n    import Button from './Button.svelte'\\n\\n    export let off = false\\n\\n    $: classProp = classnames('edit-area', $$props.class, { off })\\n\\n    function onClick(e) {\\n        if (!off) {\\n            dispatch('click', e)\\n        }\\n    }\\n</script>\\n\\n<section role=\\\"button\\\" class={classProp} on:click={onClick}>\\n    <slot></slot>\\n\\n    {#if !off}\\n        <Br size=\\\"30\\\"/>\\n        <Button size=\\\"small\\\" is=\\\"info\\\" class=\\\"no-filter\\\">\\n            <span class=\\\"h3 font-secondary font-w-500 flex flex-align-center\\\">\\n                Редагувати\\n                <s></s>\\n                <s></s>\\n                <Icon type=\\\"edit\\\" size=\\\"small\\\" is=\\\"light\\\"/>\\n            </span>\\n        </Button>\\n        <Br size=\\\"40\\\"/>\\n    {/if}\\n</section>\\n\\n<style>\\n    .edit-area {\\n        --color-bg: rgba(var(--theme-color-primary-opposite), .1);\\n        --color-lines: rgba(var(--theme-color-primary-opposite));\\n\\n        padding: 0 var(--screen-padding);\\n        background-image: -webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0))),\\n                          -webkit-gradient(linear, left top, right top, color-stop(50%, var(--color-lines)), color-stop(0%, rgba(var(--color-black), 0)));\\n        background-image: linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%),\\n                          linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%);\\n        background-color: var(--color-bg);\\n        background-position: top, bottom;\\n        background-size: 20px 1px;\\n        background-repeat: repeat-x;\\n    }\\n\\n    .edit-area:not(.off) > :global(*) {\\n        pointer-events: none;\\n    }\\n\\n    .edit-area.off {\\n        background: none;\\n    }\\n\\n    .edit-area:not(.off) :global(*:not(.no-filter)) {\\n        -webkit-filter: grayscale(100%);\\n                filter: grayscale(100%);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0VkaXRBcmVhLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSx5REFBeUQ7UUFDekQsd0RBQXdEOztRQUV4RCxnQ0FBZ0M7UUFDaEM7eUpBQ21HO1FBRG5HOzJHQUNtRztRQUNuRyxpQ0FBaUM7UUFDakMsZ0NBQWdDO1FBQ2hDLHlCQUF5QjtRQUN6QiwyQkFBMkI7SUFDL0I7O0lBRUE7UUFDSSxvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxnQkFBZ0I7SUFDcEI7O0lBRUE7UUFDSSwrQkFBdUI7Z0JBQXZCLHVCQUF1QjtJQUMzQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9FZGl0QXJlYS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuZWRpdC1hcmVhIHtcbiAgICAgICAgLS1jb2xvci1iZzogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjEpO1xuICAgICAgICAtLWNvbG9yLWxpbmVzOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpKTtcblxuICAgICAgICBwYWRkaW5nOiAwIHZhcigtLXNjcmVlbi1wYWRkaW5nKTtcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KHRvIHJpZ2h0LCB2YXIoLS1jb2xvci1saW5lcykgNTAlLCByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgMCkgMCUpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5lYXItZ3JhZGllbnQodG8gcmlnaHQsIHZhcigtLWNvbG9yLWxpbmVzKSA1MCUsIHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAwKSAwJSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWNvbG9yLWJnKTtcbiAgICAgICAgYmFja2dyb3VuZC1wb3NpdGlvbjogdG9wLCBib3R0b207XG4gICAgICAgIGJhY2tncm91bmQtc2l6ZTogMjBweCAxcHg7XG4gICAgICAgIGJhY2tncm91bmQtcmVwZWF0OiByZXBlYXQteDtcbiAgICB9XG5cbiAgICAuZWRpdC1hcmVhOm5vdCgub2ZmKSA+IDpnbG9iYWwoKikge1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICB9XG5cbiAgICAuZWRpdC1hcmVhLm9mZiB7XG4gICAgICAgIGJhY2tncm91bmQ6IG5vbmU7XG4gICAgfVxuXG4gICAgLmVkaXQtYXJlYTpub3QoLm9mZikgOmdsb2JhbCgqOm5vdCgubm8tZmlsdGVyKSkge1xuICAgICAgICBmaWx0ZXI6IGdyYXlzY2FsZSgxMDAlKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAuCI,UAAU,eAAC,CAAC,AACR,UAAU,CAAE,6CAA6C,CACzD,aAAa,CAAE,yCAAyC,CAExD,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAChC,gBAAgB,CAAE,iBAAiB,MAAM,CAAC,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC,WAAW,GAAG,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,WAAW,EAAE,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;0BAChI,iBAAiB,MAAM,CAAC,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC,WAAW,GAAG,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,WAAW,EAAE,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACjJ,gBAAgB,CAAE,gBAAgB,EAAE,CAAC,KAAK,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,GAAG,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAAC;0BAClF,gBAAgB,EAAE,CAAC,KAAK,CAAC,CAAC,IAAI,aAAa,CAAC,CAAC,GAAG,CAAC,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CACnG,gBAAgB,CAAE,IAAI,UAAU,CAAC,CACjC,mBAAmB,CAAE,GAAG,CAAC,CAAC,MAAM,CAChC,eAAe,CAAE,IAAI,CAAC,GAAG,CACzB,iBAAiB,CAAE,QAAQ,AAC/B,CAAC,AAED,yBAAU,KAAK,IAAI,CAAC,CAAW,CAAC,AAAE,CAAC,AAC/B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,UAAU,IAAI,eAAC,CAAC,AACZ,UAAU,CAAE,IAAI,AACpB,CAAC,AAED,yBAAU,KAAK,IAAI,CAAC,CAAC,AAAQ,iBAAiB,AAAE,CAAC,AAC7C,cAAc,CAAE,UAAU,IAAI,CAAC,CACvB,MAAM,CAAE,UAAU,IAAI,CAAC,AACnC,CAAC\"}"
 };
 
 const EditArea = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	$$result.css.add(css$d);
+	const dispatch = createEventDispatcher();
+	let { off = false } = $$props;
 
-	return `<section class="${"edit-area svelte-kzlbkn"}">
+	if ($$props.off === void 0 && $$bindings.off && off !== void 0) $$bindings.off(off);
+	$$result.css.add(css$e);
+	let classProp = classnames("edit-area", $$props.class, { off });
+
+	return `<section role="${"button"}" class="${escape(null_to_empty(classProp)) + " svelte-12fpoxx"}">
     ${$$slots.default ? $$slots.default({}) : ``}
 
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-    ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			size: "small",
-			is: "info",
-			class: "no-filter"
-		},
-		{},
-		{
-			default: () => `
-        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
-            Редагувати
-            <s></s>
-            <s></s>
-            ${validate_component(Icon, "Icon").$$render($$result, { type: "edit", size: "small", is: "light" }, {}, {})}
-        </span>
-    `
-		}
-	)}
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+    ${!off
+	? `${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+        ${validate_component(Button, "Button").$$render(
+			$$result,
+			{
+				size: "small",
+				is: "info",
+				class: "no-filter"
+			},
+			{},
+			{
+				default: () => `
+            <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+                Редагувати
+                <s></s>
+                <s></s>
+                ${validate_component(Icon, "Icon").$$render($$result, { type: "edit", size: "small", is: "light" }, {}, {})}
+            </span>
+        `
+			}
+		)}
+        ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}`
+	: ``}
 </section>`;
 });
 
@@ -2010,7 +3128,7 @@ const Circle = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 /* src/components/Loader/Loader.svelte generated by Svelte v3.18.1 */
 
-const css$e = {
+const css$f = {
 	code: ".loader.svelte-e7rph0.svelte-e7rph0{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transform:translateZ(0);transform:translateZ(0)}.loader.svelte-e7rph0 svg.svelte-e7rph0{-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transform:translateZ(0);transform:translateZ(0)}.loader.absolute.svelte-e7rph0.svelte-e7rph0{position:absolute;top:0;left:0;right:0;bottom:0}.loader.border.svelte-e7rph0.svelte-e7rph0{outline-width:1px;outline-style:solid}",
 	map: "{\"version\":3,\"file\":\"Loader.svelte\",\"sources\":[\"Loader.svelte\"],\"sourcesContent\":[\"<script>\\n    // How to make a custom loader?\\n    // See here for generating: https://danilowoz.com/create-content-loader/\\n    \\n    import { onMount } from 'svelte'\\n    import { classnames, uuid } from '@utils'\\n    import Text from './Text.svelte'\\n    import Circle from './Circle.svelte'\\n\\n    export let width = '100%' \\n    export let height = '100%'\\n    export let light = '#999999';\\n    export let dark = '#555555';\\n    export let opacity = .2;\\n    export let border = false;\\n    export let absolute = false;\\n    export let type = undefined; // h1, h2, h3, h4, h5, h6, p, pre, avatar\\n\\n    const uid = uuid()\\n\\n    let hTypes = {\\n        p: 21,\\n        h1: 35,\\n        h2: 29,\\n        h3: 26,\\n        h4: 21,\\n        h5: 21,\\n        h6: 21,\\n        pre: 21,\\n    }\\n\\n    onMount(() => {\\n        const style = getComputedStyle(document.body);\\n        const lh = Number.parseInt(style.getPropertyValue('line-height'))\\n        const balance = 0\\n\\n        hTypes = {\\n            p: lh * 1.15 + balance,\\n            h1: lh * 1.85 + balance,\\n            h2: lh * 1.4 + balance,\\n            h3: lh * 1.3 + balance,\\n            h4: lh * 1.15 + balance,\\n            h5: lh * 1.15 + balance,\\n            h6: lh * 1.15 + balance,\\n            pre: lh * 1.15 + balance,\\n        }\\n    })\\n\\n    $: areaWidth = width.replace('%', '')\\n    $: areaHeight = hTypes[type] || height\\n    $: classProp = classnames('loader', { border, absolute })\\n</script>\\n\\n<section \\n    class={classProp}\\n    style={`opacity: ${opacity}; outline-color: ${light};`}\\n>\\n    <svg\\n        role=\\\"img\\\"\\n        width=\\\"100%\\\"\\n        height={areaHeight}\\n        aria-labelledby=\\\"loading-aria\\\"\\n        viewBox={`0 0 ${areaWidth} 100`}\\n        preserveAspectRatio=\\\"none\\\"\\n    >\\n        <title id=\\\"loading-aria\\\">Loading...</title>\\n        <rect\\n            x=\\\"0\\\"\\n            y=\\\"0\\\"\\n            width=\\\"100%\\\"\\n            height=\\\"100%\\\"\\n            clip-path={`url(#clip-path-${uid})`}\\n            style='fill: url(\\\"#loader-fill\\\");'\\n        ></rect>\\n        <defs>\\n            <clipPath id={`clip-path-${uid}`}>\\n                <slot>\\n                    {#if 'avatar'.includes(type)}\\n                        <Circle/>\\n                    {:else if 'h1,h2,h3,h4,h5,h6,p,pre'.includes(type)}\\n                        <Text/>\\n                    {:else}\\n                        <rect x=\\\"0\\\" y=\\\"0\\\" rx=\\\"3\\\" ry=\\\"3\\\" width=\\\"100%\\\" height=\\\"100%\\\" />\\n                    {/if}\\n                </slot>\\n            </clipPath>\\n            <linearGradient id=\\\"loader-fill\\\">\\n                <stop\\n                    offset=\\\"0.599964\\\"\\n                    stop-color={light}\\n                    stop-opacity=\\\"1\\\"\\n                >\\n                    <animate\\n                    attributeName=\\\"offset\\\"\\n                    values=\\\"-2; -2; 1\\\"\\n                    keyTimes=\\\"0; 0.25; 1\\\"\\n                    dur=\\\"2s\\\"\\n                    repeatCount=\\\"indefinite\\\"\\n                    ></animate>\\n                </stop>\\n                <stop\\n                    offset=\\\"1.59996\\\"\\n                    stop-color={dark}\\n                    stop-opacity=\\\"1\\\"\\n                >\\n                    <animate\\n                    attributeName=\\\"offset\\\"\\n                    values=\\\"-1; -1; 2\\\"\\n                    keyTimes=\\\"0; 0.25; 1\\\"\\n                    dur=\\\"2s\\\"\\n                    repeatCount=\\\"indefinite\\\"\\n                    ></animate>\\n                </stop>\\n                <stop\\n                    offset=\\\"2.59996\\\"\\n                    stop-color={light}\\n                    stop-opacity=\\\"1\\\"\\n                >\\n                    <animate\\n                    attributeName=\\\"offset\\\"\\n                    values=\\\"0; 0; 3\\\"\\n                    keyTimes=\\\"0; 0.25; 1\\\"\\n                    dur=\\\"2s\\\"\\n                    repeatCount=\\\"indefinite\\\"\\n                    ></animate>\\n                </stop>\\n            </linearGradient>\\n        </defs>\\n    </svg>\\n</section>\\n\\n<style>\\n    .loader {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .loader svg {\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .loader.absolute {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        right: 0;\\n        bottom: 0;\\n    }\\n\\n    .loader.border {\\n        outline-width: 1px;\\n        outline-style: solid;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL0xvYWRlci9Mb2FkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IsbUJBQWM7WUFBZCxrQkFBYztnQkFBZCxjQUFjO1FBQ2QsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixnQ0FBd0I7Z0JBQXhCLHdCQUF3QjtJQUM1Qjs7SUFFQTtRQUNJLG1CQUFjO1lBQWQsa0JBQWM7Z0JBQWQsY0FBYztRQUNkLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsZ0NBQXdCO2dCQUF4Qix3QkFBd0I7SUFDNUI7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLE9BQU87UUFDUCxRQUFRO1FBQ1IsU0FBUztJQUNiOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLG9CQUFvQjtJQUN4QiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9Mb2FkZXIvTG9hZGVyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5sb2FkZXIge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBmbGV4OiAxIDEgYXV0bztcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVaKDApO1xuICAgIH1cblxuICAgIC5sb2FkZXIgc3ZnIHtcbiAgICAgICAgZmxleDogMSAxIGF1dG87XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWigwKTtcbiAgICB9XG5cbiAgICAubG9hZGVyLmFic29sdXRlIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBib3R0b206IDA7XG4gICAgfVxuXG4gICAgLmxvYWRlci5ib3JkZXIge1xuICAgICAgICBvdXRsaW5lLXdpZHRoOiAxcHg7XG4gICAgICAgIG91dGxpbmUtc3R5bGU6IHNvbGlkO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAoII,OAAO,4BAAC,CAAC,AACL,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACtB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,qBAAO,CAAC,GAAG,cAAC,CAAC,AACT,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACtB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,OAAO,SAAS,4BAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,AACb,CAAC,AAED,OAAO,OAAO,4BAAC,CAAC,AACZ,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,KAAK,AACxB,CAAC\"}"
 };
@@ -2062,7 +3180,7 @@ const Loader = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	if ($$props.border === void 0 && $$bindings.border && border !== void 0) $$bindings.border(border);
 	if ($$props.absolute === void 0 && $$bindings.absolute && absolute !== void 0) $$bindings.absolute(absolute);
 	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
-	$$result.css.add(css$e);
+	$$result.css.add(css$f);
 	let areaWidth = width.replace("%", "");
 	let areaHeight = hTypes[type] || height;
 	let classProp = classnames("loader", { border, absolute });
@@ -2117,9 +3235,9 @@ const FieldErrors = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 /* src/components/fields/Input.svelte generated by Svelte v3.18.1 */
 
-const css$f = {
+const css$g = {
 	code: ".inp.svelte-plonog.svelte-plonog{width:100%;-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.inp.svelte-plonog .inp-inner-wrap.svelte-plonog{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-shadow:var(--shadow-field-inset);box-shadow:var(--shadow-field-inset);border-radius:var(--border-radius-small);background-color:rgba(var(--theme-bg-color))}.inp.svelte-plonog .inp-inner.svelte-plonog{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;color:inherit;overflow-y:auto;overflow-x:hidden;background-color:transparent;-webkit-overflow-scrolling:touch;min-width:var(--min-interactive-size);min-height:var(--min-interactive-size);border-radius:var(--border-radius-small)}.inp.postIcon.svelte-plonog .inp-inner.svelte-plonog{padding-right:var(--min-interactive-size)}.inp.svelte-plonog .inp-inner.svelte-plonog:invalid,.inp.error.svelte-plonog .inp-inner.svelte-plonog{-webkit-box-shadow:0 0 0 1px rgb(var(--color-danger));box-shadow:0 0 0 1px rgb(var(--color-danger));color:rgb(var(--color-danger))}.inp.svelte-plonog .inp-inner.svelte-plonog:focus{-webkit-box-shadow:0 0 0 1px rgb(var(--color-info));box-shadow:0 0 0 1px rgb(var(--color-info));color:rgb(var(--color-info))}.inp .inp-inner:invalid+.inp-post-icon.svelte-plonog.svelte-plonog .ico,.inp.error.svelte-plonog .inp-post-icon.svelte-plonog .ico{color:rgb(var(--color-danger)) !important}.inp .inp-inner:focus+.inp-post-icon.svelte-plonog.svelte-plonog .ico{color:rgb(var(--color-info)) !important}.inp.svelte-plonog .inp-post-icon-inner.svelte-plonog{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:var(--min-interactive-size)}.inp.svelte-plonog .inp-post-icon.svelte-plonog{position:absolute;top:0;right:0;height:100%;width:var(--min-interactive-size);-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;overflow:hidden}.inp.svelte-plonog .inp-inner.svelte-plonog::-webkit-input-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.inp.svelte-plonog .inp-inner.svelte-plonog::-moz-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.inp.svelte-plonog .inp-inner.svelte-plonog:-ms-input-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.inp.svelte-plonog .inp-inner.svelte-plonog::-ms-input-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.inp.svelte-plonog .inp-inner.svelte-plonog::placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}",
-	map: "{\"version\":3,\"file\":\"Input.svelte\",\"sources\":[\"Input.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let value = ''\\n    export let style = {}\\n    export let type = 'text'\\n    export let id = undefined\\n    export let align = undefined\\n    export let minlength = undefined\\n    export let maxlength = 1000\\n    export let rows = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let invalid = undefined\\n    export let min = undefined // Specifies a minimum value for an <input> element\\n    export let max = undefined // Specifies the maximum value for an <input> element\\n    export let list = undefined // Refers to a <datalist> element that contains pre-defined options for an <input> element\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let readonly = undefined // undefined|readonly\\n    export let required = undefined // undefined|required\\n    export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)\\n    export let autocomplete = undefined// on|off\\n    export let ariaLabel = undefined\\n    export let placeholder = undefined\\n    export let postIcon = undefined\\n    export let errors = undefined\\n\\n    /**\\n     * autocomplete - https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\\n     * names - https://developers.google.com/web/updates/2015/06/checkout-faster-with-autofill\\n     */\\n    const nameTypes = {\\n        'sex': { autocomplete: 'sex' },\\n        'bday': { autocomplete: 'bday' },\\n        'name': { autocomplete: 'name' },\\n        'fname': { autocomplete: 'name' },\\n        'lname': { autocomplete: 'name' },\\n        'email': { autocomplete: 'email' },\\n        'phone': { autocomplete: 'tel' },\\n        'password': { autocomplete: 'new-password' },\\n        'ship-address': { autocomplete: 'shipping street-address' },\\n        'ship-city': { autocomplete: 'shipping locality' },\\n        'ship-state': { autocomplete: 'shipping region' },\\n        'ship-zip': { autocomplete: 'shipping postal-code' },\\n        'ship-country': { autocomplete: 'shipping country' },\\n        'ccname': { autocomplete: 'cc-name' },\\n        'cardnumber': { autocomplete: 'cc-number' },\\n        'cvc': { autocomplete: 'cc-csc' },\\n        'cc-exp': { autocomplete: 'cc-exp' },\\n    }\\n\\n    const typePostIcons = {\\n      date: 'calendar',\\n      search: 'search',\\n    }\\n\\n    $: inputPredict = nameTypes[name] || {}\\n    $: iconType = postIcon || typePostIcons[type]\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || inputPredict.id || name\\n    $: typeProp = type === 'number' ? 'text' : type\\n    $: titleProp = label || ariaLabel\\n    $: ariaLabelProp = ariaLabel || label || placeholder\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern\\n    $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, error, postIcon: iconType })\\n    $: autocompleteProp = autocomplete || inputPredict.autocomplete\\n</script>\\n\\n<div class={classProp}>\\n    {#if titleProp}\\n        <label for={idProp} class=\\\"inp-label h2 font-secondary font-w-600 text-left\\\">\\n            { titleProp }\\n            <Br size=\\\"10\\\"/>\\n        </label>\\n    {/if}\\n\\n    <div class=\\\"inp-inner-wrap\\\">\\n        {#if rows || type === 'textarea'}\\n            <textarea\\n                    {min}\\n                    {max}\\n                    {rows}\\n                    {name}\\n                    {form}\\n                    {align}\\n                    {readonly}\\n                    {disabled}\\n                    {required}\\n                    {minlength}\\n                    {maxlength}\\n                    {placeholder}\\n                    id={idProp}\\n                    class=\\\"inp-inner\\\"\\n                    title={titleProp}\\n                    style={styleProp}\\n                    pattern={patternProp}\\n                    aria-label={ariaLabelProp}\\n                    autocomplete={autocompleteProp}\\n                    {...{ type: typeProp }}\\n                    bind:value\\n                    on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n                    on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            ></textarea>\\n        {:else}\\n            <input\\n                    {min}\\n                    {max}\\n                    {name}\\n                    {list}\\n                    {form}\\n                    {align}\\n                    {readonly}\\n                    {disabled}\\n                    {required}\\n                    {minlength}\\n                    {maxlength}\\n                    {placeholder}\\n                    id={idProp}\\n                    class=\\\"inp-inner\\\"\\n                    title={titleProp}\\n                    style={styleProp}\\n                    pattern={patternProp}\\n                    aria-label={ariaLabelProp}\\n                    autocomplete={autocompleteProp}\\n                    {...{ type: typeProp }}\\n                    bind:value\\n                    on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n                    on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            >\\n        {/if}\\n\\n        <label for={idProp} class=\\\"inp-post-icon\\\">\\n            <slot name=\\\"post-icon\\\">\\n                {#if iconType}\\n                    <span class=\\\"inp-post-icon-inner\\\">\\n                        <Icon type={iconType} is=\\\"info\\\" size=\\\"medium\\\"/>\\n                    </span>\\n                {/if}\\n            </slot>\\n        </label>\\n    </div>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .inp {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n    .inp .inp-inner-wrap {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-shadow: var(--shadow-field-inset);\\n                box-shadow: var(--shadow-field-inset);\\n        border-radius: var(--border-radius-small);\\n        background-color: rgba(var(--theme-bg-color));\\n    }\\n\\n    .inp .inp-inner {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        color: inherit;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        background-color: transparent;\\n        -webkit-overflow-scrolling: touch;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n        border-radius: var(--border-radius-small);\\n    }\\n\\n    .inp.postIcon .inp-inner {\\n        padding-right: var(--min-interactive-size);\\n    }\\n\\n    .inp .inp-inner:invalid, .inp.error .inp-inner {\\n        -webkit-box-shadow: 0 0 0 1px rgb(var(--color-danger));\\n                box-shadow: 0 0 0 1px rgb(var(--color-danger));\\n        color: rgb(var(--color-danger));\\n    }\\n\\n    .inp .inp-inner:focus {\\n        -webkit-box-shadow: 0 0 0 1px rgb(var(--color-info));\\n                box-shadow: 0 0 0 1px rgb(var(--color-info));\\n        color: rgb(var(--color-info));\\n    }\\n\\n\\n    .inp .inp-inner:invalid + .inp-post-icon :global(.ico),\\n    .inp.error .inp-post-icon :global(.ico) {\\n        color: rgb(var(--color-danger)) !important;\\n    }\\n\\n    .inp .inp-inner:focus + .inp-post-icon :global(.ico) {\\n        color: rgb(var(--color-info)) !important;\\n    }\\n\\n    .inp .inp-post-icon-inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: var(--min-interactive-size);\\n    }\\n\\n    .inp .inp-post-icon {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        height: 100%;\\n        width: var(--min-interactive-size);\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        overflow: hidden;\\n    }\\n\\n    .inp .inp-inner::-webkit-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner::-moz-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner:-ms-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner::-ms-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner::placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9JbnB1dC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLG1CQUFjO1lBQWQsa0JBQWM7Z0JBQWQsY0FBYztRQUNkLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtJQUMxQjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNkNBQXFDO2dCQUFyQyxxQ0FBcUM7UUFDckMseUNBQXlDO1FBQ3pDLDZDQUE2QztJQUNqRDs7SUFFQTtRQUNJLG1CQUFZO1lBQVosb0JBQVk7Z0JBQVosWUFBWTtRQUNaLGNBQWM7UUFDZCxnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDZCQUE2QjtRQUM3QixpQ0FBaUM7UUFDakMsc0NBQXNDO1FBQ3RDLHVDQUF1QztRQUN2Qyx5Q0FBeUM7SUFDN0M7O0lBRUE7UUFDSSwwQ0FBMEM7SUFDOUM7O0lBRUE7UUFDSSxzREFBOEM7Z0JBQTlDLDhDQUE4QztRQUM5QywrQkFBK0I7SUFDbkM7O0lBRUE7UUFDSSxvREFBNEM7Z0JBQTVDLDRDQUE0QztRQUM1Qyw2QkFBNkI7SUFDakM7OztJQUdBOztRQUVJLDBDQUEwQztJQUM5Qzs7SUFFQTtRQUNJLHdDQUF3QztJQUM1Qzs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixrQ0FBa0M7SUFDdEM7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLFFBQVE7UUFDUixZQUFZO1FBQ1osa0NBQWtDO1FBQ2xDLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLGdCQUFnQjtJQUNwQjs7SUFFQTtRQUNJLGdEQUFnRDtRQUNoRCxXQUFXO0lBQ2Y7O0lBSEE7UUFDSSxnREFBZ0Q7UUFDaEQsV0FBVztJQUNmOztJQUhBO1FBQ0ksZ0RBQWdEO1FBQ2hELFdBQVc7SUFDZjs7SUFIQTtRQUNJLGdEQUFnRDtRQUNoRCxXQUFXO0lBQ2Y7O0lBSEE7UUFDSSxnREFBZ0Q7UUFDaEQsV0FBVztJQUNmIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy9JbnB1dC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuaW5wIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXg6IDEgMSBhdXRvO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lci13cmFwIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctZmllbGQtaW5zZXQpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLXNtYWxsKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS10aGVtZS1iZy1jb2xvcikpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lciB7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgY29sb3I6IGluaGVyaXQ7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgICAgIC13ZWJraXQtb3ZlcmZsb3ctc2Nyb2xsaW5nOiB0b3VjaDtcbiAgICAgICAgbWluLXdpZHRoOiB2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1zbWFsbCk7XG4gICAgfVxuXG4gICAgLmlucC5wb3N0SWNvbiAuaW5wLWlubmVyIHtcbiAgICAgICAgcGFkZGluZy1yaWdodDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lcjppbnZhbGlkLCAuaW5wLmVycm9yIC5pbnAtaW5uZXIge1xuICAgICAgICBib3gtc2hhZG93OiAwIDAgMCAxcHggcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpO1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lcjpmb2N1cyB7XG4gICAgICAgIGJveC1zaGFkb3c6IDAgMCAwIDFweCByZ2IodmFyKC0tY29sb3ItaW5mbykpO1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cblxuICAgIC5pbnAgLmlucC1pbm5lcjppbnZhbGlkICsgLmlucC1wb3N0LWljb24gOmdsb2JhbCguaWNvKSxcbiAgICAuaW5wLmVycm9yIC5pbnAtcG9zdC1pY29uIDpnbG9iYWwoLmljbykge1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpICFpbXBvcnRhbnQ7XG4gICAgfVxuXG4gICAgLmlucCAuaW5wLWlubmVyOmZvY3VzICsgLmlucC1wb3N0LWljb24gOmdsb2JhbCguaWNvKSB7XG4gICAgICAgIGNvbG9yOiByZ2IodmFyKC0tY29sb3ItaW5mbykpICFpbXBvcnRhbnQ7XG4gICAgfVxuXG4gICAgLmlucCAuaW5wLXBvc3QtaWNvbi1pbm5lciB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1wb3N0LWljb24ge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgcmlnaHQ6IDA7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgd2lkdGg6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgfVxuXG4gICAgLmlucCAuaW5wLWlubmVyOjpwbGFjZWhvbGRlciB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpKTtcbiAgICAgICAgb3BhY2l0eTogLjI7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
+	map: "{\"version\":3,\"file\":\"Input.svelte\",\"sources\":[\"Input.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let value = ''\\n    export let style = {}\\n    export let type = 'text'\\n    export let id = undefined\\n    export let align = undefined\\n    export let minlength = undefined\\n    export let maxlength = 1000\\n    export let rows = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let invalid = undefined\\n    export let min = undefined // Specifies a minimum value for an <input> element\\n    export let max = undefined // Specifies the maximum value for an <input> element\\n    export let list = undefined // Refers to a <datalist> element that contains pre-defined options for an <input> element\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let readonly = undefined // undefined|readonly\\n    export let required = undefined // undefined|required\\n    export let pattern = undefined // Specifies a regular expression that an <input> element's value is checked against (regexp)\\n    export let autocomplete = undefined// on|off\\n    export let ariaLabel = undefined\\n    export let placeholder = undefined\\n    export let postIcon = undefined\\n    export let errors = undefined\\n\\n    /**\\n     * autocomplete - https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\\n     * names - https://developers.google.com/web/updates/2015/06/checkout-faster-with-autofill\\n     */\\n    const nameTypes = {\\n        'sex': { autocomplete: 'sex' },\\n        'bday': { autocomplete: 'bday' },\\n        'name': { autocomplete: 'name' },\\n        'fname': { autocomplete: 'name' },\\n        'lname': { autocomplete: 'name' },\\n        'email': { autocomplete: 'email' },\\n        'phone': { autocomplete: 'tel' },\\n        'password': { autocomplete: 'new-password' },\\n        'ship-address': { autocomplete: 'shipping street-address' },\\n        'ship-city': { autocomplete: 'shipping locality' },\\n        'ship-state': { autocomplete: 'shipping region' },\\n        'ship-zip': { autocomplete: 'shipping postal-code' },\\n        'ship-country': { autocomplete: 'shipping country' },\\n        'ccname': { autocomplete: 'cc-name' },\\n        'cardnumber': { autocomplete: 'cc-number' },\\n        'cvc': { autocomplete: 'cc-csc' },\\n        'cc-exp': { autocomplete: 'cc-exp' },\\n    }\\n\\n    const typePostIcons = {\\n      date: 'calendar',\\n      search: 'search',\\n    }\\n\\n    $: inputPredict = nameTypes[name] || {}\\n    $: iconType = postIcon || typePostIcons[type]\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || inputPredict.id || name\\n    $: typeProp = type\\n    $: titleProp = label || ariaLabel\\n    $: ariaLabelProp = ariaLabel || label || placeholder\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: patternProp = type === 'number' && !pattern ? '[0-9]*' : pattern\\n    $: classProp = classnames('inp', $$props.class, { disabled, readonly, required, error, postIcon: iconType })\\n    $: autocompleteProp = autocomplete || inputPredict.autocomplete\\n</script>\\n\\n<div class={classProp}>\\n    {#if titleProp}\\n        <label for={idProp} class=\\\"inp-label h2 font-secondary font-w-600 text-left\\\">\\n            { titleProp }\\n            <Br size=\\\"10\\\"/>\\n        </label>\\n    {/if}\\n\\n    <div class=\\\"inp-inner-wrap\\\">\\n        {#if rows || type === 'textarea'}\\n            <textarea\\n                    {min}\\n                    {max}\\n                    {rows}\\n                    {name}\\n                    {form}\\n                    {align}\\n                    {readonly}\\n                    {disabled}\\n                    {required}\\n                    {minlength}\\n                    {maxlength}\\n                    {placeholder}\\n                    id={idProp}\\n                    class=\\\"inp-inner\\\"\\n                    title={titleProp}\\n                    style={styleProp}\\n                    pattern={patternProp}\\n                    aria-label={ariaLabelProp}\\n                    autocomplete={autocompleteProp}\\n                    {...{ type: typeProp }}\\n                    bind:value\\n                    on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n                    on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            ></textarea>\\n        {:else}\\n            <input\\n                    {min}\\n                    {max}\\n                    {name}\\n                    {list}\\n                    {form}\\n                    {align}\\n                    {readonly}\\n                    {disabled}\\n                    {required}\\n                    {minlength}\\n                    {maxlength}\\n                    {placeholder}\\n                    id={idProp}\\n                    class=\\\"inp-inner\\\"\\n                    title={titleProp}\\n                    style={styleProp}\\n                    pattern={patternProp}\\n                    aria-label={ariaLabelProp}\\n                    autocomplete={autocompleteProp}\\n                    {...{ type: typeProp }}\\n                    bind:value\\n                    on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n                    on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n            >\\n        {/if}\\n\\n        <label for={idProp} class=\\\"inp-post-icon\\\">\\n            <slot name=\\\"post-icon\\\">\\n                {#if iconType}\\n                    <span class=\\\"inp-post-icon-inner\\\">\\n                        <Icon type={iconType} is=\\\"info\\\" size=\\\"medium\\\"/>\\n                    </span>\\n                {/if}\\n            </slot>\\n        </label>\\n    </div>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .inp {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n    .inp .inp-inner-wrap {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-shadow: var(--shadow-field-inset);\\n                box-shadow: var(--shadow-field-inset);\\n        border-radius: var(--border-radius-small);\\n        background-color: rgba(var(--theme-bg-color));\\n    }\\n\\n    .inp .inp-inner {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        color: inherit;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        background-color: transparent;\\n        -webkit-overflow-scrolling: touch;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n        border-radius: var(--border-radius-small);\\n    }\\n\\n    .inp.postIcon .inp-inner {\\n        padding-right: var(--min-interactive-size);\\n    }\\n\\n    .inp .inp-inner:invalid, .inp.error .inp-inner {\\n        -webkit-box-shadow: 0 0 0 1px rgb(var(--color-danger));\\n                box-shadow: 0 0 0 1px rgb(var(--color-danger));\\n        color: rgb(var(--color-danger));\\n    }\\n\\n    .inp .inp-inner:focus {\\n        -webkit-box-shadow: 0 0 0 1px rgb(var(--color-info));\\n                box-shadow: 0 0 0 1px rgb(var(--color-info));\\n        color: rgb(var(--color-info));\\n    }\\n\\n\\n    .inp .inp-inner:invalid + .inp-post-icon :global(.ico),\\n    .inp.error .inp-post-icon :global(.ico) {\\n        color: rgb(var(--color-danger)) !important;\\n    }\\n\\n    .inp .inp-inner:focus + .inp-post-icon :global(.ico) {\\n        color: rgb(var(--color-info)) !important;\\n    }\\n\\n    .inp .inp-post-icon-inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: var(--min-interactive-size);\\n    }\\n\\n    .inp .inp-post-icon {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        height: 100%;\\n        width: var(--min-interactive-size);\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        overflow: hidden;\\n    }\\n\\n    .inp .inp-inner::-webkit-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner::-moz-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner:-ms-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner::-ms-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .inp .inp-inner::placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9JbnB1dC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLG1CQUFjO1lBQWQsa0JBQWM7Z0JBQWQsY0FBYztRQUNkLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtJQUMxQjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNkNBQXFDO2dCQUFyQyxxQ0FBcUM7UUFDckMseUNBQXlDO1FBQ3pDLDZDQUE2QztJQUNqRDs7SUFFQTtRQUNJLG1CQUFZO1lBQVosb0JBQVk7Z0JBQVosWUFBWTtRQUNaLGNBQWM7UUFDZCxnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDZCQUE2QjtRQUM3QixpQ0FBaUM7UUFDakMsc0NBQXNDO1FBQ3RDLHVDQUF1QztRQUN2Qyx5Q0FBeUM7SUFDN0M7O0lBRUE7UUFDSSwwQ0FBMEM7SUFDOUM7O0lBRUE7UUFDSSxzREFBOEM7Z0JBQTlDLDhDQUE4QztRQUM5QywrQkFBK0I7SUFDbkM7O0lBRUE7UUFDSSxvREFBNEM7Z0JBQTVDLDRDQUE0QztRQUM1Qyw2QkFBNkI7SUFDakM7OztJQUdBOztRQUVJLDBDQUEwQztJQUM5Qzs7SUFFQTtRQUNJLHdDQUF3QztJQUM1Qzs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixrQ0FBa0M7SUFDdEM7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLFFBQVE7UUFDUixZQUFZO1FBQ1osa0NBQWtDO1FBQ2xDLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLGdCQUFnQjtJQUNwQjs7SUFFQTtRQUNJLGdEQUFnRDtRQUNoRCxXQUFXO0lBQ2Y7O0lBSEE7UUFDSSxnREFBZ0Q7UUFDaEQsV0FBVztJQUNmOztJQUhBO1FBQ0ksZ0RBQWdEO1FBQ2hELFdBQVc7SUFDZjs7SUFIQTtRQUNJLGdEQUFnRDtRQUNoRCxXQUFXO0lBQ2Y7O0lBSEE7UUFDSSxnREFBZ0Q7UUFDaEQsV0FBVztJQUNmIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy9JbnB1dC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuaW5wIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXg6IDEgMSBhdXRvO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lci13cmFwIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctZmllbGQtaW5zZXQpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLXNtYWxsKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS10aGVtZS1iZy1jb2xvcikpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lciB7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgY29sb3I6IGluaGVyaXQ7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgICAgIC13ZWJraXQtb3ZlcmZsb3ctc2Nyb2xsaW5nOiB0b3VjaDtcbiAgICAgICAgbWluLXdpZHRoOiB2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1zbWFsbCk7XG4gICAgfVxuXG4gICAgLmlucC5wb3N0SWNvbiAuaW5wLWlubmVyIHtcbiAgICAgICAgcGFkZGluZy1yaWdodDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lcjppbnZhbGlkLCAuaW5wLmVycm9yIC5pbnAtaW5uZXIge1xuICAgICAgICBib3gtc2hhZG93OiAwIDAgMCAxcHggcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpO1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1pbm5lcjpmb2N1cyB7XG4gICAgICAgIGJveC1zaGFkb3c6IDAgMCAwIDFweCByZ2IodmFyKC0tY29sb3ItaW5mbykpO1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cblxuICAgIC5pbnAgLmlucC1pbm5lcjppbnZhbGlkICsgLmlucC1wb3N0LWljb24gOmdsb2JhbCguaWNvKSxcbiAgICAuaW5wLmVycm9yIC5pbnAtcG9zdC1pY29uIDpnbG9iYWwoLmljbykge1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLWRhbmdlcikpICFpbXBvcnRhbnQ7XG4gICAgfVxuXG4gICAgLmlucCAuaW5wLWlubmVyOmZvY3VzICsgLmlucC1wb3N0LWljb24gOmdsb2JhbCguaWNvKSB7XG4gICAgICAgIGNvbG9yOiByZ2IodmFyKC0tY29sb3ItaW5mbykpICFpbXBvcnRhbnQ7XG4gICAgfVxuXG4gICAgLmlucCAuaW5wLXBvc3QtaWNvbi1pbm5lciB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgIH1cblxuICAgIC5pbnAgLmlucC1wb3N0LWljb24ge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgcmlnaHQ6IDA7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgd2lkdGg6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgfVxuXG4gICAgLmlucCAuaW5wLWlubmVyOjpwbGFjZWhvbGRlciB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpKTtcbiAgICAgICAgb3BhY2l0eTogLjI7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
 };
 
 const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -2198,7 +3316,7 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	if ($$props.placeholder === void 0 && $$bindings.placeholder && placeholder !== void 0) $$bindings.placeholder(placeholder);
 	if ($$props.postIcon === void 0 && $$bindings.postIcon && postIcon !== void 0) $$bindings.postIcon(postIcon);
 	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
-	$$result.css.add(css$f);
+	$$result.css.add(css$g);
 	let inputPredict = nameTypes[name] || {};
 	let iconType = postIcon || typePostIcons[type];
 
@@ -2207,7 +3325,7 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	: !!(errors || []).length;
 
 	let idProp = id || inputPredict.id || name;
-	let typeProp = type === "number" ? "text" : type;
+	let typeProp = type;
 	let titleProp = label || ariaLabel;
 	let ariaLabelProp = ariaLabel || label || placeholder;
 	let styleProp = toCSSString({ ...style, textAlign: align });
@@ -2317,9 +3435,467 @@ const Input = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 </div>`;
 });
 
+/* src/components/fields/Select.svelte generated by Svelte v3.18.1 */
+
+const css$h = {
+	code: ".select.svelte-1gr91wq.svelte-1gr91wq{width:100%;-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.select.svelte-1gr91wq .inp-inner-wrap.svelte-1gr91wq{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-shadow:var(--shadow-field-inset);box-shadow:var(--shadow-field-inset);border-radius:var(--border-radius-small);background-color:rgba(var(--theme-bg-color))}.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;color:inherit;overflow-y:auto;overflow-x:hidden;background-color:transparent;-webkit-overflow-scrolling:touch;min-width:var(--min-interactive-size);min-height:var(--min-interactive-size);border-radius:var(--border-radius-small)}.select.svelte-1gr91wq .inp-post-icon.svelte-1gr91wq{position:absolute;top:0;right:0;height:100%;width:var(--min-interactive-size);-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;overflow:hidden}.select.svelte-1gr91wq .inp-post-icon-inner.svelte-1gr91wq{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:var(--min-interactive-size)}.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq::-webkit-input-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq::-moz-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq:-ms-input-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq::-ms-input-placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.select.svelte-1gr91wq .inp-inner option[default].svelte-1gr91wq,.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq::placeholder{color:rgba(var(--theme-color-primary-opposite));opacity:.2}.select.postIcon.svelte-1gr91wq .inp-inner.svelte-1gr91wq{padding-right:var(--min-interactive-size)}.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq:invalid,.select.error.svelte-1gr91wq .inp-inner.svelte-1gr91wq{-webkit-box-shadow:0 0 0 1px rgb(var(--color-danger));box-shadow:0 0 0 1px rgb(var(--color-danger));color:rgb(var(--color-danger))}.select .inp-inner:invalid+.inp-post-icon.svelte-1gr91wq.svelte-1gr91wq .ico,.select.error.svelte-1gr91wq .inp-post-icon.svelte-1gr91wq .ico{color:rgb(var(--color-danger)) !important}.select.svelte-1gr91wq .inp-inner.svelte-1gr91wq:focus{-webkit-box-shadow:0 0 0 1px rgb(var(--color-info));box-shadow:0 0 0 1px rgb(var(--color-info));color:rgb(var(--color-info))}.select .inp-inner:focus+.inp-post-icon.svelte-1gr91wq.svelte-1gr91wq .ico{color:rgb(var(--color-info)) !important}",
+	map: "{\"version\":3,\"file\":\"Select.svelte\",\"sources\":[\"Select.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let value = ''\\n    export let style = {}\\n    export let type = 'select'\\n    export let id = undefined\\n    export let align = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let invalid = undefined\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let readonly = undefined // undefined|readonly\\n    export let required = undefined // undefined|required\\n    export let ariaLabel = undefined\\n    export let placeholder = undefined\\n    export let autocomplete = 'on'\\n    export let postIcon = undefined\\n    export let errors = undefined\\n    /**\\n     *\\n     * @type {{\\n     *     value: string,\\n     *     label: string,\\n     * }[]}\\n     */\\n    export let options = []\\n\\n    $: iconType = postIcon || 'caret-down'\\n    $: error = invalid || !!(errors || []).length\\n    $: idProp = id || name\\n    $: titleProp = label || ariaLabel\\n    $: ariaLabelProp = ariaLabel || label || placeholder\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: classProp = classnames('select', $$props.class, { disabled, readonly, required, error })\\n</script>\\n\\n<div class={classProp}>\\n    {#if titleProp}\\n        <label for={idProp} class=\\\"block h2 font-w-500 full-width text-left\\\">\\n            { titleProp }\\n        </label>\\n        <Br size=\\\"10\\\"/>\\n    {/if}\\n\\n    <div class=\\\"inp-inner-wrap\\\">\\n        <select\\n                {name}\\n                {type}\\n                {form}\\n                {align}\\n                {readonly}\\n                {disabled}\\n                {required}\\n                {placeholder}\\n                {autocomplete}\\n                id={idProp}\\n                class=\\\"inp-inner\\\"\\n                title={titleProp}\\n                style={styleProp}\\n                aria-label={ariaLabelProp}\\n                bind:value\\n                on:blur='{e => !disabled && dispatch(\\\"blur\\\", e)}'\\n                on:focus='{e => !disabled && dispatch(\\\"focus\\\", e)}'\\n        >\\n            {#each options as { label: text, ...option }}\\n                {#if option.value !== undefined && text !== undefined}\\n                    <option {...option}>\\n                        {text}\\n                    </option>\\n                {/if}\\n            {/each}\\n        </select>\\n\\n        <label for={idProp} class=\\\"inp-post-icon\\\">\\n            <slot name=\\\"post-icon\\\">\\n                {#if iconType}\\n                    <span class=\\\"inp-post-icon-inner\\\">\\n                        <Icon type={iconType} is=\\\"info\\\" size=\\\"medium\\\"/>\\n                    </span>\\n                {/if}\\n            </slot>\\n        </label>\\n    </div>\\n\\n    <FieldErrors items={errors}/>\\n</div>\\n\\n<style>\\n    .select {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n    .select .inp-inner-wrap {\\n        position: relative;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-shadow: var(--shadow-field-inset);\\n                box-shadow: var(--shadow-field-inset);\\n        border-radius: var(--border-radius-small);\\n        background-color: rgba(var(--theme-bg-color));\\n    }\\n\\n    .select .inp-inner {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        color: inherit;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        background-color: transparent;\\n        -webkit-overflow-scrolling: touch;\\n        min-width: var(--min-interactive-size);\\n        min-height: var(--min-interactive-size);\\n        border-radius: var(--border-radius-small);\\n    }\\n\\n    .select .inp-post-icon {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        height: 100%;\\n        width: var(--min-interactive-size);\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        overflow: hidden;\\n    }\\n\\n    .select .inp-post-icon-inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: var(--min-interactive-size);\\n    }\\n\\n    .select .inp-inner::-webkit-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .select .inp-inner::-moz-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .select .inp-inner:-ms-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .select .inp-inner::-ms-input-placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .select .inp-inner option[default],\\n    .select .inp-inner::placeholder {\\n        color: rgba(var(--theme-color-primary-opposite));\\n        opacity: .2;\\n    }\\n\\n    .select.postIcon .inp-inner {\\n        padding-right: var(--min-interactive-size);\\n    }\\n\\n    .select .inp-inner:invalid,\\n    .select.error .inp-inner {\\n        -webkit-box-shadow: 0 0 0 1px rgb(var(--color-danger));\\n                box-shadow: 0 0 0 1px rgb(var(--color-danger));\\n        color: rgb(var(--color-danger));\\n    }\\n\\n    .select .inp-inner:invalid + .inp-post-icon :global(.ico),\\n    .select.error .inp-post-icon :global(.ico) {\\n        color: rgb(var(--color-danger)) !important;\\n    }\\n\\n    .select .inp-inner:focus {\\n        -webkit-box-shadow: 0 0 0 1px rgb(var(--color-info));\\n                box-shadow: 0 0 0 1px rgb(var(--color-info));\\n        color: rgb(var(--color-info));\\n    }\\n\\n    .select .inp-inner:focus + .inp-post-icon :global(.ico) {\\n        color: rgb(var(--color-info)) !important;\\n    }\\n\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9TZWxlY3Quc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBYztZQUFkLGtCQUFjO2dCQUFkLGNBQWM7UUFDZCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7SUFDMUI7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYiw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLDZDQUFxQztnQkFBckMscUNBQXFDO1FBQ3JDLHlDQUF5QztRQUN6Qyw2Q0FBNkM7SUFDakQ7O0lBRUE7UUFDSSxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixjQUFjO1FBQ2QsZ0JBQWdCO1FBQ2hCLGtCQUFrQjtRQUNsQiw2QkFBNkI7UUFDN0IsaUNBQWlDO1FBQ2pDLHNDQUFzQztRQUN0Qyx1Q0FBdUM7UUFDdkMseUNBQXlDO0lBQzdDOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLE1BQU07UUFDTixRQUFRO1FBQ1IsWUFBWTtRQUNaLGtDQUFrQztRQUNsQyxtQkFBVTtZQUFWLGNBQVU7Z0JBQVYsVUFBVTtRQUNWLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixnQkFBZ0I7SUFDcEI7O0lBRUE7UUFDSSxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsa0NBQWtDO0lBQ3RDOztJQUVBO1FBRUksZ0RBQWdEO1FBQ2hELFdBQVc7SUFDZjs7SUFKQTtRQUVJLGdEQUFnRDtRQUNoRCxXQUFXO0lBQ2Y7O0lBSkE7UUFFSSxnREFBZ0Q7UUFDaEQsV0FBVztJQUNmOztJQUpBO1FBRUksZ0RBQWdEO1FBQ2hELFdBQVc7SUFDZjs7SUFKQTs7UUFFSSxnREFBZ0Q7UUFDaEQsV0FBVztJQUNmOztJQUVBO1FBQ0ksMENBQTBDO0lBQzlDOztJQUVBOztRQUVJLHNEQUE4QztnQkFBOUMsOENBQThDO1FBQzlDLCtCQUErQjtJQUNuQzs7SUFFQTs7UUFFSSwwQ0FBMEM7SUFDOUM7O0lBRUE7UUFDSSxvREFBNEM7Z0JBQTVDLDRDQUE0QztRQUM1Qyw2QkFBNkI7SUFDakM7O0lBRUE7UUFDSSx3Q0FBd0M7SUFDNUMiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL1NlbGVjdC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuc2VsZWN0IHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXg6IDEgMSBhdXRvO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIH1cblxuICAgIC5zZWxlY3QgLmlucC1pbm5lci13cmFwIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctZmllbGQtaW5zZXQpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLXNtYWxsKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS10aGVtZS1iZy1jb2xvcikpO1xuICAgIH1cblxuICAgIC5zZWxlY3QgLmlucC1pbm5lciB7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgY29sb3I6IGluaGVyaXQ7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgICAgIC13ZWJraXQtb3ZlcmZsb3ctc2Nyb2xsaW5nOiB0b3VjaDtcbiAgICAgICAgbWluLXdpZHRoOiB2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSk7XG4gICAgICAgIG1pbi1oZWlnaHQ6IHZhcigtLW1pbi1pbnRlcmFjdGl2ZS1zaXplKTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1zbWFsbCk7XG4gICAgfVxuXG4gICAgLnNlbGVjdCAuaW5wLXBvc3QtaWNvbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICByaWdodDogMDtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICB3aWR0aDogdmFyKC0tbWluLWludGVyYWN0aXZlLXNpemUpO1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICB9XG5cbiAgICAuc2VsZWN0IC5pbnAtcG9zdC1pY29uLWlubmVyIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiB2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSk7XG4gICAgfVxuXG4gICAgLnNlbGVjdCAuaW5wLWlubmVyIG9wdGlvbltkZWZhdWx0XSxcbiAgICAuc2VsZWN0IC5pbnAtaW5uZXI6OnBsYWNlaG9sZGVyIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3ItcHJpbWFyeS1vcHBvc2l0ZSkpO1xuICAgICAgICBvcGFjaXR5OiAuMjtcbiAgICB9XG5cbiAgICAuc2VsZWN0LnBvc3RJY29uIC5pbnAtaW5uZXIge1xuICAgICAgICBwYWRkaW5nLXJpZ2h0OiB2YXIoLS1taW4taW50ZXJhY3RpdmUtc2l6ZSk7XG4gICAgfVxuXG4gICAgLnNlbGVjdCAuaW5wLWlubmVyOmludmFsaWQsXG4gICAgLnNlbGVjdC5lcnJvciAuaW5wLWlubmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogMCAwIDAgMXB4IHJnYih2YXIoLS1jb2xvci1kYW5nZXIpKTtcbiAgICAgICAgY29sb3I6IHJnYih2YXIoLS1jb2xvci1kYW5nZXIpKTtcbiAgICB9XG5cbiAgICAuc2VsZWN0IC5pbnAtaW5uZXI6aW52YWxpZCArIC5pbnAtcG9zdC1pY29uIDpnbG9iYWwoLmljbyksXG4gICAgLnNlbGVjdC5lcnJvciAuaW5wLXBvc3QtaWNvbiA6Z2xvYmFsKC5pY28pIHtcbiAgICAgICAgY29sb3I6IHJnYih2YXIoLS1jb2xvci1kYW5nZXIpKSAhaW1wb3J0YW50O1xuICAgIH1cblxuICAgIC5zZWxlY3QgLmlucC1pbm5lcjpmb2N1cyB7XG4gICAgICAgIGJveC1zaGFkb3c6IDAgMCAwIDFweCByZ2IodmFyKC0tY29sb3ItaW5mbykpO1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICAuc2VsZWN0IC5pbnAtaW5uZXI6Zm9jdXMgKyAuaW5wLXBvc3QtaWNvbiA6Z2xvYmFsKC5pY28pIHtcbiAgICAgICAgY29sb3I6IHJnYih2YXIoLS1jb2xvci1pbmZvKSkgIWltcG9ydGFudDtcbiAgICB9XG5cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"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\"}"
+};
+
+const Select = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { name } = $$props;
+	let { value = "" } = $$props;
+	let { style = {} } = $$props;
+	let { type = "select" } = $$props;
+	let { id = undefined } = $$props;
+	let { align = undefined } = $$props;
+	let { disabled = false } = $$props;
+	let { label = undefined } = $$props;
+	let { invalid = undefined } = $$props;
+	let { form = undefined } = $$props; // Specifies the form the <input> element belongs to
+	let { readonly = undefined } = $$props; // undefined|readonly
+	let { required = undefined } = $$props; // undefined|required
+	let { ariaLabel = undefined } = $$props;
+	let { placeholder = undefined } = $$props;
+	let { autocomplete = "on" } = $$props;
+	let { postIcon = undefined } = $$props;
+	let { errors = undefined } = $$props;
+	let { options = [] } = $$props;
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.align === void 0 && $$bindings.align && align !== void 0) $$bindings.align(align);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
+	if ($$props.readonly === void 0 && $$bindings.readonly && readonly !== void 0) $$bindings.readonly(readonly);
+	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
+	if ($$props.ariaLabel === void 0 && $$bindings.ariaLabel && ariaLabel !== void 0) $$bindings.ariaLabel(ariaLabel);
+	if ($$props.placeholder === void 0 && $$bindings.placeholder && placeholder !== void 0) $$bindings.placeholder(placeholder);
+	if ($$props.autocomplete === void 0 && $$bindings.autocomplete && autocomplete !== void 0) $$bindings.autocomplete(autocomplete);
+	if ($$props.postIcon === void 0 && $$bindings.postIcon && postIcon !== void 0) $$bindings.postIcon(postIcon);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	if ($$props.options === void 0 && $$bindings.options && options !== void 0) $$bindings.options(options);
+	$$result.css.add(css$h);
+	let iconType = postIcon || "caret-down";
+	let error = invalid || !!(errors || []).length;
+	let idProp = id || name;
+	let titleProp = label || ariaLabel;
+	let ariaLabelProp = ariaLabel || label || placeholder;
+	let styleProp = toCSSString({ ...style, textAlign: align });
+	let classProp = classnames("select", $$props.class, { disabled, readonly, required, error });
+
+	return `<div class="${escape(null_to_empty(classProp)) + " svelte-1gr91wq"}">
+    ${titleProp
+	? `<label${add_attribute("for", idProp, 0)} class="${"block h2 font-w-500 full-width text-left"}">
+            ${escape(titleProp)}
+        </label>
+        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+	: ``}
+
+    <div class="${"inp-inner-wrap svelte-1gr91wq"}">
+        <select${add_attribute("name", name, 0)}${add_attribute("type", type, 0)}${add_attribute("form", form, 0)}${add_attribute("align", align, 0)} ${readonly ? "readonly" : ""} ${disabled ? "disabled" : ""} ${required ? "required" : ""}${add_attribute("placeholder", placeholder, 0)}${add_attribute("autocomplete", autocomplete, 0)}${add_attribute("id", idProp, 0)} class="${"inp-inner svelte-1gr91wq"}"${add_attribute("title", titleProp, 0)}${add_attribute("style", styleProp, 0)}${add_attribute("aria-label", ariaLabelProp, 0)}${add_attribute("value", value, 1)}>
+            ${each(options, ({ label: text, ...option }) => `${option.value !== undefined && text !== undefined
+	? `<option${spread(
+			[
+				option,
+				{
+					value: "\n                        " + escape(text) + "\n                    "
+				}
+			],
+			"svelte-1gr91wq"
+		)}>
+                        ${escape(text)}
+                    </option>`
+	: ``}`)}
+        </select>
+
+        <label${add_attribute("for", idProp, 0)} class="${"inp-post-icon svelte-1gr91wq"}">
+            ${$$slots["post-icon"]
+	? $$slots["post-icon"]({})
+	: `
+                ${iconType
+		? `<span class="${"inp-post-icon-inner svelte-1gr91wq"}">
+                        ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: iconType,
+					is: "info",
+					size: "medium"
+				},
+				{},
+				{}
+			)}
+                    </span>`
+		: ``}
+            `}
+        </label>
+    </div>
+
+    ${validate_component(FieldErrors, "FieldErrors").$$render($$result, { items: errors }, {}, {})}
+</div>`;
+});
+
+/* src/components/fields/Checkbox.svelte generated by Svelte v3.18.1 */
+
+const css$i = {
+	code: ".checkbox.svelte-ubkon.svelte-ubkon{display:block}.checkbox.svelte-ubkon input.svelte-ubkon{-webkit-appearance:checkbox;-moz-appearance:checkbox;appearance:checkbox}.checkbox.svelte-ubkon .inp-box-wrap.svelte-ubkon{position:relative;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex}.checkbox .inp-inner:checked+.inp-label.svelte-ubkon.svelte-ubkon .checked{display:block}.checkbox.svelte-ubkon .inp-label.svelte-ubkon{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start}.checkbox.svelte-ubkon .inp-label.svelte-ubkon .checked{display:none;position:absolute;top:0;left:0;width:100%;height:100%}",
+	map: "{\"version\":3,\"file\":\"Checkbox.svelte\",\"sources\":[\"Checkbox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let style = {}\\n    export let checked = undefined\\n    export let value = null\\n    export let id = undefined\\n    export let align = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let text = undefined\\n    export let invalid = undefined\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let required = undefined // undefined|required\\n    export let errors = undefined\\n\\n    $: idProp = id || name\\n    $: error = invalid || !!(errors || []).length\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })\\n</script>\\n\\n<div class={classProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">\\n            { label }\\n            <Br size=\\\"10\\\"/>\\n        </h2>\\n    {/if}\\n\\n    <input\\n            hidden\\n            type=\\\"checkbox\\\"\\n            id={idProp}\\n            {name}\\n            {form}\\n            {align}\\n            {value}\\n            {checked}\\n            {disabled}\\n            {required}\\n            class=\\\"inp-inner\\\"\\n            bind:checked\\n    >\\n\\n    <label for={idProp} class=\\\"inp-label\\\">\\n        <span class=\\\"inp-box-wrap\\\">\\n            <Icon type=\\\"box\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"unchecked\\\"/>\\n            <Icon type=\\\"box-checked\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"checked\\\"/>\\n        </span>\\n        {#if text}\\n            <s></s>\\n            <s></s>\\n            <h3 class=\\\"font-w-500 text-left\\\" style=\\\"padding-top: 4px\\\">{ text }</h3>\\n        {/if}\\n    </label>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .checkbox {\\n        display: block;\\n    }\\n\\n    .checkbox input {\\n        -webkit-appearance: checkbox;\\n           -moz-appearance: checkbox;\\n                appearance: checkbox;\\n    }\\n\\n    .checkbox .inp-box-wrap {\\n        position: relative;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n    }\\n    .checkbox .inp-inner:checked + .inp-label :global(.checked) {\\n        display: block;\\n    }\\n\\n    .checkbox .inp-label {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: start;\\n            -ms-flex-align: start;\\n                align-items: flex-start;\\n    }\\n\\n    .checkbox .inp-label :global(.checked) {\\n        display: none;\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLDRCQUFvQjtXQUFwQix5QkFBb0I7Z0JBQXBCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQiwyQkFBb0I7UUFBcEIsMkJBQW9CO1FBQXBCLG9CQUFvQjtJQUN4QjtJQUNBO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO0lBQzNCOztJQUVBO1FBQ0ksYUFBYTtRQUNiLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFdBQVc7UUFDWCxZQUFZO0lBQ2hCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuY2hlY2tib3gge1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggaW5wdXQge1xuICAgICAgICBhcHBlYXJhbmNlOiBjaGVja2JveDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1ib3gtd3JhcCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgfVxuICAgIC5jaGVja2JveCAuaW5wLWlubmVyOmNoZWNrZWQgKyAuaW5wLWxhYmVsIDpnbG9iYWwoLmNoZWNrZWQpIHtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtbGFiZWwge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogZmxleC1zdGFydDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1sYWJlbCA6Z2xvYmFsKC5jaGVja2VkKSB7XG4gICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAwEI,SAAS,0BAAC,CAAC,AACP,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,KAAK,aAAC,CAAC,AACb,kBAAkB,CAAE,QAAQ,CACzB,eAAe,CAAE,QAAQ,CACpB,UAAU,CAAE,QAAQ,AAChC,CAAC,AAED,sBAAS,CAAC,aAAa,aAAC,CAAC,AACrB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,AACxB,CAAC,AACD,SAAS,CAAC,UAAU,QAAQ,CAAG,oCAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACzD,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,UAAU,aAAC,CAAC,AAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,KAAK,CACpB,cAAc,CAAE,KAAK,CACjB,WAAW,CAAE,UAAU,AACnC,CAAC,AAED,sBAAS,CAAC,uBAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACpC,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+};
+
+const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { name } = $$props;
+	let { style = {} } = $$props;
+	let { checked = undefined } = $$props;
+	let { value = null } = $$props;
+	let { id = undefined } = $$props;
+	let { align = undefined } = $$props;
+	let { disabled = false } = $$props;
+	let { label = undefined } = $$props;
+	let { text = undefined } = $$props;
+	let { invalid = undefined } = $$props;
+	let { form = undefined } = $$props; // Specifies the form the <input> element belongs to
+	let { required = undefined } = $$props; // undefined|required
+	let { errors = undefined } = $$props;
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.checked === void 0 && $$bindings.checked && checked !== void 0) $$bindings.checked(checked);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.align === void 0 && $$bindings.align && align !== void 0) $$bindings.align(align);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
+	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	$$result.css.add(css$i);
+	let idProp = id || name;
+	let error = invalid || !!(errors || []).length;
+	let styleProp = toCSSString({ ...style, textAlign: align });
+	let classProp = classnames("checkbox", $$props.class, { disabled, required, error });
+
+	return `<div class="${escape(null_to_empty(classProp)) + " svelte-ubkon"}">
+    ${label
+	? `<h2 class="${"text-left"}">
+            ${escape(label)}
+            ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+        </h2>`
+	: ``}
+
+    <input hidden type="${"checkbox"}"${add_attribute("id", idProp, 0)}${add_attribute("name", name, 0)}${add_attribute("form", form, 0)}${add_attribute("align", align, 0)}${add_attribute("value", value, 0)} ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} ${required ? "required" : ""} class="${"inp-inner svelte-ubkon"}"${add_attribute("checked", checked, 1)}>
+
+    <label${add_attribute("for", idProp, 0)} class="${"inp-label svelte-ubkon"}">
+        <span class="${"inp-box-wrap svelte-ubkon"}">
+            ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			type: "box",
+			size: "big",
+			is: "info",
+			class: "unchecked"
+		},
+		{},
+		{}
+	)}
+            ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			type: "box-checked",
+			size: "big",
+			is: "info",
+			class: "checked"
+		},
+		{},
+		{}
+	)}
+        </span>
+        ${text
+	? `<s></s>
+            <s></s>
+            <h3 class="${"font-w-500 text-left"}" style="${"padding-top: 4px"}">${escape(text)}</h3>`
+	: ``}
+    </label>
+
+    ${validate_component(FieldErrors, "FieldErrors").$$render($$result, { items: errors }, {}, {
+		before: () => `<div slot="${"before"}">
+            ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+        </div>`,
+		default: () => `
+        
+    `
+	})}
+</div>`;
+});
+
+/* src/components/fields/ReadField.svelte generated by Svelte v3.18.1 */
+
+const ReadField = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { value = "" } = $$props;
+	let { style = {} } = $$props;
+	let { id = undefined } = $$props;
+	let { label = undefined } = $$props;
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	let styleProp = toCSSString({ ...style });
+	let classProp = classnames("block full-width text-left", $$props.class);
+
+	return `<div${add_attribute("id", id, 0)}${add_attribute("class", classProp, 0)}${add_attribute("style", styleProp, 0)}>
+    ${label
+	? `<h2 class="${"block full-width"}">${escape(label)}</h2>
+        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+	: ``}
+    <p class="${"block full-width"}">${escape(value || "—")}</p>
+</div>`;
+});
+
+/* src/components/fields/CheckboxGroup.svelte generated by Svelte v3.18.1 */
+
+const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { value = "" } = $$props;
+	let { style = {} } = $$props;
+	let { id = undefined } = $$props;
+	let { align = undefined } = $$props;
+	let { disabled = false } = $$props;
+	let { label = undefined } = $$props;
+	let { options = undefined } = $$props;
+	let { errors = undefined } = $$props;
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.align === void 0 && $$bindings.align && align !== void 0) $$bindings.align(align);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.options === void 0 && $$bindings.options && options !== void 0) $$bindings.options(options);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	let styleProp = toCSSString({ ...style, textAlign: align });
+	let classProp = classnames("checkbox-group", $$props.class, { disabled });
+
+	return `<div${add_attribute("id", id, 0)}${add_attribute("class", classProp, 0)}${add_attribute("styleProp", styleProp, 0)}>
+    ${label
+	? `<h2 class="${"text-left"}">
+            ${escape(label)}
+            ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+        </h2>`
+	: ``}
+
+    ${each(options, (checkbox, i) => `${i
+	? `${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}`
+	: ``}
+        ${validate_component(Checkbox, "Checkbox").$$render($$result, Object.assign(checkbox, { value: value[checkbox.name] }, { errors: errors[checkbox.name] }), {}, {})}`)}
+</div>`;
+});
+
+/* src/components/fields/uploadFiles/UploadBox.svelte generated by Svelte v3.18.1 */
+
+const css$j = {
+	code: ".inp-upload.svelte-2z485v{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-item-align:stretch;align-self:stretch;justify-self:stretch;overflow:hidden;border-radius:var(--border-radius-medium);color:rgba(var(--theme-color-primary-opposite), .5);background-color:rgba(var(--theme-color-primary-opposite), .07);-webkit-transform:translateZ(0);transform:translateZ(0)}.inp-upload.disabled.svelte-2z485v{opacity:.5;pointer-events:none}.inp-upload.error.svelte-2z485v,input:invalid+.inp-upload.svelte-2z485v{color:rgba(var(--color-danger), .5);background-color:rgba(var(--color-danger), .07)}input:focus+.inp-upload.svelte-2z485v{color:rgba(var(--color-info), .5);background-color:rgba(var(--color-info), .07)}",
+	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: classProp = classnames('inp-upload', { error, disabled })\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class}>\\n    <input\\n        {name}\\n        {accept}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture {src}/> \\n        </div>\\n        <div class=\\\"flex\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2Qiw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLHFCQUFxQjtRQUNyQixnQkFBZ0I7UUFDaEIsMENBQTBDO1FBQzFDLG9EQUFvRDtRQUNwRCxnRUFBZ0U7UUFDaEUsZ0NBQXdCO2dCQUF4Qix3QkFBd0I7SUFDNUI7O0lBRUE7UUFDSSxXQUFXO1FBQ1gsb0JBQW9CO0lBQ3hCOztJQUVBOztRQUVJLG9DQUFvQztRQUNwQyxnREFBZ0Q7SUFDcEQ7O0lBRUE7UUFDSSxrQ0FBa0M7UUFDbEMsOENBQThDO0lBQ2xEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmlucC11cGxvYWQge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAganVzdGlmeS1zZWxmOiBzdHJldGNoO1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLW1lZGl1bSk7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3ItcHJpbWFyeS1vcHBvc2l0ZSksIC4wNyk7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWigwKTtcbiAgICB9XG5cbiAgICAuaW5wLXVwbG9hZC5kaXNhYmxlZCB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICB9XG5cbiAgICAuaW5wLXVwbG9hZC5lcnJvcixcbiAgICBpbnB1dDppbnZhbGlkICsgLmlucC11cGxvYWQge1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1kYW5nZXIpLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjA3KTtcbiAgICB9XG5cbiAgICBpbnB1dDpmb2N1cyArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC41KTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1pbmZvKSwgLjA3KTtcbiAgICB9XG4iXX0= */</style>\"],\"names\":[],\"mappings\":\"AAiDI,WAAW,cAAC,CAAC,AACT,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,SAAS,cAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oBAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,cAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,cAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
+};
+
+const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { id = undefined } = $$props;
+	let { src = undefined } = $$props;
+	let { name = undefined } = $$props;
+	let { icon = undefined } = $$props;
+	let { label = undefined } = $$props;
+	let { value = undefined } = $$props;
+	let { errors = undefined } = $$props;
+	let { invalid = undefined } = $$props;
+	let { disabled = undefined } = $$props;
+	let { accept = "image/png, image/jpeg" } = $$props;
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.icon === void 0 && $$bindings.icon && icon !== void 0) $$bindings.icon(icon);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.accept === void 0 && $$bindings.accept && accept !== void 0) $$bindings.accept(accept);
+	$$result.css.add(css$j);
+
+	let error = invalid !== undefined
+	? invalid
+	: !!(errors || []).length;
+
+	let iconType = icon || "upload";
+	let idProp = id || name;
+	let classProp = classnames("inp-upload", { error, disabled });
+
+	return `${label
+	? `<h2 class="${"text-left"}">${escape(label)}</h2>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+	: ``}
+${validate_component(Square, "Square").$$render($$result, { class: $$props.class }, {}, {
+		default: () => `
+    <input${add_attribute("name", name, 0)}${add_attribute("accept", accept, 0)} hidden type="${"file"}"${add_attribute("id", idProp, 0)}>
+    <label${add_attribute("for", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-2z485v"}">
+        <div class="${"flex full-absolute"}">
+            ${validate_component(Picture, "Picture").$$render($$result, { src }, {}, {})} 
+        </div>
+        <div class="${"flex"}" style="${"flex: 0 0 75px"}">
+            ${validate_component(Icon, "Icon").$$render($$result, { type: iconType }, {}, {})}
+        </div>
+    </label>
+`
+	})}`;
+});
+
+/* src/components/fields/uploadFiles/UploadBoxGroup.svelte generated by Svelte v3.18.1 */
+
+const css$k = {
+	code: "ul.svelte-drrr3l{width:100%;display:grid;grid-template:auto / .5fr .5fr;grid-gap:20px}",
+	map: "{\"version\":3,\"file\":\"UploadBoxGroup.svelte\",\"sources\":[\"UploadBoxGroup.svelte\"],\"sourcesContent\":[\"<script>\\n    import { _, classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import UploadBox from './UploadBox.svelte'\\n\\n    export let name\\n    export let id = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let items = undefined\\n    export let accept = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let disabled = undefined\\n\\n    function getCells(list) {\\n        const defaultList = new Array(4).fill(undefined)\\n        const listArr = [].concat(list || [])\\n        const biggerList = listArr.length > defaultList.length ? listArr : defaultList\\n        return biggerList.map(((_, i) => listArr[i] || defaultList[i]))\\n    }\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || name\\n    $: itemsList = getCells(items)\\n    $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<ul id={idProp} class={classProp}>\\n    {#each itemsList as item, i}\\n        <li>\\n            <UploadBox\\n                {accept}\\n                {invalid}\\n                {disabled}\\n                src={item}\\n                name={`${name || ''}[${i}]`}\\n                errors={_.get(errors, i)}\\n                bind:value\\n                on:change \\n            />\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: grid;\\n        grid-template: auto / .5fr .5fr;\\n        grid-gap: 20px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYiwrQkFBK0I7UUFDL0IsY0FBYztJQUNsQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94R3JvdXAuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgdWwge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZ3JpZDtcbiAgICAgICAgZ3JpZC10ZW1wbGF0ZTogYXV0byAvIC41ZnIgLjVmcjtcbiAgICAgICAgZ3JpZC1nYXA6IDIwcHg7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAkDI,EAAE,cAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAC/B,QAAQ,CAAE,IAAI,AAClB,CAAC\"}"
+};
+
+function getCells(list) {
+	const defaultList = new Array(4).fill(undefined);
+	const listArr = [].concat(list || []);
+
+	const biggerList = listArr.length > defaultList.length
+	? listArr
+	: defaultList;
+
+	return biggerList.map((_, i) => listArr[i] || defaultList[i]);
+}
+
+const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { name } = $$props;
+	let { id = undefined } = $$props;
+	let { label = undefined } = $$props;
+	let { value = undefined } = $$props;
+	let { items = undefined } = $$props;
+	let { accept = undefined } = $$props;
+	let { errors = undefined } = $$props;
+	let { invalid = undefined } = $$props;
+	let { disabled = undefined } = $$props;
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	if ($$props.accept === void 0 && $$bindings.accept && accept !== void 0) $$bindings.accept(accept);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	$$result.css.add(css$k);
+	let $$settled;
+	let $$rendered;
+
+	do {
+		$$settled = true;
+
+		let error = invalid !== undefined
+		? invalid
+		: !!(errors || []).length;
+
+		let idProp = id || name;
+		let itemsList = getCells(items);
+		let classProp = classnames("inp-upload-group", $$props.class, { error, disabled });
+
+		$$rendered = `${label
+		? `<h2 class="${"text-left"}">${escape(label)}</h2>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+		: ``}
+<ul${add_attribute("id", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-drrr3l"}">
+    ${each(itemsList, (item, i) => `<li>
+            ${validate_component(UploadBox, "UploadBox").$$render(
+			$$result,
+			{
+				accept,
+				invalid,
+				disabled,
+				src: item,
+				name: `${name || ""}[${i}]`,
+				errors: get(errors, i),
+				value
+			},
+			{
+				value: $$value => {
+					value = $$value;
+					$$settled = false;
+				}
+			},
+			{}
+		)}
+        </li>`)}
+</ul>`;
+	} while (!$$settled);
+
+	return $$rendered;
+});
+
+/* src/components/FormBuilder.svelte generated by Svelte v3.18.1 */
+
+const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { id = undefined } = $$props;
+	let { items = [] } = $$props;
+	let { data = {} } = $$props;
+	let { errors = {} } = $$props;
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+
+	return `${validate_component(Form, "Form").$$render($$result, { id }, {}, {
+		default: () => `
+    ${each(items, (item, i) => `${i
+		? `${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}`
+		: ``}
+        ${[
+			"text",
+			"number",
+			"textarea",
+			"email",
+			"password",
+			"search",
+			"tel",
+			"date",
+			"datetime-local",
+			"time"
+		].includes(item.type)
+		? `${data[item.name] !== null
+			? `${validate_component(Input, "Input").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			: `<div>
+                    ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
+                    ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
+                </div>`}`
+		: `${["checkbox"].includes(item.type)
+			? `${validate_component(CheckboxGroup, "CheckboxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			: `${["select"].includes(item.type)
+				? `${data[item.name] !== null
+					? `${validate_component(Select, "Select").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					: `<div>
+                    ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
+                    ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
+                </div>`}`
+				: `${["file"].includes(item.type)
+					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					: `${["files"].includes(item.type)
+						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+						: `${data[item.name] !== null
+							? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: data[item.name] }), {}, {})}`
+							: `<div>
+                    ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
+                    ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                </div>`}`}`}`}`}`}`)}
+`
+	})}`;
+});
+
 /* src/components/app/Header.svelte generated by Svelte v3.18.1 */
 
-const css$g = {
+const css$l = {
 	code: "nav.svelte-5apnel.svelte-5apnel{position:fixed;top:0;width:100%;height:var(--header-height);z-index:7;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-transform:translateY(-100%);transform:translateY(-100%);-webkit-transition:.2s ease-in-out;transition:.2s ease-in-out;color:rgba(var(--color-font-light));-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;-webkit-box-shadow:var(--shadow-secondary);box-shadow:var(--shadow-secondary);background-color:rgba(var(--color-dark-second))}nav.active.svelte-5apnel.svelte-5apnel{-webkit-transform:none;transform:none\n    }.selected.svelte-5apnel.svelte-5apnel{position:relative;display:inline-block}.selected.svelte-5apnel.svelte-5apnel::after{position:absolute;content:\"\";width:calc(100% - 1em);height:2px;background-color:rgb(var(--color-danger));display:block;bottom:-1px}.nav-pages.svelte-5apnel a.svelte-5apnel{padding:0.8em 0.5em}.nav-actions.svelte-5apnel.svelte-5apnel{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin:-3px}.nav-actions.svelte-5apnel li.svelte-5apnel{padding:3px}.nav-actions.svelte-5apnel a.svelte-5apnel{display:block}.lang-select.svelte-5apnel.svelte-5apnel{padding:5px;background-color:transparent;color:rgba(var(--color-font-light))}.lang-select.svelte-5apnel.svelte-5apnel:hover,.lang-select.svelte-5apnel.svelte-5apnel:focus{-webkit-box-shadow:none;box-shadow:none;background-color:rgba(var(--color-black), 0.1)}",
 	map: "{\"version\":3,\"file\":\"Header.svelte\",\"sources\":[\"Header.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { Storages } from '@services'\\n    import { classnames, safeGet } from '@utils'\\n    import Icon from '@components/Icon.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Avatar from '@components/Avatar.svelte'\\n\\n    export let segment\\n\\n    let value = 'ua'\\n\\n    const gap = 50\\n    let isHeaderVisible = true\\n    let onScroll = null\\n    let lastY = 0\\n    $: classProp = classnames('container', { active: isHeaderVisible })\\n    onMount(() => {\\n        onScroll = () => requestAnimationFrame(function() {\\n            const currentY = window.pageYOffset;\\n            const direction = currentY - lastY\\n            if (direction < -gap || currentY < 50) { // up (50 - max scrollTop for displaying header)\\n                if (!isHeaderVisible) isHeaderVisible = true\\n                lastY = currentY + gap;\\n            } else if (direction > gap) { // down\\n                if (isHeaderVisible) isHeaderVisible = false\\n                lastY = currentY - gap;\\n            }\\n        })\\n    })\\n\\n    let themeName = safeGet(() => Storages.cookieStorage.get('theme') || Storages.localStorage.get('theme'))\\n    function changeTheme(theme) {\\n        themeName = theme\\n        document.body.classList.remove('theme-dark')\\n        document.body.classList.remove('theme-light')\\n        document.body.classList.add(theme)\\n\\n        document.getElementById('main').classList.remove('theme-dark')\\n        document.getElementById('main').classList.remove('theme-light')\\n        document.getElementById('main').classList.add(theme)\\n\\n        Storages.cookieStorage.set('theme', theme)\\n        Storages.localStorage.set('theme', theme)\\n    }\\n\\n    onMount(() => {\\n        changeTheme(themeName)\\n    })\\n</script>\\n\\n<svelte:window on:scroll={onScroll}/>\\n<nav class={classProp}>\\n    <ul class=\\\"nav-pages flex\\\">\\n        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>\\n        <li><a rel=prefetch href='lists/funds' class:selected='{segment === \\\"lists\\\"}'>lists</a></li>\\n        <li><a href='map' class:selected='{segment === \\\"map\\\"}'>map</a></li>\\n    </ul>\\n\\n    <ul class=\\\"nav-actions\\\">\\n        <li>\\n            <select {value} name=\\\"lang\\\" id=\\\"lang\\\" class=\\\"btn small lang-select\\\">\\n                <option value=\\\"ua\\\">Ua</option>\\n                <option value=\\\"ru\\\">Ru</option>\\n                <option value=\\\"en\\\">En</option>\\n            </select>\\n        </li>\\n\\n        <li>\\n            <Button on:click={() => changeTheme(themeName === 'theme-light' ? 'theme-dark' : 'theme-light')} auto size=\\\"small\\\">\\n                <Icon type=\\\"moon\\\" size=\\\"medium\\\" class=\\\"theme-svg-fill-opposite\\\" is=\\\"light\\\"/>\\n            </Button>\\n        </li>\\n\\n        <li>\\n            <a class=\\\"btn small\\\" href=\\\"users/me\\\">\\n                <Avatar size=\\\"small\\\" src=\\\"https://placeimg.com/30/30/people\\\" alt=\\\"avatar\\\"/>\\n            </a>\\n        </li>\\n    </ul>\\n</nav>\\n\\n<style>\\n    nav {\\n        position: fixed;\\n        top: 0;\\n        width: 100%;\\n        height: var(--header-height);\\n        z-index: 7;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-transform: translateY(-100%);\\n                transform: translateY(-100%);\\n        -webkit-transition: .2s ease-in-out;\\n        transition: .2s ease-in-out;\\n        color: rgba(var(--color-font-light));\\n        -webkit-box-pack: justify;\\n            -ms-flex-pack: justify;\\n                justify-content: space-between;\\n        -webkit-box-shadow: var(--shadow-secondary);\\n                box-shadow: var(--shadow-secondary);\\n        background-color: rgba(var(--color-dark-second));\\n    }\\n\\n    nav.active {\\n        -webkit-transform: none;\\n                transform: none\\n    }\\n\\n    .selected {\\n        position: relative;\\n        display: inline-block;\\n    }\\n\\n    .selected::after {\\n        position: absolute;\\n        content: \\\"\\\";\\n        width: calc(100% - 1em);\\n        height: 2px;\\n        background-color: rgb(var(--color-danger));\\n        display: block;\\n        bottom: -1px;\\n    }\\n\\n    .nav-pages a {\\n        padding: 0.8em 0.5em;\\n    }\\n\\n    .nav-actions {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        margin: -3px;\\n    }\\n\\n    .nav-actions li {\\n        padding: 3px;\\n    }\\n\\n    .nav-actions a {\\n        display: block;\\n    }\\n\\n    .lang-select {\\n        padding: 5px;\\n        background-color: transparent;\\n        color: rgba(var(--color-font-light));\\n    }\\n\\n    .lang-select:hover,\\n    .lang-select:focus {\\n        -webkit-box-shadow: none;\\n                box-shadow: none;\\n        background-color: rgba(var(--color-black), 0.1);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9IZWFkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGVBQWU7UUFDZixNQUFNO1FBQ04sV0FBVztRQUNYLDRCQUE0QjtRQUM1QixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsb0NBQTRCO2dCQUE1Qiw0QkFBNEI7UUFDNUIsbUNBQTJCO1FBQTNCLDJCQUEyQjtRQUMzQixvQ0FBb0M7UUFDcEMseUJBQThCO1lBQTlCLHNCQUE4QjtnQkFBOUIsOEJBQThCO1FBQzlCLDJDQUFtQztnQkFBbkMsbUNBQW1DO1FBQ25DLGdEQUFnRDtJQUNwRDs7SUFFQTtRQUNJLHVCQUFjO2dCQUFkO0lBQ0o7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIscUJBQXFCO0lBQ3pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7UUFDWCx1QkFBdUI7UUFDdkIsV0FBVztRQUNYLDBDQUEwQztRQUMxQyxjQUFjO1FBQ2QsWUFBWTtJQUNoQjs7SUFFQTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLFlBQVk7SUFDaEI7O0lBRUE7UUFDSSxZQUFZO0lBQ2hCOztJQUVBO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLFlBQVk7UUFDWiw2QkFBNkI7UUFDN0Isb0NBQW9DO0lBQ3hDOztJQUVBOztRQUVJLHdCQUFnQjtnQkFBaEIsZ0JBQWdCO1FBQ2hCLCtDQUErQztJQUNuRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvSGVhZGVyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIG5hdiB7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiB2YXIoLS1oZWFkZXItaGVpZ2h0KTtcbiAgICAgICAgei1pbmRleDogNztcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKC0xMDAlKTtcbiAgICAgICAgdHJhbnNpdGlvbjogLjJzIGVhc2UtaW4tb3V0O1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1mb250LWxpZ2h0KSk7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcbiAgICAgICAgYm94LXNoYWRvdzogdmFyKC0tc2hhZG93LXNlY29uZGFyeSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFyay1zZWNvbmQpKTtcbiAgICB9XG5cbiAgICBuYXYuYWN0aXZlIHtcbiAgICAgICAgdHJhbnNmb3JtOiBub25lXG4gICAgfVxuXG4gICAgLnNlbGVjdGVkIHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgfVxuXG4gICAgLnNlbGVjdGVkOjphZnRlciB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgY29udGVudDogXCJcIjtcbiAgICAgICAgd2lkdGg6IGNhbGMoMTAwJSAtIDFlbSk7XG4gICAgICAgIGhlaWdodDogMnB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2IodmFyKC0tY29sb3ItZGFuZ2VyKSk7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgICAgICBib3R0b206IC0xcHg7XG4gICAgfVxuXG4gICAgLm5hdi1wYWdlcyBhIHtcbiAgICAgICAgcGFkZGluZzogMC44ZW0gMC41ZW07XG4gICAgfVxuXG4gICAgLm5hdi1hY3Rpb25zIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgbWFyZ2luOiAtM3B4O1xuICAgIH1cblxuICAgIC5uYXYtYWN0aW9ucyBsaSB7XG4gICAgICAgIHBhZGRpbmc6IDNweDtcbiAgICB9XG5cbiAgICAubmF2LWFjdGlvbnMgYSB7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIH1cblxuICAgIC5sYW5nLXNlbGVjdCB7XG4gICAgICAgIHBhZGRpbmc6IDVweDtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWZvbnQtbGlnaHQpKTtcbiAgICB9XG5cbiAgICAubGFuZy1zZWxlY3Q6aG92ZXIsXG4gICAgLmxhbmctc2VsZWN0OmZvY3VzIHtcbiAgICAgICAgYm94LXNoYWRvdzogbm9uZTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIDAuMSk7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAmFI,GAAG,4BAAC,CAAC,AACD,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,eAAe,CAAC,CAC5B,OAAO,CAAE,CAAC,CACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,iBAAiB,CAAE,WAAW,KAAK,CAAC,CAC5B,SAAS,CAAE,WAAW,KAAK,CAAC,CACpC,kBAAkB,CAAE,GAAG,CAAC,WAAW,CACnC,UAAU,CAAE,GAAG,CAAC,WAAW,CAC3B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,CACpC,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,aAAa,CACtC,kBAAkB,CAAE,IAAI,kBAAkB,CAAC,CACnC,UAAU,CAAE,IAAI,kBAAkB,CAAC,CAC3C,gBAAgB,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,AACpD,CAAC,AAED,GAAG,OAAO,4BAAC,CAAC,AACR,iBAAiB,CAAE,IAAI,CACf,SAAS,CAAE,IAAI;IAC3B,CAAC,AAED,SAAS,4BAAC,CAAC,AACP,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,YAAY,AACzB,CAAC,AAED,qCAAS,OAAO,AAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EAAE,CACX,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,GAAG,CAAC,CACvB,MAAM,CAAE,GAAG,CACX,gBAAgB,CAAE,IAAI,IAAI,cAAc,CAAC,CAAC,CAC1C,OAAO,CAAE,KAAK,CACd,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,wBAAU,CAAC,CAAC,cAAC,CAAC,AACV,OAAO,CAAE,KAAK,CAAC,KAAK,AACxB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,0BAAY,CAAC,EAAE,cAAC,CAAC,AACb,OAAO,CAAE,GAAG,AAChB,CAAC,AAED,0BAAY,CAAC,CAAC,cAAC,CAAC,AACZ,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,GAAG,CACZ,gBAAgB,CAAE,WAAW,CAC7B,KAAK,CAAE,KAAK,IAAI,kBAAkB,CAAC,CAAC,AACxC,CAAC,AAED,wCAAY,MAAM,CAClB,wCAAY,MAAM,AAAC,CAAC,AAChB,kBAAkB,CAAE,IAAI,CAChB,UAAU,CAAE,IAAI,CACxB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,AACnD,CAAC\"}"
 };
@@ -2352,7 +3928,7 @@ const Header = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	});
 
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
-	$$result.css.add(css$g);
+	$$result.css.add(css$l);
 	let classProp = classnames("container", { active: isHeaderVisible });
 
 	return `
@@ -2410,13 +3986,13 @@ const Header = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 /* src/components/app/Footer.svelte generated by Svelte v3.18.1 */
 
-const css$h = {
+const css$m = {
 	code: "footer.svelte-76fy0z{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;padding:var(--screen-padding);-webkit-box-shadow:inset var(--shadow-primary);box-shadow:inset var(--shadow-primary);background-color:rgba(var(--theme-bg-color))}ul.svelte-76fy0z{display:-webkit-box;display:-ms-flexbox;display:flex;margin:-3px}li.svelte-76fy0z{padding:3px}",
 	map: "{\"version\":3,\"file\":\"Footer.svelte\",\"sources\":[\"Footer.svelte\"],\"sourcesContent\":[\"<script>\\n    import Button from '@components/Button.svelte'\\n</script>\\n\\n<footer>\\n    <p>© {new Date().getFullYear()}</p>\\n    <ul>\\n        <li>\\n            <Button size=\\\"small\\\" is=\\\"success\\\">Action</Button>\\n        </li>\\n    </ul>\\n</footer>\\n\\n<style>\\n    footer {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: justify;\\n            -ms-flex-pack: justify;\\n                justify-content: space-between;\\n        padding: var(--screen-padding);\\n        -webkit-box-shadow: inset var(--shadow-primary);\\n                box-shadow: inset var(--shadow-primary);\\n        background-color: rgba(var(--theme-bg-color));\\n    }\\n\\n    ul {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        margin: -3px;\\n    }\\n\\n    li {\\n        padding: 3px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9Gb290ZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHlCQUE4QjtZQUE5QixzQkFBOEI7Z0JBQTlCLDhCQUE4QjtRQUM5Qiw4QkFBOEI7UUFDOUIsK0NBQXVDO2dCQUF2Qyx1Q0FBdUM7UUFDdkMsNkNBQTZDO0lBQ2pEOztJQUVBO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixZQUFZO0lBQ2hCOztJQUVBO1FBQ0ksWUFBWTtJQUNoQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvRm9vdGVyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIGZvb3RlciB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcbiAgICAgICAgcGFkZGluZzogdmFyKC0tc2NyZWVuLXBhZGRpbmcpO1xuICAgICAgICBib3gtc2hhZG93OiBpbnNldCB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3IpKTtcbiAgICB9XG5cbiAgICB1bCB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG1hcmdpbjogLTNweDtcbiAgICB9XG5cbiAgICBsaSB7XG4gICAgICAgIHBhZGRpbmc6IDNweDtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAcI,MAAM,cAAC,CAAC,AACJ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,aAAa,CACtC,OAAO,CAAE,IAAI,gBAAgB,CAAC,CAC9B,kBAAkB,CAAE,KAAK,CAAC,IAAI,gBAAgB,CAAC,CACvC,UAAU,CAAE,KAAK,CAAC,IAAI,gBAAgB,CAAC,CAC/C,gBAAgB,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,AACjD,CAAC,AAED,EAAE,cAAC,CAAC,AACA,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,MAAM,CAAE,IAAI,AAChB,CAAC,AAED,EAAE,cAAC,CAAC,AACA,OAAO,CAAE,GAAG,AAChB,CAAC\"}"
 };
 
 const Footer = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	$$result.css.add(css$h);
+	$$result.css.add(css$m);
 
 	return `<footer class="${"svelte-76fy0z"}">
     <p>© ${escape(new Date().getFullYear())}</p>
@@ -2430,7 +4006,7 @@ const Footer = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 /* src/components/app/SocialsX.svelte generated by Svelte v3.18.1 */
 
-const css$i = {
+const css$n = {
 	code: ".social-icons.svelte-290smm li.svelte-290smm{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:40px;height:40px;border-radius:50%;overflow:hidden;margin:0 10px}.social-icons.svelte-290smm .telegram.svelte-290smm{background-color:#2197D2}.social-icons.svelte-290smm .facebook.svelte-290smm{background-color:#4267B2}.social-icons.svelte-290smm .viber.svelte-290smm{background-color:#665CAC}",
 	map: "{\"version\":3,\"file\":\"SocialsX.svelte\",\"sources\":[\"SocialsX.svelte\"],\"sourcesContent\":[\"<script>\\n    import Icon from '../Icon.svelte'\\n    import Loader from '../Loader/Loader.svelte'\\n\\n    /**\\n     * @type {{\\n     *  href: string,\\n     *  title: string,\\n     *  type: Config.Icons,\\n     * }[]}\\n     */\\n    export let items\\n\\n    $: list = items === null ? [null, null, null] : items || []\\n</script>\\n\\n<ul class=\\\"flex flex-justify-center social-icons\\\">\\n    {#each list as item}\\n        {#if item !== null}\\n            <li class={item.type}>\\n                <slot {item}>\\n                    {#if item.href}\\n                        <a href={item.href} target=\\\"_blank\\\" title={item.title}>\\n                            <Icon type={item.type} is=\\\"light\\\" size=\\\"medium\\\"/>\\n                        </a>\\n                    {:else}\\n                        <span on:click>\\n                            <Icon type={item.type} is=\\\"light\\\" size=\\\"medium\\\"/>\\n                        </span>\\n                    {/if}\\n                </slot>\\n            </li>\\n        {:else}\\n            <li style=\\\"padding: 0 10px; width: 60px; height: 45px; overflow: hidden\\\">\\n                <Loader type=\\\"avatar\\\"/>\\n            </li>\\n        {/if}\\n    {/each}\\n</ul>\\n\\n<style>\\n    .social-icons li {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 40px;\\n        height: 40px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        margin: 0 10px;\\n    }\\n\\n    .social-icons .telegram {\\n        background-color: #2197D2;\\n    }\\n    .social-icons .facebook {\\n        background-color: #4267B2;\\n    }\\n    .social-icons .viber {\\n        background-color: #665CAC;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9Tb2NpYWxzWC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLFdBQVc7UUFDWCxZQUFZO1FBQ1osa0JBQWtCO1FBQ2xCLGdCQUFnQjtRQUNoQixjQUFjO0lBQ2xCOztJQUVBO1FBQ0kseUJBQXlCO0lBQzdCO0lBQ0E7UUFDSSx5QkFBeUI7SUFDN0I7SUFDQTtRQUNJLHlCQUF5QjtJQUM3QiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvU29jaWFsc1guc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnNvY2lhbC1pY29ucyBsaSB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNDBweDtcbiAgICAgICAgaGVpZ2h0OiA0MHB4O1xuICAgICAgICBib3JkZXItcmFkaXVzOiA1MCU7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIG1hcmdpbjogMCAxMHB4O1xuICAgIH1cblxuICAgIC5zb2NpYWwtaWNvbnMgLnRlbGVncmFtIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogIzIxOTdEMjtcbiAgICB9XG4gICAgLnNvY2lhbC1pY29ucyAuZmFjZWJvb2sge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDI2N0IyO1xuICAgIH1cbiAgICAuc29jaWFsLWljb25zIC52aWJlciB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6ICM2NjVDQUM7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAyCI,2BAAa,CAAC,EAAE,cAAC,CAAC,AACd,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,MAAM,CAAE,CAAC,CAAC,IAAI,AAClB,CAAC,AAED,2BAAa,CAAC,SAAS,cAAC,CAAC,AACrB,gBAAgB,CAAE,OAAO,AAC7B,CAAC,AACD,2BAAa,CAAC,SAAS,cAAC,CAAC,AACrB,gBAAgB,CAAE,OAAO,AAC7B,CAAC,AACD,2BAAa,CAAC,MAAM,cAAC,CAAC,AAClB,gBAAgB,CAAE,OAAO,AAC7B,CAAC\"}"
 };
@@ -2438,7 +4014,7 @@ const css$i = {
 const SocialsX = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$i);
+	$$result.css.add(css$n);
 	let list = items === null ? [null, null, null] : items || [];
 
 	return `<ul class="${"flex flex-justify-center social-icons svelte-290smm"}">
@@ -2482,7 +4058,7 @@ const SocialsX = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/app/SocialsY.svelte generated by Svelte v3.18.1 */
 
-const css$j = {
+const css$o = {
 	code: ".social-icons.svelte-liclkg li.svelte-liclkg{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;overflow:hidden;margin:7px 0}.social-icons.svelte-liclkg .inner.svelte-liclkg{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.social-icons.svelte-liclkg .icon-wrap.svelte-liclkg{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:26px;height:26px;border-radius:50%;background-color:rgba(var(--color-dark))}",
 	map: "{\"version\":3,\"file\":\"SocialsY.svelte\",\"sources\":[\"SocialsY.svelte\"],\"sourcesContent\":[\"\\n<script>\\n    import Icon from '../Icon.svelte'\\n    import Loader from '../Loader/Loader.svelte'\\n\\n    /**\\n     * @type {{\\n     *  href: string,\\n     *  title: string,\\n     *  type: Config.Icons,\\n     * }[]}\\n     */\\n    export let items\\n\\n    $: list = items === null ? [null, null, null] : items || []\\n</script>\\n\\n<ul class=\\\"social-icons\\\">\\n    {#each list as item}\\n        <li>\\n            {#if item !== null}\\n                <slot {item}>\\n                    {#if item.href}\\n                        <a href={item.href} target=\\\"_blank\\\" class=\\\"inner\\\" title={item.title}>\\n                            <span class=\\\"icon-wrap\\\">\\n                                <Icon type={item.type} is=\\\"light\\\" size=\\\"tiny\\\"/>\\n                            </span>\\n                            <s></s>\\n                            <s></s>\\n                            <s></s>\\n                            <p class=\\\"h3\\\">{item.title}</p>\\n                        </a>\\n                    {:else}\\n                        <div on:click class=\\\"inner\\\" title={item.title}>\\n                            <span class=\\\"icon-wrap\\\">\\n                                <Icon type={item.type} is=\\\"light\\\" size=\\\"tiny\\\"/>\\n                            </span>\\n                            <s></s>\\n                            <s></s>\\n                            <s></s>\\n                            <p class=\\\"h3\\\">{item.title}</p>\\n                        </div>\\n                    {/if}\\n                </slot>\\n            {:else}\\n                <span class=\\\"flex flex-align-center\\\" style=\\\"padding: 7px 0\\\">\\n                    <Loader type=\\\"h3\\\"/>\\n                </span>\\n            {/if}\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    .social-icons li {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        overflow: hidden;\\n        margin: 7px 0;\\n    }\\n\\n    .social-icons .inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n    }\\n\\n    .social-icons .icon-wrap {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 26px;\\n        height: 26px;\\n        border-radius: 50%;\\n        background-color: rgba(var(--color-dark));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9Tb2NpYWxzWS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsZ0JBQWdCO1FBQ2hCLGFBQWE7SUFDakI7O0lBRUE7UUFDSSxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtJQUN2Qjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixXQUFXO1FBQ1gsWUFBWTtRQUNaLGtCQUFrQjtRQUNsQix5Q0FBeUM7SUFDN0MiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvYXBwL1NvY2lhbHNZLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5zb2NpYWwtaWNvbnMgbGkge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICBtYXJnaW46IDdweCAwO1xuICAgIH1cblxuICAgIC5zb2NpYWwtaWNvbnMgLmlubmVyIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICB9XG5cbiAgICAuc29jaWFsLWljb25zIC5pY29uLXdyYXAge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDI2cHg7XG4gICAgICAgIGhlaWdodDogMjZweDtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhcmspKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAsDI,2BAAa,CAAC,EAAE,cAAC,CAAC,AACd,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,QAAQ,CAAE,MAAM,CAChB,MAAM,CAAE,GAAG,CAAC,CAAC,AACjB,CAAC,AAED,2BAAa,CAAC,MAAM,cAAC,CAAC,AAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,AAC/B,CAAC,AAED,2BAAa,CAAC,UAAU,cAAC,CAAC,AACtB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,aAAa,CAAE,GAAG,CAClB,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAC7C,CAAC\"}"
 };
@@ -2490,7 +4066,7 @@ const css$j = {
 const SocialsY = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$j);
+	$$result.css.add(css$o);
 	let list = items === null ? [null, null, null] : items || [];
 
 	return `<ul class="${"social-icons svelte-liclkg"}">
@@ -2546,7 +4122,7 @@ const SocialsY = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/app/Documents.svelte generated by Svelte v3.18.1 */
 
-const css$k = {
+const css$p = {
 	code: ".documents.active .scroll-x-center > *{-webkit-transform:none;transform:none\n    }section.svelte-fiqk5v{height:calc((100vw - var(--screen-padding) * 2) * 1.428);padding:0 var(--screen-padding)}div.svelte-fiqk5v{-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-item-align:stretch;align-self:stretch;height:180px;width:126px;padding:15px 5px;-webkit-box-sizing:content-box;box-sizing:content-box}div.start.svelte-fiqk5v{padding-left:var(--screen-padding)}div.end.svelte-fiqk5v{padding-right:var(--screen-padding)}",
 	map: "{\"version\":3,\"file\":\"Documents.svelte\",\"sources\":[\"Documents.svelte\"],\"sourcesContent\":[\"<script>\\n    import { classnames } from '@utils'\\n    import Card from '@components/Card.svelte'\\n    import Picture from '@components/Picture.svelte'\\n    import FancyBox from '@components/FancyBox.svelte'\\n    import Carousel from '@components/Carousel.svelte'\\n\\n    export let items = new Array(5).fill({})\\n\\n    let active = false\\n</script>\\n\\n<Carousel items={items} size=\\\"auto\\\" dots={false} let:item={item} let:index={index} class={classnames('documents', { active })}>\\n    <div class={!index ? 'start' : index === items.length - 1 ? 'end' : ''}>\\n        <FancyBox on:open={() => active = true} on:close={() => active = false}>\\n            <Card class=\\\"flex\\\">\\n                <Picture src={item.src} alt={item.title} size=\\\"contain\\\"/>\\n            </Card>\\n            <section slot=\\\"box\\\" class=\\\"flex full-container\\\">\\n                <Card class=\\\"flex\\\">\\n                    <Picture src={item.src} srcBig={item.src2x} alt={item.title} size=\\\"contain\\\"/>\\n                </Card>\\n            </section>\\n        </FancyBox>\\n    </div>\\n</Carousel>\\n\\n<style>\\n    :global(.documents.active .scroll-x-center > *) {\\n        -webkit-transform: none;\\n                transform: none\\n    }\\n\\n    section {\\n        height: calc((100vw - var(--screen-padding) * 2) * 1.428);\\n        padding: 0 var(--screen-padding);\\n    }\\n    \\n    div {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        height: 180px;\\n        width: 126px;\\n        padding: 15px 5px;\\n        -webkit-box-sizing: content-box;\\n                box-sizing: content-box;\\n    }\\n\\n    div.start {\\n        padding-left: var(--screen-padding);\\n    }\\n\\n    div.end {\\n        padding-right: var(--screen-padding);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9Eb2N1bWVudHMuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLHVCQUFjO2dCQUFkO0lBQ0o7O0lBRUE7UUFDSSx5REFBeUQ7UUFDekQsZ0NBQWdDO0lBQ3BDOztJQUVBO1FBQ0ksbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsYUFBYTtRQUNiLFlBQVk7UUFDWixpQkFBaUI7UUFDakIsK0JBQXVCO2dCQUF2Qix1QkFBdUI7SUFDM0I7O0lBRUE7UUFDSSxtQ0FBbUM7SUFDdkM7O0lBRUE7UUFDSSxvQ0FBb0M7SUFDeEMiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvYXBwL0RvY3VtZW50cy5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICA6Z2xvYmFsKC5kb2N1bWVudHMuYWN0aXZlIC5zY3JvbGwteC1jZW50ZXIgPiAqKSB7XG4gICAgICAgIHRyYW5zZm9ybTogbm9uZVxuICAgIH1cblxuICAgIHNlY3Rpb24ge1xuICAgICAgICBoZWlnaHQ6IGNhbGMoKDEwMHZ3IC0gdmFyKC0tc2NyZWVuLXBhZGRpbmcpICogMikgKiAxLjQyOCk7XG4gICAgICAgIHBhZGRpbmc6IDAgdmFyKC0tc2NyZWVuLXBhZGRpbmcpO1xuICAgIH1cbiAgICBcbiAgICBkaXYge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgICAgICBoZWlnaHQ6IDE4MHB4O1xuICAgICAgICB3aWR0aDogMTI2cHg7XG4gICAgICAgIHBhZGRpbmc6IDE1cHggNXB4O1xuICAgICAgICBib3gtc2l6aW5nOiBjb250ZW50LWJveDtcbiAgICB9XG5cbiAgICBkaXYuc3RhcnQge1xuICAgICAgICBwYWRkaW5nLWxlZnQ6IHZhcigtLXNjcmVlbi1wYWRkaW5nKTtcbiAgICB9XG5cbiAgICBkaXYuZW5kIHtcbiAgICAgICAgcGFkZGluZy1yaWdodDogdmFyKC0tc2NyZWVuLXBhZGRpbmcpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA4BY,sCAAsC,AAAE,CAAC,AAC7C,iBAAiB,CAAE,IAAI,CACf,SAAS,CAAE,IAAI;IAC3B,CAAC,AAED,OAAO,cAAC,CAAC,AACL,MAAM,CAAE,KAAK,CAAC,KAAK,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CACzD,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC,AACpC,CAAC,AAED,GAAG,cAAC,CAAC,AACD,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,MAAM,CAAE,KAAK,CACb,KAAK,CAAE,KAAK,CACZ,OAAO,CAAE,IAAI,CAAC,GAAG,CACjB,kBAAkB,CAAE,WAAW,CACvB,UAAU,CAAE,WAAW,AACnC,CAAC,AAED,GAAG,MAAM,cAAC,CAAC,AACP,YAAY,CAAE,IAAI,gBAAgB,CAAC,AACvC,CAAC,AAED,GAAG,IAAI,cAAC,CAAC,AACL,aAAa,CAAE,IAAI,gBAAgB,CAAC,AACxC,CAAC\"}"
 };
@@ -2555,7 +4131,7 @@ const Documents = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	let { items = new Array(5).fill({}) } = $$props;
 	let active = false;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$k);
+	$$result.css.add(css$p);
 
 	return `${validate_component(Carousel, "Carousel").$$render(
 		$$result,
@@ -2615,7 +4191,7 @@ const Documents = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 
 /* src/components/app/AvatarAndName.svelte generated by Svelte v3.18.1 */
 
-const css$l = {
+const css$q = {
 	code: "section.svelte-1s1l67a.svelte-1s1l67a{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:center;-ms-flex-align:center;align-items:center;overflow:hidden}span.svelte-1s1l67a.svelte-1s1l67a{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;overflow:hidden;padding:0 15px}span.svelte-1s1l67a h4.svelte-1s1l67a,span.svelte-1s1l67a sub.svelte-1s1l67a{max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}",
 	map: "{\"version\":3,\"file\":\"AvatarAndName.svelte\",\"sources\":[\"AvatarAndName.svelte\"],\"sourcesContent\":[\"<script>\\n    import Avatar from '@components/Avatar.svelte'\\n\\n    export let src = undefined\\n    export let title = 'incognito'\\n    export let subtitle = ''\\n</script>\\n\\n<section>\\n    <Avatar src={src} size=\\\"medium\\\" alt={title}/>\\n\\n    <span>\\n        <h4>{title}</h4>\\n        <sub>{subtitle}</sub>\\n    </span>\\n</section>\\n\\n<style>\\n    section {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        overflow: hidden;\\n    }\\n\\n    span {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        overflow: hidden;\\n        padding: 0 15px;\\n    }\\n\\n    span h4,\\n    span sub {\\n        max-width: 100%;\\n        overflow: hidden;\\n        white-space: nowrap;\\n        text-overflow: ellipsis;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9BdmF0YXJBbmROYW1lLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYiw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQixnQkFBZ0I7SUFDcEI7O0lBRUE7UUFDSSxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7UUFDdEIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLGdCQUFnQjtRQUNoQixlQUFlO0lBQ25COztJQUVBOztRQUVJLGVBQWU7UUFDZixnQkFBZ0I7UUFDaEIsbUJBQW1CO1FBQ25CLHVCQUF1QjtJQUMzQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvQXZhdGFyQW5kTmFtZS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBzZWN0aW9uIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICB9XG5cbiAgICBzcGFuIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIHBhZGRpbmc6IDAgMTVweDtcbiAgICB9XG5cbiAgICBzcGFuIGg0LFxuICAgIHNwYW4gc3ViIHtcbiAgICAgICAgbWF4LXdpZHRoOiAxMDAlO1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgICAgICB3aGl0ZS1zcGFjZTogbm93cmFwO1xuICAgICAgICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAkBI,OAAO,8BAAC,CAAC,AACL,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,QAAQ,CAAE,MAAM,AACpB,CAAC,AAED,IAAI,8BAAC,CAAC,AACF,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,CAAC,CAAC,IAAI,AACnB,CAAC,AAED,mBAAI,CAAC,iBAAE,CACP,mBAAI,CAAC,GAAG,eAAC,CAAC,AACN,SAAS,CAAE,IAAI,CACf,QAAQ,CAAE,MAAM,CAChB,WAAW,CAAE,MAAM,CACnB,aAAa,CAAE,QAAQ,AAC3B,CAAC\"}"
 };
@@ -2627,7 +4203,7 @@ const AvatarAndName = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.subtitle === void 0 && $$bindings.subtitle && subtitle !== void 0) $$bindings.subtitle(subtitle);
-	$$result.css.add(css$l);
+	$$result.css.add(css$q);
 
 	return `<section class="${"svelte-1s1l67a"}">
     ${validate_component(Avatar, "Avatar").$$render($$result, { src, size: "medium", alt: title }, {}, {})}
@@ -2641,7 +4217,7 @@ const AvatarAndName = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 /* src/components/app/ListItems.svelte generated by Svelte v3.18.1 */
 
-const css$m = {
+const css$r = {
 	code: ".item.svelte-eahofk{display:block;-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary);border-radius:var(--border-radius-small);background-color:rgba(var(--theme-bg-color))}",
 	map: "{\"version\":3,\"file\":\"ListItems.svelte\",\"sources\":[\"ListItems.svelte\"],\"sourcesContent\":[\"<script>\\n    import AvatarAndName from './AvatarAndName.svelte'\\n\\n    export let items = []\\n    export let basePath = ''\\n</script>\\n\\n{#each items as item}\\n    <a class=\\\"item container\\\" href={`${basePath}/${item.id}`}>\\n        <br>\\n        <AvatarAndName\\n                src={item.org_head_avatar}\\n                title={item.org_head}\\n                subtitle={item.organization}\\n        />\\n        <br>\\n    </a>\\n    <br>\\n{:else}\\n    <section class=\\\"item container\\\">\\n        <p class=\\\"text-center\\\">No organizations</p>\\n    </section>\\n{/each}\\n\\n<style>\\n    .item {\\n        display: block;\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n        border-radius: var(--border-radius-small);\\n        background-color: rgba(var(--theme-bg-color));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9MaXN0SXRlbXMuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLGNBQWM7UUFDZCxtQkFBYztZQUFkLGtCQUFjO2dCQUFkLGNBQWM7UUFDZCx5Q0FBaUM7Z0JBQWpDLGlDQUFpQztRQUNqQyx5Q0FBeUM7UUFDekMsNkNBQTZDO0lBQ2pEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2FwcC9MaXN0SXRlbXMuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLml0ZW0ge1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgZmxleDogMSAxIGF1dG87XG4gICAgICAgIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdy1wcmltYXJ5KTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1zbWFsbCk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3IpKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAyBI,KAAK,cAAC,CAAC,AACH,OAAO,CAAE,KAAK,CACd,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACtB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,CACzC,aAAa,CAAE,IAAI,qBAAqB,CAAC,CACzC,gBAAgB,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,AACjD,CAAC\"}"
 };
@@ -2651,7 +4227,7 @@ const ListItems = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	let { basePath = "" } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	if ($$props.basePath === void 0 && $$bindings.basePath && basePath !== void 0) $$bindings.basePath(basePath);
-	$$result.css.add(css$m);
+	$$result.css.add(css$r);
 
 	return `${items.length
 	? each(items, item => `<a class="${"item container svelte-eahofk"}"${add_attribute("href", `${basePath}/${item.id}`, 0)}>
@@ -2684,7 +4260,7 @@ const SearchLine = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 /* src/components/app/TrustButton.svelte generated by Svelte v3.18.1 */
 
-const css$n = {
+const css$s = {
 	code: ".trust-btn.svelte-1dzr9dp.svelte-1dzr9dp{position:relative;display:block;width:100%;height:0;padding-bottom:100%;border-radius:50%;overflow:hidden}div.svelte-1dzr9dp.svelte-1dzr9dp{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;border-radius:50%;border:4px solid rgba(var(--color-danger));background-color:rgba(var(--color-danger), .2)}.trust-btn.isActive.svelte-1dzr9dp div.svelte-1dzr9dp{background-color:rgba(var(--color-danger), 1)}.trust-btn.isActive.svelte-1dzr9dp span.svelte-1dzr9dp{color:rgba(var(--color-white));-webkit-animation:none;animation:none;-webkit-transform:scale(1.1);transform:scale(1.1)\n    }span.svelte-1dzr9dp.svelte-1dzr9dp{display:-webkit-box;display:-ms-flexbox;display:flex;width:50%;height:50%;margin-top:3px;max-width:calc(100% - 10px);max-height:calc(100% - 10px);color:rgba(var(--color-danger));-webkit-animation:svelte-1dzr9dp-pulse 2s infinite;animation:svelte-1dzr9dp-pulse 2s infinite}@-webkit-keyframes svelte-1dzr9dp-pulse{10%{-webkit-transform:scale(1.1);transform:scale(1.1)\n        }20%{-webkit-transform:scale(1.05);transform:scale(1.05)\n        }30%{-webkit-transform:scale(1.15);transform:scale(1.15)\n        }}@keyframes svelte-1dzr9dp-pulse{10%{-webkit-transform:scale(1.1);transform:scale(1.1)\n        }20%{-webkit-transform:scale(1.05);transform:scale(1.05)\n        }30%{-webkit-transform:scale(1.15);transform:scale(1.15)\n        }}",
 	map: "{\"version\":3,\"file\":\"TrustButton.svelte\",\"sources\":[\"TrustButton.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n    import Icon from '@components/Icon.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let isActive = null\\n    export let onAsyncClick = null\\n\\n    let isActiveLocal = !!isActive\\n\\n    $: isActiveState = isActive === null ? isActiveLocal : isActive\\n    $: classProp = classnames('trust-btn', $$props.class, { isActive: isActiveState })\\n\\n    function onClickHandler(e) {\\n        onClickEvent(e)\\n        onClickPromise(e)\\n    }\\n\\n    function onClickEvent(e) {\\n        dispatch('click', e)\\n    }\\n\\n    const onClickPromise = async (e) => {\\n        if (typeof onAsyncClick === 'function') {\\n            try {\\n                isActiveLocal = !isActiveLocal\\n                await onAsyncClick(e)\\n            } catch (err) {\\n                isActiveLocal = !isActiveLocal\\n            }\\n        }\\n    }\\n</script>\\n\\n<button type=\\\"button\\\" title=\\\"I trust\\\" class={classProp} on:click={onClickHandler}>\\n    <div class=\\\"full-absolute\\\">\\n        <span>\\n            <Icon type=\\\"heart\\\"/>\\n        </span>\\n    </div>\\n</button>\\n\\n<style>\\n    .trust-btn {\\n        position: relative;\\n        display: block;\\n        width: 100%;\\n        height: 0;\\n        padding-bottom: 100%;\\n        border-radius: 50%;\\n        overflow: hidden;\\n    }\\n\\n    div {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        border-radius: 50%;\\n        border: 4px solid rgba(var(--color-danger));\\n        background-color: rgba(var(--color-danger), .2);\\n    }\\n\\n    .trust-btn.isActive div {\\n        background-color: rgba(var(--color-danger), 1);\\n    }\\n\\n    .trust-btn.isActive span {\\n        color: rgba(var(--color-white));\\n        -webkit-animation: none;\\n                animation: none;\\n        -webkit-transform: scale(1.1);\\n                transform: scale(1.1)\\n    }\\n\\n    span {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        width: 50%;\\n        height: 50%;\\n        margin-top: 3px;\\n        max-width: calc(100% - 10px);\\n        max-height: calc(100% - 10px);\\n        color: rgba(var(--color-danger));\\n        -webkit-animation: pulse 2s infinite;\\n                animation: pulse 2s infinite;\\n    }\\n\\n    @-webkit-keyframes pulse {\\n        10% {\\n            -webkit-transform: scale(1.1);\\n                    transform: scale(1.1)\\n        }\\n        20% {\\n            -webkit-transform: scale(1.05);\\n                    transform: scale(1.05)\\n        }\\n        30% {\\n            -webkit-transform: scale(1.15);\\n                    transform: scale(1.15)\\n        }\\n    }\\n\\n    @keyframes pulse {\\n        10% {\\n            -webkit-transform: scale(1.1);\\n                    transform: scale(1.1)\\n        }\\n        20% {\\n            -webkit-transform: scale(1.05);\\n                    transform: scale(1.05)\\n        }\\n        30% {\\n            -webkit-transform: scale(1.15);\\n                    transform: scale(1.15)\\n        }\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9UcnVzdEJ1dHRvbi5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksa0JBQWtCO1FBQ2xCLGNBQWM7UUFDZCxXQUFXO1FBQ1gsU0FBUztRQUNULG9CQUFvQjtRQUNwQixrQkFBa0I7UUFDbEIsZ0JBQWdCO0lBQ3BCOztJQUVBO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLGtCQUFrQjtRQUNsQiwyQ0FBMkM7UUFDM0MsK0NBQStDO0lBQ25EOztJQUVBO1FBQ0ksOENBQThDO0lBQ2xEOztJQUVBO1FBQ0ksK0JBQStCO1FBQy9CLHVCQUFlO2dCQUFmLGVBQWU7UUFDZiw2QkFBb0I7Z0JBQXBCO0lBQ0o7O0lBRUE7UUFDSSxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLFVBQVU7UUFDVixXQUFXO1FBQ1gsZUFBZTtRQUNmLDRCQUE0QjtRQUM1Qiw2QkFBNkI7UUFDN0IsZ0NBQWdDO1FBQ2hDLG9DQUE0QjtnQkFBNUIsNEJBQTRCO0lBQ2hDOztJQUVBO1FBQ0k7WUFDSSw2QkFBb0I7b0JBQXBCO1FBQ0o7UUFDQTtZQUNJLDhCQUFxQjtvQkFBckI7UUFDSjtRQUNBO1lBQ0ksOEJBQXFCO29CQUFyQjtRQUNKO0lBQ0o7O0lBVkE7UUFDSTtZQUNJLDZCQUFvQjtvQkFBcEI7UUFDSjtRQUNBO1lBQ0ksOEJBQXFCO29CQUFyQjtRQUNKO1FBQ0E7WUFDSSw4QkFBcUI7b0JBQXJCO1FBQ0o7SUFDSiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvVHJ1c3RCdXR0b24uc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnRydXN0LWJ0biB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBoZWlnaHQ6IDA7XG4gICAgICAgIHBhZGRpbmctYm90dG9tOiAxMDAlO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA1MCU7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgfVxuXG4gICAgZGl2IHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgICAgICAgYm9yZGVyOiA0cHggc29saWQgcmdiYSh2YXIoLS1jb2xvci1kYW5nZXIpKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1kYW5nZXIpLCAuMik7XG4gICAgfVxuXG4gICAgLnRydXN0LWJ0bi5pc0FjdGl2ZSBkaXYge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIDEpO1xuICAgIH1cblxuICAgIC50cnVzdC1idG4uaXNBY3RpdmUgc3BhbiB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLXdoaXRlKSk7XG4gICAgICAgIGFuaW1hdGlvbjogbm9uZTtcbiAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxLjEpXG4gICAgfVxuXG4gICAgc3BhbiB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIHdpZHRoOiA1MCU7XG4gICAgICAgIGhlaWdodDogNTAlO1xuICAgICAgICBtYXJnaW4tdG9wOiAzcHg7XG4gICAgICAgIG1heC13aWR0aDogY2FsYygxMDAlIC0gMTBweCk7XG4gICAgICAgIG1heC1oZWlnaHQ6IGNhbGMoMTAwJSAtIDEwcHgpO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1kYW5nZXIpKTtcbiAgICAgICAgYW5pbWF0aW9uOiBwdWxzZSAycyBpbmZpbml0ZTtcbiAgICB9XG5cbiAgICBAa2V5ZnJhbWVzIHB1bHNlIHtcbiAgICAgICAgMTAlIHtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUoMS4xKVxuICAgICAgICB9XG4gICAgICAgIDIwJSB7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDEuMDUpXG4gICAgICAgIH1cbiAgICAgICAgMzAlIHtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUoMS4xNSlcbiAgICAgICAgfVxuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AA6CI,UAAU,8BAAC,CAAC,AACR,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,KAAK,CACd,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,CAAC,CACT,cAAc,CAAE,IAAI,CACpB,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,AACpB,CAAC,AAED,GAAG,8BAAC,CAAC,AACD,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,aAAa,CAAE,GAAG,CAClB,MAAM,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,IAAI,cAAc,CAAC,CAAC,CAC3C,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,AACnD,CAAC,AAED,UAAU,wBAAS,CAAC,GAAG,eAAC,CAAC,AACrB,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,CAAC,CAAC,AAClD,CAAC,AAED,UAAU,wBAAS,CAAC,IAAI,eAAC,CAAC,AACtB,KAAK,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAC/B,iBAAiB,CAAE,IAAI,CACf,SAAS,CAAE,IAAI,CACvB,iBAAiB,CAAE,MAAM,GAAG,CAAC,CACrB,SAAS,CAAE,MAAM,GAAG,CAAC;IACjC,CAAC,AAED,IAAI,8BAAC,CAAC,AACF,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,CACX,UAAU,CAAE,GAAG,CACf,SAAS,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,CAC5B,UAAU,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,CAC7B,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAChC,iBAAiB,CAAE,oBAAK,CAAC,EAAE,CAAC,QAAQ,CAC5B,SAAS,CAAE,oBAAK,CAAC,EAAE,CAAC,QAAQ,AACxC,CAAC,AAED,mBAAmB,oBAAM,CAAC,AACtB,GAAG,AAAC,CAAC,AACD,iBAAiB,CAAE,MAAM,GAAG,CAAC,CACrB,SAAS,CAAE,MAAM,GAAG,CAAC;QACjC,CAAC,AACD,GAAG,AAAC,CAAC,AACD,iBAAiB,CAAE,MAAM,IAAI,CAAC,CACtB,SAAS,CAAE,MAAM,IAAI,CAAC;QAClC,CAAC,AACD,GAAG,AAAC,CAAC,AACD,iBAAiB,CAAE,MAAM,IAAI,CAAC,CACtB,SAAS,CAAE,MAAM,IAAI,CAAC;QAClC,CAAC,AACL,CAAC,AAED,WAAW,oBAAM,CAAC,AACd,GAAG,AAAC,CAAC,AACD,iBAAiB,CAAE,MAAM,GAAG,CAAC,CACrB,SAAS,CAAE,MAAM,GAAG,CAAC;QACjC,CAAC,AACD,GAAG,AAAC,CAAC,AACD,iBAAiB,CAAE,MAAM,IAAI,CAAC,CACtB,SAAS,CAAE,MAAM,IAAI,CAAC;QAClC,CAAC,AACD,GAAG,AAAC,CAAC,AACD,iBAAiB,CAAE,MAAM,IAAI,CAAC,CACtB,SAAS,CAAE,MAAM,IAAI,CAAC;QAClC,CAAC,AACL,CAAC\"}"
 };
@@ -2697,7 +4273,7 @@ const TrustButton = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 	if ($$props.isActive === void 0 && $$bindings.isActive && isActive !== void 0) $$bindings.isActive(isActive);
 	if ($$props.onAsyncClick === void 0 && $$bindings.onAsyncClick && onAsyncClick !== void 0) $$bindings.onAsyncClick(onAsyncClick);
-	$$result.css.add(css$n);
+	$$result.css.add(css$s);
 	let isActiveState = isActive === null ? isActiveLocal : isActive;
 	let classProp = classnames("trust-btn", $$props.class, { isActive: isActiveState });
 
@@ -2712,7 +4288,7 @@ const TrustButton = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 /* src/components/app/ListsLayout.svelte generated by Svelte v3.18.1 */
 
-const css$o = {
+const css$t = {
 	code: ".search.svelte-1vpuklg.svelte-1vpuklg{-webkit-box-flex:0;-ms-flex:none;flex:none;position:relative;-webkit-box-shadow:var(--shadow-primary);box-shadow:var(--shadow-primary)}.list-wrap.svelte-1vpuklg.svelte-1vpuklg{-webkit-box-flex:1;-ms-flex:1 1 0px;flex:1 1 0;overflow-x:hidden;overflow-y:auto;padding:0 var(--screen-padding);-webkit-box-shadow:inset 0 -100px 2000px rgba(var(--color-black), .5);box-shadow:inset 0 -100px 2000px rgba(var(--color-black), .5)}nav.svelte-1vpuklg ul.svelte-1vpuklg,nav.svelte-1vpuklg li.svelte-1vpuklg{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}li.svelte-1vpuklg.svelte-1vpuklg{-webkit-box-flex:1;-ms-flex:1 1 0px;flex:1 1 0}li.svelte-1vpuklg a.svelte-1vpuklg{-webkit-box-flex:1;-ms-flex:1 1 0px;flex:1 1 0;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;text-align:center;padding:20px 10px}li.svelte-1vpuklg a.svelte-1vpuklg:hover,li.svelte-1vpuklg a.selected.svelte-1vpuklg{background-color:rgba(var(--color-black), .1)}",
 	map: "{\"version\":3,\"file\":\"ListsLayout.svelte\",\"sources\":[\"ListsLayout.svelte\"],\"sourcesContent\":[\"<svelte:head>\\n    <title>Charitify - is the application for helping those in need.</title>\\n</svelte:head>\\n\\n<script>\\n    import Footer from './Footer.svelte'\\n    import SearchLine from './SearchLine.svelte'\\n\\n    export let segment\\n</script>\\n\\n<div class=\\\"search theme-bg container\\\">\\n    <br>\\n\\n    <SearchLine/>\\n\\n    <nav>\\n        <ul>\\n            <li><a rel=prefetch href='lists/funds' class:selected='{segment === \\\"charities\\\"}'>funds</a></li>\\n            <li><a rel=prefetch href='lists/organizations' class:selected='{segment === \\\"organizations\\\"}'>organizations</a></li>\\n        </ul>\\n    </nav>\\n</div>\\n\\n<div class=\\\"list-wrap\\\">\\n    <br>\\n\\n    <slot></slot>\\n\\n    <br>\\n    <br>\\n</div>\\n\\n<Footer/>\\n\\n<style>\\n    .search {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        position: relative;\\n        -webkit-box-shadow: var(--shadow-primary);\\n                box-shadow: var(--shadow-primary);\\n    }\\n\\n    .list-wrap {\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 0px;\\n                flex: 1 1 0;\\n        overflow-x: hidden;\\n        overflow-y: auto;\\n        padding: 0 var(--screen-padding);\\n        -webkit-box-shadow: inset 0 -100px 2000px rgba(var(--color-black), .5);\\n                box-shadow: inset 0 -100px 2000px rgba(var(--color-black), .5);\\n    }\\n\\n    nav ul, nav li {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    li {\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 0px;\\n                flex: 1 1 0;\\n    }\\n\\n    li a {\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 0px;\\n                flex: 1 1 0;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        text-align: center;\\n        padding: 20px 10px;\\n    }\\n\\n    li a:hover, li a.selected {\\n        background-color: rgba(var(--color-black), .1);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9MaXN0c0xheW91dC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksbUJBQVU7WUFBVixjQUFVO2dCQUFWLFVBQVU7UUFDVixrQkFBa0I7UUFDbEIseUNBQWlDO2dCQUFqQyxpQ0FBaUM7SUFDckM7O0lBRUE7UUFDSSxtQkFBVztZQUFYLGlCQUFXO2dCQUFYLFdBQVc7UUFDWCxrQkFBa0I7UUFDbEIsZ0JBQWdCO1FBQ2hCLGdDQUFnQztRQUNoQyxzRUFBOEQ7Z0JBQTlELDhEQUE4RDtJQUNsRTs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQiwwQkFBb0I7WUFBcEIsdUJBQW9CO2dCQUFwQixvQkFBb0I7UUFDcEIseUJBQXdCO1lBQXhCLHNCQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksbUJBQVc7WUFBWCxpQkFBVztnQkFBWCxXQUFXO0lBQ2Y7O0lBRUE7UUFDSSxtQkFBVztZQUFYLGlCQUFXO2dCQUFYLFdBQVc7UUFDWCw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2QixrQkFBa0I7UUFDbEIsa0JBQWtCO0lBQ3RCOztJQUVBO1FBQ0ksOENBQThDO0lBQ2xEIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2FwcC9MaXN0c0xheW91dC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuc2VhcmNoIHtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBib3gtc2hhZG93OiB2YXIoLS1zaGFkb3ctcHJpbWFyeSk7XG4gICAgfVxuXG4gICAgLmxpc3Qtd3JhcCB7XG4gICAgICAgIGZsZXg6IDEgMSAwO1xuICAgICAgICBvdmVyZmxvdy14OiBoaWRkZW47XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIHBhZGRpbmc6IDAgdmFyKC0tc2NyZWVuLXBhZGRpbmcpO1xuICAgICAgICBib3gtc2hhZG93OiBpbnNldCAwIC0xMDBweCAyMDAwcHggcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC41KTtcbiAgICB9XG5cbiAgICBuYXYgdWwsIG5hdiBsaSB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgfVxuXG4gICAgbGkge1xuICAgICAgICBmbGV4OiAxIDEgMDtcbiAgICB9XG5cbiAgICBsaSBhIHtcbiAgICAgICAgZmxleDogMSAxIDA7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIHBhZGRpbmc6IDIwcHggMTBweDtcbiAgICB9XG5cbiAgICBsaSBhOmhvdmVyLCBsaSBhLnNlbGVjdGVkIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1ibGFjayksIC4xKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAoCI,OAAO,8BAAC,CAAC,AACL,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,QAAQ,CAAE,QAAQ,CAClB,kBAAkB,CAAE,IAAI,gBAAgB,CAAC,CACjC,UAAU,CAAE,IAAI,gBAAgB,CAAC,AAC7C,CAAC,AAED,UAAU,8BAAC,CAAC,AACR,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,GAAG,CACb,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CACnB,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,IAAI,CAChB,OAAO,CAAE,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAChC,kBAAkB,CAAE,KAAK,CAAC,CAAC,CAAC,MAAM,CAAC,MAAM,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,EAAE,CAAC,CAC9D,UAAU,CAAE,KAAK,CAAC,CAAC,CAAC,MAAM,CAAC,MAAM,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,EAAE,CAAC,AAC1E,CAAC,AAED,kBAAG,CAAC,iBAAE,CAAE,kBAAG,CAAC,EAAE,eAAC,CAAC,AACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,EAAE,8BAAC,CAAC,AACA,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,GAAG,CACb,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,AACvB,CAAC,AAED,iBAAE,CAAC,CAAC,eAAC,CAAC,AACF,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,GAAG,CACb,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,CAAC,CACnB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,UAAU,CAAE,MAAM,CAClB,OAAO,CAAE,IAAI,CAAC,IAAI,AACtB,CAAC,AAED,iBAAE,CAAC,gBAAC,MAAM,CAAE,iBAAE,CAAC,CAAC,SAAS,eAAC,CAAC,AACvB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,EAAE,CAAC,AAClD,CAAC\"}"
 };
@@ -2720,7 +4296,7 @@ const css$o = {
 const ListsLayout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { segment } = $$props;
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
-	$$result.css.add(css$o);
+	$$result.css.add(css$t);
 
 	return `${($$result.head += `${($$result.title = `<title>Charitify - is the application for helping those in need.</title>`, "")}`, "")}
 
@@ -2753,7 +4329,7 @@ ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}`;
 
 /* src/components/app/TitleSubTitle.svelte generated by Svelte v3.18.1 */
 
-const css$p = {
+const css$u = {
 	code: "section.svelte-gnegnw{text-align:center;padding:0 3vw}h2.svelte-gnegnw{font-weight:400}",
 	map: "{\"version\":3,\"file\":\"TitleSubTitle.svelte\",\"sources\":[\"TitleSubTitle.svelte\"],\"sourcesContent\":[\"<script>\\n    export let title = 'The main title that explains the charity'\\n    export let subtitle = 'And bigger description that describes in short keywords a charity, title above and just makes text longer'\\n</script>\\n\\n<section>\\n    <h1>{title}</h1>\\n    <br>\\n    <h2>{subtitle}</h2>\\n</section>\\n\\n<style>\\n    section {\\n        text-align: center;\\n        padding: 0 3vw;\\n    }\\n\\n    h2 {\\n        font-weight: 400;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9UaXRsZVN1YlRpdGxlLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxrQkFBa0I7UUFDbEIsY0FBYztJQUNsQjs7SUFFQTtRQUNJLGdCQUFnQjtJQUNwQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvVGl0bGVTdWJUaXRsZS5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBzZWN0aW9uIHtcbiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgICAgICBwYWRkaW5nOiAwIDN2dztcbiAgICB9XG5cbiAgICBoMiB7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiA0MDA7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAYI,OAAO,cAAC,CAAC,AACL,UAAU,CAAE,MAAM,CAClB,OAAO,CAAE,CAAC,CAAC,GAAG,AAClB,CAAC,AAED,EAAE,cAAC,CAAC,AACA,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
 };
@@ -2763,7 +4339,7 @@ const TitleSubTitle = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	let { subtitle = "And bigger description that describes in short keywords a charity, title above and just makes text longer" } = $$props;
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.subtitle === void 0 && $$bindings.subtitle && subtitle !== void 0) $$bindings.subtitle(subtitle);
-	$$result.css.add(css$p);
+	$$result.css.add(css$u);
 
 	return `<section class="${"svelte-gnegnw"}">
     <h1>${escape(title)}</h1>
@@ -2793,7 +4369,7 @@ const ContentHolder = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 /* src/components/app/DonationButton.svelte generated by Svelte v3.18.1 */
 
-const css$q = {
+const css$v = {
 	code: ".donate-btn.svelte-1f6vjy3{position:fixed;left:0;bottom:env(safe-area-inset-bottom);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:100%;font-weight:600;font-size:1.85em;line-height:1.26;color:rgba(var(--color-white));padding:20px;z-index:9;-ms-touch-action:manipulation;touch-action:manipulation;text-align:center;-webkit-transition:.3s ease-in-out;transition:.3s ease-in-out;-webkit-transform:translateY(100%);transform:translateY(100%);background-color:rgba(var(--color-success))}span.svelte-1f6vjy3{-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;height:32px;width:32px;border-radius:50%;overflow:hidden;background-color:rgba(var(--color-white))}.donate-btn.active.svelte-1f6vjy3{-webkit-transform:none;transform:none\n    }",
 	map: "{\"version\":3,\"file\":\"DonationButton.svelte\",\"sources\":[\"DonationButton.svelte\"],\"sourcesContent\":[\"<script>\\n    import { onMount } from 'svelte'\\n    import { classnames } from '@utils'\\n    import Icon from '@components/Icon.svelte'\\n\\n    let activeDonateBtn = false\\n\\n    onMount(() => setTimeout(() => activeDonateBtn = true, 500))\\n\\n    $: classPropDonateBtn = classnames('donate-btn', { active: activeDonateBtn })\\n\\n    function onDonate() {\\n        alert('Дякую! 🥰')\\n    }\\n</script>\\n\\n<button type=\\\"button\\\" class={classPropDonateBtn} on:click={onDonate}>\\n    <span>\\n        <Icon type=\\\"coin\\\" size=\\\"medium\\\" is=\\\"primary\\\"/>\\n    </span>\\n    <s></s>\\n    <s></s>\\n    Допомогти\\n</button>\\n\\n<style>\\n    .donate-btn {\\n        position: fixed;\\n        left: 0;\\n        bottom: env(safe-area-inset-bottom);\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 100%;\\n        font-weight: 600;\\n        font-size: 1.85em;\\n        line-height: 1.26;\\n        color: rgba(var(--color-white));\\n        padding: 20px;\\n        z-index: 9;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        text-align: center;\\n        -webkit-transition: .3s ease-in-out;\\n        transition: .3s ease-in-out;\\n        -webkit-transform: translateY(100%);\\n                transform: translateY(100%);\\n        background-color: rgba(var(--color-success));\\n    }\\n\\n    span {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        height: 32px;\\n        width: 32px;\\n        border-radius: 50%;\\n        overflow: hidden;\\n        background-color: rgba(var(--color-white));\\n    }\\n\\n    .donate-btn.active {\\n        -webkit-transform: none;\\n                transform: none\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9Eb25hdGlvbkJ1dHRvbi5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksZUFBZTtRQUNmLE9BQU87UUFDUCxtQ0FBbUM7UUFDbkMsb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLFdBQVc7UUFDWCxnQkFBZ0I7UUFDaEIsaUJBQWlCO1FBQ2pCLGlCQUFpQjtRQUNqQiwrQkFBK0I7UUFDL0IsYUFBYTtRQUNiLFVBQVU7UUFDViw4QkFBMEI7WUFBMUIsMEJBQTBCO1FBQzFCLGtCQUFrQjtRQUNsQixtQ0FBMkI7UUFBM0IsMkJBQTJCO1FBQzNCLG1DQUEyQjtnQkFBM0IsMkJBQTJCO1FBQzNCLDRDQUE0QztJQUNoRDs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLFlBQVk7UUFDWixXQUFXO1FBQ1gsa0JBQWtCO1FBQ2xCLGdCQUFnQjtRQUNoQiwwQ0FBMEM7SUFDOUM7O0lBRUE7UUFDSSx1QkFBYztnQkFBZDtJQUNKIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2FwcC9Eb25hdGlvbkJ1dHRvbi5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuZG9uYXRlLWJ0biB7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgYm90dG9tOiBlbnYoc2FmZS1hcmVhLWluc2V0LWJvdHRvbSk7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZm9udC13ZWlnaHQ6IDYwMDtcbiAgICAgICAgZm9udC1zaXplOiAxLjg1ZW07XG4gICAgICAgIGxpbmUtaGVpZ2h0OiAxLjI2O1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci13aGl0ZSkpO1xuICAgICAgICBwYWRkaW5nOiAyMHB4O1xuICAgICAgICB6LWluZGV4OiA5O1xuICAgICAgICB0b3VjaC1hY3Rpb246IG1hbmlwdWxhdGlvbjtcbiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgICAgICB0cmFuc2l0aW9uOiAuM3MgZWFzZS1pbi1vdXQ7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgxMDAlKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS1jb2xvci1zdWNjZXNzKSk7XG4gICAgfVxuXG4gICAgc3BhbiB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBib3JkZXItcmFkaXVzOiA1MCU7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3Itd2hpdGUpKTtcbiAgICB9XG5cbiAgICAuZG9uYXRlLWJ0bi5hY3RpdmUge1xuICAgICAgICB0cmFuc2Zvcm06IG5vbmVcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AA0BI,WAAW,eAAC,CAAC,AACT,QAAQ,CAAE,KAAK,CACf,IAAI,CAAE,CAAC,CACP,MAAM,CAAE,IAAI,sBAAsB,CAAC,CACnC,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,WAAW,CAAE,GAAG,CAChB,SAAS,CAAE,MAAM,CACjB,WAAW,CAAE,IAAI,CACjB,KAAK,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAC/B,OAAO,CAAE,IAAI,CACb,OAAO,CAAE,CAAC,CACV,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,UAAU,CAAE,MAAM,CAClB,kBAAkB,CAAE,GAAG,CAAC,WAAW,CACnC,UAAU,CAAE,GAAG,CAAC,WAAW,CAC3B,iBAAiB,CAAE,WAAW,IAAI,CAAC,CAC3B,SAAS,CAAE,WAAW,IAAI,CAAC,CACnC,gBAAgB,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,AAChD,CAAC,AAED,IAAI,eAAC,CAAC,AACF,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,MAAM,CAAE,IAAI,CACZ,KAAK,CAAE,IAAI,CACX,aAAa,CAAE,GAAG,CAClB,QAAQ,CAAE,MAAM,CAChB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,AAC9C,CAAC,AAED,WAAW,OAAO,eAAC,CAAC,AAChB,iBAAiB,CAAE,IAAI,CACf,SAAS,CAAE,IAAI;IAC3B,CAAC\"}"
 };
@@ -2801,7 +4377,7 @@ const css$q = {
 const DonationButton = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let activeDonateBtn = false;
 	onMount(() => setTimeout(() => activeDonateBtn = true, 500));
-	$$result.css.add(css$q);
+	$$result.css.add(css$v);
 	let classPropDonateBtn = classnames("donate-btn", { active: activeDonateBtn });
 
 	return `<button type="${"button"}" class="${escape(null_to_empty(classPropDonateBtn)) + " svelte-1f6vjy3"}">
@@ -2825,7 +4401,7 @@ const DonationButton = create_ssr_component(($$result, $$props, $$bindings, $$sl
 
 /* src/components/app/ListOfFeatures.svelte generated by Svelte v3.18.1 */
 
-const css$r = {
+const css$w = {
 	code: "ul.svelte-17ny656{list-style:disc outside none;padding:0 calc(var(--screen-padding) * 5)}li.svelte-17ny656{display:list-item}ul.svelte-17ny656,li.svelte-17ny656,h3.svelte-17ny656,p.svelte-17ny656{max-width:100%;vertical-align:middle}h3.svelte-17ny656,p.svelte-17ny656{overflow:hidden;display:inline-block;word-break:break-word;text-overflow:ellipsis}",
 	map: "{\"version\":3,\"file\":\"ListOfFeatures.svelte\",\"sources\":[\"ListOfFeatures.svelte\"],\"sourcesContent\":[\"<script>\\n    const items = [\\n        {\\n            title: 'Comfort is the main feature',\\n            text: 'Just imaging, you do something simple and you can see the result of your short way.',\\n        },\\n        {\\n            title: 'Comfort is the main feature',\\n            text: 'Just imaging, you do something simple and you can see the result of your short way.',\\n        },\\n        {\\n            title: 'Comfort is the main feature',\\n            text: 'Just imaging, you do something simple and you can see the result of your short way.',\\n        },\\n        {\\n            title: 'Comfort is the main feature',\\n            text: 'Just imaging, you do something simple and you can see the result of your short way.',\\n        },\\n    ]\\n</script>\\n\\n<ul>\\n    {#each items as item}\\n        <li>\\n            <h3>{item.title}</h3>\\n            <p>{item.text}</p>\\n            <br>\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        list-style: disc outside none;\\n        padding: 0 calc(var(--screen-padding) * 5);\\n        /*list-style-image: url(\\\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='-1 -1 2 2'><circle r='1' /></svg>\\\");*/\\n    }\\n\\n    li {\\n        display: list-item;\\n    }\\n\\n    ul, li, h3, p {\\n        max-width: 100%;\\n        vertical-align: middle;\\n    }\\n\\n    h3, p {\\n        overflow: hidden;\\n        display: inline-block;\\n        word-break: break-word;\\n        text-overflow: ellipsis;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9MaXN0T2ZGZWF0dXJlcy5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksNkJBQTZCO1FBQzdCLDBDQUEwQztRQUMxQyw4SkFBOEo7SUFDbEs7O0lBRUE7UUFDSSxrQkFBa0I7SUFDdEI7O0lBRUE7UUFDSSxlQUFlO1FBQ2Ysc0JBQXNCO0lBQzFCOztJQUVBO1FBQ0ksZ0JBQWdCO1FBQ2hCLHFCQUFxQjtRQUNyQixzQkFBc0I7UUFDdEIsdUJBQXVCO0lBQzNCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2FwcC9MaXN0T2ZGZWF0dXJlcy5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICB1bCB7XG4gICAgICAgIGxpc3Qtc3R5bGU6IGRpc2Mgb3V0c2lkZSBub25lO1xuICAgICAgICBwYWRkaW5nOiAwIGNhbGModmFyKC0tc2NyZWVuLXBhZGRpbmcpICogNSk7XG4gICAgICAgIC8qbGlzdC1zdHlsZS1pbWFnZTogdXJsKFwiZGF0YTppbWFnZS9zdmcreG1sO3V0ZjgsPHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMCcgaGVpZ2h0PScxMCcgdmlld0JveD0nLTEgLTEgMiAyJz48Y2lyY2xlIHI9JzEnIC8+PC9zdmc+XCIpOyovXG4gICAgfVxuXG4gICAgbGkge1xuICAgICAgICBkaXNwbGF5OiBsaXN0LWl0ZW07XG4gICAgfVxuXG4gICAgdWwsIGxpLCBoMywgcCB7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB9XG5cbiAgICBoMywgcCB7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICAgICAgd29yZC1icmVhazogYnJlYWstd29yZDtcbiAgICAgICAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAgCI,EAAE,eAAC,CAAC,AACA,UAAU,CAAE,IAAI,CAAC,OAAO,CAAC,IAAI,CAC7B,OAAO,CAAE,CAAC,CAAC,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,AAE9C,CAAC,AAED,EAAE,eAAC,CAAC,AACA,OAAO,CAAE,SAAS,AACtB,CAAC,AAED,iBAAE,CAAE,iBAAE,CAAE,iBAAE,CAAE,CAAC,eAAC,CAAC,AACX,SAAS,CAAE,IAAI,CACf,cAAc,CAAE,MAAM,AAC1B,CAAC,AAED,iBAAE,CAAE,CAAC,eAAC,CAAC,AACH,QAAQ,CAAE,MAAM,CAChB,OAAO,CAAE,YAAY,CACrB,UAAU,CAAE,UAAU,CACtB,aAAa,CAAE,QAAQ,AAC3B,CAAC\"}"
 };
@@ -2850,7 +4426,7 @@ const ListOfFeatures = create_ssr_component(($$result, $$props, $$bindings, $$sl
 		}
 	];
 
-	$$result.css.add(css$r);
+	$$result.css.add(css$w);
 
 	return `<ul class="${"svelte-17ny656"}">
     ${each(items, item => `<li class="${"svelte-17ny656"}">
@@ -2863,13 +4439,13 @@ const ListOfFeatures = create_ssr_component(($$result, $$props, $$bindings, $$sl
 
 /* src/components/app/OfflineMessage.svelte generated by Svelte v3.18.1 */
 
-const css$s = {
+const css$x = {
 	code: "#offline-message{position:fixed;z-index:11;bottom:calc(env(safe-area-inset-bottom) + 100px);left:50%;padding:10px 20px;background-color:rgba(var(--theme-bg-color));border-radius:var(--border-radius-small);overflow:hidden;-webkit-transition:.2s ease-out;transition:.2s ease-out;opacity:0;pointer-events:none;-webkit-transform:translate3d(-50%, 20px, 0);transform:translate3d(-50%, 20px, 0)}#offline-message.active{opacity:1;pointer-events:auto;-webkit-transform:translate3d(-50%, 0, 0);transform:translate3d(-50%, 0, 0)}",
 	map: "{\"version\":3,\"file\":\"OfflineMessage.svelte\",\"sources\":[\"OfflineMessage.svelte\"],\"sourcesContent\":[\"<script>\\n</script>\\n\\n<section id=\\\"offline-message\\\">\\n    Сторінка оффлайн\\n</section>\\n\\n<style>\\n    :global(#offline-message) {\\n        position: fixed;\\n        z-index: 11;\\n        bottom: calc(env(safe-area-inset-bottom) + 100px);\\n        left: 50%;\\n        padding: 10px 20px;\\n        background-color: rgba(var(--theme-bg-color));\\n        border-radius: var(--border-radius-small);\\n        overflow: hidden;\\n        -webkit-transition: .2s ease-out;\\n        transition: .2s ease-out;\\n        opacity: 0;\\n        pointer-events: none;\\n        -webkit-transform: translate3d(-50%, 20px, 0);\\n                transform: translate3d(-50%, 20px, 0);\\n    }\\n    :global(#offline-message.active) {\\n        opacity: 1;\\n        pointer-events: auto;\\n        -webkit-transform: translate3d(-50%, 0, 0);\\n                transform: translate3d(-50%, 0, 0);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9PZmZsaW5lTWVzc2FnZS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksZUFBZTtRQUNmLFdBQVc7UUFDWCxpREFBaUQ7UUFDakQsU0FBUztRQUNULGtCQUFrQjtRQUNsQiw2Q0FBNkM7UUFDN0MseUNBQXlDO1FBQ3pDLGdCQUFnQjtRQUNoQixnQ0FBd0I7UUFBeEIsd0JBQXdCO1FBQ3hCLFVBQVU7UUFDVixvQkFBb0I7UUFDcEIsNkNBQXFDO2dCQUFyQyxxQ0FBcUM7SUFDekM7SUFDQTtRQUNJLFVBQVU7UUFDVixvQkFBb0I7UUFDcEIsMENBQWtDO2dCQUFsQyxrQ0FBa0M7SUFDdEMiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvYXBwL09mZmxpbmVNZXNzYWdlLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIDpnbG9iYWwoI29mZmxpbmUtbWVzc2FnZSkge1xuICAgICAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgICAgIHotaW5kZXg6IDExO1xuICAgICAgICBib3R0b206IGNhbGMoZW52KHNhZmUtYXJlYS1pbnNldC1ib3R0b20pICsgMTAwcHgpO1xuICAgICAgICBsZWZ0OiA1MCU7XG4gICAgICAgIHBhZGRpbmc6IDEwcHggMjBweDtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS10aGVtZS1iZy1jb2xvcikpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLXNtYWxsKTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgdHJhbnNpdGlvbjogLjJzIGVhc2Utb3V0O1xuICAgICAgICBvcGFjaXR5OiAwO1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUzZCgtNTAlLCAyMHB4LCAwKTtcbiAgICB9XG4gICAgOmdsb2JhbCgjb2ZmbGluZS1tZXNzYWdlLmFjdGl2ZSkge1xuICAgICAgICBvcGFjaXR5OiAxO1xuICAgICAgICBwb2ludGVyLWV2ZW50czogYXV0bztcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUzZCgtNTAlLCAwLCAwKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAQY,gBAAgB,AAAE,CAAC,AACvB,QAAQ,CAAE,KAAK,CACf,OAAO,CAAE,EAAE,CACX,MAAM,CAAE,KAAK,IAAI,sBAAsB,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC,CACjD,IAAI,CAAE,GAAG,CACT,OAAO,CAAE,IAAI,CAAC,IAAI,CAClB,gBAAgB,CAAE,KAAK,IAAI,gBAAgB,CAAC,CAAC,CAC7C,aAAa,CAAE,IAAI,qBAAqB,CAAC,CACzC,QAAQ,CAAE,MAAM,CAChB,kBAAkB,CAAE,GAAG,CAAC,QAAQ,CAChC,UAAU,CAAE,GAAG,CAAC,QAAQ,CACxB,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,CACpB,iBAAiB,CAAE,YAAY,IAAI,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC,CACrC,SAAS,CAAE,YAAY,IAAI,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC,AACjD,CAAC,AACO,uBAAuB,AAAE,CAAC,AAC9B,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,CACpB,iBAAiB,CAAE,YAAY,IAAI,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAClC,SAAS,CAAE,YAAY,IAAI,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,AAC9C,CAAC\"}"
 };
 
 const OfflineMessage = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	$$result.css.add(css$s);
+	$$result.css.add(css$x);
 
 	return `<section id="${"offline-message"}">
     Сторінка оффлайн
@@ -2880,12 +4456,12 @@ const contextMapbox = {};
 
 /* src/components/map/Map.svelte generated by Svelte v3.18.1 */
 
-const css$t = {
+const css$y = {
 	code: "section.svelte-yig78c{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;-ms-flex-item-align:stretch;align-self:stretch}",
 	map: "{\"version\":3,\"file\":\"Map.svelte\",\"sources\":[\"Map.svelte\"],\"sourcesContent\":[\"<style>\\n    section {\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL21hcC9NYXAuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG1CQUFZO1lBQVosb0JBQVk7Z0JBQVosWUFBWTtRQUNaLDRCQUFtQjtZQUFuQixtQkFBbUI7SUFDdkIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvbWFwL01hcC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBzZWN0aW9uIHtcbiAgICAgICAgZmxleC1ncm93OiAxO1xuICAgICAgICBhbGlnbi1zZWxmOiBzdHJldGNoO1xuICAgIH1cbiJdfQ== */</style>\\n\\n<script>\\n    import { onMount, onDestroy, setContext, createEventDispatcher } from 'svelte'\\n    import { contextMapbox } from './context'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let center = [31.1656, 48.3794]\\n    export let zoom = 3.75\\n\\n    let map\\n    let container\\n\\n    setContext(contextMapbox, {\\n        getMap: () => map,\\n        getMapbox: () => window.mapboxgl\\n    })\\n\\n    function onCreateMap() {\\n        map = new mapboxgl.Map({\\n            zoom,\\n            center,\\n            container,\\n            style: 'mapbox://styles/mapbox/streets-v11',\\n        })\\n\\n        map.on('dragend', () => dispatch('recentre', { map, center: map.getCenter() }))\\n        map.on('load', () => dispatch('ready', map))\\n    }\\n\\n    function createMap() {\\n        const scriptTag = document.createElement('script')\\n        scriptTag.type = 'text/javascript'\\n        scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js'\\n\\n        const link = document.createElement('link')\\n        link.rel = 'stylesheet'\\n        link.href = 'https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css'\\n\\n        scriptTag.onload = () => {\\n            const token = 'pk.eyJ1IjoiYnVibGlrIiwiYSI6ImNrNXpxdzgxbTAwNnczbGxweG0wcTV3cjAifQ.rt1peLjCQHZUkrM4AWz5Mw'\\n            mapboxgl.accessToken = token\\n\\n            link.onload = onCreateMap\\n\\n            document.head.appendChild(link)\\n        }\\n\\n        document.body.appendChild(scriptTag)\\n    }\\n\\n    onMount(() => {\\n        if ('mapboxgl' in window) {\\n            onCreateMap()\\n        } else {\\n            createMap()\\n        }\\n    })\\n\\n    onDestroy(() => {\\n        map && map.remove()\\n    })\\n</script>\\n\\n<section bind:this={container}>\\n    {#if map}\\n        <slot></slot>\\n    {/if}\\n</section>\\n\"],\"names\":[],\"mappings\":\"AACI,OAAO,cAAC,CAAC,AACL,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,AAC3B,CAAC\"}"
 };
 
-const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Map$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
 	let { center = [31.1656, 48.3794] } = $$props;
 	let { zoom = 3.75 } = $$props;
@@ -2941,7 +4517,7 @@ const Map$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 	if ($$props.center === void 0 && $$bindings.center && center !== void 0) $$bindings.center(center);
 	if ($$props.zoom === void 0 && $$bindings.zoom && zoom !== void 0) $$bindings.zoom(zoom);
-	$$result.css.add(css$t);
+	$$result.css.add(css$y);
 
 	return `<section class="${"svelte-yig78c"}"${add_attribute("this", container, 1)}>
     ${map
@@ -2991,7 +4567,7 @@ const Circle$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/loader/Loader.svelte generated by Svelte v3.18.1 */
 
-const css$u = {
+const css$z = {
 	code: ".loader.svelte-175toc4.svelte-175toc4{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transform:translateZ(0);transform:translateZ(0)}.loader.svelte-175toc4 svg.svelte-175toc4{-webkit-box-flex:1;-ms-flex:1 1 auto;flex:1 1 auto;-ms-flex-item-align:stretch;align-self:stretch;-webkit-transform:translateZ(0);transform:translateZ(0)}.loader.absolute.svelte-175toc4.svelte-175toc4{position:absolute;top:0;left:0;right:0;bottom:0}.loader.border.svelte-175toc4.svelte-175toc4{outline-width:1px;outline-style:solid}",
 	map: "{\"version\":3,\"file\":\"Loader.svelte\",\"sources\":[\"Loader.svelte\"],\"sourcesContent\":[\"<script>\\n    // How to make a custom loader?\\n    // See here for generating: https://danilowoz.com/create-content-loader/\\n    \\n    import { onMount } from 'svelte'\\n    import { classnames, uuid } from '@utils'\\n    import Text from './Text.svelte'\\n    import Circle from './Circle.svelte'\\n\\n    export let width = '100%' \\n    export let height = '100%'\\n    export let light = '#999999';\\n    export let dark = '#555555';\\n    export let opacity = .2;\\n    export let border = false;\\n    export let absolute = false;\\n    export let type = undefined; // h1, h2, h3, h4, h5, h6, p, pre, avatar\\n\\n    const uid = uuid()\\n\\n    let hTypes = {\\n        p: 21,\\n        h1: 35,\\n        h2: 29,\\n        h3: 26,\\n        h4: 21,\\n        h5: 21,\\n        h6: 21,\\n        pre: 21,\\n    }\\n\\n    onMount(() => {\\n        const style = getComputedStyle(document.body);\\n        const lh = Number.parseInt(style.getPropertyValue('line-height'))\\n        const balance = 0\\n\\n        hTypes = {\\n            p: lh * 1.15 + balance,\\n            h1: lh * 1.85 + balance,\\n            h2: lh * 1.4 + balance,\\n            h3: lh * 1.3 + balance,\\n            h4: lh * 1.15 + balance,\\n            h5: lh * 1.15 + balance,\\n            h6: lh * 1.15 + balance,\\n            pre: lh * 1.15 + balance,\\n        }\\n    })\\n\\n    $: areaWidth = width.replace('%', '')\\n    $: areaHeight = hTypes[type] || height\\n    $: classProp = classnames('loader', { border, absolute })\\n</script>\\n\\n<section \\n    class={classProp}\\n    style={`opacity: ${opacity}; outline-color: ${light};`}\\n>\\n    <svg\\n        role=\\\"img\\\"\\n        width=\\\"100%\\\"\\n        height={areaHeight}\\n        aria-labelledby=\\\"loading-aria\\\"\\n        viewBox={`0 0 ${areaWidth} 100`}\\n        preserveAspectRatio=\\\"none\\\"\\n    >\\n        <title id=\\\"loading-aria\\\">Loading...</title>\\n        <rect\\n            x=\\\"0\\\"\\n            y=\\\"0\\\"\\n            width=\\\"100%\\\"\\n            height=\\\"100%\\\"\\n            clip-path={`url(#clip-path-${uid})`}\\n            style='fill: url(\\\"#loader-fill\\\");'\\n        ></rect>\\n        <defs>\\n            <clipPath id={`clip-path-${uid}`}>\\n                <slot>\\n                    {#if 'avatar'.includes(type)}\\n                        <Circle/>\\n                    {:else if 'h1,h2,h3,h4,h5,h6,p,pre'.includes(type)}\\n                        <Text/>\\n                    {:else}\\n                        <rect x=\\\"0\\\" y=\\\"0\\\" rx=\\\"3\\\" ry=\\\"3\\\" width=\\\"100%\\\" height=\\\"100%\\\" />\\n                    {/if}\\n                </slot>\\n            </clipPath>\\n            <linearGradient id=\\\"loader-fill\\\">\\n                <stop\\n                    offset=\\\"0.599964\\\"\\n                    stop-color={light}\\n                    stop-opacity=\\\"1\\\"\\n                >\\n                    <animate\\n                    attributeName=\\\"offset\\\"\\n                    values=\\\"-2; -2; 1\\\"\\n                    keyTimes=\\\"0; 0.25; 1\\\"\\n                    dur=\\\"2s\\\"\\n                    repeatCount=\\\"indefinite\\\"\\n                    ></animate>\\n                </stop>\\n                <stop\\n                    offset=\\\"1.59996\\\"\\n                    stop-color={dark}\\n                    stop-opacity=\\\"1\\\"\\n                >\\n                    <animate\\n                    attributeName=\\\"offset\\\"\\n                    values=\\\"-1; -1; 2\\\"\\n                    keyTimes=\\\"0; 0.25; 1\\\"\\n                    dur=\\\"2s\\\"\\n                    repeatCount=\\\"indefinite\\\"\\n                    ></animate>\\n                </stop>\\n                <stop\\n                    offset=\\\"2.59996\\\"\\n                    stop-color={light}\\n                    stop-opacity=\\\"1\\\"\\n                >\\n                    <animate\\n                    attributeName=\\\"offset\\\"\\n                    values=\\\"0; 0; 3\\\"\\n                    keyTimes=\\\"0; 0.25; 1\\\"\\n                    dur=\\\"2s\\\"\\n                    repeatCount=\\\"indefinite\\\"\\n                    ></animate>\\n                </stop>\\n            </linearGradient>\\n        </defs>\\n    </svg>\\n</section>\\n\\n<style>\\n    .loader {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .loader svg {\\n        -webkit-box-flex: 1;\\n            -ms-flex: 1 1 auto;\\n                flex: 1 1 auto;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .loader.absolute {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        right: 0;\\n        bottom: 0;\\n    }\\n\\n    .loader.border {\\n        outline-width: 1px;\\n        outline-style: solid;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2xvYWRlci9Mb2FkZXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IsbUJBQWM7WUFBZCxrQkFBYztnQkFBZCxjQUFjO1FBQ2QsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixnQ0FBd0I7Z0JBQXhCLHdCQUF3QjtJQUM1Qjs7SUFFQTtRQUNJLG1CQUFjO1lBQWQsa0JBQWM7Z0JBQWQsY0FBYztRQUNkLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsZ0NBQXdCO2dCQUF4Qix3QkFBd0I7SUFDNUI7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLE9BQU87UUFDUCxRQUFRO1FBQ1IsU0FBUztJQUNiOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLG9CQUFvQjtJQUN4QiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9sb2FkZXIvTG9hZGVyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5sb2FkZXIge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBmbGV4OiAxIDEgYXV0bztcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVaKDApO1xuICAgIH1cblxuICAgIC5sb2FkZXIgc3ZnIHtcbiAgICAgICAgZmxleDogMSAxIGF1dG87XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWigwKTtcbiAgICB9XG5cbiAgICAubG9hZGVyLmFic29sdXRlIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBib3R0b206IDA7XG4gICAgfVxuXG4gICAgLmxvYWRlci5ib3JkZXIge1xuICAgICAgICBvdXRsaW5lLXdpZHRoOiAxcHg7XG4gICAgICAgIG91dGxpbmUtc3R5bGU6IHNvbGlkO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAoII,OAAO,8BAAC,CAAC,AACL,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACtB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,sBAAO,CAAC,GAAG,eAAC,CAAC,AACT,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACtB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,OAAO,SAAS,8BAAC,CAAC,AACd,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,AACb,CAAC,AAED,OAAO,OAAO,8BAAC,CAAC,AACZ,aAAa,CAAE,GAAG,CAClB,aAAa,CAAE,KAAK,AACxB,CAAC\"}"
 };
@@ -3043,7 +4619,7 @@ const Loader$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	if ($$props.border === void 0 && $$bindings.border && border !== void 0) $$bindings.border(border);
 	if ($$props.absolute === void 0 && $$bindings.absolute && absolute !== void 0) $$bindings.absolute(absolute);
 	if ($$props.type === void 0 && $$bindings.type && type !== void 0) $$bindings.type(type);
-	$$result.css.add(css$u);
+	$$result.css.add(css$z);
 	let areaWidth = width.replace("%", "");
 	let areaHeight = hTypes[type] || height;
 	let classProp = classnames("loader", { border, absolute });
@@ -3190,7 +4766,7 @@ const Comment = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 
 /* src/components/comments/Comments.svelte generated by Svelte v3.18.1 */
 
-const css$v = {
+const css$A = {
 	code: ".comments.svelte-88w9s0.svelte-88w9s0{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;overflow-y:auto;overflow-x:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;padding:15px}.comments-form.svelte-88w9s0.svelte-88w9s0{position:relative;-webkit-box-flex:0;-ms-flex:none;flex:none}.comments-wrap.svelte-88w9s0.svelte-88w9s0{width:100%;margin:-5px 0}.comments-wrap.svelte-88w9s0 li.svelte-88w9s0{width:100%;padding:5px 0}",
 	map: "{\"version\":3,\"file\":\"Comments.svelte\",\"sources\":[\"Comments.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Form from '@components/Form.svelte'\\n    import Input from '@components/fields/Input.svelte'\\n    import Button from '@components/Button.svelte'\\n    import Loader from '@components/loader'\\n    import Comment from './Comment.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    /**\\n     * \\n     * @event: submit - submit values of a new comment \\n     * \\n     */\\n    \\n    /**\\n     * @type {boolean}\\n     */\\n    export let withForm = true\\n\\n    /**\\n     * @type {{\\n     *      likes: number,\\n     *      avatar: string,\\n     *      author: string,\\n     *      comment: string,\\n     *      checked: boolean,\\n     *      created_at: string,\\n     * }}\\n     */\\n    export let items = new Array(4).fill({ comment: null })\\n</script>\\n\\n<section class=\\\"comments\\\">\\n    <ul class=\\\"comments-wrap\\\">\\n        {#each items as comment}\\n            <li>\\n                <Comment\\n                        src={comment.avatar}\\n                        title={comment.author}\\n                        date={comment.created_at && new Date(comment.created_at).toLocaleDateString()}\\n                        amount={comment.likes}\\n                        checked={comment.checked}\\n                >\\n                    {#if comment.comment !== null}\\n                        {comment.comment}\\n                    {:else}\\n                        <Loader type=\\\"h4\\\"/>\\n                        <Loader type=\\\"h4\\\"/>\\n                    {/if}\\n                </Comment>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n    <Br size=\\\"20\\\"/>  \\n\\n    <p class=\\\"h3 font-w-500 font-secondary underline text-center\\\">\\n        <span>Всі коментарі</span>\\n        <Icon type=\\\"caret-down\\\" size=\\\"small\\\"/>\\n    </p>\\n\\n    {#if withForm}\\n        <Br size=\\\"40\\\"/>  \\n        <div class=\\\"comments-form font-secondary h3\\\">\\n            <Form class=\\\"flex\\\" name=\\\"comment-form\\\" on:submit={values => dispatch('sumbit', values)}>\\n                <Input\\n                        type=\\\"textarea\\\"\\n                        name=\\\"comment\\\"\\n                        rows=\\\"1\\\"\\n                        class=\\\"comment-field flex-self-stretch\\\"\\n                        placeholder=\\\"Залиште свій коментар\\\"\\n                />\\n            </Form>\\n            <div class=\\\"flex absolute\\\" style=\\\"top: 0; right: 0; height: 100%; width: 50px\\\">\\n                <Button type=\\\"submit\\\" class=\\\"flex full-width flex-self-stretch flex-justify-start\\\">\\n                    <Icon type=\\\"send\\\" is=\\\"info\\\" size=\\\"medium\\\"/>\\n                </Button>\\n            </div>\\n        </div>\\n    {/if}\\n</section>\\n\\n<style>\\n    .comments {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        padding: 15px;\\n    }\\n\\n    .comments-form {\\n        position: relative;\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n    }\\n\\n    .comments-wrap {\\n        width: 100%;\\n        margin: -5px 0;\\n    }\\n\\n    .comments-wrap li {\\n        width: 100%;\\n        padding: 5px 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtRQUN0QixhQUFhO0lBQ2pCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO0lBQ2Q7O0lBRUE7UUFDSSxXQUFXO1FBQ1gsY0FBYztJQUNsQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO0lBQ2xCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2NvbW1lbnRzL0NvbW1lbnRzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5jb21tZW50cyB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBmbGV4LWdyb3c6IDE7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG92ZXJmbG93LXg6IGhpZGRlbjtcbiAgICAgICAgYWxpZ24tc2VsZjogc3RyZXRjaDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgcGFkZGluZzogMTVweDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtZm9ybSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZmxleDogbm9uZTtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtYXJnaW46IC01cHggMDtcbiAgICB9XG5cbiAgICAuY29tbWVudHMtd3JhcCBsaSB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nOiA1cHggMDtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAwFI,SAAS,4BAAC,CAAC,AACP,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,MAAM,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,OAAO,CAAE,IAAI,AACjB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,QAAQ,CAAE,QAAQ,CAClB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,AACtB,CAAC,AAED,cAAc,4BAAC,CAAC,AACZ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC,AAED,4BAAc,CAAC,EAAE,cAAC,CAAC,AACf,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,CAAC,AAClB,CAAC\"}"
 };
@@ -3201,7 +4777,7 @@ const Comments = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let { items = new Array(4).fill({ comment: null }) } = $$props;
 	if ($$props.withForm === void 0 && $$bindings.withForm && withForm !== void 0) $$bindings.withForm(withForm);
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$v);
+	$$result.css.add(css$A);
 
 	return `<section class="${"comments svelte-88w9s0"}">
     <ul class="${"comments-wrap svelte-88w9s0"}">
@@ -3276,7 +4852,7 @@ const Comments = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/donators/DonatorsCard.svelte generated by Svelte v3.18.1 */
 
-const css$w = {
+const css$B = {
 	code: "li.svelte-13srupt{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;padding:20px;width:100%}li.svelte-13srupt:not(:last-child){background-image:-webkit-gradient(linear, left top, right top, color-stop(50%, rgba(var(--theme-color-primary-opposite), 0.1)), color-stop(0%, rgba(var(--theme-color-primary-opposite), 0)));background-image:linear-gradient(to right, rgba(var(--theme-color-primary-opposite), 0.1) 50%, rgba(var(--theme-color-primary-opposite), 0) 0%);background-position:bottom;background-size:20px 1px;background-repeat:repeat-x}",
 	map: "{\"version\":3,\"file\":\"DonatorsCard.svelte\",\"sources\":[\"DonatorsCard.svelte\"],\"sourcesContent\":[\"<script>\\n    import Icon from '@components/Icon.svelte'\\n    import Card from '@components/Card.svelte'\\n    import Avatar from '@components/Avatar.svelte'\\n    import Loader from '@components/loader'\\n\\n    /**\\n     * @type {{\\n     *  id: string,\\n     *  src: string,\\n     *  title: string,\\n     *  subtitle: string,\\n     *  checked: boolean,\\n     * }}\\n     */\\n    export let items\\n</script>\\n\\n{#if Array.isArray(items) && items.length}\\n    <Card>\\n        <ul class=\\\"full-width\\\">\\n            {#each items as item}\\n                <li key={item.id}>\\n                    <div class=\\\"relative\\\">\\n                        <Avatar src={item.src} size=\\\"medium\\\" alt={item.subtitle}/>\\n                        {#if item.checked}\\n                            <div class=\\\"absolute flex\\\" style=\\\"top: -1px; right: -1px; width: 20px; height: 20px; overflow: hidden\\\">\\n                                <Icon type=\\\"polygon\\\" is=\\\"info\\\"/>\\n                                <div class=\\\"absolute-center flex\\\" style=\\\"width: 10px; height: 10px;\\\">\\n                                    <Icon type=\\\"check-flag\\\" is=\\\"light\\\"/>\\n                                </div>\\n                            </div>\\n                        {/if}\\n                    </div>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <s></s>\\n                    <div style=\\\"overflow: hidden;\\\" class=\\\"flex flex-column flex-justify-center\\\">\\n                        {#if item.title !== null}\\n                            <h2 class=\\\"text-ellipsis\\\">{ item.title }</h2>\\n                        {:else}\\n                            <span class=\\\"h2 relative flex-self-start\\\">\\n                                <span style=\\\"visibility: hidden\\\">₴ 1000</span>\\n                                <Loader type=\\\"h2\\\" absolute/>\\n                            </span>  \\n                        {/if}\\n\\n                        {#if item.subtitle !== null}\\n                            <span class=\\\"h4 font-w-300 text-ellipsis\\\">{ item.subtitle }</span>\\n                        {:else}\\n                            <Loader type=\\\"h4\\\"/>\\n                        {/if}\\n                    </div>\\n                </li>\\n            {/each}\\n        </ul>\\n    </Card>\\n{/if}\\n\\n<style>\\n    li {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        padding: 20px;\\n        width: 100%;\\n    }\\n\\n    li:not(:last-child) {\\n        background-image: -webkit-gradient(linear, left top, right top, color-stop(50%, rgba(var(--theme-color-primary-opposite), 0.1)), color-stop(0%, rgba(var(--theme-color-primary-opposite), 0)));\\n        background-image: linear-gradient(to right, rgba(var(--theme-color-primary-opposite), 0.1) 50%, rgba(var(--theme-color-primary-opposite), 0) 0%);\\n        background-position: bottom;\\n        background-size: 20px 1px;\\n        background-repeat: repeat-x;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2RvbmF0b3JzL0RvbmF0b3JzQ2FyZC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsYUFBYTtRQUNiLFdBQVc7SUFDZjs7SUFFQTtRQUNJLDhMQUFnSjtRQUFoSixnSkFBZ0o7UUFDaEosMkJBQTJCO1FBQzNCLHlCQUF5QjtRQUN6QiwyQkFBMkI7SUFDL0IiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZG9uYXRvcnMvRG9uYXRvcnNDYXJkLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIGxpIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgcGFkZGluZzogMjBweDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgfVxuXG4gICAgbGk6bm90KDpsYXN0LWNoaWxkKSB7XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCh0byByaWdodCwgcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgMC4xKSA1MCUsIHJnYmEodmFyKC0tdGhlbWUtY29sb3ItcHJpbWFyeS1vcHBvc2l0ZSksIDApIDAlKTtcbiAgICAgICAgYmFja2dyb3VuZC1wb3NpdGlvbjogYm90dG9tO1xuICAgICAgICBiYWNrZ3JvdW5kLXNpemU6IDIwcHggMXB4O1xuICAgICAgICBiYWNrZ3JvdW5kLXJlcGVhdDogcmVwZWF0LXg7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AA6DI,EAAE,eAAC,CAAC,AACA,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,OAAO,CAAE,IAAI,CACb,KAAK,CAAE,IAAI,AACf,CAAC,AAED,iBAAE,KAAK,WAAW,CAAC,AAAC,CAAC,AACjB,gBAAgB,CAAE,iBAAiB,MAAM,CAAC,CAAC,IAAI,CAAC,GAAG,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC,WAAW,GAAG,CAAC,CAAC,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,CAAC,WAAW,EAAE,CAAC,CAAC,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9L,gBAAgB,CAAE,gBAAgB,EAAE,CAAC,KAAK,CAAC,CAAC,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,EAAE,CAAC,CAChJ,mBAAmB,CAAE,MAAM,CAC3B,eAAe,CAAE,IAAI,CAAC,GAAG,CACzB,iBAAiB,CAAE,QAAQ,AAC/B,CAAC\"}"
 };
@@ -3284,7 +4860,7 @@ const css$w = {
 const DonatorsCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$w);
+	$$result.css.add(css$B);
 
 	return `${Array.isArray(items) && items.length
 	? `${validate_component(Card, "Card").$$render($$result, {}, {}, {
@@ -3336,7 +4912,7 @@ const DonatorsCard = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
 /* src/components/donators/DonatorsList.svelte generated by Svelte v3.18.1 */
 
-const css$x = {
+const css$C = {
 	code: "ul.svelte-17hwyyp{width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start;max-width:100%;overflow-y:hidden;overflow-x:auto;padding:var(--screen-padding) 0}li.svelte-17hwyyp{-webkit-box-flex:0;-ms-flex:none;flex:none;-ms-flex-item-align:stretch;align-self:stretch;width:260px;padding:0 5px}li.svelte-17hwyyp:first-child{padding-left:15px}li.svelte-17hwyyp:last-child{padding-right:15px}",
 	map: "{\"version\":3,\"file\":\"DonatorsList.svelte\",\"sources\":[\"DonatorsList.svelte\"],\"sourcesContent\":[\"<script>\\n    import { tick } from 'svelte'\\n    import DonatorsCard from './DonatorsCard.svelte'\\n\\n    /**\\n     * @type {{\\n     *  id: string,\\n     *  src: string,\\n     *  title: string,\\n     *  subtitle: string,\\n     *  checked: boolean,\\n     * }[]}\\n     */\\n    export let items = new Array(8).fill({ title: null, subtitle: null })\\n\\n    let itemsPrev = []\\n    let container = null\\n    let grouped = []\\n    \\n    $: grouped = items.reverse().reduce((acc, item) => {\\n        const lastInd = Math.max(acc.length - 1, 0)\\n        if (!Array.isArray(acc[lastInd])) {\\n            acc[lastInd] = []\\n        }\\n        if (acc[lastInd].length < 3) {\\n            acc[lastInd].push(item)\\n        } else {\\n            acc.push([])\\n            acc[lastInd + 1].push(item)\\n        }\\n        return acc\\n    }, []).reverse()\\n\\n    $: onItemsChange(items, container)\\n\\n    async function onItemsChange(items, container) {\\n        if (items && items.length && !(itemsPrev && itemsPrev.length)) {\\n            await tick()\\n            scrollEnd(container)\\n        }\\n        itemsPrev = items\\n    }\\n\\n    function scrollEnd(node) {\\n        try {\\n            node && node.scrollTo(node.scrollWidth, 0)\\n        } catch (err) {\\n            console.warn(`The Magic told me \\\"${err.message}\\\". It's a weird reason, I know, but I couldn't scroll to the end of ${node} with it: `, err)\\n        }\\n    }\\n</script>\\n\\n<ul class=\\\"donators scroll-x-center\\\" bind:this={container}>\\n    {#each grouped as cards}\\n        <li>\\n            <DonatorsCard items={cards}/>\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: start;\\n            -ms-flex-align: start;\\n                align-items: flex-start;\\n        max-width: 100%;\\n        overflow-y: hidden;\\n        overflow-x: auto;\\n        padding: var(--screen-padding) 0;\\n    }\\n\\n    li {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        width: 260px;\\n        padding: 0 5px;\\n    }\\n\\n    li:first-child {\\n        padding-left: 15px;\\n    }\\n\\n    li:last-child {\\n        padding-right: 15px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2RvbmF0b3JzL0RvbmF0b3JzTGlzdC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLGVBQWU7UUFDZixrQkFBa0I7UUFDbEIsZ0JBQWdCO1FBQ2hCLGdDQUFnQztJQUNwQzs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixZQUFZO1FBQ1osY0FBYztJQUNsQjs7SUFFQTtRQUNJLGtCQUFrQjtJQUN0Qjs7SUFFQTtRQUNJLG1CQUFtQjtJQUN2QiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9kb25hdG9ycy9Eb25hdG9yc0xpc3Quc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgdWwge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGZsZXgtc3RhcnQ7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgb3ZlcmZsb3cteTogaGlkZGVuO1xuICAgICAgICBvdmVyZmxvdy14OiBhdXRvO1xuICAgICAgICBwYWRkaW5nOiB2YXIoLS1zY3JlZW4tcGFkZGluZykgMDtcbiAgICB9XG5cbiAgICBsaSB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIHdpZHRoOiAyNjBweDtcbiAgICAgICAgcGFkZGluZzogMCA1cHg7XG4gICAgfVxuXG4gICAgbGk6Zmlyc3QtY2hpbGQge1xuICAgICAgICBwYWRkaW5nLWxlZnQ6IDE1cHg7XG4gICAgfVxuXG4gICAgbGk6bGFzdC1jaGlsZCB7XG4gICAgICAgIHBhZGRpbmctcmlnaHQ6IDE1cHg7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AA6DI,EAAE,eAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,KAAK,CACpB,cAAc,CAAE,KAAK,CACjB,WAAW,CAAE,UAAU,CAC/B,SAAS,CAAE,IAAI,CACf,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,IAAI,CAChB,OAAO,CAAE,IAAI,gBAAgB,CAAC,CAAC,CAAC,AACpC,CAAC,AAED,EAAE,eAAC,CAAC,AACA,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,KAAK,CAAE,KAAK,CACZ,OAAO,CAAE,CAAC,CAAC,GAAG,AAClB,CAAC,AAED,iBAAE,YAAY,AAAC,CAAC,AACZ,YAAY,CAAE,IAAI,AACtB,CAAC,AAED,iBAAE,WAAW,AAAC,CAAC,AACX,aAAa,CAAE,IAAI,AACvB,CAAC\"}"
 };
@@ -3365,7 +4941,7 @@ const DonatorsList = create_ssr_component(($$result, $$props, $$bindings, $$slot
 	}
 
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$x);
+	$$result.css.add(css$C);
 
 	grouped = items.reverse().reduce(
 		(acc, item) => {
@@ -3482,7 +5058,7 @@ const NewsItem = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/newsList/NewsList.svelte generated by Svelte v3.18.1 */
 
-const css$y = {
+const css$D = {
 	code: ".news-list.svelte-6apgo.svelte-6apgo{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;overflow-y:auto;overflow-x:hidden;-ms-flex-item-align:stretch;align-self:stretch;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.news-list-wrap.svelte-6apgo.svelte-6apgo{width:100%;margin:-5px 0}.news-list-wrap.svelte-6apgo li.svelte-6apgo{position:relative;width:100%;padding:5px 0}.arrow.svelte-6apgo.svelte-6apgo{position:absolute;top:8px;right:15px;color:rgba(var(--color-info))}",
 	map: "{\"version\":3,\"file\":\"NewsList.svelte\",\"sources\":[\"NewsList.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { onMount } from 'svelte'\\n    import { API, Dates } from '@services'\\n    \\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Button from '@components/Button.svelte'\\n    import NewsItem from './NewsItem.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n   \\n   /**\\n    * @type {{\\n    *   id: string,\\n    *   src: string,\\n    *   likes: number,\\n    *   title: string,\\n    *   subtitle: string,\\n    *   created_at: string,\\n    * }}\\n    */\\n    export let items = new Array(3).fill({ title: null, subtitle: null, created_at: null, likes: null })\\n</script>\\n\\n<section class=\\\"news-list\\\">\\n    <ul class=\\\"news-list-wrap\\\">\\n        {#each items as item, index}\\n            <li role=\\\"button\\\" on:click={() => dispatch('click', { item, index })} key={item.id}>\\n                <NewsItem\\n                        src={item.src}\\n                        title={item.title}\\n                        likes={item.likes}\\n                        isLiked={item.isLiked}\\n                        subtitle={item.subtitle}\\n                        date={item.created_at === null ? null : Dates(item.created_at).fromNow()}\\n                />\\n\\n                <span class=\\\"arrow\\\">\\n                    <Icon type=\\\"arrow-right\\\" size=\\\"small\\\"/>\\n                </span>\\n            </li>\\n        {/each}\\n    </ul>\\n\\n    <Br size=\\\"20\\\"/>  \\n\\n    <p class=\\\"h3 font-w-500 font-secondary underline text-center\\\">\\n        <span>Всі новини</span>\\n        <Icon type=\\\"caret-down\\\" size=\\\"small\\\"/>\\n    </p>\\n</section>\\n\\n<style>\\n    .news-list {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-y: auto;\\n        overflow-x: hidden;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n    .news-list-wrap {\\n        width: 100%;\\n        margin: -5px 0;\\n    }\\n\\n    .news-list-wrap li {\\n        position: relative;\\n        width: 100%;\\n        padding: 5px 0;\\n    }\\n\\n    .arrow {\\n        position: absolute;\\n        top: 8px;\\n        right: 15px;\\n        color: rgba(var(--color-info));\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL25ld3NMaXN0L05ld3NMaXN0LnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxXQUFXO1FBQ1gsbUJBQVk7WUFBWixvQkFBWTtnQkFBWixZQUFZO1FBQ1osb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsa0JBQWtCO1FBQ2xCLDRCQUFtQjtZQUFuQixtQkFBbUI7UUFDbkIsNEJBQXNCO1FBQXRCLDZCQUFzQjtZQUF0QiwwQkFBc0I7Z0JBQXRCLHNCQUFzQjtJQUMxQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7UUFDWCxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFFBQVE7UUFDUixXQUFXO1FBQ1gsOEJBQThCO0lBQ2xDIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL25ld3NMaXN0L05ld3NMaXN0LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5uZXdzLWxpc3Qge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZmxleC1ncm93OiAxO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgICAgICBvdmVyZmxvdy14OiBoaWRkZW47XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgfVxuXG4gICAgLm5ld3MtbGlzdC13cmFwIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG1hcmdpbjogLTVweCAwO1xuICAgIH1cblxuICAgIC5uZXdzLWxpc3Qtd3JhcCBsaSB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIHBhZGRpbmc6IDVweCAwO1xuICAgIH1cblxuICAgIC5hcnJvdyB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiA4cHg7XG4gICAgICAgIHJpZ2h0OiAxNXB4O1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS1jb2xvci1pbmZvKSk7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsDI,UAAU,0BAAC,CAAC,AACR,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,MAAM,CAClB,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,AAClC,CAAC,AAED,eAAe,0BAAC,CAAC,AACb,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC,AAED,4BAAe,CAAC,EAAE,aAAC,CAAC,AAChB,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,GAAG,CAAC,CAAC,AAClB,CAAC,AAED,MAAM,0BAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,GAAG,CACR,KAAK,CAAE,IAAI,CACX,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,AAClC,CAAC\"}"
 };
@@ -3498,7 +5074,7 @@ const NewsList = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	}) } = $$props;
 
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$y);
+	$$result.css.add(css$D);
 
 	return `<section class="${"news-list svelte-6apgo"}">
     <ul class="${"news-list-wrap svelte-6apgo"}">
@@ -3615,7 +5191,7 @@ const FundCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 /* src/components/fundCards/FundCards.svelte generated by Svelte v3.18.1 */
 
-const css$z = {
+const css$E = {
 	code: ".charities.active .scroll-x-center > *{-webkit-transform:none;transform:none\n    }div.svelte-14qvbw3{-webkit-box-flex:0;-ms-flex:none;flex:none;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-item-align:stretch;align-self:stretch;height:470px;width:77vw;max-width:350px;padding:15px 5px;-webkit-box-sizing:content-box;box-sizing:content-box}div.start.svelte-14qvbw3{padding-left:var(--screen-padding)}div.end.svelte-14qvbw3{padding-right:var(--screen-padding)}",
 	map: "{\"version\":3,\"file\":\"FundCards.svelte\",\"sources\":[\"FundCards.svelte\"],\"sourcesContent\":[\"<script>\\n    import Carousel from '@components/Carousel.svelte'\\n    import Button from '@components/Button.svelte'\\n    import FundCard from './FundCard.svelte'\\n\\n    /**\\n     * @type {{\\n     *  id: string,\\n     *  src: string,\\n     *  total: number,\\n     *  current: number,\\n     *  currency: string,\\n     *  city: string,\\n     *  title: string,\\n     * }}\\n     */\\n    export let items = [{}, {}, {}]\\n</script>\\n\\n<Carousel {items} size=\\\"auto\\\" let:index={index} let:item={item} class=\\\"charities\\\">\\n    <div class={!index ? 'start' : index === items.length - 1 ? 'end' : ''} key={item.id}>\\n        <FundCard\\n            src={item.src}\\n            total={item.total}\\n            current={item.current}\\n            currency={item.currency}\\n            city={item.city}\\n            title={item.title}\\n        >\\n            <span slot=\\\"button\\\" let:id={id}>\\n                <slot name=\\\"button\\\">\\n                    <Button size=\\\"big\\\" is=\\\"success\\\" href={id}>\\n                        <span class=\\\"h2 font-secondary font-w-600\\\">\\n                            Допомогти\\n                        </span>\\n                    </Button>\\n                </slot>\\n            </span>\\n        </FundCard>\\n    </div>\\n</Carousel>\\n\\n<style>\\n    :global(.charities.active .scroll-x-center > *) {\\n        -webkit-transform: none;\\n                transform: none\\n    }\\n    div {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        height: 470px;\\n        width: 77vw;\\n        max-width: 350px;\\n        padding: 15px 5px;\\n        -webkit-box-sizing: content-box;\\n                box-sizing: content-box;\\n    }\\n\\n    div.start {\\n        padding-left: var(--screen-padding);\\n    }\\n\\n    div.end {\\n        padding-right: var(--screen-padding);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2Z1bmRDYXJkcy9GdW5kQ2FyZHMuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLHVCQUFjO2dCQUFkO0lBQ0o7SUFDQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYiw0QkFBbUI7WUFBbkIsbUJBQW1CO1FBQ25CLGFBQWE7UUFDYixXQUFXO1FBQ1gsZ0JBQWdCO1FBQ2hCLGlCQUFpQjtRQUNqQiwrQkFBdUI7Z0JBQXZCLHVCQUF1QjtJQUMzQjs7SUFFQTtRQUNJLG1DQUFtQztJQUN2Qzs7SUFFQTtRQUNJLG9DQUFvQztJQUN4QyIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9mdW5kQ2FyZHMvRnVuZENhcmRzLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIDpnbG9iYWwoLmNoYXJpdGllcy5hY3RpdmUgLnNjcm9sbC14LWNlbnRlciA+ICopIHtcbiAgICAgICAgdHJhbnNmb3JtOiBub25lXG4gICAgfVxuICAgIGRpdiB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGhlaWdodDogNDcwcHg7XG4gICAgICAgIHdpZHRoOiA3N3Z3O1xuICAgICAgICBtYXgtd2lkdGg6IDM1MHB4O1xuICAgICAgICBwYWRkaW5nOiAxNXB4IDVweDtcbiAgICAgICAgYm94LXNpemluZzogY29udGVudC1ib3g7XG4gICAgfVxuXG4gICAgZGl2LnN0YXJ0IHtcbiAgICAgICAgcGFkZGluZy1sZWZ0OiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgfVxuXG4gICAgZGl2LmVuZCB7XG4gICAgICAgIHBhZGRpbmctcmlnaHQ6IHZhcigtLXNjcmVlbi1wYWRkaW5nKTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AA2CY,sCAAsC,AAAE,CAAC,AAC7C,iBAAiB,CAAE,IAAI,CACf,SAAS,CAAE,IAAI;IAC3B,CAAC,AACD,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,MAAM,CAAE,KAAK,CACb,KAAK,CAAE,IAAI,CACX,SAAS,CAAE,KAAK,CAChB,OAAO,CAAE,IAAI,CAAC,GAAG,CACjB,kBAAkB,CAAE,WAAW,CACvB,UAAU,CAAE,WAAW,AACnC,CAAC,AAED,GAAG,MAAM,eAAC,CAAC,AACP,YAAY,CAAE,IAAI,gBAAgB,CAAC,AACvC,CAAC,AAED,GAAG,IAAI,eAAC,CAAC,AACL,aAAa,CAAE,IAAI,gBAAgB,CAAC,AACxC,CAAC\"}"
 };
@@ -3623,7 +5199,7 @@ const css$z = {
 const FundCards = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items = [{}, {}, {}] } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	$$result.css.add(css$z);
+	$$result.css.add(css$E);
 
 	return `${validate_component(Carousel, "Carousel").$$render($$result, { items, size: "auto", class: "charities" }, {}, {
 		default: ({ index, item }) => `
@@ -3665,15 +5241,807 @@ const FundCards = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	})}`;
 });
 
+/* src/routes/funds/components/_Media.svelte generated by Svelte v3.18.1 */
+
+const Media = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items = [] } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Відео про Волтера</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<section class="${"flex"}" style="${"height: 280px"}">
+    ${validate_component(Carousel, "Carousel").$$render($$result, { items }, {}, {})}
+</section>`;
+});
+
+/* src/routes/funds/components/_Share.svelte generated by Svelte v3.18.1 */
+
+const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<p class="${"flex"}">
+    ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "share",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+        <s></s>
+        <s></s>
+        <p class="${"font-w-500"}">Поділитись</p>
+    `
+		}
+	)}
+    <s></s>
+    <s></s>
+    <s></s>
+    <s></s>
+    <s></s>
+    ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "link",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+        <s></s>
+        <s></s>
+        <p class="${"font-w-500"}">Скопіювати</p>
+    `
+		}
+	)}
+</p>`;
+});
+
+/* src/routes/funds/components/_Trust.svelte generated by Svelte v3.18.1 */
+
+const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { active = false } = $$props;
+	if ($$props.active === void 0 && $$bindings.active && active !== void 0) $$bindings.active(active);
+
+	return `<section class="${"flex flex-column flex-align-center flex-justify-center"}">
+    <div style="${"width: 100px; max-width: 100%"}">
+        ${validate_component(TrustButton, "TrustButton").$$render($$result, { isActive: active }, {}, {})}
+    </div>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+    <h2>Я довіряю</h2>
+</section>`;
+});
+
+/* src/routes/funds/components/_Comments.svelte generated by Svelte v3.18.1 */
+
+const Comments_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Коментарі</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(Comments, "Comments").$$render($$result, { items }, {}, {})}
+</div>`;
+});
+
+/* src/routes/funds/components/_Donators.svelte generated by Svelte v3.18.1 */
+
+const Donators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Наші піклувальники</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(DonatorsList, "DonatorsList").$$render($$result, { items }, {}, {})}
+</div>`;
+});
+
+/* src/routes/funds/components/_HowToHelp.svelte generated by Svelte v3.18.1 */
+
+const HowToHelp = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = { phone: null } } = $$props;
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+
+	return `<h1>Як допомогти</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
+<ul style="${"list-style: disc outside none; padding-left: var(--screen-padding)"}" class="${"h3 font-w-500 font-secondary"}">
+    ${data.phone !== null
+	? `<li style="${"padding-bottom: 5px"}">Ви пожете купити йому поїсти</li>
+        <li style="${"padding-bottom: 5px"}">Можете особисто відвідати його у нас</li>
+        <li style="${"padding-bottom: 5px"}">Купити вакцінацію для Волтера</li>
+        <li style="${"padding-bottom: 5px"}">Допомогти любим інщим способом</li>`
+	: `<li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>  
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>  
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>
+        </li>
+       <li style="${"padding-bottom: 5px"}">
+            <span class="${"font-secondary font-w-500 p relative"}">
+                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>  
+        </li>`}
+</ul>
+${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+<div class="${"flex"}">
+    <div class="${"flex flex-align-center font-secondary"}">
+        ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			size: "medium",
+			type: "phone",
+			class: "theme-svg-fill-opposite"
+		},
+		{},
+		{}
+	)}
+        <s></s>
+        <s></s>
+        ${data.phone !== null
+	? `<h2>${escape(data.phone)}</h2>`
+	: `<span style="${"width: 240px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</span>`}
+    </div>
+</div>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<p class="${"font-w-300"}">Подзвоніть нам, допоможемо разом!</p>`;
+});
+
+/* src/routes/funds/components/_Documents.svelte generated by Svelte v3.18.1 */
+
+const Documents_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Документи</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(Documents, "Documents").$$render($$result, { items }, {}, {})}
+</div>`;
+});
+
+/* src/routes/funds/components/_AnimalCard.svelte generated by Svelte v3.18.1 */
+
+const css$F = {
+	code: "table.svelte-194ipjn tr:not(:last-child) td.svelte-194ipjn{padding-bottom:16px}table.svelte-194ipjn td.svelte-194ipjn:last-child{font-weight:300}",
+	map: "{\"version\":3,\"file\":\"_AnimalCard.svelte\",\"sources\":[\"_AnimalCard.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Card, Br, FancyBox, Avatar, Icon, Loader } from '@components'\\n\\n    export let animal = {\\n        avatar: null,\\n        avatar2x: null,\\n        name: null,\\n        breed: null,\\n        age: null,\\n        sex: null,\\n        sterilization: null,\\n        characterShort: null,\\n        character: null,\\n        lifestory: null,\\n        vaccination: null,\\n    }\\n</script>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvZnVuZHMvY29tcG9uZW50cy9fQW5pbWFsQ2FyZC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvZnVuZHMvY29tcG9uZW50cy9fQW5pbWFsQ2FyZC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICB0YWJsZSB0cjpub3QoOmxhc3QtY2hpbGQpIHRkIHtcbiAgICAgICAgcGFkZGluZy1ib3R0b206IDE2cHg7XG4gICAgfVxuXG4gICAgdGFibGUgdGQ6bGFzdC1jaGlsZCB7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiAzMDA7XG4gICAgfVxuIl19 */</style>\\n\\n<Card class=\\\"container\\\">\\n    <Br size=\\\"30\\\"/>\\n\\n    <div class=\\\"flex flex-column flex-align-center\\\">\\n        <span>\\n            <FancyBox>\\n                <Avatar src={animal.avatar} size=\\\"big\\\" alt=\\\"Волтер\\\"/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width full-height\\\" style=\\\"height: 100vw\\\">\\n                    <div class=\\\"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch\\\" style=\\\"padding: var(--screen-padding) 0\\\">\\n                        <Avatar src={animal.avatar} srcBig={animal.avatar2x} alt=\\\"Волтер\\\"/>\\n                    </div>\\n                </section>\\n            </FancyBox>\\n        </span>\\n\\n        <Br size=\\\"20\\\"/>\\n\\n        {#if animal.name !== null}\\n            <h2>{animal.name}</h2>\\n        {:else}\\n            <span style=\\\"width: 40%\\\"><Loader type=\\\"h2\\\"/></span>\\n        {/if}\\n        <Br size=\\\"5\\\"/>\\n        {#if animal.breed !== null}\\n            <h3 class=\\\"font-w-500\\\" style=\\\"opacity: .7\\\">{animal.breed}</h3>\\n        {:else}\\n            <span style=\\\"width: 60%\\\"><Loader type=\\\"h3\\\"/></span>\\n        {/if}\\n    </div>\\n    <Br size=\\\"35\\\"/>\\n\\n    <section class=\\\"flex flex-justify-center\\\">\\n        <div class=\\\"flex flex-center relative\\\" style=\\\"width: 120px; height: 120px\\\">\\n            <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n\\n            {#if animal.age !== null}\\n                <div class=\\\"text-white text-center absolute\\\">\\n                    <h4 class=\\\"h1\\\">{animal.age}</h4>\\n                    <h4 style=\\\"margin-top: -8px\\\">Роки</h4>\\n                </div>\\n            {/if}\\n        </div>\\n\\n        <div class=\\\"flex flex-center relative\\\" style=\\\"width: 120px; height: 120px\\\">\\n            <Icon type=\\\"polygon\\\" is=\\\"info\\\"/>\\n\\n            {#if animal.sex !== null}\\n                <div class=\\\"absolute flex\\\" style=\\\"width: 44px; height: 44px\\\">\\n                {#if animal.sex === 'male'}\\n                    <Icon type=\\\"male\\\" is=\\\"light\\\"/>\\n                {:else if animal.sex === 'female'}\\n                    <Icon type=\\\"female\\\" is=\\\"light\\\"/>\\n                {/if}\\n                </div>\\n            {/if}\\n        </div>\\n\\n        <div class=\\\"flex flex-center relative\\\" style=\\\"width: 120px; height: 120px\\\">\\n            <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n\\n            {#if animal.sterilization !== null}\\n                <div class=\\\"absolute flex flex-column flex-center\\\">\\n                    {#if animal.sterilization}\\n                        <Icon type=\\\"checked-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    {:else}\\n                        <Icon type=\\\"cancel-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    {/if}\\n                    <span class=\\\"text-white text-center h5\\\">Cтерилізація</span>\\n                </div>\\n            {/if}\\n        </div>\\n    </section>\\n    <Br size=\\\"40\\\"/>\\n\\n    <h2>Характер: {animal.characterShort ? animal.characterShort : ''}</h2>\\n    <Br size=\\\"10\\\"/>\\n\\n    {#if animal.character !== null}\\n        <p class=\\\"font-w-300\\\">\\n            {animal.character}\\n        </p>\\n    {:else}\\n        <Loader type=\\\"p\\\"/>\\n        <Loader type=\\\"p\\\"/>\\n        <Loader type=\\\"p\\\"/>\\n        <Loader type=\\\"p\\\"/>\\n    {/if}\\n    <Br size=\\\"35\\\"/>\\n\\n    <h2>Життя</h2>\\n    <Br size=\\\"10\\\"/>\\n    <table>\\n        <tbody>\\n            {#if animal.lifestory !== null}\\n                {#each animal.lifestory as item}\\n                    <tr>\\n                        <td>{item.date}</td>\\n                        <td>—</td>\\n                        <td>{item.title}</td>\\n                    </tr>\\n                {/each}\\n            {:else}\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n            {/if}\\n        </tbody>\\n    </table>\\n    <Br size=\\\"45\\\"/>\\n\\n    <h2>Вакцинації</h2>\\n    <Br size=\\\"15\\\"/>\\n    <ul class=\\\"flex flex-column text-left\\\">\\n        {#if animal.vaccination !== null}\\n            {#each animal.vaccination as item, i}\\n                <li>\\n                    {#if i}\\n                        <Br size=\\\"10\\\"/>\\n                    {/if}\\n                    <span class=\\\"flex flex-align-center font-w-300\\\">\\n                        {#if item.done}\\n                            <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                        {:else}\\n                            <Icon is=\\\"danger\\\" type=\\\"cancel-circle\\\" size=\\\"medium\\\"/>\\n                        {/if}\\n                        <s></s>\\n                        <s></s>\\n                        <s></s>\\n                        {item.title}\\n                    </span>\\n                </li>\\n            {/each}\\n        {:else}\\n            <li style=\\\"width: 40%\\\">\\n                <Loader type=\\\"p\\\"/>\\n            </li>\\n            <li style=\\\"width: 40%\\\">\\n                <Br size=\\\"10\\\"/>\\n                <Loader type=\\\"p\\\"/>\\n            </li>\\n            <li style=\\\"width: 40%\\\">\\n                <Br size=\\\"10\\\"/>\\n                <Loader type=\\\"p\\\"/>\\n            </li>\\n        {/if}\\n    </ul>\\n\\n    <Br size=\\\"35\\\"/>\\n</Card>\\n\"],\"names\":[],\"mappings\":\"AAmBI,oBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,eAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,oBAAK,CAAC,iBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
+};
+
+const AnimalCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { animal = {
+		avatar: null,
+		avatar2x: null,
+		name: null,
+		breed: null,
+		age: null,
+		sex: null,
+		sterilization: null,
+		characterShort: null,
+		character: null,
+		lifestory: null,
+		vaccination: null
+	} } = $$props;
+
+	if ($$props.animal === void 0 && $$bindings.animal && animal !== void 0) $$bindings.animal(animal);
+	$$result.css.add(css$F);
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+		default: () => `
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+    <div class="${"flex flex-column flex-align-center"}">
+        <span>
+            ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
+			box: () => `<section slot="${"box"}" class="${"flex full-width full-height"}" style="${"height: 100vw"}">
+                    <div class="${"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch"}" style="${"padding: var(--screen-padding) 0"}">
+                        ${validate_component(Avatar, "Avatar").$$render(
+				$$result,
+				{
+					src: animal.avatar,
+					srcBig: animal.avatar2x,
+					alt: "Волтер"
+				},
+				{},
+				{}
+			)}
+                    </div>
+                </section>`,
+			default: () => `
+                ${validate_component(Avatar, "Avatar").$$render(
+				$$result,
+				{
+					src: animal.avatar,
+					size: "big",
+					alt: "Волтер"
+				},
+				{},
+				{}
+			)}
+                
+            `
+		})}
+        </span>
+
+        ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+
+        ${animal.name !== null
+		? `<h2>${escape(animal.name)}</h2>`
+		: `<span style="${"width: 40%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</span>`}
+        ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+        ${animal.breed !== null
+		? `<h3 class="${"font-w-500"}" style="${"opacity: .7"}">${escape(animal.breed)}</h3>`
+		: `<span style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</span>`}
+    </div>
+    ${validate_component(Br, "Br").$$render($$result, { size: "35" }, {}, {})}
+
+    <section class="${"flex flex-justify-center"}">
+        <div class="${"flex flex-center relative"}" style="${"width: 120px; height: 120px"}">
+            ${validate_component(Icon, "Icon").$$render($$result, { type: "polygon", is: "primary" }, {}, {})}
+
+            ${animal.age !== null
+		? `<div class="${"text-white text-center absolute"}">
+                    <h4 class="${"h1"}">${escape(animal.age)}</h4>
+                    <h4 style="${"margin-top: -8px"}">Роки</h4>
+                </div>`
+		: ``}
+        </div>
+
+        <div class="${"flex flex-center relative"}" style="${"width: 120px; height: 120px"}">
+            ${validate_component(Icon, "Icon").$$render($$result, { type: "polygon", is: "info" }, {}, {})}
+
+            ${animal.sex !== null
+		? `<div class="${"absolute flex"}" style="${"width: 44px; height: 44px"}">
+                ${animal.sex === "male"
+			? `${validate_component(Icon, "Icon").$$render($$result, { type: "male", is: "light" }, {}, {})}`
+			: `${animal.sex === "female"
+				? `${validate_component(Icon, "Icon").$$render($$result, { type: "female", is: "light" }, {}, {})}`
+				: ``}`}
+                </div>`
+		: ``}
+        </div>
+
+        <div class="${"flex flex-center relative"}" style="${"width: 120px; height: 120px"}">
+            ${validate_component(Icon, "Icon").$$render($$result, { type: "polygon", is: "primary" }, {}, {})}
+
+            ${animal.sterilization !== null
+		? `<div class="${"absolute flex flex-column flex-center"}">
+                    ${animal.sterilization
+			? `${validate_component(Icon, "Icon").$$render(
+					$$result,
+					{
+						type: "checked-circle",
+						is: "light",
+						size: "big"
+					},
+					{},
+					{}
+				)}`
+			: `${validate_component(Icon, "Icon").$$render(
+					$$result,
+					{
+						type: "cancel-circle",
+						is: "light",
+						size: "big"
+					},
+					{},
+					{}
+				)}`}
+                    <span class="${"text-white text-center h5"}">Cтерилізація</span>
+                </div>`
+		: ``}
+        </div>
+    </section>
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+    <h2>Характер: ${escape(animal.characterShort ? animal.characterShort : "")}</h2>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+
+    ${animal.character !== null
+		? `<p class="${"font-w-300"}">
+            ${escape(animal.character)}
+        </p>`
+		: `${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}`}
+    ${validate_component(Br, "Br").$$render($$result, { size: "35" }, {}, {})}
+
+    <h2>Життя</h2>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+    <table class="${"svelte-194ipjn"}">
+        <tbody>
+            ${animal.lifestory !== null
+		? `${each(animal.lifestory, item => `<tr>
+                        <td class="${"svelte-194ipjn"}">${escape(item.date)}</td>
+                        <td class="${"svelte-194ipjn"}">—</td>
+                        <td class="${"svelte-194ipjn"}">${escape(item.title)}</td>
+                    </tr>`)}`
+		: `<tr>
+                    <td class="${"svelte-194ipjn"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</td>
+                    <td class="${"svelte-194ipjn"}">—</td>
+                    <td class="${"svelte-194ipjn"}">
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="${"svelte-194ipjn"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</td>
+                    <td class="${"svelte-194ipjn"}">—</td>
+                    <td class="${"svelte-194ipjn"}">
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="${"svelte-194ipjn"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</td>
+                    <td class="${"svelte-194ipjn"}">—</td>
+                    <td class="${"svelte-194ipjn"}">
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                    </td>
+                </tr>`}
+        </tbody>
+    </table>
+    ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
+
+    <h2>Вакцинації</h2>
+    ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
+    <ul class="${"flex flex-column text-left"}">
+        ${animal.vaccination !== null
+		? `${each(animal.vaccination, (item, i) => `<li>
+                    ${i
+			? `${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+			: ``}
+                    <span class="${"flex flex-align-center font-w-300"}">
+                        ${item.done
+			? `${validate_component(Icon, "Icon").$$render(
+					$$result,
+					{
+						is: "primary",
+						type: "checked-circle",
+						size: "medium"
+					},
+					{},
+					{}
+				)}`
+			: `${validate_component(Icon, "Icon").$$render(
+					$$result,
+					{
+						is: "danger",
+						type: "cancel-circle",
+						size: "medium"
+					},
+					{},
+					{}
+				)}`}
+                        <s></s>
+                        <s></s>
+                        <s></s>
+                        ${escape(item.title)}
+                    </span>
+                </li>`)}`
+		: `<li style="${"width: 40%"}">
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+            </li>
+            <li style="${"width: 40%"}">
+                ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+            </li>
+            <li style="${"width: 40%"}">
+                ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+            </li>`}
+    </ul>
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "35" }, {}, {})}
+`
+	})}`;
+});
+
+/* src/routes/funds/components/_Description.svelte generated by Svelte v3.18.1 */
+
+const Description = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { title = null } = $$props;
+	let { text = null } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
+
+	return `${title !== null
+	? `<h1>${escape(title)}</h1>`
+	: `<div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}  </div>
+    <div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}  </div>`}
+${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+
+${text !== null
+	? `<pre class="${"font-w-300"}">
+    ${escape(text)}
+</pre>`
+	: `${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    <div style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}</div>`}`;
+});
+
+/* src/routes/funds/components/_TopCarousel.svelte generated by Svelte v3.18.1 */
+
+const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items = [] } = $$props;
+
+	// Carousel & FancyBox
+	let propsBox = {};
+
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<section class="${"flex"}" style="${"height: 240px"}">
+    ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
+		box: () => `<section slot="${"box"}" class="${"flex full-width"}">
+            ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items }, propsBox), {}, {})}
+        </section>`,
+		default: () => `
+        ${validate_component(Carousel, "Carousel").$$render($$result, { items, dotsBelow: false }, {}, {})}
+        
+    `
+	})}
+</section>`;
+});
+
+/* src/routes/funds/components/_QuickInfoCard.svelte generated by Svelte v3.18.1 */
+
+const QuickInfoCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { cardTop = {
+		title: null,
+		subtitle: null,
+		currentSum: null,
+		neededSum: null
+	} } = $$props;
+
+	if ($$props.cardTop === void 0 && $$bindings.cardTop && cardTop !== void 0) $$bindings.cardTop(cardTop);
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+		default: () => `
+    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+
+    ${cardTop.title !== null
+		? `<h2>${escape(cardTop.title)}</h2>`
+		: `<div style="${"width: 80%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</div>
+        <div style="${"width: 80%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</div>`}
+
+    ${cardTop.subtitle !== null
+		? `<h3 class="${"font-w-normal"}" style="${"opacity: .7"}">${escape(cardTop.subtitle)}</h3>`
+		: `<div style="${"width: 100%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</div>
+        <div style="${"width: 100%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</div>`}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
+    <p class="${"font-secondary flex flex-align-end"}">
+        ${cardTop.currentSum !== null
+		? `<span class="${"h1 font-w-500"}">${escape(cardTop.currency)} ${escape(cardTop.currentSum)}</span>`
+		: `<div style="${"width: 50%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}</div>`}
+
+        <s></s>
+
+        ${cardTop.neededSum !== null
+		? `<span class="${"h3"}">/ ${escape(cardTop.currency)} ${escape(cardTop.neededSum)}</span>`
+		: `<div style="${"width: 30%; padding-bottom: 2px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</div>`}
+    </p>
+    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+
+    ${validate_component(Progress, "Progress").$$render(
+			$$result,
+			{
+				value: Math.floor(cardTop.currentSum / cardTop.neededSum * 100)
+			},
+			{},
+			{}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+`
+	})}`;
+});
+
+/* src/routes/funds/components/_OrganizationButton.svelte generated by Svelte v3.18.1 */
+
+const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { id = null } = $$props;
+	let { src = null } = $$props;
+	let { title = null } = $$props;
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+
+	return `${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			rel: "prefetch",
+			href: id,
+			class: "white"
+		},
+		{},
+		{
+			default: () => `
+  <div class="${"flex flex-align-center flex-justify-between full-width"}">
+
+    <div class="${"flex flex-align-center"}">
+      <s></s>
+      <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
+        ${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src,
+					size: "contain",
+					alt: "якесь фото організації"
+				},
+				{},
+				{}
+			)}
+      </div>
+      <s></s>
+      ${title !== null
+			? `<s></s>
+        <s></s>
+        <h3>${escape(title)}</h3>`
+			: `<span style="${"width: 80%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</span>`}
+    </div>
+    
+    ${validate_component(Icon, "Icon").$$render($$result, { type: "arrow-right", size: "medium" }, {}, {})}
+  </div>
+`
+		}
+	)}`;
+});
+
+/* src/routes/funds/components/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
+
+const InteractionIndicators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { likes = null } = $$props;
+	let { views = null } = $$props;
+	if ($$props.likes === void 0 && $$bindings.likes && likes !== void 0) $$bindings.likes(likes);
+	if ($$props.views === void 0 && $$bindings.views && views !== void 0) $$bindings.views(views);
+
+	return `<p class="${"container flex flex-justify-between flex-align-center"}">
+    <span class="${"flex flex-align-center"}">
+        ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			is: "danger",
+			type: "heart",
+			size: "medium"
+		},
+		{},
+		{}
+	)}
+        <s></s>
+        <s></s>
+        ${likes !== null
+	? `<span class="${"font-secondary font-w-600 h3"}">${escape(likes)}</span>`
+	: `<span class="${"font-secondary font-w-600 h3 relative"}">
+                <span style="${"visibility: hidden"}">199</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>`}
+    </span>
+    <span class="${"flex flex-align-center"}">
+        ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			type: "eye",
+			size: "medium",
+			class: "theme-svg-fill"
+		},
+		{},
+		{}
+	)}
+        <s></s>
+        <s></s>
+        ${views !== null
+	? `<span class="${"font-secondary font-w-600 h3"}">${escape(views)}</span>`
+	: `<span class="${"font-secondary font-w-600 h3 relative"}">
+                <span style="${"visibility: hidden"}">199</span>
+                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+            </span>`}
+    </span>
+</p>`;
+});
+
+
+
+var route_0 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Media: Media,
+    Share: Share,
+    Trust: Trust,
+    Comments: Comments_1,
+    Donators: Donators,
+    HowToHelp: HowToHelp,
+    Documents: Documents_1,
+    AnimalCard: AnimalCard,
+    Description: Description,
+    TopCarousel: TopCarousel,
+    QuickInfoCard: QuickInfoCard,
+    OrganizationButton: OrganizationButton,
+    InteractionIndicators: InteractionIndicators
+});
+
+/* src/routes/funds/edit/_TopInfo.svelte generated by Svelte v3.18.1 */
+
+const TopInfo = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { submit = undefined } = $$props;
+
+	let formFields = [
+		{
+			label: "Фотогалерея:",
+			type: "files",
+			name: "photos"
+		},
+		{
+			label: "Організація:",
+			type: "select",
+			name: "organization"
+		},
+		{
+			label: "Назва фонду:",
+			type: "text",
+			name: "title",
+			meta: {
+				placeholder: "Врятуємо її...",
+				maxlength: 20
+			}
+		},
+		{
+			label: "Ціль фонду:",
+			type: "text",
+			name: "subtitle",
+			meta: {
+				placeholder: "Тільки спільними силами...",
+				maxlength: 25
+			}
+		},
+		{
+			label: "Потрібно зібрати:",
+			type: "number",
+			name: "sum",
+			meta: { min: 10, max: 100000000 }
+		}
+	];
+
+	let formValues = {};
+	let formErrors = {};
+
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+		default: () => `
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "top-info-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors
+			},
+			{},
+			{}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+
+    ${validate_component(Button, "Button").$$render(
+			$$result,
+			{
+				size: "small",
+				type: "submit",
+				form: "top-info-form",
+				is: "info"
+			},
+			{},
+			{
+				default: () => `
+        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+            Зберегти
+        </span>
+    `
+			}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+`
+	})}`;
+});
+
+
+
+var route_1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    TopInfoEdit: TopInfo
+});
+
+/* src/routes/funds/view/_TopInfo.svelte generated by Svelte v3.18.1 */
+
+const TopInfo$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { cardTop } = $$props;
+	let { carouselTop } = $$props;
+	let { organization } = $$props;
+	if ($$props.cardTop === void 0 && $$bindings.cardTop && cardTop !== void 0) $$bindings.cardTop(cardTop);
+	if ($$props.carouselTop === void 0 && $$bindings.carouselTop && carouselTop !== void 0) $$bindings.carouselTop(carouselTop);
+	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
+
+	return `${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
+${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+${validate_component(OrganizationButton, "OrganizationButton").$$render(
+		$$result,
+		{
+			id: organization.id,
+			src: organization.avatar,
+			title: organization.name
+		},
+		{},
+		{}
+	)}
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+
+${validate_component(QuickInfoCard, "QuickInfoCard").$$render($$result, { cardTop }, {}, {})}`;
+});
+
+
+
+var route_2 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    TopInfoView: TopInfo$1
+});
+
 /* src/routes/index.svelte generated by Svelte v3.18.1 */
 
-const css$A = {
+const css$G = {
 	code: ".top-pic.svelte-zj2ii1{-webkit-box-flex:0;-ms-flex:none;flex:none;z-index:0;width:100%;height:200px;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;border-radius:0}",
 	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script>\\n    import {\\n        Br,\\n        Footer,\\n        Divider,\\n        Comments,\\n        Progress,\\n        Carousel,\\n        ContentHolder,\\n        TitleSubTitle,\\n        ListOfFeatures,\\n    } from '@components'\\n</script>\\n\\n<style>\\n    .top-pic {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        z-index: 0;\\n        width: 100%;\\n        height: 200px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        border-radius: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvaW5kZXguc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsVUFBVTtRQUNWLFdBQVc7UUFDWCxhQUFhO1FBQ2Isb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvaW5kZXguc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnRvcC1waWMge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICB6LWluZGV4OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAyMDBweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<svelte:head>\\n    <title>Charitify - list of charities you can donate.</title>\\n</svelte:head>\\n\\n<section>\\n    <Br size=\\\"var(--header-height)\\\"/>\\n\\n    <div class=\\\"top-pic\\\">\\n        <Carousel/>\\n    </div>\\n\\n    <Progress borderRadius=\\\"0 0 8px 8px\\\" value=\\\"30\\\"/>\\n\\n    <p>These guys rise a pound of vegetables. They like vegetables and long text under photos.</p>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <section class=\\\"container\\\">\\n\\n        <TitleSubTitle\\n                title=\\\"Charitify\\\"\\n                subtitle=\\\"Charity application for helping those in need\\\"\\n        />\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n\\n        <ContentHolder/>\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n\\n        <Divider size=\\\"16\\\"/>\\n        <h3 class=\\\"h2 text-right\\\">Comments:</h3>\\n        <Divider size=\\\"20\\\"/>\\n\\n        <Comments withForm={false}/>\\n\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n\\n            <ContentHolder/>\\n\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n\\n            <ListOfFeatures/>\\n    </section>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Footer/>\\n\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAeI,QAAQ,cAAC,CAAC,AACN,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,CAAC,CACV,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,KAAK,CACb,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,CAAC,AACpB,CAAC\"}"
 };
 
 const Routes = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	$$result.css.add(css$A);
+	$$result.css.add(css$G);
 
 	return `${($$result.head += `${($$result.title = `<title>Charitify - list of charities you can donate.</title>`, "")}`, "")}
 
@@ -3848,7 +6216,7 @@ const stores$1 = () => getContext(CONTEXT_KEY);
 
 /* src/routes/organizations/_OrganizationButton.svelte generated by Svelte v3.18.1 */
 
-const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const OrganizationButton$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { id = null } = $$props;
 	let { src = null } = $$props;
 	let { title = null } = $$props;
@@ -3898,7 +6266,7 @@ const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, 
 
 /* src/routes/organizations/_TopCarousel.svelte generated by Svelte v3.18.1 */
 
-const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const TopCarousel$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items = [] } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
@@ -3932,7 +6300,7 @@ ${text
 
 /* src/routes/organizations/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
 
-const InteractionIndicators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const InteractionIndicators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
 	let { likes = null } = $$props;
 	let { views = null } = $$props;
@@ -4043,7 +6411,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 
 /* src/routes/organizations/_Description.svelte generated by Svelte v3.18.1 */
 
-const Description = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { title = null } = $$props;
 	let { text = null } = $$props;
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
@@ -4068,7 +6436,7 @@ ${text !== null
 
 /* src/routes/organizations/_Share.svelte generated by Svelte v3.18.1 */
 
-const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Share$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<p class="${"flex"}">
   ${validate_component(Button, "Button").$$render(
 		$$result,
@@ -4132,7 +6500,7 @@ const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 /* src/routes/organizations/_Trust.svelte generated by Svelte v3.18.1 */
 
-const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Trust$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
 	let { active = false } = $$props;
 	if ($$props.active === void 0 && $$bindings.active && active !== void 0) $$bindings.active(active);
@@ -4148,7 +6516,7 @@ const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 /* src/routes/organizations/_Donators.svelte generated by Svelte v3.18.1 */
 
-const Donators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Donators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
@@ -4215,7 +6583,7 @@ ${validate_component(Modal, "Modal").$$render(
 			)}
         ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-        ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+        ${validate_component(InteractionIndicators$1, "InteractionIndicators").$$render(
 				$$result,
 				{
 					likes: iconsLine.likes,
@@ -4227,7 +6595,7 @@ ${validate_component(Modal, "Modal").$$render(
 			)}
         ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-        ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
+        ${validate_component(Trust$1, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
 
         ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
     </section>
@@ -4351,7 +6719,7 @@ const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
 /* src/routes/organizations/_VirtualTour.svelte generated by Svelte v3.18.1 */
 
-const css$B = {
+const css$H = {
 	code: "div.svelte-1ep59z6{background-color:rgba(var(--theme-bg-color-opposite), .04)}",
 	map: "{\"version\":3,\"file\":\"_VirtualTour.svelte\",\"sources\":[\"_VirtualTour.svelte\"],\"sourcesContent\":[\"<script>\\n  import { Br } from \\\"@components\\\";\\n\\n  export let src\\n</script>\\n\\n<h1>3D - Тур 360°</h1>\\n<Br size=\\\"20\\\" />\\n<div class=\\\"full-container\\\">\\n  <iframe\\n    {src}\\n    title=\\\"360 тур\\\"\\n    width=\\\"100%\\\"\\n    height=\\\"450\\\"\\n    frameborder=\\\"0\\\"\\n    style=\\\"border:0;\\\"\\n    allowfullscreen=\\\"\\\"\\n    aria-hidden=\\\"false\\\"\\n    tabindex=\\\"0\\\" ></iframe>\\n</div>\\n\\n<style>\\n    div {\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fVmlydHVhbFRvdXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLDJEQUEyRDtJQUMvRCIsImZpbGUiOiJzcmMvcm91dGVzL29yZ2FuaXphdGlvbnMvX1ZpcnR1YWxUb3VyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIGRpdiB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3Itb3Bwb3NpdGUpLCAuMDQpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,CAAC,GAAG,CAAC,AAC/D,CAAC\"}"
 };
@@ -4359,7 +6727,7 @@ const css$B = {
 const VirtualTour = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { src } = $$props;
 	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	$$result.css.add(css$B);
+	$$result.css.add(css$H);
 
 	return `<h1>3D - Тур 360°</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
@@ -4370,7 +6738,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
 /* src/routes/organizations/_WeOnMap.svelte generated by Svelte v3.18.1 */
 
-const css$C = {
+const css$I = {
 	code: "div.svelte-151uyyh{background-color:rgba(var(--theme-bg-color-opposite), .04)}",
 	map: "{\"version\":3,\"file\":\"_WeOnMap.svelte\",\"sources\":[\"_WeOnMap.svelte\"],\"sourcesContent\":[\"<script>\\n  import { Br } from \\\"@components\\\";\\n  \\n  export let src\\n</script>\\n\\n<h1>Ми на карті</h1>\\n<Br size=\\\"20\\\" />\\n<div class=\\\"full-container\\\">\\n  <iframe\\n    {src}\\n    title=\\\"Карта\\\"\\n    width=\\\"100%\\\"\\n    height=\\\"450\\\"\\n    frameborder=\\\"0\\\"\\n    style=\\\"border:0;\\\"\\n    allowfullscreen=\\\"\\\"\\n    aria-hidden=\\\"false\\\"\\n    tabindex=\\\"0\\\" ></iframe>\\n</div>\\n\\n<style>\\n    div {\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fV2VPbk1hcC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksMkRBQTJEO0lBQy9EIiwiZmlsZSI6InNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fV2VPbk1hcC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBkaXYge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWJnLWNvbG9yLW9wcG9zaXRlKSwgLjA0KTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,CAAC,GAAG,CAAC,AAC/D,CAAC\"}"
 };
@@ -4378,7 +6746,7 @@ const css$C = {
 const WeOnMap = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { src } = $$props;
 	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	$$result.css.add(css$C);
+	$$result.css.add(css$I);
 
 	return `<h1>Ми на карті</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
@@ -4389,7 +6757,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
 /* src/routes/organizations/_Comments.svelte generated by Svelte v3.18.1 */
 
-const Comments_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Comments_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
@@ -4544,7 +6912,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
-    ${validate_component(OrganizationButton, "OrganizationButton").$$render(
+    ${validate_component(OrganizationButton$1, "OrganizationButton").$$render(
 		$$result,
 		{
 			id: organizationBlock.id,
@@ -4556,7 +6924,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
-    ${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
+    ${validate_component(TopCarousel$1, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(DescriptionShort, "DescriptionShort").$$render(
@@ -4570,7 +6938,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-    ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+    ${validate_component(InteractionIndicators$1, "InteractionIndicators").$$render(
 		$$result,
 		{
 			likes: iconsLine.likes,
@@ -4596,7 +6964,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(FundList, "FundList").$$render($$result, { title: "Інші фонди", items: othersFunds }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    ${validate_component(Description, "Description").$$render(
+    ${validate_component(Description$1, "Description").$$render(
 		$$result,
 		{
 			title: descriptionBlock.title,
@@ -4607,13 +6975,13 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-    ${validate_component(Share, "Share").$$render($$result, {}, {}, {})}
+    ${validate_component(Share$1, "Share").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
+    ${validate_component(Trust$1, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
+    ${validate_component(Donators$1, "Donators").$$render($$result, { items: donators }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(LastNews, "LastNews").$$render(
@@ -4655,7 +7023,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(WeOnMap, "WeOnMap").$$render($$result, { src: location.map }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Comments_1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
+    ${validate_component(Comments_1$1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
     <div class="${"full-container"}">
@@ -4665,649 +7033,6 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 </section>`;
 });
 
-/* src/routes/funds/_TopCarousel.svelte generated by Svelte v3.18.1 */
-
-const TopCarousel$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items = [] } = $$props;
-
-	// Carousel & FancyBox
-	let propsBox = {};
-
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<section class="${"flex"}" style="${"height: 240px"}">
-    ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-		box: () => `<section slot="${"box"}" class="${"flex full-width"}">
-            ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items }, propsBox), {}, {})}
-        </section>`,
-		default: () => `
-        ${validate_component(Carousel, "Carousel").$$render($$result, { items, dotsBelow: false }, {}, {})}
-        
-    `
-	})}
-</section>`;
-});
-
-/* src/routes/funds/_OrganizationButton.svelte generated by Svelte v3.18.1 */
-
-const OrganizationButton$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { id = null } = $$props;
-	let { src = null } = $$props;
-	let { title = null } = $$props;
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-
-	return `${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			rel: "prefetch",
-			href: id,
-			class: "white"
-		},
-		{},
-		{
-			default: () => `
-  <div class="${"flex flex-align-center flex-justify-between full-width"}">
-
-    <div class="${"flex flex-align-center"}">
-      <s></s>
-      <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
-        ${validate_component(Picture, "Picture").$$render(
-				$$result,
-				{
-					src,
-					size: "contain",
-					alt: "якесь фото організації"
-				},
-				{},
-				{}
-			)}
-      </div>
-      <s></s>
-      ${title !== null
-			? `<s></s>
-        <s></s>
-        <h3>${escape(title)}</h3>`
-			: `<span style="${"width: 80%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</span>`}
-    </div>
-    
-    ${validate_component(Icon, "Icon").$$render($$result, { type: "arrow-right", size: "medium" }, {}, {})}
-  </div>
-`
-		}
-	)}`;
-});
-
-/* src/routes/funds/_QuickInfoCard.svelte generated by Svelte v3.18.1 */
-
-const QuickInfoCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { cardTop = {
-		title: null,
-		subtitle: null,
-		currentSum: null,
-		neededSum: null
-	} } = $$props;
-
-	if ($$props.cardTop === void 0 && $$bindings.cardTop && cardTop !== void 0) $$bindings.cardTop(cardTop);
-
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
-		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-
-    ${cardTop.title !== null
-		? `<h2>${escape(cardTop.title)}</h2>`
-		: `<div style="${"width: 80%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</div>
-        <div style="${"width: 80%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</div>`}
-
-    ${cardTop.subtitle !== null
-		? `<h3 class="${"font-w-normal"}" style="${"opacity: .7"}">${escape(cardTop.subtitle)}</h3>`
-		: `<div style="${"width: 100%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</div>
-        <div style="${"width: 100%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</div>`}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
-    <p class="${"font-secondary flex flex-align-end"}">
-        ${cardTop.currentSum !== null
-		? `<span class="${"h1 font-w-500"}">${escape(cardTop.currency)} ${escape(cardTop.currentSum)}</span>`
-		: `<div style="${"width: 50%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}</div>`}
-
-        <s></s>
-
-        ${cardTop.neededSum !== null
-		? `<span class="${"h3"}">/ ${escape(cardTop.currency)} ${escape(cardTop.neededSum)}</span>`
-		: `<div style="${"width: 30%; padding-bottom: 2px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</div>`}
-    </p>
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-
-    ${validate_component(Progress, "Progress").$$render(
-			$$result,
-			{
-				value: Math.floor(cardTop.currentSum / cardTop.neededSum * 100)
-			},
-			{},
-			{}
-		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-`
-	})}`;
-});
-
-/* src/routes/funds/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
-
-const InteractionIndicators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { likes = null } = $$props;
-	let { views = null } = $$props;
-	if ($$props.likes === void 0 && $$bindings.likes && likes !== void 0) $$bindings.likes(likes);
-	if ($$props.views === void 0 && $$bindings.views && views !== void 0) $$bindings.views(views);
-
-	return `<p class="${"container flex flex-justify-between flex-align-center"}">
-    <span class="${"flex flex-align-center"}">
-        ${validate_component(Icon, "Icon").$$render(
-		$$result,
-		{
-			is: "danger",
-			type: "heart",
-			size: "medium"
-		},
-		{},
-		{}
-	)}
-        <s></s>
-        <s></s>
-        ${likes !== null
-	? `<span class="${"font-secondary font-w-600 h3"}">${escape(likes)}</span>`
-	: `<span class="${"font-secondary font-w-600 h3 relative"}">
-                <span style="${"visibility: hidden"}">199</span>
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-            </span>`}
-    </span>
-    <span class="${"flex flex-align-center"}">
-        ${validate_component(Icon, "Icon").$$render(
-		$$result,
-		{
-			type: "eye",
-			size: "medium",
-			class: "theme-svg-fill"
-		},
-		{},
-		{}
-	)}
-        <s></s>
-        <s></s>
-        ${views !== null
-	? `<span class="${"font-secondary font-w-600 h3"}">${escape(views)}</span>`
-	: `<span class="${"font-secondary font-w-600 h3 relative"}">
-                <span style="${"visibility: hidden"}">199</span>
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-            </span>`}
-    </span>
-</p>`;
-});
-
-/* src/routes/funds/_Description.svelte generated by Svelte v3.18.1 */
-
-const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { title = null } = $$props;
-	let { text = null } = $$props;
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
-
-	return `${title !== null
-	? `<h1>${escape(title)}</h1>`
-	: `<div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}  </div>
-    <div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}  </div>`}
-${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-${text !== null
-	? `<pre class="${"font-w-300"}">
-    ${escape(text)}
-</pre>`
-	: `${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    <div style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}</div>`}`;
-});
-
-/* src/routes/funds/_Share.svelte generated by Svelte v3.18.1 */
-
-const Share$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	return `<p class="${"flex"}">
-    ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-        ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "share",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-        <s></s>
-        <s></s>
-        <p class="${"font-w-500"}">Поділитись</p>
-    `
-		}
-	)}
-    <s></s>
-    <s></s>
-    <s></s>
-    <s></s>
-    <s></s>
-    ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-        ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "link",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-        <s></s>
-        <s></s>
-        <p class="${"font-w-500"}">Скопіювати</p>
-    `
-		}
-	)}
-</p>`;
-});
-
-/* src/routes/funds/_Trust.svelte generated by Svelte v3.18.1 */
-
-const Trust$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { active = false } = $$props;
-	if ($$props.active === void 0 && $$bindings.active && active !== void 0) $$bindings.active(active);
-
-	return `<section class="${"flex flex-column flex-align-center flex-justify-center"}">
-    <div style="${"width: 100px; max-width: 100%"}">
-        ${validate_component(TrustButton, "TrustButton").$$render($$result, { isActive: active }, {}, {})}
-    </div>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-    <h2>Я довіряю</h2>
-</section>`;
-});
-
-/* src/routes/funds/_AnimalCard.svelte generated by Svelte v3.18.1 */
-
-const css$D = {
-	code: "table.svelte-jh5z1b tr:not(:last-child) td.svelte-jh5z1b{padding-bottom:16px}table.svelte-jh5z1b td.svelte-jh5z1b:last-child{font-weight:300}",
-	map: "{\"version\":3,\"file\":\"_AnimalCard.svelte\",\"sources\":[\"_AnimalCard.svelte\"],\"sourcesContent\":[\"<script>\\n    import { Card, Br, FancyBox, Avatar, Icon, Loader } from '@components'\\n\\n    export let animal = {\\n        avatar: null,\\n        avatar2x: null,\\n        name: null,\\n        breed: null,\\n        age: null,\\n        sex: null,\\n        sterilization: null,\\n        characterShort: null,\\n        character: null,\\n        lifestory: null,\\n        vaccination: null,\\n    }\\n</script>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvZnVuZHMvX0FuaW1hbENhcmQuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGdCQUFnQjtJQUNwQiIsImZpbGUiOiJzcmMvcm91dGVzL2Z1bmRzL19BbmltYWxDYXJkLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHRhYmxlIHRyOm5vdCg6bGFzdC1jaGlsZCkgdGQge1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMTZweDtcbiAgICB9XG5cbiAgICB0YWJsZSB0ZDpsYXN0LWNoaWxkIHtcbiAgICAgICAgZm9udC13ZWlnaHQ6IDMwMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<Card class=\\\"container\\\">\\n    <Br size=\\\"30\\\"/>\\n\\n    <div class=\\\"flex flex-column flex-align-center\\\">\\n        <span>\\n            <FancyBox>\\n                <Avatar src={animal.avatar} size=\\\"big\\\" alt=\\\"Волтер\\\"/>\\n                <section slot=\\\"box\\\" class=\\\"flex full-width full-height\\\" style=\\\"height: 100vw\\\">\\n                    <div class=\\\"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch\\\" style=\\\"padding: var(--screen-padding) 0\\\">\\n                        <Avatar src={animal.avatar} srcBig={animal.avatar2x} alt=\\\"Волтер\\\"/>\\n                    </div>\\n                </section>\\n            </FancyBox>\\n        </span>\\n\\n        <Br size=\\\"20\\\"/>\\n\\n        {#if animal.name !== null}\\n            <h2>{animal.name}</h2>\\n        {:else}\\n            <span style=\\\"width: 40%\\\"><Loader type=\\\"h2\\\"/></span>\\n        {/if}\\n        <Br size=\\\"5\\\"/>\\n        {#if animal.breed !== null}\\n            <h3 class=\\\"font-w-500\\\" style=\\\"opacity: .7\\\">{animal.breed}</h3>\\n        {:else}\\n            <span style=\\\"width: 60%\\\"><Loader type=\\\"h3\\\"/></span>\\n        {/if}\\n    </div>\\n    <Br size=\\\"35\\\"/>\\n\\n    <section class=\\\"flex flex-justify-center\\\">\\n        <div class=\\\"flex flex-center relative\\\" style=\\\"width: 120px; height: 120px\\\">\\n            <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n\\n            {#if animal.age !== null}\\n                <div class=\\\"text-white text-center absolute\\\">\\n                    <h4 class=\\\"h1\\\">{animal.age}</h4>\\n                    <h4 style=\\\"margin-top: -8px\\\">Роки</h4>\\n                </div>\\n            {/if}\\n        </div>\\n\\n        <div class=\\\"flex flex-center relative\\\" style=\\\"width: 120px; height: 120px\\\">\\n            <Icon type=\\\"polygon\\\" is=\\\"info\\\"/>\\n\\n            {#if animal.sex !== null}\\n                <div class=\\\"absolute flex\\\" style=\\\"width: 44px; height: 44px\\\">\\n                {#if animal.sex === 'male'}\\n                    <Icon type=\\\"male\\\" is=\\\"light\\\"/>\\n                {:else if animal.sex === 'female'}\\n                    <Icon type=\\\"female\\\" is=\\\"light\\\"/>\\n                {/if}\\n                </div>\\n            {/if}\\n        </div>\\n\\n        <div class=\\\"flex flex-center relative\\\" style=\\\"width: 120px; height: 120px\\\">\\n            <Icon type=\\\"polygon\\\" is=\\\"primary\\\"/>\\n\\n            {#if animal.sterilization !== null}\\n                <div class=\\\"absolute flex flex-column flex-center\\\">\\n                    {#if animal.sterilization}\\n                        <Icon type=\\\"checked-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    {:else}\\n                        <Icon type=\\\"cancel-circle\\\" is=\\\"light\\\" size=\\\"big\\\"/>\\n                    {/if}\\n                    <span class=\\\"text-white text-center h5\\\">Cтерилізація</span>\\n                </div>\\n            {/if}\\n        </div>\\n    </section>\\n    <Br size=\\\"40\\\"/>\\n\\n    <h2>Характер: {animal.characterShort ? animal.characterShort : ''}</h2>\\n    <Br size=\\\"10\\\"/>\\n\\n    {#if animal.character !== null}\\n        <p class=\\\"font-w-300\\\">\\n            {animal.character}\\n        </p>\\n    {:else}\\n        <Loader type=\\\"p\\\"/>\\n        <Loader type=\\\"p\\\"/>\\n        <Loader type=\\\"p\\\"/>\\n        <Loader type=\\\"p\\\"/>\\n    {/if}\\n    <Br size=\\\"35\\\"/>\\n\\n    <h2>Життя</h2>\\n    <Br size=\\\"10\\\"/>\\n    <table>\\n        <tbody>\\n            {#if animal.lifestory !== null}\\n                {#each animal.lifestory as item}\\n                    <tr>\\n                        <td>{item.date}</td>\\n                        <td>—</td>\\n                        <td>{item.title}</td>\\n                    </tr>\\n                {/each}\\n            {:else}\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n            {/if}\\n        </tbody>\\n    </table>\\n    <Br size=\\\"45\\\"/>\\n\\n    <h2>Вакцинації</h2>\\n    <Br size=\\\"15\\\"/>\\n    <ul class=\\\"flex flex-column text-left\\\">\\n        {#if animal.vaccination !== null}\\n            {#each animal.vaccination as item, i}\\n                <li>\\n                    {#if i}\\n                        <Br size=\\\"10\\\"/>\\n                    {/if}\\n                    <span class=\\\"flex flex-align-center font-w-300\\\">\\n                        {#if item.done}\\n                            <Icon is=\\\"primary\\\" type=\\\"checked-circle\\\" size=\\\"medium\\\"/>\\n                        {:else}\\n                            <Icon is=\\\"danger\\\" type=\\\"cancel-circle\\\" size=\\\"medium\\\"/>\\n                        {/if}\\n                        <s></s>\\n                        <s></s>\\n                        <s></s>\\n                        {item.title}\\n                    </span>\\n                </li>\\n            {/each}\\n        {:else}\\n            <li style=\\\"width: 40%\\\">\\n                <Loader type=\\\"p\\\"/>\\n            </li>\\n            <li style=\\\"width: 40%\\\">\\n                <Br size=\\\"10\\\"/>\\n                <Loader type=\\\"p\\\"/>\\n            </li>\\n            <li style=\\\"width: 40%\\\">\\n                <Br size=\\\"10\\\"/>\\n                <Loader type=\\\"p\\\"/>\\n            </li>\\n        {/if}\\n    </ul>\\n\\n    <Br size=\\\"35\\\"/>\\n</Card>\\n\"],\"names\":[],\"mappings\":\"AAmBI,mBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,cAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,mBAAK,CAAC,gBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
-};
-
-const AnimalCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { animal = {
-		avatar: null,
-		avatar2x: null,
-		name: null,
-		breed: null,
-		age: null,
-		sex: null,
-		sterilization: null,
-		characterShort: null,
-		character: null,
-		lifestory: null,
-		vaccination: null
-	} } = $$props;
-
-	if ($$props.animal === void 0 && $$bindings.animal && animal !== void 0) $$bindings.animal(animal);
-	$$result.css.add(css$D);
-
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
-		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
-    <div class="${"flex flex-column flex-align-center"}">
-        <span>
-            ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-			box: () => `<section slot="${"box"}" class="${"flex full-width full-height"}" style="${"height: 100vw"}">
-                    <div class="${"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch"}" style="${"padding: var(--screen-padding) 0"}">
-                        ${validate_component(Avatar, "Avatar").$$render(
-				$$result,
-				{
-					src: animal.avatar,
-					srcBig: animal.avatar2x,
-					alt: "Волтер"
-				},
-				{},
-				{}
-			)}
-                    </div>
-                </section>`,
-			default: () => `
-                ${validate_component(Avatar, "Avatar").$$render(
-				$$result,
-				{
-					src: animal.avatar,
-					size: "big",
-					alt: "Волтер"
-				},
-				{},
-				{}
-			)}
-                
-            `
-		})}
-        </span>
-
-        ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-
-        ${animal.name !== null
-		? `<h2>${escape(animal.name)}</h2>`
-		: `<span style="${"width: 40%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</span>`}
-        ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-        ${animal.breed !== null
-		? `<h3 class="${"font-w-500"}" style="${"opacity: .7"}">${escape(animal.breed)}</h3>`
-		: `<span style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</span>`}
-    </div>
-    ${validate_component(Br, "Br").$$render($$result, { size: "35" }, {}, {})}
-
-    <section class="${"flex flex-justify-center"}">
-        <div class="${"flex flex-center relative"}" style="${"width: 120px; height: 120px"}">
-            ${validate_component(Icon, "Icon").$$render($$result, { type: "polygon", is: "primary" }, {}, {})}
-
-            ${animal.age !== null
-		? `<div class="${"text-white text-center absolute"}">
-                    <h4 class="${"h1"}">${escape(animal.age)}</h4>
-                    <h4 style="${"margin-top: -8px"}">Роки</h4>
-                </div>`
-		: ``}
-        </div>
-
-        <div class="${"flex flex-center relative"}" style="${"width: 120px; height: 120px"}">
-            ${validate_component(Icon, "Icon").$$render($$result, { type: "polygon", is: "info" }, {}, {})}
-
-            ${animal.sex !== null
-		? `<div class="${"absolute flex"}" style="${"width: 44px; height: 44px"}">
-                ${animal.sex === "male"
-			? `${validate_component(Icon, "Icon").$$render($$result, { type: "male", is: "light" }, {}, {})}`
-			: `${animal.sex === "female"
-				? `${validate_component(Icon, "Icon").$$render($$result, { type: "female", is: "light" }, {}, {})}`
-				: ``}`}
-                </div>`
-		: ``}
-        </div>
-
-        <div class="${"flex flex-center relative"}" style="${"width: 120px; height: 120px"}">
-            ${validate_component(Icon, "Icon").$$render($$result, { type: "polygon", is: "primary" }, {}, {})}
-
-            ${animal.sterilization !== null
-		? `<div class="${"absolute flex flex-column flex-center"}">
-                    ${animal.sterilization
-			? `${validate_component(Icon, "Icon").$$render(
-					$$result,
-					{
-						type: "checked-circle",
-						is: "light",
-						size: "big"
-					},
-					{},
-					{}
-				)}`
-			: `${validate_component(Icon, "Icon").$$render(
-					$$result,
-					{
-						type: "cancel-circle",
-						is: "light",
-						size: "big"
-					},
-					{},
-					{}
-				)}`}
-                    <span class="${"text-white text-center h5"}">Cтерилізація</span>
-                </div>`
-		: ``}
-        </div>
-    </section>
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-
-    <h2>Характер: ${escape(animal.characterShort ? animal.characterShort : "")}</h2>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-    ${animal.character !== null
-		? `<p class="${"font-w-300"}">
-            ${escape(animal.character)}
-        </p>`
-		: `${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}`}
-    ${validate_component(Br, "Br").$$render($$result, { size: "35" }, {}, {})}
-
-    <h2>Життя</h2>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-    <table class="${"svelte-jh5z1b"}">
-        <tbody>
-            ${animal.lifestory !== null
-		? `${each(animal.lifestory, item => `<tr>
-                        <td class="${"svelte-jh5z1b"}">${escape(item.date)}</td>
-                        <td class="${"svelte-jh5z1b"}">—</td>
-                        <td class="${"svelte-jh5z1b"}">${escape(item.title)}</td>
-                    </tr>`)}`
-		: `<tr>
-                    <td class="${"svelte-jh5z1b"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</td>
-                    <td class="${"svelte-jh5z1b"}">—</td>
-                    <td class="${"svelte-jh5z1b"}">
-                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="${"svelte-jh5z1b"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</td>
-                    <td class="${"svelte-jh5z1b"}">—</td>
-                    <td class="${"svelte-jh5z1b"}">
-                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="${"svelte-jh5z1b"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</td>
-                    <td class="${"svelte-jh5z1b"}">—</td>
-                    <td class="${"svelte-jh5z1b"}">
-                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-                    </td>
-                </tr>`}
-        </tbody>
-    </table>
-    ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
-
-    <h2>Вакцинації</h2>
-    ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
-    <ul class="${"flex flex-column text-left"}">
-        ${animal.vaccination !== null
-		? `${each(animal.vaccination, (item, i) => `<li>
-                    ${i
-			? `${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
-			: ``}
-                    <span class="${"flex flex-align-center font-w-300"}">
-                        ${item.done
-			? `${validate_component(Icon, "Icon").$$render(
-					$$result,
-					{
-						is: "primary",
-						type: "checked-circle",
-						size: "medium"
-					},
-					{},
-					{}
-				)}`
-			: `${validate_component(Icon, "Icon").$$render(
-					$$result,
-					{
-						is: "danger",
-						type: "cancel-circle",
-						size: "medium"
-					},
-					{},
-					{}
-				)}`}
-                        <s></s>
-                        <s></s>
-                        <s></s>
-                        ${escape(item.title)}
-                    </span>
-                </li>`)}`
-		: `<li style="${"width: 40%"}">
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-            </li>
-            <li style="${"width: 40%"}">
-                ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-            </li>
-            <li style="${"width: 40%"}">
-                ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-            </li>`}
-    </ul>
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "35" }, {}, {})}
-`
-	})}`;
-});
-
-/* src/routes/funds/_Donators.svelte generated by Svelte v3.18.1 */
-
-const Donators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Наші піклувальники</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-<div class="${"full-container"}">
-    ${validate_component(DonatorsList, "DonatorsList").$$render($$result, { items }, {}, {})}
-</div>`;
-});
-
-/* src/routes/funds/_Documents.svelte generated by Svelte v3.18.1 */
-
-const Documents_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Документи</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-<div class="${"full-container"}">
-    ${validate_component(Documents, "Documents").$$render($$result, { items }, {}, {})}
-</div>`;
-});
-
-/* src/routes/funds/_Media.svelte generated by Svelte v3.18.1 */
-
-const Media = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items = [] } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Відео про Волтера</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-<section class="${"flex"}" style="${"height: 280px"}">
-    ${validate_component(Carousel, "Carousel").$$render($$result, { items }, {}, {})}
-</section>`;
-});
-
-/* src/routes/funds/_HowToHelp.svelte generated by Svelte v3.18.1 */
-
-const HowToHelp = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { data = { phone: null } } = $$props;
-	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
-
-	return `<h1>Як допомогти</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
-<ul style="${"list-style: disc outside none; padding-left: var(--screen-padding)"}" class="${"h3 font-w-500 font-secondary"}">
-    ${data.phone !== null
-	? `<li style="${"padding-bottom: 5px"}">Ви пожете купити йому поїсти</li>
-        <li style="${"padding-bottom: 5px"}">Можете особисто відвідати його у нас</li>
-        <li style="${"padding-bottom: 5px"}">Купити вакцінацію для Волтера</li>
-        <li style="${"padding-bottom: 5px"}">Допомогти любим інщим способом</li>`
-	: `<li style="${"padding-bottom: 5px"}">
-            <span class="${"font-secondary font-w-500 p relative"}">
-                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-            </span>  
-        </li>
-       <li style="${"padding-bottom: 5px"}">
-            <span class="${"font-secondary font-w-500 p relative"}">
-                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-            </span>  
-        </li>
-       <li style="${"padding-bottom: 5px"}">
-            <span class="${"font-secondary font-w-500 p relative"}">
-                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-            </span>
-        </li>
-       <li style="${"padding-bottom: 5px"}">
-            <span class="${"font-secondary font-w-500 p relative"}">
-                <span style="${"visibility: hidden"}">Допомогти любим способом</span>
-                ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-            </span>  
-        </li>`}
-</ul>
-${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-<div class="${"flex"}">
-    <div class="${"flex flex-align-center font-secondary"}">
-        ${validate_component(Icon, "Icon").$$render(
-		$$result,
-		{
-			size: "medium",
-			type: "phone",
-			class: "theme-svg-fill-opposite"
-		},
-		{},
-		{}
-	)}
-        <s></s>
-        <s></s>
-        ${data.phone !== null
-	? `<h2>${escape(data.phone)}</h2>`
-	: `<span style="${"width: 240px"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}</span>`}
-    </div>
-</div>
-${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-<p class="${"font-w-300"}">Подзвоніть нам, допоможемо разом!</p>`;
-});
-
-/* src/routes/funds/_Comments.svelte generated by Svelte v3.18.1 */
-
-const Comments_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Коментарі</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-<div class="${"full-container"}">
-    ${validate_component(Comments, "Comments").$$render($$result, { items }, {}, {})}
-</div>`;
-});
-
 /* src/routes/funds/[id].svelte generated by Svelte v3.18.1 */
 
 const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -5315,6 +7040,7 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	const { page } = stores$1();
 	$page = get_store_value(page);
 	let charityId = $page.params.id;
+	let isEditMode = false;
 
 	// Entities
 	let charity;
@@ -5422,27 +7148,35 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 
 <section class="${"container theme-bg-color-secondary"}">
     ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
-    ${validate_component(TopCarousel$1, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+    <div>
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+        ${validate_component(Button, "Button").$$render($$result, { size: "small", is: "info" }, {}, {
+		default: () => `
+            <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+                ${escape( "Редагувати")}
+                <s></s>
+                <s></s>
+                ${ `${validate_component(Icon, "Icon").$$render($$result, { type: "edit", size: "small", is: "light" }, {}, {})}`
+		}
+            </span>
+        `
+	})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+    </div>
 
-    ${validate_component(OrganizationButton$1, "OrganizationButton").$$render(
-		$$result,
-		{
-			id: organization.id,
-			src: organization.avatar,
-			title: organization.name
-		},
-		{},
-		{}
-	)}
+    ${ ``}
+    <div${add_attribute("class", `full-container ${ ""}`, 0)}> 
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+		default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(TopInfo$1, "TopInfoView").$$render($$result, { cardTop, carouselTop, organization }, {}, {})}
+        `
+	})}
+    </div>
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
-    ${validate_component(QuickInfoCard, "QuickInfoCard").$$render($$result, { cardTop }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-
-    ${validate_component(InteractionIndicators$1, "InteractionIndicators").$$render(
+    ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
 		$$result,
 		{
 			likes: iconsLine.likes,
@@ -5453,7 +7187,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
-    ${validate_component(Description$1, "Description").$$render(
+    ${validate_component(Description, "Description").$$render(
 		$$result,
 		{
 			title: descriptionBlock.title,
@@ -5464,16 +7198,16 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
 
-    ${validate_component(Share$1, "Share").$$render($$result, {}, {}, {})}
+    ${validate_component(Share, "Share").$$render($$result, {}, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    ${validate_component(Trust$1, "Trust").$$render($$result, { active: trust.isLiked }, {}, {})}
+    ${validate_component(Trust, "Trust").$$render($$result, { active: trust.isLiked }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(AnimalCard, "AnimalCard").$$render($$result, { animal }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Donators$1, "Donators").$$render($$result, { items: donators }, {}, {})}
+    ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     ${validate_component(Documents_1, "Documents").$$render($$result, { items: documents }, {}, {})}
@@ -5485,7 +7219,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(HowToHelp, "HowToHelp").$$render($$result, { data: howToHelp }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Comments_1$1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
+    ${validate_component(Comments_1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     <div class="${"full-container"}">
@@ -5863,7 +7597,7 @@ const Map_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 
 ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
-${validate_component(Map$1, "Map").$$render($$result, {}, {}, {
+${validate_component(Map$2, "Map").$$render($$result, {}, {}, {
 		default: () => `
     ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
 `
@@ -5889,7 +7623,7 @@ const U5Bidu5D$3 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 
  ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
-${validate_component(Map$1, "Map").$$render($$result, { center }, {}, {
+${validate_component(Map$2, "Map").$$render($$result, { center }, {}, {
 		default: () => `
     ${each(organizations, o => `${validate_component(MapMarker, "MapMarker").$$render($$result, { lat: o.location.lat, lng: o.location.lng }, {}, {})}`)}
 `
@@ -5902,7 +7636,26 @@ const d = decodeURIComponent;
 
 const manifest = {
 	server_routes: [
-		
+		{
+			// funds/components/index.js
+			pattern: /^\/funds\/components\/?$/,
+			handlers: route_0,
+			params: () => ({})
+		},
+
+		{
+			// funds/edit/index.js
+			pattern: /^\/funds\/edit\/?$/,
+			handlers: route_1,
+			params: () => ({})
+		},
+
+		{
+			// funds/view/index.js
+			pattern: /^\/funds\/view\/?$/,
+			handlers: route_2,
+			params: () => ({})
+		}
 	],
 
 	pages: [
