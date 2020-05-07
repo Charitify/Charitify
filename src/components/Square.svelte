@@ -13,7 +13,7 @@
     section:after {
         content: "";
         display: block;
-        padding-bottom: 100%;
+        padding-top: 100%;
     }
 
     div {
@@ -22,6 +22,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        display: grid;
+        display: flex;
+        flex-direction: column;
     }
 </style>
