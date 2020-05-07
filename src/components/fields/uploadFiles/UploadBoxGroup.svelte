@@ -1,7 +1,10 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
     import { _, classnames } from '@utils'
     import Br from '@components/Br.svelte'
     import UploadBox from './UploadBox.svelte'
+
+    const dispatch = createEventDispatcher()
 
     export let name
     export let id = undefined
@@ -24,6 +27,11 @@
     $: idProp = id || name
     $: itemsList = getCells(items)
     $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })
+
+    function onChange(e) {
+        const value = Array.from(e.target.files)
+        dispatch('change', { e, name, value })
+    }
 </script>
 
 {#if label}
@@ -41,7 +49,7 @@
                 name={`${name || ''}[${i}]`}
                 errors={_.get(errors, i)}
                 bind:value
-                on:change 
+                on:change={onChange}
             />
         </li>
     {/each}

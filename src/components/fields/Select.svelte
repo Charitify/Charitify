@@ -82,7 +82,7 @@
         >
             {#each options as { label: text, ...option }}
                 {#if option.value !== undefined && text !== undefined}
-                    <option {...option}>
+                    <option value={option.value}>
                         {text}
                     </option>
                 {/if}

@@ -114,13 +114,9 @@
         comments = await API.getComments()
     })
 
-    function onSubmit(values) {
+    async function onSubmit(values) {
         isEdit = !isEdit
         console.log(values)
-    }
-
-    function onChange(value) {
-        console.log(value)
     }
 </script>
 
@@ -154,7 +150,7 @@
     <!-- Top info -->
     <LazyToggle active={isEdit}>
         <Br size="30"/>
-        <TopInfoEdit on:change={onChange} submit={onSubmit}/>
+        <TopInfoEdit submit={onSubmit}/>
     </LazyToggle>
     <LazyToggle active={!isEdit} mounted class="full-container">
         <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
