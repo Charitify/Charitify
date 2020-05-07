@@ -13,6 +13,22 @@
             label: 'Організація:',
             type: 'select',
             name: 'organization',
+            meta: {
+                options: [
+                    {
+                        value: 'org1',
+                        label: 'Організація 1',
+                    },
+                    {
+                        value: 'org2',
+                        label: 'Організація 2',
+                    },
+                    {
+                        value: 'org3',
+                        label: 'Організація 3',
+                    }
+                ]
+            }
         },
         {
             label: 'Назва фонду:',
@@ -61,8 +77,8 @@
         items={formFields}
         data={formValues}
         errors={formErrors}
+        submit={onSubmit}
         on:change
-        on:submit={onSubmit}
     />
 
     <Br size="20"/>

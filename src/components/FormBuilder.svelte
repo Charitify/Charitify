@@ -1,4 +1,6 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
+    import { classnames } from '@utils'
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
@@ -10,6 +12,8 @@
         CheckboxGroup,
         UploadBoxGroup,
     } from '@components/fields'
+
+    const dispatch = createEventDispatcher()
 
     export let id = undefined
     /**
@@ -27,9 +31,30 @@
     export let items = []
     export let data = {}
     export let errors = {}
+    export let submit = async () => {}
+
+    let values = data
+    let submitting = false
+
+    $: classProp = classnames('form-builder', { submitting })
+    
+    function onChange({ detail: { name, value } }) {
+        values[name] = value
+        dispatch('change', values)
+    }
+
+    async function onSubmit() {
+        try {
+            submitting = true
+            await submit(values)
+        } catch(e) {
+            console.warn('FormBuilder/submit error: ', e)
+        }
+        submitting = false
+    }
 </script>
 
-<Form {id} on:submit>
+<Form {id} on:submit={onSubmit} class={classProp}>
     {#each items as item, i}
         {#if i}
             <Br size="30"/>
@@ -37,13 +62,14 @@
         {#if ['text', 'number', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Input
-                        {...item.meta}
-                        name={item.name}
-                        type={item.type}
-                        label={item.label}
-                        value={data[item.name]}
-                        errors={errors[item.name]}
-                        on:change
+                    {...item.meta}
+                    name={item.name}
+                    type={item.type}
+                    label={item.label}
+                    value={data[item.name]}
+                    errors={errors[item.name]}
+                    on:input={onChange}
+                    on:change={onChange}
                 />
             {:else}
                 <div>
@@ -51,7 +77,6 @@
                     <Loader height="50"/>
                 </div>
             {/if}
-
         {:else if ['checkbox'].includes(item.type)}
             <CheckboxGroup
                     {...item.meta}
@@ -59,18 +84,18 @@
                     label={item.label}
                     value={data[item.name]}
                     errors={errors[item.name]}
-                    on:change
+                    on:change={onChange}
             />
         {:else if ['select'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Select
-                        {...item.meta}
-                        name={item.name}
-                        type={item.type}
-                        label={item.label}
-                        value={data[item.name]}
-                        errors={errors[item.name]}
-                        on:change
+                    {...item.meta}
+                    name={item.name}
+                    type={item.type}
+                    label={item.label}
+                    value={data[item.name]}
+                    errors={errors[item.name]}
+                    on:change={onChange}
                 />
             {:else}
                 <div>
@@ -85,7 +110,7 @@
                     label={item.label}
                     value={data[item.name]}
                     errors={errors[item.name]}
-                    on:change
+                    on:change={onChange}
             />
         {:else if ['files'].includes(item.type)}
             <UploadBoxGroup
@@ -94,14 +119,14 @@
                     label={item.label}
                     value={data[item.name]}
                     errors={errors[item.name]}
-                    on:change
+                    on:change={onChange}
             />
         {:else}
             {#if data[item.name] !== null}
                 <ReadField
-                        {...item.meta}
-                        label={item.label}
-                        value={data[item.name]}
+                    {...item.meta}
+                    label={item.label}
+                    value={data[item.name]}
                 />
             {:else}
                 <div>

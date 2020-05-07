@@ -40,6 +40,15 @@
     $: ariaLabelProp = ariaLabel || label || placeholder
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: classProp = classnames('select', $$props.class, { disabled, readonly, required, error })
+
+    function onChange(e) {
+        const value = getValue(e)
+        dispatch('change', { e, value, name })
+    }
+    
+    function getValue(e) {
+        return e.target.value
+    }
 </script>
 
 <div class={classProp}>
@@ -67,6 +76,7 @@
                 style={styleProp}
                 aria-label={ariaLabelProp}
                 bind:value
+                on:change={onChange}
                 on:blur='{e => !disabled && dispatch("blur", e)}'
                 on:focus='{e => !disabled && dispatch("focus", e)}'
         >

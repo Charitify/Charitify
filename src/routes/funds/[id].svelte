@@ -113,6 +113,15 @@
         charity = await API.getFund(1)
         comments = await API.getComments()
     })
+
+    function onSubmit(values) {
+        isEdit = !isEdit
+        console.log(values)
+    }
+
+    function onChange(value) {
+        console.log(value)
+    }
 </script>
 
 <svelte:head>
@@ -145,7 +154,7 @@
     <!-- Top info -->
     <LazyToggle active={isEdit}>
         <Br size="30"/>
-        <TopInfoEdit on:change submit={() => isEdit = !isEdit}/>
+        <TopInfoEdit on:change={onChange} submit={onSubmit}/>
     </LazyToggle>
     <LazyToggle active={!isEdit} mounted class="full-container">
         <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
@@ -156,7 +165,6 @@
     <!-- END: Top info -->
 
     <Br size="20"/>
-
     <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
     <Br size="50"/>
 
