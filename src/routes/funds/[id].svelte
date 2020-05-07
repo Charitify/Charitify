@@ -3,7 +3,15 @@
     import { onMount } from 'svelte'
     import { API } from '@services'
     import { delay, safeGet, _ } from '@utils'
-    import { Br, Icon, Footer, Button, EditArea, DonationButton } from '@components'
+    import { 
+        Br, 
+        Icon, 
+        Footer, 
+        Button, 
+        EditArea, 
+        LazyToggle,
+        DonationButton,
+    } from '@components'
     import {
         Media,
         Trust,
@@ -134,20 +142,19 @@
         <Br size="40"/>
     </div>
 
-    {#if isEdit}
+    <!-- Top info -->
+    <LazyToggle active={isEdit}>
         <Br size="30"/>
         <TopInfoEdit on:change submit={() => isEdit = !isEdit}/>
-    {/if}
-    <div class={`full-container ${isEdit ? 'hidden' : ''}`}> 
+    </LazyToggle>
+    <LazyToggle active={!isEdit} mounted class="full-container">
         <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
             <Br size="30"/>
-            <TopInfoView 
-                {cardTop}
-                {carouselTop}
-                {organization}
-            />
+            <TopInfoView {cardTop} {carouselTop} {organization}/>
         </EditArea>
-    </div>
+    </LazyToggle>
+    <!-- END: Top info -->
+
     <Br size="20"/>
 
     <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
