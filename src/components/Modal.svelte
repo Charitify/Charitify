@@ -263,7 +263,7 @@
                         >
                             <h2 style="padding: 15px 20px">Закрити</h2>
                             <span class="close">
-                                 <Icon type="close" size="big"/>
+                                 <Icon type="close" size="big" is="light"/>
                             </span>
                         </button>
                     </slot>

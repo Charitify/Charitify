@@ -1,9 +1,12 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
     import { classnames } from '@utils'
     import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
     import Square from '@components/Square.svelte'
     import Picture from '@components/Picture.svelte'
+
+    const dispatch = createEventDispatcher()
 
     export let id = undefined
     export let src = undefined
@@ -11,15 +14,23 @@
     export let icon = undefined
     export let label = undefined
     export let value = undefined
+    export let iconIs = undefined
     export let errors = undefined
     export let invalid = undefined
+    export let multiple = undefined
     export let disabled = undefined
     export let accept = "image/png, image/jpeg"
 
     $: error = invalid !== undefined ? invalid : !!(errors || []).length
     $: iconType = icon || 'upload'
     $: idProp = id || name
-    $: classProp = classnames('inp-upload', { error, disabled })
+    $: classProp = classnames('inp-upload', { error, disabled, preview: src })
+
+    function onChange(e) {
+        const value = Array.from(e.target.files)
+        if (!value || !value.length) return
+        dispatch('change', { value, name, e })
+    }
 </script>
 
 {#if label}
@@ -30,24 +41,26 @@
     <input
         {name}
         {accept}
+        {multiple}
         hidden 
         type="file" 
         id={idProp}
         bind:value
-        on:change
+        on:change={onChange}
     >
     <label for={idProp} class={classProp}>
         <div class="flex full-absolute">
             <Picture {src}/> 
         </div>
-        <div class="flex" style="flex: 0 0 75px">
-            <Icon type={iconType}/>
+        <div class="icon flex relative" style="flex: 0 0 75px">
+            <Icon type={iconType} is={iconIs}/>
         </div>
     </label>
 </Square>
 
 <style>
     .inp-upload {
+        width: 100%;
         flex-grow: 1;
         display: flex;
         align-items: center;
@@ -59,6 +72,10 @@
         color: rgba(var(--theme-color-primary-opposite), .5);
         background-color: rgba(var(--theme-color-primary-opposite), .07);
         transform: translateZ(0);
+    }
+
+    .inp-upload.preview .icon {
+        opacity: .5;
     }
 
     .inp-upload.disabled {

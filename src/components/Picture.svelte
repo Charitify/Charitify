@@ -114,7 +114,7 @@
         overflow: hidden;
         align-self: stretch;
         object-position: center;
-        transition: opacity .3s ease-in;
+        transition: opacity .5s ease-in;
     }
 
     .picture .pic-2x {

@@ -8,12 +8,16 @@
             label: 'Фотогалерея:',
             type: 'files',
             name: 'photos',
+            meta: {
+                multiple: true,
+            }
         },
         {
             label: 'Організація:',
             type: 'select',
             name: 'organization',
             meta: {
+                placeholder: 'Вибрати...',
                 options: [
                     {
                         value: 'org1',
@@ -53,6 +57,7 @@
             type: 'number',
             name: 'sum',
             meta: {
+                placeholder: 10,
                 min: 10,
                 max: 100000000,
             },

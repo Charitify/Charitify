@@ -37,7 +37,7 @@
                 />
 
                 <span class="arrow">
-                    <Icon type="arrow-right" size="small"/>
+                    <Icon type="arrow-right" size="small" is="info"/>
                 </span>
             </li>
         {/each}

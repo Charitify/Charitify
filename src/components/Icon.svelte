@@ -34,7 +34,7 @@
         vertical-align: middle;
     }
 
-    .ico:not(.custom) * {
+    .ico:not(.custom) {
         color: rgba(var(--theme-svg-fill));
     }
 

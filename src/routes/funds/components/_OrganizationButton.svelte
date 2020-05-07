@@ -27,6 +27,6 @@
       {/if}
     </div>
     
-    <Icon type="arrow-right" size="medium"/>
+    <Icon type="arrow-right" size="medium" is="dark"/>
   </div>
 </Button>

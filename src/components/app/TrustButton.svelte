@@ -37,7 +37,7 @@
 <button type="button" title="I trust" class={classProp} on:click={onClickHandler}>
     <div class="full-absolute">
         <span>
-            <Icon type="heart"/>
+            <Icon type="heart" is={isActive ? 'light' : 'danger'}/>
         </span>
     </div>
 </button>

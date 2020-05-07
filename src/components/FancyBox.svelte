@@ -160,7 +160,7 @@
             class={classProp}
         >
             <button type="button" on:click={onClick}>
-                <Icon type="close" size="big"/>
+                <Icon type="close" size="big" is="light"/>
             </button>
             {#if slots.box}
                 <slot name="box"></slot>

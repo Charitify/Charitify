@@ -8,9 +8,9 @@
     const dispatch = createEventDispatcher()
 
     export let name
-    export let value = ''
     export let style = {}
     export let type = 'select'
+    export let value = undefined
     export let id = undefined
     export let align = undefined
     export let disabled = false
@@ -39,7 +39,7 @@
     $: titleProp = label || ariaLabel
     $: ariaLabelProp = ariaLabel || label || placeholder
     $: styleProp = toCSSString({ ...style, textAlign: align })
-    $: classProp = classnames('select', $$props.class, { disabled, readonly, required, error })
+    $: classProp = classnames('select', $$props.class, { disabled, readonly, required, error, null: value === undefined })
 
     function onChange(e) {
         const value = getValue(e)
@@ -80,6 +80,9 @@
                 on:blur='{e => !disabled && dispatch("blur", e)}'
                 on:focus='{e => !disabled && dispatch("focus", e)}'
         >
+            {#if !required}
+                <option value={undefined}>{placeholder || ''}</option>
+            {/if}
             {#each options as { label: text, ...option }}
                 {#if option.value !== undefined && text !== undefined}
                     <option value={option.value}>
@@ -109,6 +112,10 @@
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
+    }
+
+    .select.null .inp-inner {
+        color: rgba(var(--theme-color-primary-opposite), .2) !important;
     }
 
     .select .inp-inner-wrap {
