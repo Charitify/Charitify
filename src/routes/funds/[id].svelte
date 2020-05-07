@@ -18,17 +18,19 @@
         Share,
         Comments,
         Donators,
-        Documents,
         HowToHelp,
         AnimalCard,
-        Description,
         InteractionIndicators,
     } from './components'
     import { 
         TopInfoView,
+        DocumentsView,
+        DescriptionView,
     } from './view'
     import { 
         TopInfoEdit,
+        DocumentsEdit,
+        DescriptionEdit,
     } from './edit'
 
     const { page } = stores()
@@ -161,27 +163,53 @@
     <!-- END: Top info -->
 
     <Br size="20"/>
-    <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
+    <LazyToggle active={!isEdit && !isEditMode} mounted>
+        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
+    </LazyToggle>
     <Br size="50"/>
 
-    <Description title={descriptionBlock.title} text={descriptionBlock.text}/>
+    <!-- Description -->
+    <LazyToggle active={isEdit}>
+        <Br size="30"/>
+        <DescriptionEdit submit={onSubmit} data={descriptionBlock}/>
+    </LazyToggle>
+    <LazyToggle active={!isEdit} mounted class="full-container">
+        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+            <Br size="30"/>
+            <DescriptionView {descriptionBlock}/>
+        </EditArea>
+    </LazyToggle>
+    <!-- END: Description -->
+
     <Br size="10"/>
-
-    <Share />
-    <Br size="45"/>
-
-    <Trust active={trust.isLiked}/>
+    <LazyToggle active={!isEdit} mounted>
+        <Share />
+        <Br size="45"/>
+        <Trust active={trust.isLiked}/>
+    </LazyToggle>
     <Br size="60"/>
 
+    <!-- Animal -->
     <AnimalCard animal={animal}/>
-    <Br size="60"/>
+    <!-- END: Animal -->
 
+    <Br size="60"/>
     <Donators items={donators}/>
     <Br size="60"/>
 
-    <Documents items={documents}/>
-    <Br size="45"/> 
-
+    <!-- Documents -->
+    <LazyToggle active={isEdit}>
+        <DocumentsEdit submit={onSubmit} data={documents}/>
+    </LazyToggle>
+    <LazyToggle active={!isEdit} mounted class="full-container">
+        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+            <Br size="30"/>
+            <DocumentsView items={documents}/>
+        </EditArea>
+    </LazyToggle>
+    <!-- END: Documents -->
+    
+    <Br size="60"/> 
     <Media items={media}/>
     <Br size="60"/>
 

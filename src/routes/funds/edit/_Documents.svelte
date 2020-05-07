@@ -7,24 +7,13 @@
 
     let formFields = [
         {
-            label: 'Ціль фонду:',
-            type: 'text',
-            name: 'subtitle',
+            label: 'Документи:',
+            type: 'files',
+            name: 'photos',
             meta: {
-                disabled: true,
-                placeholder: 'Тільки спільними силами...',
-                maxlength: 25,
-            },
-        },
-        {
-            label: 'Опис фонду:',
-            type: 'textarea',
-            name: 'description',
-            meta: {
-                rows: 6,
-                placeholder: 'У нас добра мета...',
-                max: 250,
-            },
+                multiple: true,
+                accept: 'image/jpeg,image/png,application/pdf',
+            }
         },
     ]
 

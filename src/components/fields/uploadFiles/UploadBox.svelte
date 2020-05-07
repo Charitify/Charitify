@@ -78,6 +78,10 @@
         opacity: .5;
     }
 
+    .inp-upload .icon {
+        opacity: .7;
+    }
+
     .inp-upload.disabled {
         opacity: .5;
         pointer-events: none;

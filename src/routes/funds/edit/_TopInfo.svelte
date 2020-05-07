@@ -1,7 +1,7 @@
 <script>
     import { Br, Button, Card, FormBuilder } from '@components'
 
-    export let submit = undefined
+    export let submit = async () => {}
 
     let formFields = [
         {
@@ -68,9 +68,7 @@
     let formErrors = {}
 
     async function onSubmit(e) {
-        if (typeof submit === 'function') {
-            await submit(e)
-        }
+        await submit(e)
     }
 </script>
 

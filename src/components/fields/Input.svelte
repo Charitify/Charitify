@@ -205,6 +205,11 @@
         border-radius: var(--border-radius-small);
     }
 
+    .inp.disabled {
+        opacity: .5;
+        pointer-events: none;
+    }
+
     .inp.postIcon .inp-inner {
         padding-right: var(--min-interactive-size);
     }

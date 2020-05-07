@@ -109,6 +109,12 @@
         grid-template: auto / .5fr .5fr;
         grid-gap: 20px;
     }
+
+    ul.disabled {
+        opacity: .5;
+        pointer-events: none;
+    }
+
     button {
         position: absolute;
         top: 0;

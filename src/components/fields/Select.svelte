@@ -114,6 +114,11 @@
         flex-direction: column;
     }
 
+    .select.disabled {
+        opacity: .5;
+        pointer-events: none;
+    }
+    
     .select.null .inp-inner {
         color: rgba(var(--theme-color-primary-opposite), .2) !important;
     }

@@ -27,7 +27,7 @@
     let parent = null
 
     $: activeDot = initIndex
-    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow, rounded, filled: items && items.length })
+    $: classProp = classnames('carousel', size, $$props.class, { dots, dotsBelow, rounded, filled: items && items.length })
     $: setScrollPosition(parent, initIndex)
 
     function carousel(node) {
@@ -127,7 +127,7 @@
         justify-content: stretch;
     }
 
-    .carousel.dotsBelow {
+    .carousel.dots.dotsBelow.filled {
         padding-bottom: 40px;
     }
 
