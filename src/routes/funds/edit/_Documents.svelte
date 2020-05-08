@@ -9,7 +9,7 @@
         {
             label: 'Документи:',
             type: 'files',
-            name: 'photos',
+            name: 'documents',
             meta: {
                 multiple: true,
                 accept: 'image/jpeg,image/png,application/pdf',
@@ -29,7 +29,7 @@
     <Br size="30"/>
 
     <FormBuilder 
-        id="description-form"
+        id="documents-form"
         items={formFields}
         data={formValues}
         errors={formErrors}
