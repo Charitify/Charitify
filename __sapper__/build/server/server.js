@@ -6143,7 +6143,7 @@ const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 		{
 			label: "Документи:",
 			type: "files",
-			name: "photos",
+			name: "documents",
 			meta: {
 				multiple: true,
 				accept: "image/jpeg,image/png,application/pdf"
@@ -6168,7 +6168,7 @@ const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
     ${validate_component(FormBuilder, "FormBuilder").$$render(
 			$$result,
 			{
-				id: "description-form",
+				id: "documents-form",
 				items: formFields,
 				data: formValues,
 				errors: formErrors,
