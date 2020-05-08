@@ -163,7 +163,7 @@
     <!-- END: Top info -->
 
     <Br size="20"/>
-    <LazyToggle active={!isEdit && !isEditMode} mounted>
+    <LazyToggle active={!isEditMode} mounted>
         <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
     </LazyToggle>
     <Br size="50"/>
@@ -182,7 +182,7 @@
     <!-- END: Description -->
 
     <Br size="10"/>
-    <LazyToggle active={!isEdit} mounted>
+    <LazyToggle active={!isEditMode} mounted>
         <Share />
         <Br size="45"/>
         <Trust active={trust.isLiked}/>
@@ -194,8 +194,10 @@
     <!-- END: Animal -->
 
     <Br size="60"/>
-    <Donators items={donators}/>
-    <Br size="60"/>
+    <LazyToggle active={!isEditMode} mounted>
+        <Donators items={donators}/>
+        <Br size="60"/>
+    </LazyToggle>
 
     <!-- Documents -->
     <LazyToggle active={isEdit}>
@@ -216,8 +218,10 @@
     <HowToHelp data={howToHelp}/>
     <Br size="60"/>
 
-    <Comments items={commentsData.comments}/>
-    <Br size="60"/>
+    <LazyToggle active={!isEditMode} mounted>
+        <Comments items={commentsData.comments}/>
+        <Br size="60"/>
+    </LazyToggle>
 
     <div class="full-container">
         <Footer/>
