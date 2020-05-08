@@ -7525,27 +7525,19 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
 
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-    ${validate_component(LazyToggle, "LazyToggle").$$render(
-		$$result,
-		{
-			active: !isEdit && !isEditMode,
-			mounted: true
-		},
-		{},
-		{
-			default: () => `
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
+		default: () => `
         ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
-				$$result,
-				{
-					likes: iconsLine.likes,
-					views: iconsLine.views
-				},
-				{},
-				{}
-			)}
+			$$result,
+			{
+				likes: iconsLine.likes,
+				views: iconsLine.views
+			},
+			{},
+			{}
+		)}
     `
-		}
-	)}
+	})}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
     
@@ -7577,7 +7569,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
 
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEdit, mounted: true }, {}, {
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
 		default: () => `
         ${validate_component(Share, "Share").$$render($$result, {}, {}, {})}
         ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
@@ -7591,8 +7583,12 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
 
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
-    ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
+		default: () => `
+        ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+    `
+	})}
 
     
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
@@ -7628,8 +7624,12 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(HowToHelp, "HowToHelp").$$render($$result, { data: howToHelp }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(Comments_1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
+		default: () => `
+        ${validate_component(Comments_1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+    `
+	})}
 
     <div class="${"full-container"}">
         ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}
