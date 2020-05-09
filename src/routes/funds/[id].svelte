@@ -113,7 +113,7 @@
     };
 
     onMount(async () => {
-        await delay(5000)
+        await delay(15000)
         charity = await API.getFund(1)
         comments = await API.getComments()
     })
