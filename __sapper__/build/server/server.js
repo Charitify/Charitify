@@ -3580,7 +3580,7 @@ const Select = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 const css$j = {
 	code: ".checkbox.svelte-ubkon.svelte-ubkon{display:block}.checkbox.svelte-ubkon input.svelte-ubkon{-webkit-appearance:checkbox;-moz-appearance:checkbox;appearance:checkbox}.checkbox.svelte-ubkon .inp-box-wrap.svelte-ubkon{position:relative;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex}.checkbox .inp-inner:checked+.inp-label.svelte-ubkon.svelte-ubkon .checked{display:block}.checkbox.svelte-ubkon .inp-label.svelte-ubkon{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start}.checkbox.svelte-ubkon .inp-label.svelte-ubkon .checked{display:none;position:absolute;top:0;left:0;width:100%;height:100%}",
-	map: "{\"version\":3,\"file\":\"Checkbox.svelte\",\"sources\":[\"Checkbox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let style = {}\\n    export let checked = undefined\\n    export let value = null\\n    export let id = undefined\\n    export let align = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let text = undefined\\n    export let invalid = undefined\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let required = undefined // undefined|required\\n    export let errors = undefined\\n\\n    $: idProp = id || name\\n    $: error = invalid || !!(errors || []).length\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })\\n</script>\\n\\n<div class={classProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">\\n            { label }\\n            <Br size=\\\"10\\\"/>\\n        </h2>\\n    {/if}\\n\\n    <input\\n            hidden\\n            type=\\\"checkbox\\\"\\n            id={idProp}\\n            {name}\\n            {form}\\n            {align}\\n            {value}\\n            {checked}\\n            {disabled}\\n            {required}\\n            class=\\\"inp-inner\\\"\\n            bind:checked\\n    >\\n\\n    <label for={idProp} class=\\\"inp-label\\\">\\n        <span class=\\\"inp-box-wrap\\\">\\n            <Icon type=\\\"box\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"unchecked\\\"/>\\n            <Icon type=\\\"box-checked\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"checked\\\"/>\\n        </span>\\n        {#if text}\\n            <s></s>\\n            <s></s>\\n            <h3 class=\\\"font-w-500 text-left\\\" style=\\\"padding-top: 4px\\\">{ text }</h3>\\n        {/if}\\n    </label>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .checkbox {\\n        display: block;\\n    }\\n\\n    .checkbox input {\\n        -webkit-appearance: checkbox;\\n           -moz-appearance: checkbox;\\n                appearance: checkbox;\\n    }\\n\\n    .checkbox .inp-box-wrap {\\n        position: relative;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n    }\\n    .checkbox .inp-inner:checked + .inp-label :global(.checked) {\\n        display: block;\\n    }\\n\\n    .checkbox .inp-label {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: start;\\n            -ms-flex-align: start;\\n                align-items: flex-start;\\n    }\\n\\n    .checkbox .inp-label :global(.checked) {\\n        display: none;\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLDRCQUFvQjtXQUFwQix5QkFBb0I7Z0JBQXBCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQiwyQkFBb0I7UUFBcEIsMkJBQW9CO1FBQXBCLG9CQUFvQjtJQUN4QjtJQUNBO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO0lBQzNCOztJQUVBO1FBQ0ksYUFBYTtRQUNiLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFdBQVc7UUFDWCxZQUFZO0lBQ2hCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuY2hlY2tib3gge1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggaW5wdXQge1xuICAgICAgICBhcHBlYXJhbmNlOiBjaGVja2JveDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1ib3gtd3JhcCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgfVxuICAgIC5jaGVja2JveCAuaW5wLWlubmVyOmNoZWNrZWQgKyAuaW5wLWxhYmVsIDpnbG9iYWwoLmNoZWNrZWQpIHtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtbGFiZWwge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogZmxleC1zdGFydDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1sYWJlbCA6Z2xvYmFsKC5jaGVja2VkKSB7XG4gICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAwEI,SAAS,0BAAC,CAAC,AACP,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,KAAK,aAAC,CAAC,AACb,kBAAkB,CAAE,QAAQ,CACzB,eAAe,CAAE,QAAQ,CACpB,UAAU,CAAE,QAAQ,AAChC,CAAC,AAED,sBAAS,CAAC,aAAa,aAAC,CAAC,AACrB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,AACxB,CAAC,AACD,SAAS,CAAC,UAAU,QAAQ,CAAG,oCAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACzD,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,UAAU,aAAC,CAAC,AAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,KAAK,CACpB,cAAc,CAAE,KAAK,CACjB,WAAW,CAAE,UAAU,AACnC,CAAC,AAED,sBAAS,CAAC,uBAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACpC,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Checkbox.svelte\",\"sources\":[\"Checkbox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let style = {}\\n    export let checked = undefined\\n    export let value = undefined\\n    export let id = undefined\\n    export let align = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let text = undefined\\n    export let invalid = undefined\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let required = undefined // undefined|required\\n    export let errors = undefined\\n\\n    $: idProp = id || name\\n    $: error = invalid || !!(errors || []).length\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })\\n\\n    function onChange(e) {\\n        const value = getValue(e)\\n        dispatch('change', { e, name, value, checked })\\n    }\\n\\n    function getValue(e) {\\n        return e.target.value\\n    }\\n</script>\\n\\n<div class={classProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">\\n            { label }\\n            <Br size=\\\"10\\\"/>\\n        </h2>\\n    {/if}\\n\\n    <input\\n            hidden\\n            type=\\\"checkbox\\\"\\n            id={idProp}\\n            {name}\\n            {form}\\n            {align}\\n            {value}\\n            {checked}\\n            {disabled}\\n            {required}\\n            class=\\\"inp-inner\\\"\\n            bind:checked\\n            on:change={onChange}\\n    >\\n\\n    <label for={idProp} class=\\\"inp-label\\\">\\n        <span class=\\\"inp-box-wrap\\\">\\n            <Icon type=\\\"box\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"unchecked\\\"/>\\n            <Icon type=\\\"box-checked\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"checked\\\"/>\\n        </span>\\n        {#if text}\\n            <s></s>\\n            <s></s>\\n            <h3 class=\\\"font-w-500 text-left\\\" style=\\\"padding-top: 4px\\\">{ text }</h3>\\n        {/if}\\n    </label>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .checkbox {\\n        display: block;\\n    }\\n\\n    .checkbox input {\\n        -webkit-appearance: checkbox;\\n           -moz-appearance: checkbox;\\n                appearance: checkbox;\\n    }\\n\\n    .checkbox .inp-box-wrap {\\n        position: relative;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n    }\\n    .checkbox .inp-inner:checked + .inp-label :global(.checked) {\\n        display: block;\\n    }\\n\\n    .checkbox .inp-label {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: start;\\n            -ms-flex-align: start;\\n                align-items: flex-start;\\n    }\\n\\n    .checkbox .inp-label :global(.checked) {\\n        display: none;\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLDRCQUFvQjtXQUFwQix5QkFBb0I7Z0JBQXBCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQiwyQkFBb0I7UUFBcEIsMkJBQW9CO1FBQXBCLG9CQUFvQjtJQUN4QjtJQUNBO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO0lBQzNCOztJQUVBO1FBQ0ksYUFBYTtRQUNiLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFdBQVc7UUFDWCxZQUFZO0lBQ2hCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuY2hlY2tib3gge1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggaW5wdXQge1xuICAgICAgICBhcHBlYXJhbmNlOiBjaGVja2JveDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1ib3gtd3JhcCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgfVxuICAgIC5jaGVja2JveCAuaW5wLWlubmVyOmNoZWNrZWQgKyAuaW5wLWxhYmVsIDpnbG9iYWwoLmNoZWNrZWQpIHtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtbGFiZWwge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogZmxleC1zdGFydDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1sYWJlbCA6Z2xvYmFsKC5jaGVja2VkKSB7XG4gICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAkFI,SAAS,0BAAC,CAAC,AACP,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,KAAK,aAAC,CAAC,AACb,kBAAkB,CAAE,QAAQ,CACzB,eAAe,CAAE,QAAQ,CACpB,UAAU,CAAE,QAAQ,AAChC,CAAC,AAED,sBAAS,CAAC,aAAa,aAAC,CAAC,AACrB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,AACxB,CAAC,AACD,SAAS,CAAC,UAAU,QAAQ,CAAG,oCAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACzD,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,UAAU,aAAC,CAAC,AAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,KAAK,CACpB,cAAc,CAAE,KAAK,CACjB,WAAW,CAAE,UAAU,AACnC,CAAC,AAED,sBAAS,CAAC,uBAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACpC,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
 
 const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -3588,7 +3588,7 @@ const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let { name } = $$props;
 	let { style = {} } = $$props;
 	let { checked = undefined } = $$props;
-	let { value = null } = $$props;
+	let { value = undefined } = $$props;
 	let { id = undefined } = $$props;
 	let { align = undefined } = $$props;
 	let { disabled = false } = $$props;
@@ -3598,6 +3598,7 @@ const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let { form = undefined } = $$props; // Specifies the form the <input> element belongs to
 	let { required = undefined } = $$props; // undefined|required
 	let { errors = undefined } = $$props;
+
 	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
 	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
 	if ($$props.checked === void 0 && $$bindings.checked && checked !== void 0) $$bindings.checked(checked);
@@ -3696,14 +3697,26 @@ const ReadField = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 /* src/components/fields/CheckboxGroup.svelte generated by Svelte v3.18.1 */
 
 const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { value = "" } = $$props;
-	let { style = {} } = $$props;
+	const dispatch = createEventDispatcher();
+	let { name } = $$props;
+	let { value = undefined } = $$props;
+	let { style = undefined } = $$props;
 	let { id = undefined } = $$props;
 	let { align = undefined } = $$props;
 	let { disabled = false } = $$props;
 	let { label = undefined } = $$props;
 	let { options = undefined } = $$props;
 	let { errors = undefined } = $$props;
+
+	function getChecked(currName, currValue) {
+		if (Array.isArray(value)) {
+			return value.includes(currValue);
+		} else {
+			return !!value && value[currName];
+		}
+	}
+
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
 	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
 	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
@@ -3713,7 +3726,7 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	if ($$props.options === void 0 && $$bindings.options && options !== void 0) $$bindings.options(options);
 	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
 	let styleProp = toCSSString({ ...style, textAlign: align });
-	let classProp = classnames("checkbox-group", $$props.class, { disabled });
+	let classProp = classnames("checkbox-group", $$props.class, { disabled, error: errors });
 
 	return `<div${add_attribute("id", id, 0)}${add_attribute("class", classProp, 0)}${add_attribute("styleProp", styleProp, 0)}>
     ${label
@@ -3726,7 +3739,14 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
     ${each(options, (checkbox, i) => `${i
 	? `${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}`
 	: ``}
-        ${validate_component(Checkbox, "Checkbox").$$render($$result, Object.assign(checkbox, { value: value[checkbox.name] }, { errors: errors[checkbox.name] }), {}, {})}`)}
+        ${validate_component(Checkbox, "Checkbox").$$render(
+		$$result,
+		Object.assign(checkbox, { errors: errors[checkbox.name] }, {
+			checked: getChecked(checkbox.name, checkbox.value)
+		}),
+		{},
+		{}
+	)}`)}
 </div>`;
 });
 
