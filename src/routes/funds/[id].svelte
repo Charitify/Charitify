@@ -13,23 +13,25 @@
         DonationButton,
     } from '@components'
     import {
-        Media,
         Trust,
         Share,
         Comments,
         Donators,
-        HowToHelp,
         AnimalCard,
         InteractionIndicators,
     } from './components'
     import { 
+        VideosView,
         TopInfoView,
         DocumentsView,
+        HowToHelpView,
         DescriptionView,
     } from './view'
     import { 
+        VideosEdit,
         TopInfoEdit,
         DocumentsEdit,
+        HowToHelpEdit,
         DescriptionEdit,
     } from './edit'
 
@@ -170,7 +172,6 @@
 
     <!-- Description -->
     <LazyToggle active={isEdit}>
-        <Br size="30"/>
         <DescriptionEdit submit={onSubmit} data={descriptionBlock}/>
     </LazyToggle>
     <LazyToggle active={!isEdit} mounted class="full-container">
@@ -212,12 +213,34 @@
     <!-- END: Documents -->
     
     <Br size="60"/> 
-    <Media items={media}/>
+    
+    <!-- Videos -->
+    <LazyToggle active={isEdit}>
+        <VideosEdit submit={onSubmit} data={media}/>
+    </LazyToggle>
+    <LazyToggle active={!isEdit} mounted class="full-container">
+        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+            <Br size="30"/>
+            <VideosView items={media}/>
+        </EditArea>
+    </LazyToggle>
+    <!-- END: Videos -->
+    
     <Br size="60"/>
 
-    <HowToHelp data={howToHelp}/>
-    <Br size="60"/>
+    <!-- How to help -->
+    <LazyToggle active={isEdit}>
+        <HowToHelpEdit submit={onSubmit} data={howToHelp}/>
+    </LazyToggle>
+    <LazyToggle active={!isEdit} mounted class="full-container">
+        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+            <Br size="30"/>
+            <HowToHelpView data={howToHelp}/>
+        </EditArea>
+    </LazyToggle>
+    <!-- END: How to help -->
 
+    <Br size="60"/>
     <LazyToggle active={!isEditMode} mounted>
         <Comments items={commentsData.comments}/>
         <Br size="60"/>

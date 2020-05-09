@@ -37,7 +37,7 @@
     <h2 class="text-left">{label}</h2>
     <Br size="10"/>
 {/if}
-<Square class={$$props.class}>
+<Square class={$$props.class} style="max-height: 150px">
     <input
         {name}
         {accept}

@@ -6,12 +6,19 @@
 
     let formFields = [
         {
-            label: 'Документи:',
-            type: 'files',
-            name: 'documents',
+            label: 'Відео 1:',
+            type: 'url',
+            name: 'video[0]',
             meta: {
-                multiple: true,
-                accept: 'image/jpeg,image/png,application/pdf',
+                placeholder: 'https://www.youtube.com/watch?v=oUcAUwptos4&t',
+            }
+        },
+        {
+            label: 'Відео 2:',
+            type: 'url',
+            name: 'video[1]',
+            meta: {
+                placeholder: 'https://www.youtube.com/watch?v=oUcAUwptos4&t',
             }
         },
     ]
@@ -28,7 +35,7 @@
     <Br size="30"/>
 
     <FormBuilder 
-        id="documents-form"
+        id="videos-form"
         items={formFields}
         data={formValues}
         errors={formErrors}

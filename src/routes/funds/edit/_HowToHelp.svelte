@@ -6,12 +6,12 @@
 
     let formFields = [
         {
-            label: 'Документи:',
-            type: 'files',
-            name: 'documents',
+            label: 'Як можна допомогти:',
+            type: 'textarea',
+            name: 'howtohelp',
             meta: {
-                multiple: true,
-                accept: 'image/jpeg,image/png,application/pdf',
+                placeholder: '· Привести корм',
+                rows: 6,
             }
         },
     ]
@@ -28,7 +28,7 @@
     <Br size="30"/>
 
     <FormBuilder 
-        id="documents-form"
+        id="howtohelp-form"
         items={formFields}
         data={formValues}
         errors={formErrors}

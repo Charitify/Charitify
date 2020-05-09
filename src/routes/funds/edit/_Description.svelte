@@ -1,6 +1,5 @@
 <script>
     import { Br, Button, Card, FormBuilder } from '@components'
-    import { Description } from '../components'
 
     export let data = undefined
     export let submit = async () => {}
@@ -48,7 +47,7 @@
         on:change
     />
 
-    <Br size="20"/>
+    <Br size="40"/>
 
     <Button size="small" type="submit" form="top-info-form" is="info">
         <span class="h3 font-secondary font-w-500 flex flex-align-center">

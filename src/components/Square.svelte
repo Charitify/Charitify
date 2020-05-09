@@ -1,4 +1,8 @@
-<section class={`square ${$$props.class || ''}`}>
+<script>
+    export let style = undefined
+</script>  
+
+<section {style} class={`square ${$$props.class || ''}`}>
     <div>
         <slot></slot>
     </div>

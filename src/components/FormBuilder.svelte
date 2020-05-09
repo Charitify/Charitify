@@ -19,12 +19,12 @@
     /**
      * @type {{
      *    name: string,
-     *    type: string, 'files'(types of native input: https://www.w3schools.com/tags/att_input_type.asp)
+     *    type: string, ('files' and types of native input: https://www.w3schools.com/tags/att_input_type.asp)
      *    label: string,
      *    meta: {
      *        required: boolean,
      *        disabled: boolean,
-     *        ...
+     *        ...rest that can be applied to a field.
      *    }
      * }[]}
      */
@@ -59,7 +59,7 @@
         {#if i}
             <Br size="30"/>
         {/if}
-        {#if ['text', 'number', 'textarea', 'email', 'password', 'search', 'tel', 'date', 'datetime-local', 'time'].includes(item.type)}
+        {#if ['text', 'number', 'textarea', 'email', 'password', 'search', 'tel', 'url', 'date', 'datetime-local', 'time'].includes(item.type)}
             {#if data[item.name] !== null}
                 <Input
                     {...item.meta}
@@ -122,18 +122,20 @@
                     on:change={onChange}
             />
         {:else}
-            {#if data[item.name] !== null}
-                <ReadField
-                    {...item.meta}
-                    label={item.label}
-                    value={data[item.name]}
-                />
-            {:else}
-                <div>
-                    <Loader type="h2" />
-                    <Loader type="p" />
-                </div>
-            {/if}
+            <slot {item} {data} {errors}>
+                {#if data[item.name] !== null}
+                    <ReadField
+                        {...item.meta}
+                        label={item.label}
+                        value={data[item.name]}
+                    />
+                {:else}
+                    <div>
+                        <Loader type="h2" />
+                        <Loader type="p" />
+                    </div>
+                {/if}
+            </slot>
         {/if}
     {/each}
 </Form>
