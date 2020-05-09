@@ -10,7 +10,7 @@
     export let name
     export let style = {}
     export let checked = undefined
-    export let value = null
+    export let value = undefined
     export let id = undefined
     export let align = undefined
     export let disabled = false
@@ -25,6 +25,15 @@
     $: error = invalid || !!(errors || []).length
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })
+
+    function onChange(e) {
+        const value = getValue(e)
+        dispatch('change', { e, name, value, checked })
+    }
+
+    function getValue(e) {
+        return e.target.value
+    }
 </script>
 
 <div class={classProp}>
@@ -48,6 +57,7 @@
             {required}
             class="inp-inner"
             bind:checked
+            on:change={onChange}
     >
 
     <label for={idProp} class="inp-label">

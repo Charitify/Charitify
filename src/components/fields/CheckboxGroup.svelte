@@ -1,10 +1,14 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
     import { classnames, toCSSString } from '@utils'
     import Br from '@components/Br.svelte'
     import Checkbox from './Checkbox.svelte'
 
-    export let value = ''
-    export let style = {}
+    const dispatch = createEventDispatcher()
+
+    export let name
+    export let value = undefined
+    export let style = undefined
     export let id = undefined
     export let align = undefined
     export let disabled = false
@@ -13,7 +17,35 @@
     export let errors = undefined
 
     $: styleProp = toCSSString({ ...style, textAlign: align })
-    $: classProp = classnames('checkbox-group', $$props.class, { disabled })
+    $: classProp = classnames('checkbox-group', $$props.class, { disabled, error: errors })
+
+    function onChange({ detail: { e, name: currName, value: currValue, checked } }) {
+        let newValue = value
+        if (currValue) {
+            if (!Array.isArray(newValue)) {
+                newValue = []
+            }
+            if (checked && !newValue.includes(currValue)) {
+                newValue = [...newValue, currValue]
+            } else if (!checked && newValue.includes(currValue)) {
+                newValue = value.filter(v => v !== currValue)
+            }
+        } else if (currName) {
+            if (!newValue) {
+                newValue = {}
+            }
+            newValue[currName] = checked
+        }
+        dispatch('change', { e, name, value: newValue })
+    }
+
+    function getChecked(currName, currValue) {
+        if (Array.isArray(value)) {
+            return value.includes(currValue)
+        } else {
+            return !!value && value[currName]
+        }
+    }
 </script>
 
 <div {id} class={classProp} styleProp={styleProp}>
@@ -30,8 +62,9 @@
         {/if}
         <Checkbox 
             {...checkbox}
-            value={value[checkbox.name]}
             errors={errors[checkbox.name]}
+            checked={getChecked(checkbox.name, checkbox.value)}
+            on:change={onChange}
         />
     {/each}
 </div>
