@@ -7559,7 +7559,7 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	let comments;
 
 	onMount(async () => {
-		await delay(5000);
+		await delay(15000);
 		charity = await API.getFund(1);
 		comments = await API.getComments();
 	});
