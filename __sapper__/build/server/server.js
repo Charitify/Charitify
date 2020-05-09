@@ -2727,13 +2727,15 @@ const Modal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 const css$6 = {
 	code: "section.svelte-jnmki8{position:relative;width:100%}section.svelte-jnmki8:after{content:\"\";display:block;padding-top:100%}div.svelte-jnmki8{position:absolute;top:0;left:0;right:0;bottom:0;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}",
-	map: "{\"version\":3,\"file\":\"Square.svelte\",\"sources\":[\"Square.svelte\"],\"sourcesContent\":[\"<section class={`square ${$$props.class || ''}`}>\\n    <div>\\n        <slot></slot>\\n    </div>\\n</section>\\n\\n<style>\\n    section {\\n        position: relative;\\n        width: 100%;\\n    }\\n\\n    section:after {\\n        content: \\\"\\\";\\n        display: block;\\n        padding-top: 100%;\\n    }\\n\\n    div {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        right: 0;\\n        bottom: 0;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1NxdWFyZS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7SUFDZjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO1FBQ2QsaUJBQWlCO0lBQ3JCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLE1BQU07UUFDTixPQUFPO1FBQ1AsUUFBUTtRQUNSLFNBQVM7UUFDVCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7SUFDMUIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvU3F1YXJlLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHNlY3Rpb24ge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgIH1cblxuICAgIHNlY3Rpb246YWZ0ZXIge1xuICAgICAgICBjb250ZW50OiBcIlwiO1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgcGFkZGluZy10b3A6IDEwMCU7XG4gICAgfVxuXG4gICAgZGl2IHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBib3R0b206IDA7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAOI,OAAO,cAAC,CAAC,AACL,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,qBAAO,MAAM,AAAC,CAAC,AACX,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,KAAK,CACd,WAAW,CAAE,IAAI,AACrB,CAAC,AAED,GAAG,cAAC,CAAC,AACD,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,CACT,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,AAClC,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Square.svelte\",\"sources\":[\"Square.svelte\"],\"sourcesContent\":[\"<script>\\n    export let style = undefined\\n</script>  \\n\\n<section {style} class={`square ${$$props.class || ''}`}>\\n    <div>\\n        <slot></slot>\\n    </div>\\n</section>\\n\\n<style>\\n    section {\\n        position: relative;\\n        width: 100%;\\n    }\\n\\n    section:after {\\n        content: \\\"\\\";\\n        display: block;\\n        padding-top: 100%;\\n    }\\n\\n    div {\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        right: 0;\\n        bottom: 0;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1NxdWFyZS5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksa0JBQWtCO1FBQ2xCLFdBQVc7SUFDZjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxjQUFjO1FBQ2QsaUJBQWlCO0lBQ3JCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLE1BQU07UUFDTixPQUFPO1FBQ1AsUUFBUTtRQUNSLFNBQVM7UUFDVCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLDRCQUFzQjtRQUF0Qiw2QkFBc0I7WUFBdEIsMEJBQXNCO2dCQUF0QixzQkFBc0I7SUFDMUIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvU3F1YXJlLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHNlY3Rpb24ge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgIH1cblxuICAgIHNlY3Rpb246YWZ0ZXIge1xuICAgICAgICBjb250ZW50OiBcIlwiO1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgcGFkZGluZy10b3A6IDEwMCU7XG4gICAgfVxuXG4gICAgZGl2IHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIGxlZnQ6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBib3R0b206IDA7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAWI,OAAO,cAAC,CAAC,AACL,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,AACf,CAAC,AAED,qBAAO,MAAM,AAAC,CAAC,AACX,OAAO,CAAE,EAAE,CACX,OAAO,CAAE,KAAK,CACd,WAAW,CAAE,IAAI,AACrB,CAAC,AAED,GAAG,cAAC,CAAC,AACD,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,CACT,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,AAClC,CAAC\"}"
 };
 
 const Square = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { style = undefined } = $$props;
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
 	$$result.css.add(css$6);
 
-	return `<section class="${escape(null_to_empty(`square ${$$props.class || ""}`)) + " svelte-jnmki8"}">
+	return `<section${add_attribute("style", style, 0)} class="${escape(null_to_empty(`square ${$$props.class || ""}`)) + " svelte-jnmki8"}">
     <div class="${"svelte-jnmki8"}">
         ${$$slots.default ? $$slots.default({}) : ``}
     </div>
@@ -3732,7 +3734,7 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 const css$k = {
 	code: ".inp-upload.svelte-1oa853p.svelte-1oa853p{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-item-align:stretch;align-self:stretch;justify-self:stretch;overflow:hidden;border-radius:var(--border-radius-medium);color:rgba(var(--theme-color-primary-opposite), .5);background-color:rgba(var(--theme-color-primary-opposite), .07);-webkit-transform:translateZ(0);transform:translateZ(0)}.inp-upload.preview.svelte-1oa853p .icon.svelte-1oa853p{opacity:.5}.inp-upload.svelte-1oa853p .icon.svelte-1oa853p{opacity:.7}.inp-upload.disabled.svelte-1oa853p.svelte-1oa853p{opacity:.5;pointer-events:none}.inp-upload.error.svelte-1oa853p.svelte-1oa853p,input:invalid+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-danger), .5);background-color:rgba(var(--color-danger), .07)}input:focus+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-info), .5);background-color:rgba(var(--color-info), .07)}",
-	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n\\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class}>\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture {src}/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AA6DI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n\\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class} style=\\\"max-height: 150px\\\">\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture {src}/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AA6DI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
 };
 
 const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -3776,8 +3778,15 @@ const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	? `<h2 class="${"text-left"}">${escape(label)}</h2>
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
 	: ``}
-${validate_component(Square, "Square").$$render($$result, { class: $$props.class }, {}, {
-		default: () => `
+${validate_component(Square, "Square").$$render(
+		$$result,
+		{
+			class: $$props.class,
+			style: "max-height: 150px"
+		},
+		{},
+		{
+			default: () => `
     <input${add_attribute("name", name, 0)}${add_attribute("accept", accept, 0)} ${multiple ? "multiple" : ""} hidden type="${"file"}"${add_attribute("id", idProp, 0)}>
     <label${add_attribute("for", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-1oa853p"}">
         <div class="${"flex full-absolute"}">
@@ -3788,7 +3797,8 @@ ${validate_component(Square, "Square").$$render($$result, { class: $$props.class
         </div>
     </label>
 `
-	})}`;
+		}
+	)}`;
 });
 
 /* src/components/fields/uploadFiles/UploadBoxGroup.svelte generated by Svelte v3.18.1 */
@@ -3957,6 +3967,7 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 			"password",
 			"search",
 			"tel",
+			"url",
 			"date",
 			"datetime-local",
 			"time"
@@ -3980,12 +3991,16 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
 					: `${["files"].includes(item.type)
 						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
-						: `${data[item.name] !== null
-							? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: data[item.name] }), {}, {})}`
-							: `<div>
-                    ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
-                    ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
-                </div>`}`}`}`}`}`}`)}
+						: `${$$slots.default
+							? $$slots.default({ item, data, errors })
+							: `
+                ${data[item.name] !== null
+								? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: data[item.name] }), {}, {})}`
+								: `<div>
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
+                        ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
+                    </div>`}
+            `}`}`}`}`}`}`)}
 `
 	})}`;
 });
@@ -6026,6 +6041,86 @@ var route_0 = /*#__PURE__*/Object.freeze({
     InteractionIndicators: InteractionIndicators
 });
 
+/* src/routes/funds/edit/_Videos.svelte generated by Svelte v3.18.1 */
+
+const Videos = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Відео 1:",
+			type: "url",
+			name: "video[0]",
+			meta: {
+				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
+			}
+		},
+		{
+			label: "Відео 2:",
+			type: "url",
+			name: "video[1]",
+			meta: {
+				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
+			}
+		}
+	];
+
+	let formValues = data || {};
+	let formErrors = {};
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+		default: () => `
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "videos-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+    ${validate_component(Button, "Button").$$render(
+			$$result,
+			{
+				size: "small",
+				type: "submit",
+				form: "top-info-form",
+				is: "info"
+			},
+			{},
+			{
+				default: () => `
+        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+            Зберегти
+        </span>
+    `
+			}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+`
+	})}`;
+});
+
 /* src/routes/funds/edit/_TopInfo.svelte generated by Svelte v3.18.1 */
 
 const TopInfo = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -6105,7 +6200,7 @@ const TopInfo = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 			{}
 		)}
 
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
     ${validate_component(Button, "Button").$$render(
 			$$result,
@@ -6178,7 +6273,77 @@ const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 			{}
 		)}
 
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+    ${validate_component(Button, "Button").$$render(
+			$$result,
+			{
+				size: "small",
+				type: "submit",
+				form: "top-info-form",
+				is: "info"
+			},
+			{},
+			{
+				default: () => `
+        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+            Зберегти
+        </span>
+    `
+			}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+`
+	})}`;
+});
+
+/* src/routes/funds/edit/_HowToHelp.svelte generated by Svelte v3.18.1 */
+
+const HowToHelp$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Як можна допомогти:",
+			type: "textarea",
+			name: "howtohelp",
+			meta: { placeholder: "· Привести корм", rows: 6 }
+		}
+	];
+
+	let formValues = data || {};
+	let formErrors = {};
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+		default: () => `
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "howtohelp-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
     ${validate_component(Button, "Button").$$render(
 			$$result,
@@ -6205,7 +6370,7 @@ const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 
 /* src/routes/funds/edit/_Description.svelte generated by Svelte v3.18.1 */
 
-const Description_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { data = undefined } = $$props;
 
 	let { submit = async () => {
@@ -6262,7 +6427,7 @@ const Description_1 = create_ssr_component(($$result, $$props, $$bindings, $$slo
 			{}
 		)}
 
-    ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
     ${validate_component(Button, "Button").$$render(
 			$$result,
@@ -6291,9 +6456,19 @@ const Description_1 = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 var route_1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    VideosEdit: Videos,
     TopInfoEdit: TopInfo,
     DocumentsEdit: Documents$1,
-    DescriptionEdit: Description_1
+    HowToHelpEdit: HowToHelp$1,
+    DescriptionEdit: Description$1
+});
+
+/* src/routes/funds/view/_Videos.svelte generated by Svelte v3.18.1 */
+
+const Videos$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	return `${validate_component(Media, "Media").$$render($$result, { items }, {}, {})}`;
 });
 
 /* src/routes/funds/view/_TopInfo.svelte generated by Svelte v3.18.1 */
@@ -6332,9 +6507,17 @@ const Documents_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	return `${validate_component(Documents_1, "Documents").$$render($$result, { items }, {}, {})}`;
 });
 
+/* src/routes/funds/view/_HowToHelp.svelte generated by Svelte v3.18.1 */
+
+const HowToHelp_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data } = $$props;
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	return `${validate_component(HowToHelp, "HowToHelp").$$render($$result, { data }, {}, {})}`;
+});
+
 /* src/routes/funds/view/_Description.svelte generated by Svelte v3.18.1 */
 
-const Description_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Description_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { descriptionBlock = {} } = $$props;
 	if ($$props.descriptionBlock === void 0 && $$bindings.descriptionBlock && descriptionBlock !== void 0) $$bindings.descriptionBlock(descriptionBlock);
 
@@ -6353,9 +6536,11 @@ const Description_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$s
 
 var route_2 = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    VideosView: Videos$1,
     TopInfoView: TopInfo$1,
     DocumentsView: Documents_1$1,
-    DescriptionView: Description_1$1
+    HowToHelpView: HowToHelp_1,
+    DescriptionView: Description_1
 });
 
 /* src/routes/index.svelte generated by Svelte v3.18.1 */
@@ -6736,7 +6921,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 
 /* src/routes/organizations/_Description.svelte generated by Svelte v3.18.1 */
 
-const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Description$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { title = null } = $$props;
 	let { text = null } = $$props;
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
@@ -6944,7 +7129,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 
 /* src/routes/organizations/_Videos.svelte generated by Svelte v3.18.1 */
 
-const Videos = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Videos$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
@@ -7289,7 +7474,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(FundList, "FundList").$$render($$result, { title: "Інші фонди", items: othersFunds }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    ${validate_component(Description$1, "Description").$$render(
+    ${validate_component(Description$2, "Description").$$render(
 		$$result,
 		{
 			title: descriptionBlock.title,
@@ -7326,7 +7511,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
     ${validate_component(Certificates, "Certificates").$$render($$result, { items: documents }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
 
-    ${validate_component(Videos, "Videos").$$render($$result, { items: media }, {}, {})}
+    ${validate_component(Videos$2, "Videos").$$render($$result, { items: media }, {}, {})}
     ${validate_component(Br, "Br").$$render($$result, { size: "70" }, {}, {})}
 
     ${validate_component(ContactsCard, "ContactsCard").$$render(
@@ -7543,8 +7728,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
 		default: () => `
-        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-        ${validate_component(Description_1, "DescriptionEdit").$$render($$result, { submit: onSubmit, data: descriptionBlock }, {}, {})}
+        ${validate_component(Description$1, "DescriptionEdit").$$render($$result, { submit: onSubmit, data: descriptionBlock }, {}, {})}
     `
 	})}
     ${validate_component(LazyToggle, "LazyToggle").$$render(
@@ -7560,7 +7744,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
         ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
 				default: () => `    
             ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-            ${validate_component(Description_1$1, "DescriptionView").$$render($$result, { descriptionBlock }, {}, {})}
+            ${validate_component(Description_1, "DescriptionView").$$render($$result, { descriptionBlock }, {}, {})}
         `
 			})}
     `
@@ -7618,12 +7802,64 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
     
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})} 
-    ${validate_component(Media, "Media").$$render($$result, { items: media }, {}, {})}
+    
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+		default: () => `
+        ${validate_component(Videos, "VideosEdit").$$render($$result, { submit: onSubmit, data: media }, {}, {})}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
+		$$result,
+		{
+			active: !isEdit,
+			mounted: true,
+			class: "full-container"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(Videos$1, "VideosView").$$render($$result, { items: media }, {}, {})}
+        `
+			})}
+    `
+		}
+	)}
+    
+    
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(HowToHelp, "HowToHelp").$$render($$result, { data: howToHelp }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+		default: () => `
+        ${validate_component(HowToHelp$1, "HowToHelpEdit").$$render($$result, { submit: onSubmit, data: howToHelp }, {}, {})}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
+		$$result,
+		{
+			active: !isEdit,
+			mounted: true,
+			class: "full-container"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(HowToHelp_1, "HowToHelpView").$$render($$result, { data: howToHelp }, {}, {})}
+        `
+			})}
+    `
+		}
+	)}
+    
 
+    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
 		default: () => `
         ${validate_component(Comments_1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
