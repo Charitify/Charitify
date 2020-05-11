@@ -17,4 +17,4 @@
 <OrganizationButton id={organization.id} src={organization.avatar} title={organization.name}/>
 <Br size="20"/>
 
-<QuickInfoCard cardTop={cardTop}/>
+<QuickInfoCard {cardTop}/>

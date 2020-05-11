@@ -10,7 +10,7 @@
     let chariries = []
 
     onMount(async () => {
-        await new Promise(r => setTimeout(r, 1000))
+        // await new Promise(r => setTimeout(r, 1000))
         const chars = await API.getFunds()
         chariries = new Array(5).fill(chars).reduce((a, o) => a.concat(...o), [])
     })

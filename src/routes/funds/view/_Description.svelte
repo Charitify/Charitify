@@ -1,8 +1,9 @@
 <script>
     import { Description } from '../components'
 
-    export let descriptionBlock = {}
+    export let title = undefined
+    export let text = undefined
 </script>
 
-<Description title={descriptionBlock.title} text={descriptionBlock.text}/>
+<Description {title} {text}/>
 

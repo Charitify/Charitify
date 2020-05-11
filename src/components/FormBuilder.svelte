@@ -61,7 +61,7 @@
             <Br size="30"/>
         {/if}
         {#if ['text', 'number', 'textarea', 'email', 'password', 'search', 'tel', 'url', 'date', 'datetime-local', 'time'].includes(item.type)}
-            {#if data[item.name] !== null}
+            {#if values[item.name] !== null}
                 <Input
                     {...item.meta}
                     name={item.name}
@@ -88,7 +88,7 @@
                     on:change={onChange}
             />
         {:else if ['select'].includes(item.type)}
-            {#if data[item.name] !== null}
+            {#if values[item.name] !== null}
                 <Select
                     {...item.meta}
                     name={item.name}
@@ -133,7 +133,7 @@
             />
         {:else}
             <slot {item} {data} {errors}>
-                {#if data[item.name] !== null}
+                {#if values[item.name] !== null}
                     <ReadField
                         {...item.meta}
                         label={item.label}

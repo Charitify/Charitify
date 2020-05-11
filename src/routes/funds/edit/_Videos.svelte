@@ -23,8 +23,8 @@
         },
     ]
 
-    let formValues = data || {}
-    let formErrors = {}
+    $: formValues = data || {}
+    $: formErrors = {}
 
     async function onSubmit(e) {
         await submit(e)
@@ -45,7 +45,7 @@
 
     <Br size="40"/>
 
-    <Button size="small" type="submit" form="top-info-form" is="info">
+    <Button size="small" type="submit" form="videos-form" is="info">
         <span class="h3 font-secondary font-w-500 flex flex-align-center">
             Зберегти
         </span>

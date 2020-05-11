@@ -4,8 +4,8 @@
     export let cardTop = {
         title: null,
         subtitle: null,
-        currentSum: null,
-        neededSum: null,
+        current_sum: null,
+        need_sum: null,
     }
 </script>
 
@@ -28,23 +28,23 @@
 
     <Br size="25"/>
     <p class="font-secondary flex flex-align-end">
-        {#if cardTop.currentSum !== null}
-            <span class="h1 font-w-500">{cardTop.currency} {cardTop.currentSum}</span>
+        {#if cardTop.current_sum !== null}
+            <span class="h1 font-w-500">{cardTop.currency} {cardTop.current_sum}</span>
         {:else}
             <div style="width: 50%"><Loader type="h1"/></div>
         {/if}
 
         <s />
 
-        {#if cardTop.neededSum !== null}
-            <span class="h3">/ {cardTop.currency} {cardTop.neededSum}</span>
+        {#if cardTop.need_sum !== null}
+            <span class="h3">/ {cardTop.currency} {cardTop.need_sum}</span>
         {:else}
             <div style="width: 30%; padding-bottom: 2px"><Loader type="h3"/></div>
         {/if}
     </p>
     <Br size="20"/>
 
-    <Progress value={Math.floor(cardTop.currentSum / cardTop.neededSum * 100)}/>
+    <Progress value={Math.floor(cardTop.current_sum / cardTop.need_sum * 100)}/>
 
     <Br size="40"/>
 </Card>

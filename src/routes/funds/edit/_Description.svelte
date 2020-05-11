@@ -8,7 +8,7 @@
         {
             label: 'Ціль фонду:',
             type: 'text',
-            name: 'subtitle',
+            name: 'title',
             meta: {
                 disabled: true,
                 placeholder: 'Тільки спільними силами...',
@@ -27,8 +27,8 @@
         },
     ]
 
-    let formValues = data || {}
-    let formErrors = {}
+    $: formValues = data || {}
+    $: formErrors = {}
 
     async function onSubmit(e) {
         await submit(e)
@@ -49,7 +49,7 @@
 
     <Br size="40"/>
 
-    <Button size="small" type="submit" form="top-info-form" is="info">
+    <Button size="small" type="submit" form="description-form" is="info">
         <span class="h3 font-secondary font-w-500 flex flex-align-center">
             Зберегти
         </span>

@@ -10,7 +10,7 @@
     let organizations = []
 
     onMount(async () => {
-        await new Promise(r => setTimeout(r, 1000))
+        // await new Promise(r => setTimeout(r, 1000))
         const orgs = await API.getOrganizations()
         organizations = new Array(1).fill(orgs).reduce((a, o) => a.concat(...o), [])
     })

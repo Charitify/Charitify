@@ -46,7 +46,7 @@
                     auto
                     htmlFor={`${idProp}_${i}`}
                     style="padding: 10px"
-                    is={value === radio.value ? 'info' : 'dark-border'}
+                    is={value === radio.value ? 'info' : 'info-border'}
                 >
                     <input 
                         {form}
@@ -61,7 +61,10 @@
                         <s></s>
                     {/if}
                     <slot item={radio} checked={value === radio.value}>
-                        <span class="font-w-500 h3" style="min-width: var(--font-line-height-h3)">
+                        <span
+                         class="font-w-500 h3 flex flex-align-center flex-justify-center"
+                         style="min-width: var(--font-line-height-h3)"
+                        >
                             {radio.label}
                         </span>
                     </slot>

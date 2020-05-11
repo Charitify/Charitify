@@ -1,6 +1,7 @@
 <script>
     import { Br, Button, Card, FormBuilder } from '@components'
 
+    export let data = undefined
     export let submit = async () => {}
 
     let formFields = [
@@ -55,7 +56,7 @@
         {
             label: 'Потрібно зібрати:',
             type: 'number',
-            name: 'sum',
+            name: 'need_sum',
             meta: {
                 placeholder: 10,
                 min: 10,
@@ -64,8 +65,8 @@
         },
     ]
 
-    let formValues = {}
-    let formErrors = {}
+    $: formValues = data || {}
+    $: formErrors = {}
 
     async function onSubmit(e) {
         await submit(e)

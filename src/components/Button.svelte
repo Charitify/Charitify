@@ -279,6 +279,25 @@
         box-shadow: var(--shadow-primary);
     }
 
+    /* Info-border  */
+
+    :global(.btn).info-border {
+        color: rgba(var(--color-info));
+        border: 2px solid rgba(var(--color-info));
+    }
+
+    :global(.btn).info-border:focus {
+        background-color: rgba(var(--color-dark), .85);
+    }
+
+    :global(.btn).info-border:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).info-border:active {
+        box-shadow: var(--shadow-primary);
+    }
+
     /* Danger */
 
     :global(.btn).danger {

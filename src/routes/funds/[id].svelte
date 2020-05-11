@@ -58,8 +58,8 @@
     $: cardTop = safeGet(() => ({
         title: charity.title,
         subtitle: charity.subtitle,
-        currentSum: charity.curremt_sum,
-        neededSum: charity.need_sum,
+        current_sum: charity.curremt_sum,
+        need_sum: charity.need_sum,
         currency: charity.currency,
     }));
     $: iconsLine = {
@@ -71,12 +71,13 @@
     };
     $: descriptionBlock = {
         title: safeGet(() => charity.title),
-        text: safeGet(() => charity.description),
+        description: safeGet(() => charity.description),
     };
     $: animal = safeGet(() => ({
         avatar: charity.animal.avatars[0].src,
         name: charity.animal.name,
         breed: charity.animal.breed,
+        birth: charity.animal.birth,
         age: (new Date().getFullYear()) - (new Date(charity.animal.birth).getFullYear()),
         sex: charity.animal.sex,
         sterilization: charity.animal.sterilization,
@@ -126,15 +127,8 @@
         comments = await API.getComments()
     })
 
-    async function onSubmit(values) {
-        isEdit = {
-            topInfo: false,
-            description: false,
-            videos: false,
-            documents: false,
-            howToHelp: false,
-            animalCard: false,
-        }
+    async function onSubmit(section, values) {
+        isEdit[section] = false
         console.log(values)
     }
 </script>
@@ -169,7 +163,7 @@
     <!-- Top info -->
     <LazyToggle active={isEdit.topInfo}>
         <Br size="30"/>
-        <TopInfoEdit submit={onSubmit}/>
+        <TopInfoEdit submit={onSubmit.bind(null, 'topInfo')} data={{ ...cardTop, organization, photos: carouselTop }}/>
     </LazyToggle>
     <LazyToggle active={!isEdit.topInfo} mounted class="full-container">
         <EditArea on:click={() => isEdit.topInfo = !isEdit.topInfo} off={!isEditMode}>    
@@ -187,12 +181,12 @@
 
     <!-- Description -->
     <LazyToggle active={isEdit.description}>
-        <DescriptionEdit submit={onSubmit} data={descriptionBlock}/>
+        <DescriptionEdit submit={onSubmit.bind(null, 'description')} data={descriptionBlock}/>
     </LazyToggle>
     <LazyToggle active={!isEdit.description} mounted class="full-container">
         <EditArea on:click={() => isEdit.description = !isEdit.description} off={!isEditMode}>    
             <Br size="30"/>
-            <DescriptionView {descriptionBlock}/>
+            <DescriptionView title={descriptionBlock.title} text={descriptionBlock.description}/>
         </EditArea>
     </LazyToggle>
     <!-- END: Description -->
@@ -207,7 +201,7 @@
 
     <!-- Animal -->
     <LazyToggle active={isEdit.animalCard}>
-        <AnimalCardEdit data={animal} submit={onSubmit}/>
+        <AnimalCardEdit submit={onSubmit.bind(null, 'animalCard')} data={animal}/>
     </LazyToggle>
     <LazyToggle active={!isEdit.animalCard} mounted class="full-container">
         <EditArea on:click={() => isEdit.animalCard = !isEdit.animalCard} off={!isEditMode}>    
@@ -225,7 +219,7 @@
 
     <!-- Documents -->
     <LazyToggle active={isEdit.documents}>
-        <DocumentsEdit submit={onSubmit} data={documents}/>
+        <DocumentsEdit submit={onSubmit.bind(null, 'documents')} data={documents}/>
     </LazyToggle>
     <LazyToggle active={!isEdit.documents} mounted class="full-container">
         <EditArea on:click={() => isEdit.documents = !isEdit.documents} off={!isEditMode}>    
@@ -239,7 +233,7 @@
     
     <!-- Videos -->
     <LazyToggle active={isEdit.videos}>
-        <VideosEdit submit={onSubmit} data={media}/>
+        <VideosEdit submit={onSubmit.bind(null, 'videos')} data={media}/>
     </LazyToggle>
     <LazyToggle active={!isEdit.videos} mounted class="full-container">
         <EditArea on:click={() => isEdit.videos = !isEdit.videos} off={!isEditMode}>    
@@ -253,7 +247,7 @@
 
     <!-- How to help -->
     <LazyToggle active={isEdit.howToHelp}>
-        <HowToHelpEdit submit={onSubmit} data={howToHelp}/>
+        <HowToHelpEdit submit={onSubmit.bind(null, 'howToHelp')} data={howToHelp}/>
     </LazyToggle>
     <LazyToggle active={!isEdit.howToHelp} mounted class="full-container">
         <EditArea on:click={() => isEdit.howToHelp = !isEdit.howToHelp} off={!isEditMode}>    
