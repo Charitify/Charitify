@@ -205,8 +205,8 @@
     /* Dark-border */
 
     :global(.btn).dark-border {
-        color: rgba(var(--color-font-dark));
-        border: 2px solid rgba(var(--color-dark));
+        color: rgba(var(--theme-font-color));
+        border: 2px solid rgba(var(--theme-font-color));
     }
 
     :global(.btn).dark-border:focus {
@@ -263,6 +263,7 @@
 
     :global(.btn).info {
         color: rgba(var(--color-font-light));
+        border: 2px solid rgba(var(--color-info));
         background-color: rgba(var(--color-info));
     }
 

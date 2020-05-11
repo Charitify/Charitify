@@ -74,7 +74,7 @@
         sex: charity.animal.sex,
         sterilization: charity.animal.sterilization,
         character: charity.animal.character,
-        characterShort: charity.animal.character_short,
+        character_short: charity.animal.character_short,
         lifestory: charity.animal.lifestory.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() })),
         vaccination: charity.animal.vaccination,
     }));
