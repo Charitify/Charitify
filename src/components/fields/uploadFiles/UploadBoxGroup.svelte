@@ -107,7 +107,7 @@
         width: 100%;
         display: grid;
         grid-template: auto / .5fr .5fr;
-        grid-gap: 20px;
+        grid-gap: var(--screen-padding);
     }
 
     ul.disabled {

@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { classnames } from '@utils'
+    import { classnames, _ } from '@utils'
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
     import Loader from '@components/Loader'
@@ -9,6 +9,7 @@
         Select,
         ReadField,
         UploadBox,
+        RadioRect,
         CheckboxGroup,
         UploadBoxGroup,
     } from '@components/fields'
@@ -19,7 +20,7 @@
     /**
      * @type {{
      *    name: string,
-     *    type: string, ('files' and types of native input: https://www.w3schools.com/tags/att_input_type.asp)
+     *    type: string, ('files', 'radio-rect' and types of native input: https://www.w3schools.com/tags/att_input_type.asp)
      *    label: string,
      *    meta: {
      *        required: boolean,
@@ -33,13 +34,13 @@
     export let errors = {}
     export let submit = async () => {}
 
-    let values = data
     let submitting = false
 
+    $: values = _.cloneDeep(data)
     $: classProp = classnames('form-builder', { submitting })
     
     function onChange({ detail: { name, value } }) {
-        values[name] = value
+        values = { ...values, [name]: value }
         dispatch('change', values)
     }
 
@@ -66,7 +67,7 @@
                     name={item.name}
                     type={item.type}
                     label={item.label}
-                    value={data[item.name]}
+                    value={values[item.name]}
                     errors={errors[item.name]}
                     on:input={onChange}
                     on:change={onChange}
@@ -82,7 +83,7 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={data[item.name]}
+                    value={values[item.name]}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -93,7 +94,7 @@
                     name={item.name}
                     type={item.type}
                     label={item.label}
-                    value={data[item.name]}
+                    value={values[item.name]}
                     errors={errors[item.name]}
                     on:change={onChange}
                 />
@@ -108,7 +109,7 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={data[item.name]}
+                    value={values[item.name]}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -117,7 +118,16 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={data[item.name]}
+                    value={values[item.name]}
+                    errors={errors[item.name]}
+                    on:change={onChange}
+            />
+        {:else if ['radio-rect'].includes(item.type)}
+            <RadioRect
+                    {...item.meta}
+                    name={item.name}
+                    label={item.label}
+                    value={values[item.name]}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -127,7 +137,7 @@
                     <ReadField
                         {...item.meta}
                         label={item.label}
-                        value={data[item.name]}
+                        value={values[item.name]}
                     />
                 {:else}
                     <div>

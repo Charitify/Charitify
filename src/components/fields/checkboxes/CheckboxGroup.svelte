@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { classnames, toCSSString } from '@utils'
+    import { classnames, toCSSString, _ } from '@utils'
     import Br from '@components/Br.svelte'
     import Checkbox from './Checkbox.svelte'
 
@@ -14,14 +14,15 @@
     export let disabled = false
     export let label = undefined
     export let options = undefined
-    export let errors = undefined
+    export let errors = {}
 
     $: styleProp = toCSSString({ ...style, textAlign: align })
-    $: classProp = classnames('checkbox-group', $$props.class, { disabled, error: errors })
+    $: classProp = classnames('checkbox-group', $$props.class, { disabled, error: !_.isEmpty(errors) })
 
-    function onChange({ detail: { e, name: currName, value: currValue, checked } }) {
-        let newValue = value
-        if (currValue) {
+    const onChange = ({ detail: { e, name: currName, value: currValue, checked } }) => {
+        let newValue = _.cloneDeep(value)
+
+        if (!currName && currValue) {
             if (!Array.isArray(newValue)) {
                 newValue = []
             }
@@ -34,8 +35,9 @@
             if (!newValue) {
                 newValue = {}
             }
-            newValue[currName] = checked
+            newValue[currName] = currValue || checked
         }
+
         dispatch('change', { e, name, value: newValue })
     }
 
@@ -63,7 +65,7 @@
         <Checkbox 
             {...checkbox}
             errors={errors[checkbox.name]}
-            checked={getChecked(checkbox.name, checkbox.value)}
+            checked={value && getChecked(checkbox.name, checkbox.value)}
             on:change={onChange}
         />
     {/each}

@@ -21,14 +21,14 @@
     export let required = undefined // undefined|required
     export let errors = undefined
 
-    $: idProp = id || name
+    $: idProp = id || name || value
     $: error = invalid || !!(errors || []).length
     $: styleProp = toCSSString({ ...style, textAlign: align })
     $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })
 
     function onChange(e) {
         const value = getValue(e)
-        dispatch('change', { e, name, value, checked })
+        dispatch('change', { e, name, value, checked: e.target.checked })
     }
 
     function getValue(e) {
@@ -56,7 +56,6 @@
             {disabled}
             {required}
             class="inp-inner"
-            bind:checked
             on:change={onChange}
     >
 

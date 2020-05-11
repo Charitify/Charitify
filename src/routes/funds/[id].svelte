@@ -17,7 +17,6 @@
         Share,
         Comments,
         Donators,
-        AnimalCard,
         InteractionIndicators,
     } from './components'
     import { 
@@ -25,6 +24,7 @@
         TopInfoView,
         DocumentsView,
         HowToHelpView,
+        AnimalCardView,
         DescriptionView,
     } from './view'
     import { 
@@ -32,6 +32,7 @@
         TopInfoEdit,
         DocumentsEdit,
         HowToHelpEdit,
+        AnimalCardEdit,
         DescriptionEdit,
     } from './edit'
 
@@ -191,7 +192,15 @@
     <Br size="60"/>
 
     <!-- Animal -->
-    <AnimalCard animal={animal}/>
+    <LazyToggle active={isEdit}>
+        <AnimalCardEdit data={animal} submit={onSubmit}/>
+    </LazyToggle>
+    <LazyToggle active={!isEdit} mounted class="full-container">
+        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+            <Br size="30"/>
+            <AnimalCardView {animal}/>
+        </EditArea>
+    </LazyToggle>
     <!-- END: Animal -->
 
     <Br size="60"/>

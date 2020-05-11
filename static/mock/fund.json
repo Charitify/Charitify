@@ -104,18 +104,9 @@
     ],
 
     "vaccination": [
-      {
-        "done": true,
-        "title": "Від бліх"
-      },
-      {
-        "done": true,
-        "title": "Від паразитів"
-      },
-      {
-        "done": false,
-        "title": "Від грибків"
-      }
+      "from-fungi",
+      "from-carnivorous-plague",
+      "from-adenovirus"
     ]
   },
 
