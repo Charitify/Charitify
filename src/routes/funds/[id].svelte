@@ -39,8 +39,15 @@
     const { page } = stores()
 
     let charityId = $page.params.id
-    let isEdit = false
     let isEditMode = false
+    let isEdit = {
+        topInfo: false,
+        description: false,
+        videos: false,
+        documents: false,
+        howToHelp: false,
+        animalCard: false,
+    }
 
     // Entities
     let charity
@@ -120,7 +127,14 @@
     })
 
     async function onSubmit(values) {
-        isEdit = !isEdit
+        isEdit = {
+            topInfo: false,
+            description: false,
+            videos: false,
+            documents: false,
+            howToHelp: false,
+            animalCard: false,
+        }
         console.log(values)
     }
 </script>
@@ -139,7 +153,7 @@
 
     <div>
         <Br size="30"/>
-        <Button size="small" is="info" on:click={() => (isEditMode = !isEditMode, isEdit = false)}>
+        <Button size="small" is="info" on:click={() => (isEditMode = !isEditMode)}>
             <span class="h3 font-secondary font-w-500 flex flex-align-center">
                 {isEditMode ? 'Зберегти' : 'Редагувати'}
                 <s></s>
@@ -153,12 +167,12 @@
     </div>
 
     <!-- Top info -->
-    <LazyToggle active={isEdit}>
+    <LazyToggle active={isEdit.topInfo}>
         <Br size="30"/>
         <TopInfoEdit submit={onSubmit}/>
     </LazyToggle>
-    <LazyToggle active={!isEdit} mounted class="full-container">
-        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+    <LazyToggle active={!isEdit.topInfo} mounted class="full-container">
+        <EditArea on:click={() => isEdit.topInfo = !isEdit.topInfo} off={!isEditMode}>    
             <Br size="30"/>
             <TopInfoView {cardTop} {carouselTop} {organization}/>
         </EditArea>
@@ -172,11 +186,11 @@
     <Br size="50"/>
 
     <!-- Description -->
-    <LazyToggle active={isEdit}>
+    <LazyToggle active={isEdit.description}>
         <DescriptionEdit submit={onSubmit} data={descriptionBlock}/>
     </LazyToggle>
-    <LazyToggle active={!isEdit} mounted class="full-container">
-        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+    <LazyToggle active={!isEdit.description} mounted class="full-container">
+        <EditArea on:click={() => isEdit.description = !isEdit.description} off={!isEditMode}>    
             <Br size="30"/>
             <DescriptionView {descriptionBlock}/>
         </EditArea>
@@ -192,11 +206,11 @@
     <Br size="60"/>
 
     <!-- Animal -->
-    <LazyToggle active={isEdit}>
+    <LazyToggle active={isEdit.animalCard}>
         <AnimalCardEdit data={animal} submit={onSubmit}/>
     </LazyToggle>
-    <LazyToggle active={!isEdit} mounted class="full-container">
-        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+    <LazyToggle active={!isEdit.animalCard} mounted class="full-container">
+        <EditArea on:click={() => isEdit.animalCard = !isEdit.animalCard} off={!isEditMode}>    
             <Br size="30"/>
             <AnimalCardView {animal}/>
         </EditArea>
@@ -210,11 +224,11 @@
     </LazyToggle>
 
     <!-- Documents -->
-    <LazyToggle active={isEdit}>
+    <LazyToggle active={isEdit.documents}>
         <DocumentsEdit submit={onSubmit} data={documents}/>
     </LazyToggle>
-    <LazyToggle active={!isEdit} mounted class="full-container">
-        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+    <LazyToggle active={!isEdit.documents} mounted class="full-container">
+        <EditArea on:click={() => isEdit.documents = !isEdit.documents} off={!isEditMode}>    
             <Br size="30"/>
             <DocumentsView items={documents}/>
         </EditArea>
@@ -224,11 +238,11 @@
     <Br size="60"/> 
     
     <!-- Videos -->
-    <LazyToggle active={isEdit}>
+    <LazyToggle active={isEdit.videos}>
         <VideosEdit submit={onSubmit} data={media}/>
     </LazyToggle>
-    <LazyToggle active={!isEdit} mounted class="full-container">
-        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+    <LazyToggle active={!isEdit.videos} mounted class="full-container">
+        <EditArea on:click={() => isEdit.videos = !isEdit.videos} off={!isEditMode}>    
             <Br size="30"/>
             <VideosView items={media}/>
         </EditArea>
@@ -238,11 +252,11 @@
     <Br size="60"/>
 
     <!-- How to help -->
-    <LazyToggle active={isEdit}>
+    <LazyToggle active={isEdit.howToHelp}>
         <HowToHelpEdit submit={onSubmit} data={howToHelp}/>
     </LazyToggle>
-    <LazyToggle active={!isEdit} mounted class="full-container">
-        <EditArea on:click={() => isEdit = !isEdit} off={!isEditMode}>    
+    <LazyToggle active={!isEdit.howToHelp} mounted class="full-container">
+        <EditArea on:click={() => isEdit.howToHelp = !isEdit.howToHelp} off={!isEditMode}>    
             <Br size="30"/>
             <HowToHelpView data={howToHelp}/>
         </EditArea>
