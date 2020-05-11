@@ -1384,6 +1384,1578 @@ function get(object, path, defaultValue) {
   return result === undefined ? defaultValue : result;
 }
 
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear() {
+  this.__data__ = new ListCache;
+  this.size = 0;
+}
+
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+
+  this.size = data.size;
+  return result;
+}
+
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  return this.__data__.get(key);
+}
+
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  return this.__data__.has(key);
+}
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet(key, value) {
+  var data = this.__data__;
+  if (data instanceof ListCache) {
+    var pairs = data.__data__;
+    if (!Map$1 || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+      pairs.push([key, value]);
+      this.size = ++data.size;
+      return this;
+    }
+    data = this.__data__ = new MapCache(pairs);
+  }
+  data.set(key, value);
+  this.size = data.size;
+  return this;
+}
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Stack(entries) {
+  var data = this.__data__ = new ListCache(entries);
+  this.size = data.size;
+}
+
+// Add methods to `Stack`.
+Stack.prototype.clear = stackClear;
+Stack.prototype['delete'] = stackDelete;
+Stack.prototype.get = stackGet;
+Stack.prototype.has = stackHas;
+Stack.prototype.set = stackSet;
+
+/** Built-in value references. */
+var Uint8Array = root.Uint8Array;
+
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+function arrayPush(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+
+  while (++index < length) {
+    array[offset + index] = values[index];
+  }
+  return array;
+}
+
+/**
+ * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+ * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @param {Function} symbolsFunc The function to get the symbols of `object`.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+  var result = keysFunc(object);
+  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+}
+
+/**
+ * A specialized version of `_.filter` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function arrayFilter(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+    if (predicate(value, index, array)) {
+      result[resIndex++] = value;
+    }
+  }
+  return result;
+}
+
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+function stubArray() {
+  return [];
+}
+
+/** Used for built-in method references. */
+var objectProto$5 = Object.prototype;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto$5.propertyIsEnumerable;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+  if (object == null) {
+    return [];
+  }
+  object = Object(object);
+  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+    return propertyIsEnumerable.call(object, symbol);
+  });
+};
+
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]';
+
+/**
+ * The base implementation of `_.isArguments`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ */
+function baseIsArguments(value) {
+  return isObjectLike(value) && baseGetTag(value) == argsTag;
+}
+
+/** Used for built-in method references. */
+var objectProto$6 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$4 = objectProto$6.hasOwnProperty;
+
+/** Built-in value references. */
+var propertyIsEnumerable$1 = objectProto$6.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike(value) && hasOwnProperty$4.call(value, 'callee') &&
+    !propertyIsEnumerable$1.call(value, 'callee');
+};
+
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Built-in value references. */
+var Buffer$1 = moduleExports ? root.Buffer : undefined;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeIsBuffer = Buffer$1 ? Buffer$1.isBuffer : undefined;
+
+/**
+ * Checks if `value` is a buffer.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+ * @example
+ *
+ * _.isBuffer(new Buffer(2));
+ * // => true
+ *
+ * _.isBuffer(new Uint8Array(2));
+ * // => false
+ */
+var isBuffer = nativeIsBuffer || stubFalse;
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  var type = typeof value;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+
+  return !!length &&
+    (type == 'number' ||
+      (type != 'symbol' && reIsUint.test(value))) &&
+        (value > -1 && value % 1 == 0 && value < length);
+}
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER$1 = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$1;
+}
+
+/** `Object#toString` result references. */
+var argsTag$1 = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag$1 = '[object Function]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag$1] = typedArrayTags[arrayTag] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag$1] =
+typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag] = false;
+
+/**
+ * The base implementation of `_.isTypedArray` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ */
+function baseIsTypedArray(value) {
+  return isObjectLike(value) &&
+    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+}
+
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+/** Detect free variable `exports`. */
+var freeExports$1 = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule$1 = freeExports$1 && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports$1 = freeModule$1 && freeModule$1.exports === freeExports$1;
+
+/** Detect free variable `process` from Node.js. */
+var freeProcess = moduleExports$1 && freeGlobal.process;
+
+/** Used to access faster Node.js helpers. */
+var nodeUtil = (function() {
+  try {
+    // Use `util.types` for Node.js 10+.
+    var types = freeModule$1 && freeModule$1.require && freeModule$1.require('util').types;
+
+    if (types) {
+      return types;
+    }
+
+    // Legacy `process.binding('util')` for Node.js < 10.
+    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+  } catch (e) {}
+}());
+
+/* Node.js helper references. */
+var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+/** Used for built-in method references. */
+var objectProto$7 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$5 = objectProto$7.hasOwnProperty;
+
+/**
+ * Creates an array of the enumerable property names of the array-like `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @param {boolean} inherited Specify returning inherited property names.
+ * @returns {Array} Returns the array of property names.
+ */
+function arrayLikeKeys(value, inherited) {
+  var isArr = isArray(value),
+      isArg = !isArr && isArguments(value),
+      isBuff = !isArr && !isArg && isBuffer(value),
+      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+      skipIndexes = isArr || isArg || isBuff || isType,
+      result = skipIndexes ? baseTimes(value.length, String) : [],
+      length = result.length;
+
+  for (var key in value) {
+    if ((inherited || hasOwnProperty$5.call(value, key)) &&
+        !(skipIndexes && (
+           // Safari 9 has enumerable `arguments.length` in strict mode.
+           key == 'length' ||
+           // Node.js 0.10 has enumerable non-index properties on buffers.
+           (isBuff && (key == 'offset' || key == 'parent')) ||
+           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+           // Skip index properties.
+           isIndex(key, length)
+        ))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+/** Used for built-in method references. */
+var objectProto$8 = Object.prototype;
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$8;
+
+  return value === proto;
+}
+
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeKeys = overArg(Object.keys, Object);
+
+/** Used for built-in method references. */
+var objectProto$9 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$6 = objectProto$9.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  if (!isPrototype(object)) {
+    return nativeKeys(object);
+  }
+  var result = [];
+  for (var key in Object(object)) {
+    if (hasOwnProperty$6.call(object, key) && key != 'constructor') {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+}
+
+/**
+ * Creates an array of own enumerable property names and symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeys(object) {
+  return baseGetAllKeys(object, keys, getSymbols);
+}
+
+/* Built-in method references that are verified to be native. */
+var DataView = getNative(root, 'DataView');
+
+/* Built-in method references that are verified to be native. */
+var Promise$1 = getNative(root, 'Promise');
+
+/* Built-in method references that are verified to be native. */
+var Set$1 = getNative(root, 'Set');
+
+/* Built-in method references that are verified to be native. */
+var WeakMap = getNative(root, 'WeakMap');
+
+/** `Object#toString` result references. */
+var mapTag$1 = '[object Map]',
+    objectTag$1 = '[object Object]',
+    promiseTag = '[object Promise]',
+    setTag$1 = '[object Set]',
+    weakMapTag$1 = '[object WeakMap]';
+
+var dataViewTag$1 = '[object DataView]';
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = toSource(DataView),
+    mapCtorString = toSource(Map$1),
+    promiseCtorString = toSource(Promise$1),
+    setCtorString = toSource(Set$1),
+    weakMapCtorString = toSource(WeakMap);
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+var getTag = baseGetTag;
+
+// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
+    (Map$1 && getTag(new Map$1) != mapTag$1) ||
+    (Promise$1 && getTag(Promise$1.resolve()) != promiseTag) ||
+    (Set$1 && getTag(new Set$1) != setTag$1) ||
+    (WeakMap && getTag(new WeakMap) != weakMapTag$1)) {
+  getTag = function(value) {
+    var result = baseGetTag(value),
+        Ctor = result == objectTag$1 ? value.constructor : undefined,
+        ctorString = Ctor ? toSource(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag$1;
+        case mapCtorString: return mapTag$1;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag$1;
+        case weakMapCtorString: return weakMapTag$1;
+      }
+    }
+    return result;
+  };
+}
+
+var getTag$1 = getTag;
+
+/** `Object#toString` result references. */
+var mapTag$2 = '[object Map]',
+    setTag$2 = '[object Set]';
+
+/** Used for built-in method references. */
+var objectProto$a = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$7 = objectProto$a.hasOwnProperty;
+
+/**
+ * Checks if `value` is an empty object, collection, map, or set.
+ *
+ * Objects are considered empty if they have no own enumerable string keyed
+ * properties.
+ *
+ * Array-like values such as `arguments` objects, arrays, buffers, strings, or
+ * jQuery-like collections are considered empty if they have a `length` of `0`.
+ * Similarly, maps and sets are considered empty if they have a `size` of `0`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is empty, else `false`.
+ * @example
+ *
+ * _.isEmpty(null);
+ * // => true
+ *
+ * _.isEmpty(true);
+ * // => true
+ *
+ * _.isEmpty(1);
+ * // => true
+ *
+ * _.isEmpty([1, 2, 3]);
+ * // => false
+ *
+ * _.isEmpty({ 'a': 1 });
+ * // => false
+ */
+function isEmpty(value) {
+  if (value == null) {
+    return true;
+  }
+  if (isArrayLike(value) &&
+      (isArray(value) || typeof value == 'string' || typeof value.splice == 'function' ||
+        isBuffer(value) || isTypedArray(value) || isArguments(value))) {
+    return !value.length;
+  }
+  var tag = getTag$1(value);
+  if (tag == mapTag$2 || tag == setTag$2) {
+    return !value.size;
+  }
+  if (isPrototype(value)) {
+    return !baseKeys(value).length;
+  }
+  for (var key in value) {
+    if (hasOwnProperty$7.call(value, key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * A specialized version of `_.forEach` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns `array`.
+ */
+function arrayEach(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (iteratee(array[index], index, array) === false) {
+      break;
+    }
+  }
+  return array;
+}
+
+var defineProperty = (function() {
+  try {
+    var func = getNative(Object, 'defineProperty');
+    func({}, '', {});
+    return func;
+  } catch (e) {}
+}());
+
+/**
+ * The base implementation of `assignValue` and `assignMergeValue` without
+ * value checks.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function baseAssignValue(object, key, value) {
+  if (key == '__proto__' && defineProperty) {
+    defineProperty(object, key, {
+      'configurable': true,
+      'enumerable': true,
+      'value': value,
+      'writable': true
+    });
+  } else {
+    object[key] = value;
+  }
+}
+
+/** Used for built-in method references. */
+var objectProto$b = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
+
+/**
+ * Assigns `value` to `key` of `object` if the existing value is not equivalent
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function assignValue(object, key, value) {
+  var objValue = object[key];
+  if (!(hasOwnProperty$8.call(object, key) && eq(objValue, value)) ||
+      (value === undefined && !(key in object))) {
+    baseAssignValue(object, key, value);
+  }
+}
+
+/**
+ * Copies properties of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy properties from.
+ * @param {Array} props The property identifiers to copy.
+ * @param {Object} [object={}] The object to copy properties to.
+ * @param {Function} [customizer] The function to customize copied values.
+ * @returns {Object} Returns `object`.
+ */
+function copyObject(source, props, object, customizer) {
+  var isNew = !object;
+  object || (object = {});
+
+  var index = -1,
+      length = props.length;
+
+  while (++index < length) {
+    var key = props[index];
+
+    var newValue = customizer
+      ? customizer(object[key], source[key], key, object, source)
+      : undefined;
+
+    if (newValue === undefined) {
+      newValue = source[key];
+    }
+    if (isNew) {
+      baseAssignValue(object, key, newValue);
+    } else {
+      assignValue(object, key, newValue);
+    }
+  }
+  return object;
+}
+
+/**
+ * The base implementation of `_.assign` without support for multiple sources
+ * or `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssign(object, source) {
+  return object && copyObject(source, keys(source), object);
+}
+
+/**
+ * This function is like
+ * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * except that it includes inherited enumerable properties.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function nativeKeysIn(object) {
+  var result = [];
+  if (object != null) {
+    for (var key in Object(object)) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+/** Used for built-in method references. */
+var objectProto$c = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeysIn(object) {
+  if (!isObject(object)) {
+    return nativeKeysIn(object);
+  }
+  var isProto = isPrototype(object),
+      result = [];
+
+  for (var key in object) {
+    if (!(key == 'constructor' && (isProto || !hasOwnProperty$9.call(object, key)))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+/**
+ * Creates an array of the own and inherited enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keysIn(new Foo);
+ * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+ */
+function keysIn$1(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
+}
+
+/**
+ * The base implementation of `_.assignIn` without support for multiple sources
+ * or `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssignIn(object, source) {
+  return object && copyObject(source, keysIn$1(source), object);
+}
+
+/** Detect free variable `exports`. */
+var freeExports$2 = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule$2 = freeExports$2 && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports$2 = freeModule$2 && freeModule$2.exports === freeExports$2;
+
+/** Built-in value references. */
+var Buffer$2 = moduleExports$2 ? root.Buffer : undefined,
+    allocUnsafe = Buffer$2 ? Buffer$2.allocUnsafe : undefined;
+
+/**
+ * Creates a clone of  `buffer`.
+ *
+ * @private
+ * @param {Buffer} buffer The buffer to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Buffer} Returns the cloned buffer.
+ */
+function cloneBuffer(buffer, isDeep) {
+  if (isDeep) {
+    return buffer.slice();
+  }
+  var length = buffer.length,
+      result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
+
+  buffer.copy(result);
+  return result;
+}
+
+/**
+ * Copies the values of `source` to `array`.
+ *
+ * @private
+ * @param {Array} source The array to copy values from.
+ * @param {Array} [array=[]] The array to copy values to.
+ * @returns {Array} Returns `array`.
+ */
+function copyArray(source, array) {
+  var index = -1,
+      length = source.length;
+
+  array || (array = Array(length));
+  while (++index < length) {
+    array[index] = source[index];
+  }
+  return array;
+}
+
+/**
+ * Copies own symbols of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy symbols from.
+ * @param {Object} [object={}] The object to copy symbols to.
+ * @returns {Object} Returns `object`.
+ */
+function copySymbols(source, object) {
+  return copyObject(source, getSymbols(source), object);
+}
+
+/** Built-in value references. */
+var getPrototype = overArg(Object.getPrototypeOf, Object);
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols$1 = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own and inherited enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbolsIn = !nativeGetSymbols$1 ? stubArray : function(object) {
+  var result = [];
+  while (object) {
+    arrayPush(result, getSymbols(object));
+    object = getPrototype(object);
+  }
+  return result;
+};
+
+/**
+ * Copies own and inherited symbols of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy symbols from.
+ * @param {Object} [object={}] The object to copy symbols to.
+ * @returns {Object} Returns `object`.
+ */
+function copySymbolsIn(source, object) {
+  return copyObject(source, getSymbolsIn(source), object);
+}
+
+/**
+ * Creates an array of own and inherited enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeysIn(object) {
+  return baseGetAllKeys(object, keysIn$1, getSymbolsIn);
+}
+
+/** Used for built-in method references. */
+var objectProto$d = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$a = objectProto$d.hasOwnProperty;
+
+/**
+ * Initializes an array clone.
+ *
+ * @private
+ * @param {Array} array The array to clone.
+ * @returns {Array} Returns the initialized clone.
+ */
+function initCloneArray(array) {
+  var length = array.length,
+      result = new array.constructor(length);
+
+  // Add properties assigned by `RegExp#exec`.
+  if (length && typeof array[0] == 'string' && hasOwnProperty$a.call(array, 'index')) {
+    result.index = array.index;
+    result.input = array.input;
+  }
+  return result;
+}
+
+/**
+ * Creates a clone of `arrayBuffer`.
+ *
+ * @private
+ * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
+ * @returns {ArrayBuffer} Returns the cloned array buffer.
+ */
+function cloneArrayBuffer(arrayBuffer) {
+  var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+  new Uint8Array(result).set(new Uint8Array(arrayBuffer));
+  return result;
+}
+
+/**
+ * Creates a clone of `dataView`.
+ *
+ * @private
+ * @param {Object} dataView The data view to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned data view.
+ */
+function cloneDataView(dataView, isDeep) {
+  var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
+  return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
+}
+
+/** Used to match `RegExp` flags from their coerced string values. */
+var reFlags = /\w*$/;
+
+/**
+ * Creates a clone of `regexp`.
+ *
+ * @private
+ * @param {Object} regexp The regexp to clone.
+ * @returns {Object} Returns the cloned regexp.
+ */
+function cloneRegExp(regexp) {
+  var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
+  result.lastIndex = regexp.lastIndex;
+  return result;
+}
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto$1 = Symbol$1 ? Symbol$1.prototype : undefined,
+    symbolValueOf = symbolProto$1 ? symbolProto$1.valueOf : undefined;
+
+/**
+ * Creates a clone of the `symbol` object.
+ *
+ * @private
+ * @param {Object} symbol The symbol object to clone.
+ * @returns {Object} Returns the cloned symbol object.
+ */
+function cloneSymbol(symbol) {
+  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
+}
+
+/**
+ * Creates a clone of `typedArray`.
+ *
+ * @private
+ * @param {Object} typedArray The typed array to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned typed array.
+ */
+function cloneTypedArray(typedArray, isDeep) {
+  var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+  return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
+}
+
+/** `Object#toString` result references. */
+var boolTag$1 = '[object Boolean]',
+    dateTag$1 = '[object Date]',
+    mapTag$3 = '[object Map]',
+    numberTag$1 = '[object Number]',
+    regexpTag$1 = '[object RegExp]',
+    setTag$3 = '[object Set]',
+    stringTag$1 = '[object String]',
+    symbolTag$1 = '[object Symbol]';
+
+var arrayBufferTag$1 = '[object ArrayBuffer]',
+    dataViewTag$2 = '[object DataView]',
+    float32Tag$1 = '[object Float32Array]',
+    float64Tag$1 = '[object Float64Array]',
+    int8Tag$1 = '[object Int8Array]',
+    int16Tag$1 = '[object Int16Array]',
+    int32Tag$1 = '[object Int32Array]',
+    uint8Tag$1 = '[object Uint8Array]',
+    uint8ClampedTag$1 = '[object Uint8ClampedArray]',
+    uint16Tag$1 = '[object Uint16Array]',
+    uint32Tag$1 = '[object Uint32Array]';
+
+/**
+ * Initializes an object clone based on its `toStringTag`.
+ *
+ * **Note:** This function only supports cloning values with tags of
+ * `Boolean`, `Date`, `Error`, `Map`, `Number`, `RegExp`, `Set`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @param {string} tag The `toStringTag` of the object to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneByTag(object, tag, isDeep) {
+  var Ctor = object.constructor;
+  switch (tag) {
+    case arrayBufferTag$1:
+      return cloneArrayBuffer(object);
+
+    case boolTag$1:
+    case dateTag$1:
+      return new Ctor(+object);
+
+    case dataViewTag$2:
+      return cloneDataView(object, isDeep);
+
+    case float32Tag$1: case float64Tag$1:
+    case int8Tag$1: case int16Tag$1: case int32Tag$1:
+    case uint8Tag$1: case uint8ClampedTag$1: case uint16Tag$1: case uint32Tag$1:
+      return cloneTypedArray(object, isDeep);
+
+    case mapTag$3:
+      return new Ctor;
+
+    case numberTag$1:
+    case stringTag$1:
+      return new Ctor(object);
+
+    case regexpTag$1:
+      return cloneRegExp(object);
+
+    case setTag$3:
+      return new Ctor;
+
+    case symbolTag$1:
+      return cloneSymbol(object);
+  }
+}
+
+/** Built-in value references. */
+var objectCreate = Object.create;
+
+/**
+ * The base implementation of `_.create` without support for assigning
+ * properties to the created object.
+ *
+ * @private
+ * @param {Object} proto The object to inherit from.
+ * @returns {Object} Returns the new object.
+ */
+var baseCreate = (function() {
+  function object() {}
+  return function(proto) {
+    if (!isObject(proto)) {
+      return {};
+    }
+    if (objectCreate) {
+      return objectCreate(proto);
+    }
+    object.prototype = proto;
+    var result = new object;
+    object.prototype = undefined;
+    return result;
+  };
+}());
+
+/**
+ * Initializes an object clone.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneObject(object) {
+  return (typeof object.constructor == 'function' && !isPrototype(object))
+    ? baseCreate(getPrototype(object))
+    : {};
+}
+
+/** `Object#toString` result references. */
+var mapTag$4 = '[object Map]';
+
+/**
+ * The base implementation of `_.isMap` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a map, else `false`.
+ */
+function baseIsMap(value) {
+  return isObjectLike(value) && getTag$1(value) == mapTag$4;
+}
+
+/* Node.js helper references. */
+var nodeIsMap = nodeUtil && nodeUtil.isMap;
+
+/**
+ * Checks if `value` is classified as a `Map` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a map, else `false`.
+ * @example
+ *
+ * _.isMap(new Map);
+ * // => true
+ *
+ * _.isMap(new WeakMap);
+ * // => false
+ */
+var isMap = nodeIsMap ? baseUnary(nodeIsMap) : baseIsMap;
+
+/** `Object#toString` result references. */
+var setTag$4 = '[object Set]';
+
+/**
+ * The base implementation of `_.isSet` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a set, else `false`.
+ */
+function baseIsSet(value) {
+  return isObjectLike(value) && getTag$1(value) == setTag$4;
+}
+
+/* Node.js helper references. */
+var nodeIsSet = nodeUtil && nodeUtil.isSet;
+
+/**
+ * Checks if `value` is classified as a `Set` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a set, else `false`.
+ * @example
+ *
+ * _.isSet(new Set);
+ * // => true
+ *
+ * _.isSet(new WeakSet);
+ * // => false
+ */
+var isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG = 1,
+    CLONE_FLAT_FLAG = 2,
+    CLONE_SYMBOLS_FLAG = 4;
+
+/** `Object#toString` result references. */
+var argsTag$2 = '[object Arguments]',
+    arrayTag$1 = '[object Array]',
+    boolTag$2 = '[object Boolean]',
+    dateTag$2 = '[object Date]',
+    errorTag$1 = '[object Error]',
+    funcTag$2 = '[object Function]',
+    genTag$1 = '[object GeneratorFunction]',
+    mapTag$5 = '[object Map]',
+    numberTag$2 = '[object Number]',
+    objectTag$2 = '[object Object]',
+    regexpTag$2 = '[object RegExp]',
+    setTag$5 = '[object Set]',
+    stringTag$2 = '[object String]',
+    symbolTag$2 = '[object Symbol]',
+    weakMapTag$2 = '[object WeakMap]';
+
+var arrayBufferTag$2 = '[object ArrayBuffer]',
+    dataViewTag$3 = '[object DataView]',
+    float32Tag$2 = '[object Float32Array]',
+    float64Tag$2 = '[object Float64Array]',
+    int8Tag$2 = '[object Int8Array]',
+    int16Tag$2 = '[object Int16Array]',
+    int32Tag$2 = '[object Int32Array]',
+    uint8Tag$2 = '[object Uint8Array]',
+    uint8ClampedTag$2 = '[object Uint8ClampedArray]',
+    uint16Tag$2 = '[object Uint16Array]',
+    uint32Tag$2 = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values supported by `_.clone`. */
+var cloneableTags = {};
+cloneableTags[argsTag$2] = cloneableTags[arrayTag$1] =
+cloneableTags[arrayBufferTag$2] = cloneableTags[dataViewTag$3] =
+cloneableTags[boolTag$2] = cloneableTags[dateTag$2] =
+cloneableTags[float32Tag$2] = cloneableTags[float64Tag$2] =
+cloneableTags[int8Tag$2] = cloneableTags[int16Tag$2] =
+cloneableTags[int32Tag$2] = cloneableTags[mapTag$5] =
+cloneableTags[numberTag$2] = cloneableTags[objectTag$2] =
+cloneableTags[regexpTag$2] = cloneableTags[setTag$5] =
+cloneableTags[stringTag$2] = cloneableTags[symbolTag$2] =
+cloneableTags[uint8Tag$2] = cloneableTags[uint8ClampedTag$2] =
+cloneableTags[uint16Tag$2] = cloneableTags[uint32Tag$2] = true;
+cloneableTags[errorTag$1] = cloneableTags[funcTag$2] =
+cloneableTags[weakMapTag$2] = false;
+
+/**
+ * The base implementation of `_.clone` and `_.cloneDeep` which tracks
+ * traversed objects.
+ *
+ * @private
+ * @param {*} value The value to clone.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Deep clone
+ *  2 - Flatten inherited properties
+ *  4 - Clone symbols
+ * @param {Function} [customizer] The function to customize cloning.
+ * @param {string} [key] The key of `value`.
+ * @param {Object} [object] The parent object of `value`.
+ * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
+ * @returns {*} Returns the cloned value.
+ */
+function baseClone(value, bitmask, customizer, key, object, stack) {
+  var result,
+      isDeep = bitmask & CLONE_DEEP_FLAG,
+      isFlat = bitmask & CLONE_FLAT_FLAG,
+      isFull = bitmask & CLONE_SYMBOLS_FLAG;
+
+  if (customizer) {
+    result = object ? customizer(value, key, object, stack) : customizer(value);
+  }
+  if (result !== undefined) {
+    return result;
+  }
+  if (!isObject(value)) {
+    return value;
+  }
+  var isArr = isArray(value);
+  if (isArr) {
+    result = initCloneArray(value);
+    if (!isDeep) {
+      return copyArray(value, result);
+    }
+  } else {
+    var tag = getTag$1(value),
+        isFunc = tag == funcTag$2 || tag == genTag$1;
+
+    if (isBuffer(value)) {
+      return cloneBuffer(value, isDeep);
+    }
+    if (tag == objectTag$2 || tag == argsTag$2 || (isFunc && !object)) {
+      result = (isFlat || isFunc) ? {} : initCloneObject(value);
+      if (!isDeep) {
+        return isFlat
+          ? copySymbolsIn(value, baseAssignIn(result, value))
+          : copySymbols(value, baseAssign(result, value));
+      }
+    } else {
+      if (!cloneableTags[tag]) {
+        return object ? value : {};
+      }
+      result = initCloneByTag(value, tag, isDeep);
+    }
+  }
+  // Check for circular references and return its corresponding clone.
+  stack || (stack = new Stack);
+  var stacked = stack.get(value);
+  if (stacked) {
+    return stacked;
+  }
+  stack.set(value, result);
+
+  if (isSet(value)) {
+    value.forEach(function(subValue) {
+      result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
+    });
+  } else if (isMap(value)) {
+    value.forEach(function(subValue, key) {
+      result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
+    });
+  }
+
+  var keysFunc = isFull
+    ? (isFlat ? getAllKeysIn : getAllKeys)
+    : (isFlat ? keysIn : keys);
+
+  var props = isArr ? undefined : keysFunc(value);
+  arrayEach(props || value, function(subValue, key) {
+    if (props) {
+      key = subValue;
+      subValue = value[key];
+    }
+    // Recursively populate clone (susceptible to call stack limits).
+    assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
+  });
+  return result;
+}
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG$1 = 1,
+    CLONE_SYMBOLS_FLAG$1 = 4;
+
+/**
+ * This method is like `_.clone` except that it recursively clones `value`.
+ *
+ * @static
+ * @memberOf _
+ * @since 1.0.0
+ * @category Lang
+ * @param {*} value The value to recursively clone.
+ * @returns {*} Returns the deep cloned value.
+ * @see _.clone
+ * @example
+ *
+ * var objects = [{ 'a': 1 }, { 'b': 2 }];
+ *
+ * var deep = _.cloneDeep(objects);
+ * console.log(deep[0] === objects[0]);
+ * // => false
+ */
+function cloneDeep(value) {
+  return baseClone(value, CLONE_DEEP_FLAG$1 | CLONE_SYMBOLS_FLAG$1);
+}
+
 const DURATION = 500;
 let scroll;
 let scrollCheckInterval;
@@ -3576,11 +5148,129 @@ const Select = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 </div>`;
 });
 
-/* src/components/fields/Checkbox.svelte generated by Svelte v3.18.1 */
+/* src/components/fields/ReadField.svelte generated by Svelte v3.18.1 */
+
+const ReadField = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { value = "" } = $$props;
+	let { style = {} } = $$props;
+	let { id = undefined } = $$props;
+	let { label = undefined } = $$props;
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	let styleProp = toCSSString({ ...style });
+	let classProp = classnames("block full-width text-left", $$props.class);
+
+	return `<div${add_attribute("id", id, 0)}${add_attribute("class", classProp, 0)}${add_attribute("style", styleProp, 0)}>
+    ${label
+	? `<h2 class="${"block full-width"}">${escape(label)}</h2>
+        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+	: ``}
+    <p class="${"block full-width"}">${escape(value || "—")}</p>
+</div>`;
+});
+
+/* src/components/fields/RadioRect.svelte generated by Svelte v3.18.1 */
+
+const RadioRect = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { name } = $$props;
+	let { style = {} } = $$props;
+	let { id = undefined } = $$props;
+	let { form = undefined } = $$props; // Specifies the form the <input> element belongs to
+	let { label = undefined } = $$props;
+	let { align = undefined } = $$props;
+	let { options = undefined } = $$props;
+	let { invalid = undefined } = $$props;
+	let { disabled = undefined } = $$props;
+	let { required = undefined } = $$props; // undefined|required
+	let { errors = undefined } = $$props;
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.align === void 0 && $$bindings.align && align !== void 0) $$bindings.align(align);
+	if ($$props.options === void 0 && $$bindings.options && options !== void 0) $$bindings.options(options);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	let idProp = id || name;
+	let error = invalid || !!(errors || []).length;
+	let styleProp = toCSSString({ ...style, textAlign: align });
+	let classProp = classnames("radio-rect", $$props.class, { disabled, required, error });
+
+	return `<div${add_attribute("class", classProp, 0)}${add_attribute("style", styleProp, 0)}>
+    ${label
+	? `<h2 class="${"text-left"}">
+            ${escape(label)}
+            ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+        </h2>`
+	: ``}
+
+    <ul style="${"margin: -5px"}" class="${"flex flex-wrap"}">
+        ${each(options, radio => `<li style="${"padding: 5px"}">
+                ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			htmlFor: idProp,
+			is: "info",
+			auto: true,
+			style: "padding: 10px"
+		},
+		{},
+		{
+			default: () => `
+                    <input${add_attribute("form", form, 0)} hidden type="${"radio"}"${add_attribute("id", idProp, 0)}${add_attribute("value", radio.value, 0)}>
+                    ${radio.preIcon
+			? `${validate_component(Icon, "Icon").$$render(
+					$$result,
+					{
+						type: radio.preIcon,
+						size: "medium",
+						is: "light"
+					},
+					{},
+					{}
+				)}
+                        <s></s>`
+			: ``}
+                    ${$$slots.default
+			? $$slots.default({ item: radio })
+			: `
+                        <span class="${"font-w-500 h3"}" style="${"min-width: var(--font-line-height-h3)"}">
+                            ${escape(radio.label)}
+                        </span>
+                    `}
+                    ${radio.postIcon
+			? `<s></s>
+                        ${validate_component(Icon, "Icon").$$render(
+					$$result,
+					{
+						type: radio.postIcon,
+						size: "medium",
+						is: "light"
+					},
+					{},
+					{}
+				)}`
+			: ``}
+                `
+		}
+	)}
+            </li>`)}
+    </ul>
+
+</div>`;
+});
+
+/* src/components/fields/checkboxes/Checkbox.svelte generated by Svelte v3.18.1 */
 
 const css$j = {
-	code: ".checkbox.svelte-ubkon.svelte-ubkon{display:block}.checkbox.svelte-ubkon input.svelte-ubkon{-webkit-appearance:checkbox;-moz-appearance:checkbox;appearance:checkbox}.checkbox.svelte-ubkon .inp-box-wrap.svelte-ubkon{position:relative;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex}.checkbox .inp-inner:checked+.inp-label.svelte-ubkon.svelte-ubkon .checked{display:block}.checkbox.svelte-ubkon .inp-label.svelte-ubkon{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start}.checkbox.svelte-ubkon .inp-label.svelte-ubkon .checked{display:none;position:absolute;top:0;left:0;width:100%;height:100%}",
-	map: "{\"version\":3,\"file\":\"Checkbox.svelte\",\"sources\":[\"Checkbox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let style = {}\\n    export let checked = undefined\\n    export let value = undefined\\n    export let id = undefined\\n    export let align = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let text = undefined\\n    export let invalid = undefined\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let required = undefined // undefined|required\\n    export let errors = undefined\\n\\n    $: idProp = id || name\\n    $: error = invalid || !!(errors || []).length\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })\\n\\n    function onChange(e) {\\n        const value = getValue(e)\\n        dispatch('change', { e, name, value, checked })\\n    }\\n\\n    function getValue(e) {\\n        return e.target.value\\n    }\\n</script>\\n\\n<div class={classProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">\\n            { label }\\n            <Br size=\\\"10\\\"/>\\n        </h2>\\n    {/if}\\n\\n    <input\\n            hidden\\n            type=\\\"checkbox\\\"\\n            id={idProp}\\n            {name}\\n            {form}\\n            {align}\\n            {value}\\n            {checked}\\n            {disabled}\\n            {required}\\n            class=\\\"inp-inner\\\"\\n            bind:checked\\n            on:change={onChange}\\n    >\\n\\n    <label for={idProp} class=\\\"inp-label\\\">\\n        <span class=\\\"inp-box-wrap\\\">\\n            <Icon type=\\\"box\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"unchecked\\\"/>\\n            <Icon type=\\\"box-checked\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"checked\\\"/>\\n        </span>\\n        {#if text}\\n            <s></s>\\n            <s></s>\\n            <h3 class=\\\"font-w-500 text-left\\\" style=\\\"padding-top: 4px\\\">{ text }</h3>\\n        {/if}\\n    </label>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .checkbox {\\n        display: block;\\n    }\\n\\n    .checkbox input {\\n        -webkit-appearance: checkbox;\\n           -moz-appearance: checkbox;\\n                appearance: checkbox;\\n    }\\n\\n    .checkbox .inp-box-wrap {\\n        position: relative;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n    }\\n    .checkbox .inp-inner:checked + .inp-label :global(.checked) {\\n        display: block;\\n    }\\n\\n    .checkbox .inp-label {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: start;\\n            -ms-flex-align: start;\\n                align-items: flex-start;\\n    }\\n\\n    .checkbox .inp-label :global(.checked) {\\n        display: none;\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLDRCQUFvQjtXQUFwQix5QkFBb0I7Z0JBQXBCLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQiwyQkFBb0I7UUFBcEIsMkJBQW9CO1FBQXBCLG9CQUFvQjtJQUN4QjtJQUNBO1FBQ0ksY0FBYztJQUNsQjs7SUFFQTtRQUNJLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2Isd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO0lBQzNCOztJQUVBO1FBQ0ksYUFBYTtRQUNiLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sT0FBTztRQUNQLFdBQVc7UUFDWCxZQUFZO0lBQ2hCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy9DaGVja2JveC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICAuY2hlY2tib3gge1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggaW5wdXQge1xuICAgICAgICBhcHBlYXJhbmNlOiBjaGVja2JveDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1ib3gtd3JhcCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgfVxuICAgIC5jaGVja2JveCAuaW5wLWlubmVyOmNoZWNrZWQgKyAuaW5wLWxhYmVsIDpnbG9iYWwoLmNoZWNrZWQpIHtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtbGFiZWwge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogZmxleC1zdGFydDtcbiAgICB9XG5cbiAgICAuY2hlY2tib3ggLmlucC1sYWJlbCA6Z2xvYmFsKC5jaGVja2VkKSB7XG4gICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAkFI,SAAS,0BAAC,CAAC,AACP,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,KAAK,aAAC,CAAC,AACb,kBAAkB,CAAE,QAAQ,CACzB,eAAe,CAAE,QAAQ,CACpB,UAAU,CAAE,QAAQ,AAChC,CAAC,AAED,sBAAS,CAAC,aAAa,aAAC,CAAC,AACrB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,AACxB,CAAC,AACD,SAAS,CAAC,UAAU,QAAQ,CAAG,oCAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACzD,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,sBAAS,CAAC,UAAU,aAAC,CAAC,AAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,KAAK,CACpB,cAAc,CAAE,KAAK,CACjB,WAAW,CAAE,UAAU,AACnC,CAAC,AAED,sBAAS,CAAC,uBAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACpC,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+	code: ".checkbox.svelte-e12p58.svelte-e12p58{display:block}.checkbox.svelte-e12p58 input.svelte-e12p58{-webkit-appearance:checkbox;-moz-appearance:checkbox;appearance:checkbox}.checkbox.svelte-e12p58 .inp-box-wrap.svelte-e12p58{position:relative;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex}.checkbox .inp-inner:checked+.inp-label.svelte-e12p58.svelte-e12p58 .checked{display:block}.checkbox.svelte-e12p58 .inp-label.svelte-e12p58{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start}.checkbox.svelte-e12p58 .inp-label.svelte-e12p58 .checked{display:none;position:absolute;top:0;left:0;width:100%;height:100%}",
+	map: "{\"version\":3,\"file\":\"Checkbox.svelte\",\"sources\":[\"Checkbox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let style = {}\\n    export let checked = undefined\\n    export let value = undefined\\n    export let id = undefined\\n    export let align = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let text = undefined\\n    export let invalid = undefined\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let required = undefined // undefined|required\\n    export let errors = undefined\\n\\n    $: idProp = id || name || value\\n    $: error = invalid || !!(errors || []).length\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })\\n\\n    function onChange(e) {\\n        const value = getValue(e)\\n        dispatch('change', { e, name, value, checked: e.target.checked })\\n    }\\n\\n    function getValue(e) {\\n        return e.target.value\\n    }\\n</script>\\n\\n<div class={classProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">\\n            { label }\\n            <Br size=\\\"10\\\"/>\\n        </h2>\\n    {/if}\\n\\n    <input\\n            hidden\\n            type=\\\"checkbox\\\"\\n            id={idProp}\\n            {name}\\n            {form}\\n            {align}\\n            {value}\\n            {checked}\\n            {disabled}\\n            {required}\\n            class=\\\"inp-inner\\\"\\n            on:change={onChange}\\n    >\\n\\n    <label for={idProp} class=\\\"inp-label\\\">\\n        <span class=\\\"inp-box-wrap\\\">\\n            <Icon type=\\\"box\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"unchecked\\\"/>\\n            <Icon type=\\\"box-checked\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"checked\\\"/>\\n        </span>\\n        {#if text}\\n            <s></s>\\n            <s></s>\\n            <h3 class=\\\"font-w-500 text-left\\\" style=\\\"padding-top: 4px\\\">{ text }</h3>\\n        {/if}\\n    </label>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .checkbox {\\n        display: block;\\n    }\\n\\n    .checkbox input {\\n        -webkit-appearance: checkbox;\\n           -moz-appearance: checkbox;\\n                appearance: checkbox;\\n    }\\n\\n    .checkbox .inp-box-wrap {\\n        position: relative;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n    }\\n    .checkbox .inp-inner:checked + .inp-label :global(.checked) {\\n        display: block;\\n    }\\n\\n    .checkbox .inp-label {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: start;\\n            -ms-flex-align: start;\\n                align-items: flex-start;\\n    }\\n\\n    .checkbox .inp-label :global(.checked) {\\n        display: none;\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9jaGVja2JveGVzL0NoZWNrYm94LnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksNEJBQW9CO1dBQXBCLHlCQUFvQjtnQkFBcEIsb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO0lBQ3hCO0lBQ0E7UUFDSSxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7SUFDM0I7O0lBRUE7UUFDSSxhQUFhO1FBQ2Isa0JBQWtCO1FBQ2xCLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL2NoZWNrYm94ZXMvQ2hlY2tib3guc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmNoZWNrYm94IHtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IGlucHV0IHtcbiAgICAgICAgYXBwZWFyYW5jZTogY2hlY2tib3g7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtYm94LXdyYXAge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgIH1cbiAgICAuY2hlY2tib3ggLmlucC1pbm5lcjpjaGVja2VkICsgLmlucC1sYWJlbCA6Z2xvYmFsKC5jaGVja2VkKSB7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIH1cblxuICAgIC5jaGVja2JveCAuaW5wLWxhYmVsIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGZsZXgtc3RhcnQ7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtbGFiZWwgOmdsb2JhbCguY2hlY2tlZCkge1xuICAgICAgICBkaXNwbGF5OiBub25lO1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAiFI,SAAS,4BAAC,CAAC,AACP,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,uBAAS,CAAC,KAAK,cAAC,CAAC,AACb,kBAAkB,CAAE,QAAQ,CACzB,eAAe,CAAE,QAAQ,CACpB,UAAU,CAAE,QAAQ,AAChC,CAAC,AAED,uBAAS,CAAC,aAAa,cAAC,CAAC,AACrB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,AACxB,CAAC,AACD,SAAS,CAAC,UAAU,QAAQ,CAAG,sCAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACzD,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,uBAAS,CAAC,UAAU,cAAC,CAAC,AAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,KAAK,CACpB,cAAc,CAAE,KAAK,CACjB,WAAW,CAAE,UAAU,AACnC,CAAC,AAED,uBAAS,CAAC,wBAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACpC,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
 
 const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -3613,12 +5303,12 @@ const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
 	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
 	$$result.css.add(css$j);
-	let idProp = id || name;
+	let idProp = id || name || value;
 	let error = invalid || !!(errors || []).length;
 	let styleProp = toCSSString({ ...style, textAlign: align });
 	let classProp = classnames("checkbox", $$props.class, { disabled, required, error });
 
-	return `<div class="${escape(null_to_empty(classProp)) + " svelte-ubkon"}">
+	return `<div class="${escape(null_to_empty(classProp)) + " svelte-e12p58"}">
     ${label
 	? `<h2 class="${"text-left"}">
             ${escape(label)}
@@ -3626,10 +5316,10 @@ const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
         </h2>`
 	: ``}
 
-    <input hidden type="${"checkbox"}"${add_attribute("id", idProp, 0)}${add_attribute("name", name, 0)}${add_attribute("form", form, 0)}${add_attribute("align", align, 0)}${add_attribute("value", value, 0)} ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} ${required ? "required" : ""} class="${"inp-inner svelte-ubkon"}"${add_attribute("checked", checked, 1)}>
+    <input hidden type="${"checkbox"}"${add_attribute("id", idProp, 0)}${add_attribute("name", name, 0)}${add_attribute("form", form, 0)}${add_attribute("align", align, 0)}${add_attribute("value", value, 0)} ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} ${required ? "required" : ""} class="${"inp-inner svelte-e12p58"}">
 
-    <label${add_attribute("for", idProp, 0)} class="${"inp-label svelte-ubkon"}">
-        <span class="${"inp-box-wrap svelte-ubkon"}">
+    <label${add_attribute("for", idProp, 0)} class="${"inp-label svelte-e12p58"}">
+        <span class="${"inp-box-wrap svelte-e12p58"}">
             ${validate_component(Icon, "Icon").$$render(
 		$$result,
 		{
@@ -3671,30 +5361,7 @@ const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 </div>`;
 });
 
-/* src/components/fields/ReadField.svelte generated by Svelte v3.18.1 */
-
-const ReadField = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { value = "" } = $$props;
-	let { style = {} } = $$props;
-	let { id = undefined } = $$props;
-	let { label = undefined } = $$props;
-	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
-	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
-	let styleProp = toCSSString({ ...style });
-	let classProp = classnames("block full-width text-left", $$props.class);
-
-	return `<div${add_attribute("id", id, 0)}${add_attribute("class", classProp, 0)}${add_attribute("style", styleProp, 0)}>
-    ${label
-	? `<h2 class="${"block full-width"}">${escape(label)}</h2>
-        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
-	: ``}
-    <p class="${"block full-width"}">${escape(value || "—")}</p>
-</div>`;
-});
-
-/* src/components/fields/CheckboxGroup.svelte generated by Svelte v3.18.1 */
+/* src/components/fields/checkboxes/CheckboxGroup.svelte generated by Svelte v3.18.1 */
 
 const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
@@ -3706,7 +5373,7 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	let { disabled = false } = $$props;
 	let { label = undefined } = $$props;
 	let { options = undefined } = $$props;
-	let { errors = undefined } = $$props;
+	let { errors = {} } = $$props;
 
 	function getChecked(currName, currValue) {
 		if (Array.isArray(value)) {
@@ -3726,7 +5393,7 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	if ($$props.options === void 0 && $$bindings.options && options !== void 0) $$bindings.options(options);
 	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
 	let styleProp = toCSSString({ ...style, textAlign: align });
-	let classProp = classnames("checkbox-group", $$props.class, { disabled, error: errors });
+	let classProp = classnames("checkbox-group", $$props.class, { disabled, error: !isEmpty(errors) });
 
 	return `<div${add_attribute("id", id, 0)}${add_attribute("class", classProp, 0)}${add_attribute("styleProp", styleProp, 0)}>
     ${label
@@ -3742,7 +5409,7 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
         ${validate_component(Checkbox, "Checkbox").$$render(
 		$$result,
 		Object.assign(checkbox, { errors: errors[checkbox.name] }, {
-			checked: getChecked(checkbox.name, checkbox.value)
+			checked: value && getChecked(checkbox.name, checkbox.value)
 		}),
 		{},
 		{}
@@ -3754,7 +5421,7 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 const css$k = {
 	code: ".inp-upload.svelte-1oa853p.svelte-1oa853p{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-item-align:stretch;align-self:stretch;justify-self:stretch;overflow:hidden;border-radius:var(--border-radius-medium);color:rgba(var(--theme-color-primary-opposite), .5);background-color:rgba(var(--theme-color-primary-opposite), .07);-webkit-transform:translateZ(0);transform:translateZ(0)}.inp-upload.preview.svelte-1oa853p .icon.svelte-1oa853p{opacity:.5}.inp-upload.svelte-1oa853p .icon.svelte-1oa853p{opacity:.7}.inp-upload.disabled.svelte-1oa853p.svelte-1oa853p{opacity:.5;pointer-events:none}.inp-upload.error.svelte-1oa853p.svelte-1oa853p,input:invalid+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-danger), .5);background-color:rgba(var(--color-danger), .07)}input:focus+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-info), .5);background-color:rgba(var(--color-info), .07)}",
-	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n\\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class} style=\\\"max-height: 150px\\\">\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture {src}/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AA6DI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n\\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class} style=\\\"max-height: 160px\\\">\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture {src}/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AA6DI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
 };
 
 const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -3802,7 +5469,7 @@ ${validate_component(Square, "Square").$$render(
 		$$result,
 		{
 			class: $$props.class,
-			style: "max-height: 150px"
+			style: "max-height: 160px"
 		},
 		{},
 		{
@@ -3824,8 +5491,8 @@ ${validate_component(Square, "Square").$$render(
 /* src/components/fields/uploadFiles/UploadBoxGroup.svelte generated by Svelte v3.18.1 */
 
 const css$l = {
-	code: "ul.svelte-e2afvw{width:100%;display:grid;grid-template:auto / .5fr .5fr;grid-gap:20px}ul.disabled.svelte-e2afvw{opacity:.5;pointer-events:none}button.svelte-e2afvw{position:absolute;top:0;right:0;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:40px;height:40px}",
-	map: "{\"version\":3,\"file\":\"UploadBoxGroup.svelte\",\"sources\":[\"UploadBoxGroup.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { _, classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import UploadBox from './UploadBox.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let id = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let accept = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let infoIndex = [0]\\n\\n    const BOX_AMOUNT = 4\\n\\n    let values = value || []\\n    let previews = []\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || name\\n    $: itemsList = getCells(values)\\n    $: setPreviewSrc(values)\\n    $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })\\n\\n    function getCells(list) {\\n        const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined)\\n        const listArr = [].concat(list || [])\\n        const biggerList = listArr.length > defaultList.length ? listArr : defaultList\\n        biggerList.push(undefined)\\n        return biggerList.map(((_, i) => listArr[i] || defaultList[i]))\\n    }\\n\\n    function setPreviewSrc(files) {\\n        try {\\n            if (files && files.length) {\\n                let loads = []\\n                files.forEach((file, i) => {\\n                    const reader = new FileReader();\\n                    reader.onload = function(e) {\\n                        const src = e.target.result\\n                        loads[i] = src\\n                        const filtered = loads.filter(Boolean)\\n                        previews = filtered\\n                    }\\n                    reader.readAsDataURL(file); // convert to base64 string\\n                })\\n            } else {\\n                previews = []\\n            }\\n        } catch(e) {\\n            console.log('UploadBoxGroup/getPreviewSrc error: ', e)\\n        }\\n    }\\n    \\n    function onChange(i, { detail: { e, value } }) {\\n        const val = [...values]\\n        val.splice(i, 0, ...value)\\n        values = val\\n        dispatch('change', { e, name, value: values })\\n    }\\n\\n    function onRemove(i, e) {\\n        values = [...values.filter((_, ind) => ind !== i)]\\n        dispatch('change', { e, name, value: values })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<ul id={idProp} class={classProp}>\\n    {#each itemsList as item, i}\\n        <li class=\\\"relative\\\">\\n            <UploadBox\\n                key={i}\\n                {accept}\\n                {invalid}\\n                {disabled}\\n                {multiple}\\n                bind:value\\n                src={previews[i]}\\n                name={`${name || ''}[${i}]`}\\n                errors={_.get(errors, i)}\\n                iconIs={infoIndex.includes(i) ? 'info' : undefined}\\n                on:change={onChange.bind(null, i)}\\n            />\\n\\n            {#if previews[i]}\\n                <button type=\\\"button\\\" on:click={onRemove.bind(null, i)}>\\n                    <Icon size=\\\"big\\\" type=\\\"close\\\"/>    \\n                </button>\\n            {/if}\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: grid;\\n        grid-template: auto / .5fr .5fr;\\n        grid-gap: 20px;\\n    }\\n\\n    ul.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 40px;\\n        height: 40px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYiwrQkFBK0I7UUFDL0IsY0FBYztJQUNsQjs7SUFFQTtRQUNJLFdBQVc7UUFDWCxvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxrQkFBa0I7UUFDbEIsTUFBTTtRQUNOLFFBQVE7UUFDUixlQUFlO1FBQ2Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLFdBQVc7UUFDWCxZQUFZO0lBQ2hCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICB1bCB7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBkaXNwbGF5OiBncmlkO1xuICAgICAgICBncmlkLXRlbXBsYXRlOiBhdXRvIC8gLjVmciAuNWZyO1xuICAgICAgICBncmlkLWdhcDogMjBweDtcbiAgICB9XG5cbiAgICB1bC5kaXNhYmxlZCB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICB9XG5cbiAgICBidXR0b24ge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgcmlnaHQ6IDA7XG4gICAgICAgIGZvbnQtc2l6ZTogMjRweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiA0MHB4O1xuICAgICAgICBoZWlnaHQ6IDQwcHg7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAyGI,EAAE,cAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAC/B,QAAQ,CAAE,IAAI,AAClB,CAAC,AAED,EAAE,SAAS,cAAC,CAAC,AACT,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,cAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+	code: "ul.svelte-azoem7{width:100%;display:grid;grid-template:auto / .5fr .5fr;grid-gap:var(--screen-padding)}ul.disabled.svelte-azoem7{opacity:.5;pointer-events:none}button.svelte-azoem7{position:absolute;top:0;right:0;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:40px;height:40px}",
+	map: "{\"version\":3,\"file\":\"UploadBoxGroup.svelte\",\"sources\":[\"UploadBoxGroup.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { _, classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import UploadBox from './UploadBox.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let id = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let accept = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let infoIndex = [0]\\n\\n    const BOX_AMOUNT = 4\\n\\n    let values = value || []\\n    let previews = []\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || name\\n    $: itemsList = getCells(values)\\n    $: setPreviewSrc(values)\\n    $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })\\n\\n    function getCells(list) {\\n        const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined)\\n        const listArr = [].concat(list || [])\\n        const biggerList = listArr.length > defaultList.length ? listArr : defaultList\\n        biggerList.push(undefined)\\n        return biggerList.map(((_, i) => listArr[i] || defaultList[i]))\\n    }\\n\\n    function setPreviewSrc(files) {\\n        try {\\n            if (files && files.length) {\\n                let loads = []\\n                files.forEach((file, i) => {\\n                    const reader = new FileReader();\\n                    reader.onload = function(e) {\\n                        const src = e.target.result\\n                        loads[i] = src\\n                        const filtered = loads.filter(Boolean)\\n                        previews = filtered\\n                    }\\n                    reader.readAsDataURL(file); // convert to base64 string\\n                })\\n            } else {\\n                previews = []\\n            }\\n        } catch(e) {\\n            console.log('UploadBoxGroup/getPreviewSrc error: ', e)\\n        }\\n    }\\n    \\n    function onChange(i, { detail: { e, value } }) {\\n        const val = [...values]\\n        val.splice(i, 0, ...value)\\n        values = val\\n        dispatch('change', { e, name, value: values })\\n    }\\n\\n    function onRemove(i, e) {\\n        values = [...values.filter((_, ind) => ind !== i)]\\n        dispatch('change', { e, name, value: values })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<ul id={idProp} class={classProp}>\\n    {#each itemsList as item, i}\\n        <li class=\\\"relative\\\">\\n            <UploadBox\\n                key={i}\\n                {accept}\\n                {invalid}\\n                {disabled}\\n                {multiple}\\n                bind:value\\n                src={previews[i]}\\n                name={`${name || ''}[${i}]`}\\n                errors={_.get(errors, i)}\\n                iconIs={infoIndex.includes(i) ? 'info' : undefined}\\n                on:change={onChange.bind(null, i)}\\n            />\\n\\n            {#if previews[i]}\\n                <button type=\\\"button\\\" on:click={onRemove.bind(null, i)}>\\n                    <Icon size=\\\"big\\\" type=\\\"close\\\"/>    \\n                </button>\\n            {/if}\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: grid;\\n        grid-template: auto / .5fr .5fr;\\n        grid-gap: var(--screen-padding);\\n    }\\n\\n    ul.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 40px;\\n        height: 40px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYiwrQkFBK0I7UUFDL0IsK0JBQStCO0lBQ25DOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sUUFBUTtRQUNSLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL3VwbG9hZEZpbGVzL1VwbG9hZEJveEdyb3VwLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHVsIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGdyaWQ7XG4gICAgICAgIGdyaWQtdGVtcGxhdGU6IGF1dG8gLyAuNWZyIC41ZnI7XG4gICAgICAgIGdyaWQtZ2FwOiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgfVxuXG4gICAgdWwuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgYnV0dG9uIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNDBweDtcbiAgICAgICAgaGVpZ2h0OiA0MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAyGI,EAAE,cAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAC/B,QAAQ,CAAE,IAAI,gBAAgB,CAAC,AACnC,CAAC,AAED,EAAE,SAAS,cAAC,CAAC,AACT,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,cAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
 
 const BOX_AMOUNT = 4;
@@ -3916,7 +5583,7 @@ const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$sl
 		? `<h2 class="${"text-left"}">${escape(label)}</h2>
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
 		: ``}
-<ul${add_attribute("id", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-e2afvw"}">
+<ul${add_attribute("id", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-azoem7"}">
     ${each(itemsList, (item, i) => `<li class="${"relative"}">
             ${validate_component(UploadBox, "UploadBox").$$render(
 			$$result,
@@ -3942,7 +5609,7 @@ const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$sl
 		)}
 
             ${previews[i]
-		? `<button type="${"button"}" class="${"svelte-e2afvw"}">
+		? `<button type="${"button"}" class="${"svelte-azoem7"}">
                     ${validate_component(Icon, "Icon").$$render($$result, { size: "big", type: "close" }, {}, {})}    
                 </button>`
 		: ``}
@@ -3965,6 +5632,7 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	let { submit = async () => {
 		
 	} } = $$props;
+
 	let submitting = false;
 
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
@@ -3972,6 +5640,7 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
 	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
 	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let values = cloneDeep(data);
 	let classProp = classnames("form-builder", { submitting });
 
 	return `${validate_component(Form, "Form").$$render($$result, { id, class: classProp }, {}, {
@@ -3993,34 +5662,36 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 			"time"
 		].includes(item.type)
 		? `${data[item.name] !== null
-			? `${validate_component(Input, "Input").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			? `${validate_component(Input, "Input").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
 			: `<div>
                     ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                     ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
                 </div>`}`
 		: `${["checkbox"].includes(item.type)
-			? `${validate_component(CheckboxGroup, "CheckboxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			? `${validate_component(CheckboxGroup, "CheckboxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
 			: `${["select"].includes(item.type)
 				? `${data[item.name] !== null
-					? `${validate_component(Select, "Select").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					? `${validate_component(Select, "Select").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
 					: `<div>
                     ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                     ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
                 </div>`}`
 				: `${["file"].includes(item.type)
-					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
 					: `${["files"].includes(item.type)
-						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: data[item.name] }, { errors: errors[item.name] }), {}, {})}`
-						: `${$$slots.default
-							? $$slots.default({ item, data, errors })
-							: `
+						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+						: `${["radio-rect"].includes(item.type)
+							? `${validate_component(RadioRect, "RadioRect").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+							: `${$$slots.default
+								? $$slots.default({ item, data, errors })
+								: `
                 ${data[item.name] !== null
-								? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: data[item.name] }), {}, {})}`
-								: `<div>
+									? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: values[item.name] }), {}, {})}`
+									: `<div>
                         ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                         ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
                     </div>`}
-            `}`}`}`}`}`}`)}
+            `}`}`}`}`}`}`}`)}
 `
 	})}`;
 });
@@ -6388,6 +8059,195 @@ const HowToHelp$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	})}`;
 });
 
+/* src/routes/funds/edit/_AnimalCard.svelte generated by Svelte v3.18.1 */
+
+const AnimalCard$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Аватар:",
+			type: "custom-avatar",
+			name: "avatar",
+			meta: { accept: "image/jpeg,image/png" }
+		},
+		{
+			label: "Кличка:",
+			type: "text",
+			name: "name",
+			meta: { placeholder: "Локі...", maxlength: 20 }
+		},
+		{
+			label: "Порода:",
+			type: "text",
+			name: "breed",
+			meta: {
+				placeholder: "Лабрадор...",
+				maxlength: 20
+			}
+		},
+		{
+			label: "День народження:",
+			type: "date",
+			name: "birth",
+			meta: { placeholder: "18.03.2019..." }
+		},
+		{
+			label: "Стать:",
+			type: "radio-rect",
+			name: "sex",
+			meta: {
+				options: [
+					{
+						label: "Він",
+						value: "male",
+						preIcon: "check-flag"
+					},
+					{
+						label: "Вона",
+						value: "female",
+						preIcon: "check-flag"
+					}
+				]
+			}
+		},
+		{
+			label: "Стерилізація?",
+			type: "radio-rect",
+			name: "sterilization",
+			meta: {
+				options: [
+					{
+						label: "Так",
+						value: true,
+						preIcon: "check-flag"
+					},
+					{
+						label: "Ні",
+						value: false,
+						preIcon: "close"
+					}
+				]
+			}
+		},
+		{
+			label: "Характер:",
+			type: "radio-rect",
+			name: "character_short",
+			meta: {
+				options: [
+					{ label: "😃", value: "😃" },
+					{ label: "😇", value: "😇" },
+					{ label: "😜", value: "😜" },
+					{ label: "😎", value: "😎" },
+					{ label: "😝", value: "😝" }
+				]
+			}
+		},
+		{
+			label: "Опис характеру:",
+			type: "textarea",
+			name: "character",
+			meta: {
+				rows: 6,
+				maxlength: 75,
+				placeholder: "Грайливий та веселий песик..."
+			}
+		},
+		{
+			label: "Історія тваринки:",
+			type: "custom-lifestory",
+			name: "lifestory",
+			meta: { max: 100, maxlength: 75 }
+		},
+		{
+			label: "Вакцинація:",
+			type: "checkbox",
+			name: "vaccination",
+			meta: {
+				options: [
+					{ text: "Від кліщів", value: "from-fungi" },
+					{ text: "Від сказу", value: "from-rabies" },
+					{
+						text: "Від парагрипу",
+						value: "from-parainfluenza"
+					},
+					{
+						text: "Від чума м'ясоїдних",
+						value: "from-carnivorous-plague"
+					},
+					{
+						text: "Від парвовіроз",
+						value: "from-parvovirus"
+					},
+					{
+						text: "Від аденовіроз",
+						value: "from-adenovirus"
+					},
+					{
+						text: "Від лептоспіроз",
+						value: "from-leptospirosis"
+					}
+				]
+			}
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+		default: () => `
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "description-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+    ${validate_component(Button, "Button").$$render(
+			$$result,
+			{
+				size: "small",
+				type: "submit",
+				form: "top-info-form",
+				is: "info"
+			},
+			{},
+			{
+				default: () => `
+        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+            Зберегти
+        </span>
+    `
+			}
+		)}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+`
+	})}`;
+});
+
 /* src/routes/funds/edit/_Description.svelte generated by Svelte v3.18.1 */
 
 const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -6480,6 +8340,7 @@ var route_1 = /*#__PURE__*/Object.freeze({
     TopInfoEdit: TopInfo,
     DocumentsEdit: Documents$1,
     HowToHelpEdit: HowToHelp$1,
+    AnimalCardEdit: AnimalCard$1,
     DescriptionEdit: Description$1
 });
 
@@ -6535,6 +8396,14 @@ const HowToHelp_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	return `${validate_component(HowToHelp, "HowToHelp").$$render($$result, { data }, {}, {})}`;
 });
 
+/* src/routes/funds/view/_AnimalCard.svelte generated by Svelte v3.18.1 */
+
+const AnimalCard_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { animal = undefined } = $$props;
+	if ($$props.animal === void 0 && $$bindings.animal && animal !== void 0) $$bindings.animal(animal);
+	return `${validate_component(AnimalCard, "AnimalCard").$$render($$result, { animal }, {}, {})}`;
+});
+
 /* src/routes/funds/view/_Description.svelte generated by Svelte v3.18.1 */
 
 const Description_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -6560,6 +8429,7 @@ var route_2 = /*#__PURE__*/Object.freeze({
     TopInfoView: TopInfo$1,
     DocumentsView: Documents_1$1,
     HowToHelpView: HowToHelp_1,
+    AnimalCardView: AnimalCard_1,
     DescriptionView: Description_1
 });
 
@@ -7783,7 +9653,30 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     
-    ${validate_component(AnimalCard, "AnimalCard").$$render($$result, { animal }, {}, {})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+		default: () => `
+        ${validate_component(AnimalCard$1, "AnimalCardEdit").$$render($$result, { data: animal, submit: onSubmit }, {}, {})}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
+		$$result,
+		{
+			active: !isEdit,
+			mounted: true,
+			class: "full-container"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(AnimalCard_1, "AnimalCardView").$$render($$result, { animal }, {}, {})}
+        `
+			})}
+    `
+		}
+	)}
     
 
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
