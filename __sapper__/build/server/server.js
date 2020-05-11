@@ -9446,8 +9446,16 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	const { page } = stores$1();
 	$page = get_store_value(page);
 	let charityId = $page.params.id;
-	let isEdit = false;
 	let isEditMode = false;
+
+	let isEdit = {
+		topInfo: false,
+		description: false,
+		videos: false,
+		documents: false,
+		howToHelp: false,
+		animalCard: false
+	};
 
 	// Entities
 	let charity;
@@ -9461,7 +9469,15 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	});
 
 	async function onSubmit(values) {
-		isEdit = !isEdit;
+		isEdit = {
+			topInfo: false,
+			description: false,
+			videos: false,
+			documents: false,
+			howToHelp: false,
+			animalCard: false
+		};
+
 		console.log(values);
 	}
 
@@ -9578,7 +9594,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     </div>
 
     
-    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.topInfo }, {}, {
 		default: () => `
         ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
         ${validate_component(TopInfo, "TopInfoEdit").$$render($$result, { submit: onSubmit }, {}, {})}
@@ -9587,7 +9603,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			active: !isEdit,
+			active: !isEdit.topInfo,
 			mounted: true,
 			class: "full-container"
 		},
@@ -9622,7 +9638,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
 
     
-    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.description }, {}, {
 		default: () => `
         ${validate_component(Description$1, "DescriptionEdit").$$render($$result, { submit: onSubmit, data: descriptionBlock }, {}, {})}
     `
@@ -9630,7 +9646,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			active: !isEdit,
+			active: !isEdit.description,
 			mounted: true,
 			class: "full-container"
 		},
@@ -9659,7 +9675,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     
-    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.animalCard }, {}, {
 		default: () => `
         ${validate_component(AnimalCard$1, "AnimalCardEdit").$$render($$result, { data: animal, submit: onSubmit }, {}, {})}
     `
@@ -9667,7 +9683,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			active: !isEdit,
+			active: !isEdit.animalCard,
 			mounted: true,
 			class: "full-container"
 		},
@@ -9694,7 +9710,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
 	})}
 
     
-    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.documents }, {}, {
 		default: () => `
         ${validate_component(Documents$1, "DocumentsEdit").$$render($$result, { submit: onSubmit, data: documents }, {}, {})}
     `
@@ -9702,7 +9718,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			active: !isEdit,
+			active: !isEdit.documents,
 			mounted: true,
 			class: "full-container"
 		},
@@ -9723,7 +9739,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})} 
     
     
-    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.videos }, {}, {
 		default: () => `
         ${validate_component(Videos, "VideosEdit").$$render($$result, { submit: onSubmit, data: media }, {}, {})}
     `
@@ -9731,7 +9747,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			active: !isEdit,
+			active: !isEdit.videos,
 			mounted: true,
 			class: "full-container"
 		},
@@ -9752,7 +9768,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
     
-    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit }, {}, {
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.howToHelp }, {}, {
 		default: () => `
         ${validate_component(HowToHelp$1, "HowToHelpEdit").$$render($$result, { submit: onSubmit, data: howToHelp }, {}, {})}
     `
@@ -9760,7 +9776,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			active: !isEdit,
+			active: !isEdit.howToHelp,
 			mounted: true,
 			class: "full-container"
 		},
