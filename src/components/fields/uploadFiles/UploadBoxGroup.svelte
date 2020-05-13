@@ -21,12 +21,10 @@
     const BOX_AMOUNT = 4
 
     let values = value || []
-    let previews = []
 
     $: error = invalid !== undefined ? invalid : !!(errors || []).length
     $: idProp = id || name
     $: itemsList = getCells(values)
-    $: setPreviewSrc(values)
     $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })
 
     function getCells(list) {
@@ -37,28 +35,6 @@
         return biggerList.map(((_, i) => listArr[i] || defaultList[i]))
     }
 
-    function setPreviewSrc(files) {
-        try {
-            if (files && files.length) {
-                let loads = []
-                files.forEach((file, i) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const src = e.target.result
-                        loads[i] = src
-                        const filtered = loads.filter(Boolean)
-                        previews = filtered
-                    }
-                    reader.readAsDataURL(file); // convert to base64 string
-                })
-            } else {
-                previews = []
-            }
-        } catch(e) {
-            console.log('UploadBoxGroup/getPreviewSrc error: ', e)
-        }
-    }
-    
     function onChange(i, { detail: { e, value } }) {
         const val = [...values]
         val.splice(i, 0, ...value)
@@ -86,14 +62,15 @@
                 {disabled}
                 {multiple}
                 bind:value
-                src={previews[i]}
+                src={values[i]}
                 name={`${name || ''}[${i}]`}
                 errors={_.get(errors, i)}
+                style="max-height: 160px"
                 iconIs={infoIndex.includes(i) ? 'info' : undefined}
                 on:change={onChange.bind(null, i)}
             />
 
-            {#if previews[i]}
+            {#if values[i]}
                 <button type="button" on:click={onRemove.bind(null, i)}>
                     <Icon size="big" type="close"/>    
                 </button>

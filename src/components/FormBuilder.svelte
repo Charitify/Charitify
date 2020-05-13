@@ -132,7 +132,7 @@
                     on:change={onChange}
             />
         {:else}
-            <slot {item} {data} {errors}>
+            <slot {item} {values} {errors} {onChange} value={values[item.name]}>
                 {#if values[item.name] !== null}
                     <ReadField
                         {...item.meta}

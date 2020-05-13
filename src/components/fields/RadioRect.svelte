@@ -45,7 +45,6 @@
                 <Button
                     auto
                     htmlFor={`${idProp}_${i}`}
-                    style="padding: 10px"
                     is={value === radio.value ? 'info' : 'info-border'}
                 >
                     <input 
@@ -56,22 +55,21 @@
                         value={radio.value}
                         on:change={onChange.bind(null, radio.value)}
                     >
-                    {#if radio.preIcon}
-                        <Icon type={radio.preIcon} size="medium" is={value === radio.value ? 'light' : 'info'}/>
-                        <s></s>
-                    {/if}
                     <slot item={radio} checked={value === radio.value}>
-                        <span
-                         class="font-w-500 h3 flex flex-align-center flex-justify-center"
-                         style="min-width: var(--font-line-height-h3)"
-                        >
-                            {radio.label}
-                        </span>
+                        <p class="flex flex-align-center" style="padding: 10px 20px">
+                            {#if radio.preIcon}
+                                <Icon type={radio.preIcon} size="medium" is={value === radio.value ? 'light' : 'info'}/>
+                                <s></s>
+                            {/if}
+                            <span class="font-w-500 h3 flex flex-align-center flex-justify-center">
+                                {radio.label}
+                            </span>
+                            {#if radio.postIcon}
+                                <s></s>
+                                <Icon type={radio.postIcon} size="medium" is={value === radio.value ? 'light' : 'info'}/>
+                            {/if}
+                        </p>
                     </slot>
-                    {#if radio.postIcon}
-                        <s></s>
-                        <Icon type={radio.postIcon} size="medium" is={value === radio.value ? 'light' : 'info'}/>
-                    {/if}
                 </Button>
             </li>
         {/each}

@@ -1,5 +1,5 @@
 <script>
-    import { Br, Button, Card, FormBuilder } from '@components'
+    import { Br, Button, Card, Square, UploadBox, RadioRect, StoryList,FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
@@ -79,7 +79,7 @@
         },
         {
             label: 'Характер:',
-            type: 'radio-rect',
+            type: 'custom-character',
             name: 'character_short',
             meta: {
                 options: [
@@ -117,7 +117,7 @@
             },
         },
         {
-            label: 'Історія тваринки:',
+            label: 'Історія життя:',
             type: 'custom-lifestory',
             name: 'lifestory',
             meta: {
@@ -182,7 +182,60 @@
         errors={formErrors}
         submit={onSubmit}
         on:change
-    />
+        let:item={item}
+        let:value={value}
+        let:onChange={onChange}
+    >
+        {#if item.type === 'custom-avatar'}
+            <section class="flex flex-justify-center" style="padding: 10px 0">
+                <UploadBox 
+                    round
+                    style={{ width: '145px' }}
+                    {...item.meta}
+                    src={value}
+                    name={item.name}
+                    on:change={onChange} 
+                />  
+            </section>
+
+        {:else if item.type === 'custom-character'}
+            <section>
+                <h2 class="text-left">
+                    { item.label }
+                    <Br size="10"/>
+                </h2>
+                <div class="flex flex-justify-center">
+                    <RadioRect
+                        {...item.meta}
+                        {value}
+                        name={item.name}
+                        let:item={radio}
+                        on:change={onChange}
+                    >
+                        <Square 
+                            style="width: calc(40px + (50 - 40) * ((100vw - 320px) / (375 - 320))); max-width: 50px"
+                            class="flex flex-align-center flex-justify-center"
+                        >
+                            <span class="h1 flex-1 flex flex-align-center flex-justify-center">
+                                { radio.label }
+                            </span>
+                        </Square>
+                    </RadioRect>
+                </div>
+            </section>
+
+        {:else if item.type === 'custom-lifestory'}
+            <section>
+                <StoryList
+                    {...item.meta}
+                    {value}
+                    name={item.name}
+                    label={item.label}
+                    on:change={onChange}
+                />
+            </section>
+        {/if}
+    </FormBuilder>
 
     <Br size="40"/>
 

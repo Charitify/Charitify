@@ -1,5 +1,5 @@
 <script>
-    import { Card, Br, FancyBox, Avatar, Icon, Loader } from '@components'
+    import { Card, Br, FancyBox, Avatar, Icon, Loader, StoryList } from '@components'
 
     export let animal = {
         avatar: null,
@@ -15,16 +15,6 @@
         vaccination: null,
     }
 </script>
-
-<style>
-    table tr:not(:last-child) td {
-        padding-bottom: 16px;
-    }
-
-    table td:last-child {
-        font-weight: 300;
-    }
-</style>
 
 <Card class="container">
     <Br size="30"/>
@@ -115,46 +105,7 @@
     {/if}
     <Br size="35"/>
 
-    <h2>Життя</h2>
-    <Br size="10"/>
-    <table>
-        <tbody>
-            {#if animal.lifestory !== null}
-                {#each animal.lifestory as item}
-                    <tr>
-                        <td>{item.date}</td>
-                        <td>—</td>
-                        <td>{item.title}</td>
-                    </tr>
-                {/each}
-            {:else}
-                <tr>
-                    <td><Loader type="p"/></td>
-                    <td>—</td>
-                    <td>
-                        <Loader type="p"/>
-                        <Loader type="p"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td><Loader type="p"/></td>
-                    <td>—</td>
-                    <td>
-                        <Loader type="p"/>
-                        <Loader type="p"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td><Loader type="p"/></td>
-                    <td>—</td>
-                    <td>
-                        <Loader type="p"/>
-                        <Loader type="p"/>
-                    </td>
-                </tr>
-            {/if}
-        </tbody>
-    </table>
+    <StoryList label="Історія життя:" value={animal.lifestory} readonly/>
     <Br size="45"/>
 
     <h2>Вакцинації</h2>

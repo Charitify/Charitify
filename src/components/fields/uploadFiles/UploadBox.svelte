@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { classnames } from '@utils'
+    import { classnames, toCSSString } from '@utils'
     import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
     import Square from '@components/Square.svelte'
@@ -14,6 +14,8 @@
     export let icon = undefined
     export let label = undefined
     export let value = undefined
+    export let round = undefined
+    export let style = undefined
     export let iconIs = undefined
     export let errors = undefined
     export let invalid = undefined
@@ -21,11 +23,30 @@
     export let disabled = undefined
     export let accept = "image/png, image/jpeg"
 
+    let validSrc
+
     $: error = invalid !== undefined ? invalid : !!(errors || []).length
     $: iconType = icon || 'upload'
     $: idProp = id || name
+    $: setValidSrc(src)
     $: classProp = classnames('inp-upload', { error, disabled, preview: src })
+    $: styleProp = toCSSString({ ...style, borderRadius: round ? '50%' : null })
 
+    function setValidSrc(file) {
+        try {
+            if (typeof file === 'string') {
+                validSrc = file
+            } else if (file) {
+                const f = Array.isArray(file) ? file[0] : file
+                const reader = new FileReader();
+                reader.onload = e => validSrc = e.target.result
+                reader.readAsDataURL(f); // convert to base64 string
+            }
+        } catch(err) {
+            console.log('UploadBox/getValidSrc error: ', err)
+        }
+    }
+    
     function onChange(e) {
         const value = Array.from(e.target.files)
         if (!value || !value.length) return
@@ -37,7 +58,7 @@
     <h2 class="text-left">{label}</h2>
     <Br size="10"/>
 {/if}
-<Square class={$$props.class} style="max-height: 160px">
+<Square class={$$props.class} style={styleProp}>
     <input
         {name}
         {accept}
@@ -50,7 +71,7 @@
     >
     <label for={idProp} class={classProp}>
         <div class="flex full-absolute">
-            <Picture {src}/> 
+            <Picture src={validSrc} alt="Завантажене фото"/> 
         </div>
         <div class="icon flex relative" style="flex: 0 0 75px">
             <Icon type={iconType} is={iconIs}/>
