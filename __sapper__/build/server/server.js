@@ -1487,8 +1487,311 @@ Stack.prototype.get = stackGet;
 Stack.prototype.has = stackHas;
 Stack.prototype.set = stackSet;
 
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED$2 = '__lodash_hash_undefined__';
+
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+function setCacheAdd(value) {
+  this.__data__.set(value, HASH_UNDEFINED$2);
+  return this;
+}
+
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+function setCacheHas(value) {
+  return this.__data__.has(value);
+}
+
+/**
+ *
+ * Creates an array cache object to store unique values.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache(values) {
+  var index = -1,
+      length = values == null ? 0 : values.length;
+
+  this.__data__ = new MapCache;
+  while (++index < length) {
+    this.add(values[index]);
+  }
+}
+
+// Add methods to `SetCache`.
+SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+SetCache.prototype.has = setCacheHas;
+
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function arraySome(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (predicate(array[index], index, array)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function cacheHas(cache, key) {
+  return cache.has(key);
+}
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for arrays with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Array} array The array to compare.
+ * @param {Array} other The other array to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `array` and `other` objects.
+ * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+ */
+function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      arrLength = array.length,
+      othLength = other.length;
+
+  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+    return false;
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(array);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var index = -1,
+      result = true,
+      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+
+  stack.set(array, other);
+  stack.set(other, array);
+
+  // Ignore non-index properties.
+  while (++index < arrLength) {
+    var arrValue = array[index],
+        othValue = other[index];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, arrValue, index, other, array, stack)
+        : customizer(arrValue, othValue, index, array, other, stack);
+    }
+    if (compared !== undefined) {
+      if (compared) {
+        continue;
+      }
+      result = false;
+      break;
+    }
+    // Recursively compare arrays (susceptible to call stack limits).
+    if (seen) {
+      if (!arraySome(other, function(othValue, othIndex) {
+            if (!cacheHas(seen, othIndex) &&
+                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+              return seen.push(othIndex);
+            }
+          })) {
+        result = false;
+        break;
+      }
+    } else if (!(
+          arrValue === othValue ||
+            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+        )) {
+      result = false;
+      break;
+    }
+  }
+  stack['delete'](array);
+  stack['delete'](other);
+  return result;
+}
+
 /** Built-in value references. */
 var Uint8Array = root.Uint8Array;
+
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$1 = 1,
+    COMPARE_UNORDERED_FLAG$1 = 2;
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag$1 = '[object Symbol]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]';
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto$1 = Symbol$1 ? Symbol$1.prototype : undefined,
+    symbolValueOf = symbolProto$1 ? symbolProto$1.valueOf : undefined;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for comparing objects of
+ * the same `toStringTag`.
+ *
+ * **Note:** This function only supports comparing values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {string} tag The `toStringTag` of the objects to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+  switch (tag) {
+    case dataViewTag:
+      if ((object.byteLength != other.byteLength) ||
+          (object.byteOffset != other.byteOffset)) {
+        return false;
+      }
+      object = object.buffer;
+      other = other.buffer;
+
+    case arrayBufferTag:
+      if ((object.byteLength != other.byteLength) ||
+          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+        return false;
+      }
+      return true;
+
+    case boolTag:
+    case dateTag:
+    case numberTag:
+      // Coerce booleans to `1` or `0` and dates to milliseconds.
+      // Invalid dates are coerced to `NaN`.
+      return eq(+object, +other);
+
+    case errorTag:
+      return object.name == other.name && object.message == other.message;
+
+    case regexpTag:
+    case stringTag:
+      // Coerce regexes to strings and treat strings, primitives and objects,
+      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+      // for more details.
+      return object == (other + '');
+
+    case mapTag:
+      var convert = mapToArray;
+
+    case setTag:
+      var isPartial = bitmask & COMPARE_PARTIAL_FLAG$1;
+      convert || (convert = setToArray);
+
+      if (object.size != other.size && !isPartial) {
+        return false;
+      }
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked) {
+        return stacked == other;
+      }
+      bitmask |= COMPARE_UNORDERED_FLAG$1;
+
+      // Recursively compare objects (susceptible to call stack limits).
+      stack.set(object, other);
+      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+      stack['delete'](object);
+      return result;
+
+    case symbolTag$1:
+      if (symbolValueOf) {
+        return symbolValueOf.call(object) == symbolValueOf.call(other);
+      }
+  }
+  return false;
+}
 
 /**
  * Appends the elements of `values` to `array`.
@@ -1774,20 +2077,20 @@ function isLength(value) {
 /** `Object#toString` result references. */
 var argsTag$1 = '[object Arguments]',
     arrayTag = '[object Array]',
-    boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
+    boolTag$1 = '[object Boolean]',
+    dateTag$1 = '[object Date]',
+    errorTag$1 = '[object Error]',
     funcTag$1 = '[object Function]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
+    mapTag$1 = '[object Map]',
+    numberTag$1 = '[object Number]',
     objectTag = '[object Object]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
+    regexpTag$1 = '[object RegExp]',
+    setTag$1 = '[object Set]',
+    stringTag$1 = '[object String]',
     weakMapTag = '[object WeakMap]';
 
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]',
+var arrayBufferTag$1 = '[object ArrayBuffer]',
+    dataViewTag$1 = '[object DataView]',
     float32Tag = '[object Float32Array]',
     float64Tag = '[object Float64Array]',
     int8Tag = '[object Int8Array]',
@@ -1806,12 +2109,12 @@ typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
 typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
 typedArrayTags[uint32Tag] = true;
 typedArrayTags[argsTag$1] = typedArrayTags[arrayTag] =
-typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-typedArrayTags[errorTag] = typedArrayTags[funcTag$1] =
-typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[arrayBufferTag$1] = typedArrayTags[boolTag$1] =
+typedArrayTags[dataViewTag$1] = typedArrayTags[dateTag$1] =
+typedArrayTags[errorTag$1] = typedArrayTags[funcTag$1] =
+typedArrayTags[mapTag$1] = typedArrayTags[numberTag$1] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag$1] =
+typedArrayTags[setTag$1] = typedArrayTags[stringTag$1] =
 typedArrayTags[weakMapTag] = false;
 
 /**
@@ -2061,6 +2364,92 @@ function getAllKeys(object) {
   return baseGetAllKeys(object, keys, getSymbols);
 }
 
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$2 = 1;
+
+/** Used for built-in method references. */
+var objectProto$a = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$7 = objectProto$a.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for objects with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$2,
+      objProps = getAllKeys(object),
+      objLength = objProps.length,
+      othProps = getAllKeys(other),
+      othLength = othProps.length;
+
+  if (objLength != othLength && !isPartial) {
+    return false;
+  }
+  var index = objLength;
+  while (index--) {
+    var key = objProps[index];
+    if (!(isPartial ? key in other : hasOwnProperty$7.call(other, key))) {
+      return false;
+    }
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(object);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var result = true;
+  stack.set(object, other);
+  stack.set(other, object);
+
+  var skipCtor = isPartial;
+  while (++index < objLength) {
+    key = objProps[index];
+    var objValue = object[key],
+        othValue = other[key];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, objValue, key, other, object, stack)
+        : customizer(objValue, othValue, key, object, other, stack);
+    }
+    // Recursively compare objects (susceptible to call stack limits).
+    if (!(compared === undefined
+          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+          : compared
+        )) {
+      result = false;
+      break;
+    }
+    skipCtor || (skipCtor = key == 'constructor');
+  }
+  if (result && !skipCtor) {
+    var objCtor = object.constructor,
+        othCtor = other.constructor;
+
+    // Non `Object` object instances with different constructors are not equal.
+    if (objCtor != othCtor &&
+        ('constructor' in object && 'constructor' in other) &&
+        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+      result = false;
+    }
+  }
+  stack['delete'](object);
+  stack['delete'](other);
+  return result;
+}
+
 /* Built-in method references that are verified to be native. */
 var DataView = getNative(root, 'DataView');
 
@@ -2074,13 +2463,13 @@ var Set$1 = getNative(root, 'Set');
 var WeakMap = getNative(root, 'WeakMap');
 
 /** `Object#toString` result references. */
-var mapTag$1 = '[object Map]',
+var mapTag$2 = '[object Map]',
     objectTag$1 = '[object Object]',
     promiseTag = '[object Promise]',
-    setTag$1 = '[object Set]',
+    setTag$2 = '[object Set]',
     weakMapTag$1 = '[object WeakMap]';
 
-var dataViewTag$1 = '[object DataView]';
+var dataViewTag$2 = '[object DataView]';
 
 /** Used to detect maps, sets, and weakmaps. */
 var dataViewCtorString = toSource(DataView),
@@ -2099,10 +2488,10 @@ var dataViewCtorString = toSource(DataView),
 var getTag = baseGetTag;
 
 // Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
-    (Map$1 && getTag(new Map$1) != mapTag$1) ||
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$2) ||
+    (Map$1 && getTag(new Map$1) != mapTag$2) ||
     (Promise$1 && getTag(Promise$1.resolve()) != promiseTag) ||
-    (Set$1 && getTag(new Set$1) != setTag$1) ||
+    (Set$1 && getTag(new Set$1) != setTag$2) ||
     (WeakMap && getTag(new WeakMap) != weakMapTag$1)) {
   getTag = function(value) {
     var result = baseGetTag(value),
@@ -2111,10 +2500,10 @@ if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
 
     if (ctorString) {
       switch (ctorString) {
-        case dataViewCtorString: return dataViewTag$1;
-        case mapCtorString: return mapTag$1;
+        case dataViewCtorString: return dataViewTag$2;
+        case mapCtorString: return mapTag$2;
         case promiseCtorString: return promiseTag;
-        case setCtorString: return setTag$1;
+        case setCtorString: return setTag$2;
         case weakMapCtorString: return weakMapTag$1;
       }
     }
@@ -2124,15 +2513,696 @@ if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag$1) ||
 
 var getTag$1 = getTag;
 
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$3 = 1;
+
 /** `Object#toString` result references. */
-var mapTag$2 = '[object Map]',
-    setTag$2 = '[object Set]';
+var argsTag$2 = '[object Arguments]',
+    arrayTag$1 = '[object Array]',
+    objectTag$2 = '[object Object]';
 
 /** Used for built-in method references. */
-var objectProto$a = Object.prototype;
+var objectProto$b = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$7 = objectProto$a.hasOwnProperty;
+var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqual` for arrays and objects which performs
+ * deep comparisons and tracks traversed objects enabling objects with circular
+ * references to be compared.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+  var objIsArr = isArray(object),
+      othIsArr = isArray(other),
+      objTag = objIsArr ? arrayTag$1 : getTag$1(object),
+      othTag = othIsArr ? arrayTag$1 : getTag$1(other);
+
+  objTag = objTag == argsTag$2 ? objectTag$2 : objTag;
+  othTag = othTag == argsTag$2 ? objectTag$2 : othTag;
+
+  var objIsObj = objTag == objectTag$2,
+      othIsObj = othTag == objectTag$2,
+      isSameTag = objTag == othTag;
+
+  if (isSameTag && isBuffer(object)) {
+    if (!isBuffer(other)) {
+      return false;
+    }
+    objIsArr = true;
+    objIsObj = false;
+  }
+  if (isSameTag && !objIsObj) {
+    stack || (stack = new Stack);
+    return (objIsArr || isTypedArray(object))
+      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+  }
+  if (!(bitmask & COMPARE_PARTIAL_FLAG$3)) {
+    var objIsWrapped = objIsObj && hasOwnProperty$8.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty$8.call(other, '__wrapped__');
+
+    if (objIsWrapped || othIsWrapped) {
+      var objUnwrapped = objIsWrapped ? object.value() : object,
+          othUnwrapped = othIsWrapped ? other.value() : other;
+
+      stack || (stack = new Stack);
+      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+    }
+  }
+  if (!isSameTag) {
+    return false;
+  }
+  stack || (stack = new Stack);
+  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+}
+
+/**
+ * The base implementation of `_.isEqual` which supports partial comparisons
+ * and tracks traversed objects.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Unordered comparison
+ *  2 - Partial comparison
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ */
+function baseIsEqual(value, other, bitmask, customizer, stack) {
+  if (value === other) {
+    return true;
+  }
+  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+    return value !== value && other !== other;
+  }
+  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+}
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$4 = 1,
+    COMPARE_UNORDERED_FLAG$2 = 2;
+
+/**
+ * The base implementation of `_.isMatch` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to inspect.
+ * @param {Object} source The object of property values to match.
+ * @param {Array} matchData The property names, values, and compare flags to match.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+ */
+function baseIsMatch(object, source, matchData, customizer) {
+  var index = matchData.length,
+      length = index,
+      noCustomizer = !customizer;
+
+  if (object == null) {
+    return !length;
+  }
+  object = Object(object);
+  while (index--) {
+    var data = matchData[index];
+    if ((noCustomizer && data[2])
+          ? data[1] !== object[data[0]]
+          : !(data[0] in object)
+        ) {
+      return false;
+    }
+  }
+  while (++index < length) {
+    data = matchData[index];
+    var key = data[0],
+        objValue = object[key],
+        srcValue = data[1];
+
+    if (noCustomizer && data[2]) {
+      if (objValue === undefined && !(key in object)) {
+        return false;
+      }
+    } else {
+      var stack = new Stack;
+      if (customizer) {
+        var result = customizer(objValue, srcValue, key, object, source, stack);
+      }
+      if (!(result === undefined
+            ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG$4 | COMPARE_UNORDERED_FLAG$2, customizer, stack)
+            : result
+          )) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+/**
+ * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` if suitable for strict
+ *  equality comparisons, else `false`.
+ */
+function isStrictComparable(value) {
+  return value === value && !isObject(value);
+}
+
+/**
+ * Gets the property names, values, and compare flags of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the match data of `object`.
+ */
+function getMatchData(object) {
+  var result = keys(object),
+      length = result.length;
+
+  while (length--) {
+    var key = result[length],
+        value = object[key];
+
+    result[length] = [key, value, isStrictComparable(value)];
+  }
+  return result;
+}
+
+/**
+ * A specialized version of `matchesProperty` for source values suitable
+ * for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function matchesStrictComparable(key, srcValue) {
+  return function(object) {
+    if (object == null) {
+      return false;
+    }
+    return object[key] === srcValue &&
+      (srcValue !== undefined || (key in Object(object)));
+  };
+}
+
+/**
+ * The base implementation of `_.matches` which doesn't clone `source`.
+ *
+ * @private
+ * @param {Object} source The object of property values to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatches(source) {
+  var matchData = getMatchData(source);
+  if (matchData.length == 1 && matchData[0][2]) {
+    return matchesStrictComparable(matchData[0][0], matchData[0][1]);
+  }
+  return function(object) {
+    return object === source || baseIsMatch(object, source, matchData);
+  };
+}
+
+/**
+ * The base implementation of `_.hasIn` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHasIn(object, key) {
+  return object != null && key in Object(object);
+}
+
+/**
+ * Checks if `path` exists on `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @param {Function} hasFunc The function to check properties.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ */
+function hasPath(object, path, hasFunc) {
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      result = false;
+
+  while (++index < length) {
+    var key = toKey(path[index]);
+    if (!(result = object != null && hasFunc(object, key))) {
+      break;
+    }
+    object = object[key];
+  }
+  if (result || ++index != length) {
+    return result;
+  }
+  length = object == null ? 0 : object.length;
+  return !!length && isLength(length) && isIndex(key, length) &&
+    (isArray(object) || isArguments(object));
+}
+
+/**
+ * Checks if `path` is a direct or inherited property of `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ * @example
+ *
+ * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+ *
+ * _.hasIn(object, 'a');
+ * // => true
+ *
+ * _.hasIn(object, 'a.b');
+ * // => true
+ *
+ * _.hasIn(object, ['a', 'b']);
+ * // => true
+ *
+ * _.hasIn(object, 'b');
+ * // => false
+ */
+function hasIn(object, path) {
+  return object != null && hasPath(object, path, baseHasIn);
+}
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$5 = 1,
+    COMPARE_UNORDERED_FLAG$3 = 2;
+
+/**
+ * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+ *
+ * @private
+ * @param {string} path The path of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatchesProperty(path, srcValue) {
+  if (isKey(path) && isStrictComparable(srcValue)) {
+    return matchesStrictComparable(toKey(path), srcValue);
+  }
+  return function(object) {
+    var objValue = get(object, path);
+    return (objValue === undefined && objValue === srcValue)
+      ? hasIn(object, path)
+      : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG$5 | COMPARE_UNORDERED_FLAG$3);
+  };
+}
+
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+/**
+ * A specialized version of `baseProperty` which supports deep paths.
+ *
+ * @private
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function basePropertyDeep(path) {
+  return function(object) {
+    return baseGet(object, path);
+  };
+}
+
+/**
+ * Creates a function that returns the value at `path` of a given object.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ * @example
+ *
+ * var objects = [
+ *   { 'a': { 'b': 2 } },
+ *   { 'a': { 'b': 1 } }
+ * ];
+ *
+ * _.map(objects, _.property('a.b'));
+ * // => [2, 1]
+ *
+ * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
+ * // => [1, 2]
+ */
+function property(path) {
+  return isKey(path) ? baseProperty(toKey(path)) : basePropertyDeep(path);
+}
+
+/**
+ * The base implementation of `_.iteratee`.
+ *
+ * @private
+ * @param {*} [value=_.identity] The value to convert to an iteratee.
+ * @returns {Function} Returns the iteratee.
+ */
+function baseIteratee(value) {
+  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
+  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
+  if (typeof value == 'function') {
+    return value;
+  }
+  if (value == null) {
+    return identity;
+  }
+  if (typeof value == 'object') {
+    return isArray(value)
+      ? baseMatchesProperty(value[0], value[1])
+      : baseMatches(value);
+  }
+  return property(value);
+}
+
+/**
+ * Creates a `_.find` or `_.findLast` function.
+ *
+ * @private
+ * @param {Function} findIndexFunc The function to find the collection index.
+ * @returns {Function} Returns the new find function.
+ */
+function createFind(findIndexFunc) {
+  return function(collection, predicate, fromIndex) {
+    var iterable = Object(collection);
+    if (!isArrayLike(collection)) {
+      var iteratee = baseIteratee(predicate);
+      collection = keys(collection);
+      predicate = function(key) { return iteratee(iterable[key], key, iterable); };
+    }
+    var index = findIndexFunc(collection, predicate, fromIndex);
+    return index > -1 ? iterable[iteratee ? collection[index] : index] : undefined;
+  };
+}
+
+/**
+ * The base implementation of `_.findIndex` and `_.findLastIndex` without
+ * support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseFindIndex(array, predicate, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 1 : -1);
+
+  while ((fromRight ? index-- : ++index < length)) {
+    if (predicate(array[index], index, array)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+/** Used as references for various `Number` constants. */
+var INFINITY$2 = 1 / 0,
+    MAX_INTEGER = 1.7976931348623157e+308;
+
+/**
+ * Converts `value` to a finite number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.12.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {number} Returns the converted number.
+ * @example
+ *
+ * _.toFinite(3.2);
+ * // => 3.2
+ *
+ * _.toFinite(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toFinite(Infinity);
+ * // => 1.7976931348623157e+308
+ *
+ * _.toFinite('3.2');
+ * // => 3.2
+ */
+function toFinite(value) {
+  if (!value) {
+    return value === 0 ? value : 0;
+  }
+  value = toNumber(value);
+  if (value === INFINITY$2 || value === -INFINITY$2) {
+    var sign = (value < 0 ? -1 : 1);
+    return sign * MAX_INTEGER;
+  }
+  return value === value ? value : 0;
+}
+
+/**
+ * Converts `value` to an integer.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToInteger`](http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {number} Returns the converted integer.
+ * @example
+ *
+ * _.toInteger(3.2);
+ * // => 3
+ *
+ * _.toInteger(Number.MIN_VALUE);
+ * // => 0
+ *
+ * _.toInteger(Infinity);
+ * // => 1.7976931348623157e+308
+ *
+ * _.toInteger('3.2');
+ * // => 3
+ */
+function toInteger(value) {
+  var result = toFinite(value),
+      remainder = result % 1;
+
+  return result === result ? (remainder ? result - remainder : result) : 0;
+}
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+
+/**
+ * This method is like `_.find` except that it returns the index of the first
+ * element `predicate` returns truthy for instead of the element itself.
+ *
+ * @static
+ * @memberOf _
+ * @since 1.1.0
+ * @category Array
+ * @param {Array} array The array to inspect.
+ * @param {Function} [predicate=_.identity] The function invoked per iteration.
+ * @param {number} [fromIndex=0] The index to search from.
+ * @returns {number} Returns the index of the found element, else `-1`.
+ * @example
+ *
+ * var users = [
+ *   { 'user': 'barney',  'active': false },
+ *   { 'user': 'fred',    'active': false },
+ *   { 'user': 'pebbles', 'active': true }
+ * ];
+ *
+ * _.findIndex(users, function(o) { return o.user == 'barney'; });
+ * // => 0
+ *
+ * // The `_.matches` iteratee shorthand.
+ * _.findIndex(users, { 'user': 'fred', 'active': false });
+ * // => 1
+ *
+ * // The `_.matchesProperty` iteratee shorthand.
+ * _.findIndex(users, ['active', false]);
+ * // => 0
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.findIndex(users, 'active');
+ * // => 2
+ */
+function findIndex(array, predicate, fromIndex) {
+  var length = array == null ? 0 : array.length;
+  if (!length) {
+    return -1;
+  }
+  var index = fromIndex == null ? 0 : toInteger(fromIndex);
+  if (index < 0) {
+    index = nativeMax(length + index, 0);
+  }
+  return baseFindIndex(array, baseIteratee(predicate), index);
+}
+
+/**
+ * Iterates over elements of `collection`, returning the first element
+ * `predicate` returns truthy for. The predicate is invoked with three
+ * arguments: (value, index|key, collection).
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to inspect.
+ * @param {Function} [predicate=_.identity] The function invoked per iteration.
+ * @param {number} [fromIndex=0] The index to search from.
+ * @returns {*} Returns the matched element, else `undefined`.
+ * @example
+ *
+ * var users = [
+ *   { 'user': 'barney',  'age': 36, 'active': true },
+ *   { 'user': 'fred',    'age': 40, 'active': false },
+ *   { 'user': 'pebbles', 'age': 1,  'active': true }
+ * ];
+ *
+ * _.find(users, function(o) { return o.age < 40; });
+ * // => object for 'barney'
+ *
+ * // The `_.matches` iteratee shorthand.
+ * _.find(users, { 'age': 1, 'active': true });
+ * // => object for 'pebbles'
+ *
+ * // The `_.matchesProperty` iteratee shorthand.
+ * _.find(users, ['active', false]);
+ * // => object for 'fred'
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.find(users, 'active');
+ * // => object for 'barney'
+ */
+var find = createFind(findIndex);
+
+/** `Object#toString` result references. */
+var mapTag$3 = '[object Map]',
+    setTag$3 = '[object Set]';
+
+/** Used for built-in method references. */
+var objectProto$c = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
 
 /**
  * Checks if `value` is an empty object, collection, map, or set.
@@ -2177,14 +3247,14 @@ function isEmpty(value) {
     return !value.length;
   }
   var tag = getTag$1(value);
-  if (tag == mapTag$2 || tag == setTag$2) {
+  if (tag == mapTag$3 || tag == setTag$3) {
     return !value.size;
   }
   if (isPrototype(value)) {
     return !baseKeys(value).length;
   }
   for (var key in value) {
-    if (hasOwnProperty$7.call(value, key)) {
+    if (hasOwnProperty$9.call(value, key)) {
       return false;
     }
   }
@@ -2243,10 +3313,10 @@ function baseAssignValue(object, key, value) {
 }
 
 /** Used for built-in method references. */
-var objectProto$b = Object.prototype;
+var objectProto$d = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
+var hasOwnProperty$a = objectProto$d.hasOwnProperty;
 
 /**
  * Assigns `value` to `key` of `object` if the existing value is not equivalent
@@ -2260,7 +3330,7 @@ var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
  */
 function assignValue(object, key, value) {
   var objValue = object[key];
-  if (!(hasOwnProperty$8.call(object, key) && eq(objValue, value)) ||
+  if (!(hasOwnProperty$a.call(object, key) && eq(objValue, value)) ||
       (value === undefined && !(key in object))) {
     baseAssignValue(object, key, value);
   }
@@ -2335,10 +3405,10 @@ function nativeKeysIn(object) {
 }
 
 /** Used for built-in method references. */
-var objectProto$c = Object.prototype;
+var objectProto$e = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
+var hasOwnProperty$b = objectProto$e.hasOwnProperty;
 
 /**
  * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
@@ -2355,7 +3425,7 @@ function baseKeysIn(object) {
       result = [];
 
   for (var key in object) {
-    if (!(key == 'constructor' && (isProto || !hasOwnProperty$9.call(object, key)))) {
+    if (!(key == 'constructor' && (isProto || !hasOwnProperty$b.call(object, key)))) {
       result.push(key);
     }
   }
@@ -2512,10 +3582,10 @@ function getAllKeysIn(object) {
 }
 
 /** Used for built-in method references. */
-var objectProto$d = Object.prototype;
+var objectProto$f = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$a = objectProto$d.hasOwnProperty;
+var hasOwnProperty$c = objectProto$f.hasOwnProperty;
 
 /**
  * Initializes an array clone.
@@ -2529,7 +3599,7 @@ function initCloneArray(array) {
       result = new array.constructor(length);
 
   // Add properties assigned by `RegExp#exec`.
-  if (length && typeof array[0] == 'string' && hasOwnProperty$a.call(array, 'index')) {
+  if (length && typeof array[0] == 'string' && hasOwnProperty$c.call(array, 'index')) {
     result.index = array.index;
     result.input = array.input;
   }
@@ -2579,8 +3649,8 @@ function cloneRegExp(regexp) {
 }
 
 /** Used to convert symbols to primitives and strings. */
-var symbolProto$1 = Symbol$1 ? Symbol$1.prototype : undefined,
-    symbolValueOf = symbolProto$1 ? symbolProto$1.valueOf : undefined;
+var symbolProto$2 = Symbol$1 ? Symbol$1.prototype : undefined,
+    symbolValueOf$1 = symbolProto$2 ? symbolProto$2.valueOf : undefined;
 
 /**
  * Creates a clone of the `symbol` object.
@@ -2590,7 +3660,7 @@ var symbolProto$1 = Symbol$1 ? Symbol$1.prototype : undefined,
  * @returns {Object} Returns the cloned symbol object.
  */
 function cloneSymbol(symbol) {
-  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
+  return symbolValueOf$1 ? Object(symbolValueOf$1.call(symbol)) : {};
 }
 
 /**
@@ -2607,17 +3677,17 @@ function cloneTypedArray(typedArray, isDeep) {
 }
 
 /** `Object#toString` result references. */
-var boolTag$1 = '[object Boolean]',
-    dateTag$1 = '[object Date]',
-    mapTag$3 = '[object Map]',
-    numberTag$1 = '[object Number]',
-    regexpTag$1 = '[object RegExp]',
-    setTag$3 = '[object Set]',
-    stringTag$1 = '[object String]',
-    symbolTag$1 = '[object Symbol]';
+var boolTag$2 = '[object Boolean]',
+    dateTag$2 = '[object Date]',
+    mapTag$4 = '[object Map]',
+    numberTag$2 = '[object Number]',
+    regexpTag$2 = '[object RegExp]',
+    setTag$4 = '[object Set]',
+    stringTag$2 = '[object String]',
+    symbolTag$2 = '[object Symbol]';
 
-var arrayBufferTag$1 = '[object ArrayBuffer]',
-    dataViewTag$2 = '[object DataView]',
+var arrayBufferTag$2 = '[object ArrayBuffer]',
+    dataViewTag$3 = '[object DataView]',
     float32Tag$1 = '[object Float32Array]',
     float64Tag$1 = '[object Float64Array]',
     int8Tag$1 = '[object Int8Array]',
@@ -2643,14 +3713,14 @@ var arrayBufferTag$1 = '[object ArrayBuffer]',
 function initCloneByTag(object, tag, isDeep) {
   var Ctor = object.constructor;
   switch (tag) {
-    case arrayBufferTag$1:
+    case arrayBufferTag$2:
       return cloneArrayBuffer(object);
 
-    case boolTag$1:
-    case dateTag$1:
+    case boolTag$2:
+    case dateTag$2:
       return new Ctor(+object);
 
-    case dataViewTag$2:
+    case dataViewTag$3:
       return cloneDataView(object, isDeep);
 
     case float32Tag$1: case float64Tag$1:
@@ -2658,20 +3728,20 @@ function initCloneByTag(object, tag, isDeep) {
     case uint8Tag$1: case uint8ClampedTag$1: case uint16Tag$1: case uint32Tag$1:
       return cloneTypedArray(object, isDeep);
 
-    case mapTag$3:
+    case mapTag$4:
       return new Ctor;
 
-    case numberTag$1:
-    case stringTag$1:
+    case numberTag$2:
+    case stringTag$2:
       return new Ctor(object);
 
-    case regexpTag$1:
+    case regexpTag$2:
       return cloneRegExp(object);
 
-    case setTag$3:
+    case setTag$4:
       return new Ctor;
 
-    case symbolTag$1:
+    case symbolTag$2:
       return cloneSymbol(object);
   }
 }
@@ -2717,7 +3787,7 @@ function initCloneObject(object) {
 }
 
 /** `Object#toString` result references. */
-var mapTag$4 = '[object Map]';
+var mapTag$5 = '[object Map]';
 
 /**
  * The base implementation of `_.isMap` without Node.js optimizations.
@@ -2727,7 +3797,7 @@ var mapTag$4 = '[object Map]';
  * @returns {boolean} Returns `true` if `value` is a map, else `false`.
  */
 function baseIsMap(value) {
-  return isObjectLike(value) && getTag$1(value) == mapTag$4;
+  return isObjectLike(value) && getTag$1(value) == mapTag$5;
 }
 
 /* Node.js helper references. */
@@ -2753,7 +3823,7 @@ var nodeIsMap = nodeUtil && nodeUtil.isMap;
 var isMap = nodeIsMap ? baseUnary(nodeIsMap) : baseIsMap;
 
 /** `Object#toString` result references. */
-var setTag$4 = '[object Set]';
+var setTag$5 = '[object Set]';
 
 /**
  * The base implementation of `_.isSet` without Node.js optimizations.
@@ -2763,7 +3833,7 @@ var setTag$4 = '[object Set]';
  * @returns {boolean} Returns `true` if `value` is a set, else `false`.
  */
 function baseIsSet(value) {
-  return isObjectLike(value) && getTag$1(value) == setTag$4;
+  return isObjectLike(value) && getTag$1(value) == setTag$5;
 }
 
 /* Node.js helper references. */
@@ -2794,24 +3864,24 @@ var CLONE_DEEP_FLAG = 1,
     CLONE_SYMBOLS_FLAG = 4;
 
 /** `Object#toString` result references. */
-var argsTag$2 = '[object Arguments]',
-    arrayTag$1 = '[object Array]',
-    boolTag$2 = '[object Boolean]',
-    dateTag$2 = '[object Date]',
-    errorTag$1 = '[object Error]',
+var argsTag$3 = '[object Arguments]',
+    arrayTag$2 = '[object Array]',
+    boolTag$3 = '[object Boolean]',
+    dateTag$3 = '[object Date]',
+    errorTag$2 = '[object Error]',
     funcTag$2 = '[object Function]',
     genTag$1 = '[object GeneratorFunction]',
-    mapTag$5 = '[object Map]',
-    numberTag$2 = '[object Number]',
-    objectTag$2 = '[object Object]',
-    regexpTag$2 = '[object RegExp]',
-    setTag$5 = '[object Set]',
-    stringTag$2 = '[object String]',
-    symbolTag$2 = '[object Symbol]',
+    mapTag$6 = '[object Map]',
+    numberTag$3 = '[object Number]',
+    objectTag$3 = '[object Object]',
+    regexpTag$3 = '[object RegExp]',
+    setTag$6 = '[object Set]',
+    stringTag$3 = '[object String]',
+    symbolTag$3 = '[object Symbol]',
     weakMapTag$2 = '[object WeakMap]';
 
-var arrayBufferTag$2 = '[object ArrayBuffer]',
-    dataViewTag$3 = '[object DataView]',
+var arrayBufferTag$3 = '[object ArrayBuffer]',
+    dataViewTag$4 = '[object DataView]',
     float32Tag$2 = '[object Float32Array]',
     float64Tag$2 = '[object Float64Array]',
     int8Tag$2 = '[object Int8Array]',
@@ -2824,18 +3894,18 @@ var arrayBufferTag$2 = '[object ArrayBuffer]',
 
 /** Used to identify `toStringTag` values supported by `_.clone`. */
 var cloneableTags = {};
-cloneableTags[argsTag$2] = cloneableTags[arrayTag$1] =
-cloneableTags[arrayBufferTag$2] = cloneableTags[dataViewTag$3] =
-cloneableTags[boolTag$2] = cloneableTags[dateTag$2] =
+cloneableTags[argsTag$3] = cloneableTags[arrayTag$2] =
+cloneableTags[arrayBufferTag$3] = cloneableTags[dataViewTag$4] =
+cloneableTags[boolTag$3] = cloneableTags[dateTag$3] =
 cloneableTags[float32Tag$2] = cloneableTags[float64Tag$2] =
 cloneableTags[int8Tag$2] = cloneableTags[int16Tag$2] =
-cloneableTags[int32Tag$2] = cloneableTags[mapTag$5] =
-cloneableTags[numberTag$2] = cloneableTags[objectTag$2] =
-cloneableTags[regexpTag$2] = cloneableTags[setTag$5] =
-cloneableTags[stringTag$2] = cloneableTags[symbolTag$2] =
+cloneableTags[int32Tag$2] = cloneableTags[mapTag$6] =
+cloneableTags[numberTag$3] = cloneableTags[objectTag$3] =
+cloneableTags[regexpTag$3] = cloneableTags[setTag$6] =
+cloneableTags[stringTag$3] = cloneableTags[symbolTag$3] =
 cloneableTags[uint8Tag$2] = cloneableTags[uint8ClampedTag$2] =
 cloneableTags[uint16Tag$2] = cloneableTags[uint32Tag$2] = true;
-cloneableTags[errorTag$1] = cloneableTags[funcTag$2] =
+cloneableTags[errorTag$2] = cloneableTags[funcTag$2] =
 cloneableTags[weakMapTag$2] = false;
 
 /**
@@ -2882,7 +3952,7 @@ function baseClone(value, bitmask, customizer, key, object, stack) {
     if (isBuffer(value)) {
       return cloneBuffer(value, isDeep);
     }
-    if (tag == objectTag$2 || tag == argsTag$2 || (isFunc && !object)) {
+    if (tag == objectTag$3 || tag == argsTag$3 || (isFunc && !object)) {
       result = (isFlat || isFunc) ? {} : initCloneObject(value);
       if (!isDeep) {
         return isFlat
@@ -3559,6 +4629,37 @@ var icons = {
     'checked-circle': IoIosCheckmarkCircle,
     'cancel-circle': IoIosCloseCircleOutline,
 };
+
+const vaccinations = [
+    {
+        text: 'Від кліщів',
+        value: 'from-fungi'
+    },
+    {
+        text: 'Від сказу',
+        value: 'from-rabies'
+    },
+    {
+        text: 'Від парагрипу',
+        value: 'from-parainfluenza'
+    },
+    {
+        text: 'Від чуми м\'ясоїдних',
+        value: 'from-carnivorous-plague'
+    },
+    {
+        text: 'Від парвовіроз',
+        value: 'from-parvovirus'
+    },
+    {
+        text: 'Від аденовіроз',
+        value: 'from-adenovirus'
+    },
+    {
+        text: 'Від лептоспіроз',
+        value: 'from-leptospirosis'
+    },
+];
 
 /* src/components/Icon.svelte generated by Svelte v3.18.1 */
 
@@ -5428,7 +6529,7 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 const css$k = {
 	code: ".inp-upload.svelte-1oa853p.svelte-1oa853p{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-item-align:stretch;align-self:stretch;justify-self:stretch;overflow:hidden;border-radius:var(--border-radius-medium);color:rgba(var(--theme-color-primary-opposite), .5);background-color:rgba(var(--theme-color-primary-opposite), .07);-webkit-transform:translateZ(0);transform:translateZ(0)}.inp-upload.preview.svelte-1oa853p .icon.svelte-1oa853p{opacity:.5}.inp-upload.svelte-1oa853p .icon.svelte-1oa853p{opacity:.7}.inp-upload.disabled.svelte-1oa853p.svelte-1oa853p{opacity:.5;pointer-events:none}.inp-upload.error.svelte-1oa853p.svelte-1oa853p,input:invalid+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-danger), .5);background-color:rgba(var(--color-danger), .07)}input:focus+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-info), .5);background-color:rgba(var(--color-info), .07)}",
-	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let round = undefined\\n    export let style = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    let validSrc\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: setValidSrc(src)\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n    $: styleProp = toCSSString({ ...style, borderRadius: round ? '50%' : null })\\n\\n    function setValidSrc(file) {\\n        try {\\n            if (typeof file === 'string') {\\n                validSrc = file\\n            } else if (file) {\\n                const f = Array.isArray(file) ? file[0] : file\\n                const reader = new FileReader();\\n                reader.onload = e => validSrc = e.target.result\\n                reader.readAsDataURL(f); // convert to base64 string\\n            }\\n        } catch(err) {\\n            console.log('UploadBox/getValidSrc error: ', err)\\n        }\\n    }\\n    \\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class} style={styleProp}>\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture src={validSrc} alt=\\\"Завантажене фото\\\"/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAkFI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let round = undefined\\n    export let style = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    let validSrc\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: setValidSrc(src)\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n    $: styleProp = toCSSString({ ...style, borderRadius: round ? '50%' : null })\\n\\n    function setValidSrc(file) {\\n        try {\\n            if (typeof file === 'string') {\\n                validSrc = file\\n            } else if (file) {\\n                const f = Array.isArray(file) ? file[0] : file\\n                const reader = new FileReader();\\n                reader.onload = e => validSrc = e.target.result\\n                reader.readAsDataURL(f); // convert to base64 string\\n            } else if (!file) {\\n                validSrc = undefined\\n            }\\n        } catch(err) {\\n            console.log('UploadBox/getValidSrc error: ', err)\\n        }\\n    }\\n    \\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class} style={styleProp}>\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture src={validSrc} alt=\\\"Завантажене фото\\\"/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAoFI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
 };
 
 const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -5458,6 +6559,8 @@ const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 				const reader = new FileReader();
 				reader.onload = e => validSrc = e.target.result;
 				reader.readAsDataURL(f); // convert to base64 string
+			} else if (!file) {
+				validSrc = undefined;
 			}
 		} catch(err) {
 			console.log("UploadBox/getValidSrc error: ", err);
@@ -5521,7 +6624,7 @@ ${validate_component(Square, "Square").$$render($$result, { class: $$props.class
 
 const css$l = {
 	code: "ul.svelte-azoem7{width:100%;display:grid;grid-template:auto / .5fr .5fr;grid-gap:var(--screen-padding)}ul.disabled.svelte-azoem7{opacity:.5;pointer-events:none}button.svelte-azoem7{position:absolute;top:0;right:0;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:40px;height:40px}",
-	map: "{\"version\":3,\"file\":\"UploadBoxGroup.svelte\",\"sources\":[\"UploadBoxGroup.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { _, classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import UploadBox from './UploadBox.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let id = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let accept = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let infoIndex = [0]\\n\\n    const BOX_AMOUNT = 4\\n\\n    let values = value || []\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || name\\n    $: itemsList = getCells(values)\\n    $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })\\n\\n    function getCells(list) {\\n        const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined)\\n        const listArr = [].concat(list || [])\\n        const biggerList = listArr.length > defaultList.length ? listArr : defaultList\\n        biggerList.push(undefined)\\n        return biggerList.map(((_, i) => listArr[i] || defaultList[i]))\\n    }\\n\\n    function onChange(i, { detail: { e, value } }) {\\n        const val = [...values]\\n        val.splice(i, 0, ...value)\\n        values = val\\n        dispatch('change', { e, name, value: values })\\n    }\\n\\n    function onRemove(i, e) {\\n        values = [...values.filter((_, ind) => ind !== i)]\\n        dispatch('change', { e, name, value: values })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<ul id={idProp} class={classProp}>\\n    {#each itemsList as item, i}\\n        <li class=\\\"relative\\\">\\n            <UploadBox\\n                key={i}\\n                {accept}\\n                {invalid}\\n                {disabled}\\n                {multiple}\\n                bind:value\\n                src={values[i]}\\n                name={`${name || ''}[${i}]`}\\n                errors={_.get(errors, i)}\\n                style=\\\"max-height: 160px\\\"\\n                iconIs={infoIndex.includes(i) ? 'info' : undefined}\\n                on:change={onChange.bind(null, i)}\\n            />\\n\\n            {#if values[i]}\\n                <button type=\\\"button\\\" on:click={onRemove.bind(null, i)}>\\n                    <Icon size=\\\"big\\\" type=\\\"close\\\"/>    \\n                </button>\\n            {/if}\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: grid;\\n        grid-template: auto / .5fr .5fr;\\n        grid-gap: var(--screen-padding);\\n    }\\n\\n    ul.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 40px;\\n        height: 40px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYiwrQkFBK0I7UUFDL0IsK0JBQStCO0lBQ25DOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sUUFBUTtRQUNSLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL3VwbG9hZEZpbGVzL1VwbG9hZEJveEdyb3VwLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHVsIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGdyaWQ7XG4gICAgICAgIGdyaWQtdGVtcGxhdGU6IGF1dG8gLyAuNWZyIC41ZnI7XG4gICAgICAgIGdyaWQtZ2FwOiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgfVxuXG4gICAgdWwuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgYnV0dG9uIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNDBweDtcbiAgICAgICAgaGVpZ2h0OiA0MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAkFI,EAAE,cAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAC/B,QAAQ,CAAE,IAAI,gBAAgB,CAAC,AACnC,CAAC,AAED,EAAE,SAAS,cAAC,CAAC,AACT,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,cAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"UploadBoxGroup.svelte\",\"sources\":[\"UploadBoxGroup.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { _, classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import UploadBox from './UploadBox.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let id = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let accept = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let infoIndex = [0]\\n\\n    const BOX_AMOUNT = 4\\n\\n    $: values = value || []\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || name\\n    $: itemsList = getCells(values)\\n    $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })\\n\\n    function getCells(list) {\\n        const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined)\\n        const listArr = [].concat(list || [])\\n        const biggerList = listArr.length > defaultList.length ? listArr : defaultList\\n        biggerList.push(undefined)\\n        return biggerList.map(((_, i) => listArr[i] || defaultList[i]))\\n    }\\n\\n    function onChange(i, { detail: { e, value } }) {\\n        const val = [...values]\\n        val.splice(i, 0, ...value)\\n        values = val\\n        dispatch('change', { e, name, value: values })\\n    }\\n\\n    function onRemove(i, e) {\\n        values = [...values.filter((_, ind) => ind !== i)]\\n        dispatch('change', { e, name, value: values })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<ul id={idProp} class={classProp}>\\n    {#each itemsList as item, i}\\n        <li class=\\\"relative\\\">\\n            <UploadBox\\n                key={i}\\n                {accept}\\n                {invalid}\\n                {disabled}\\n                {multiple}\\n                bind:value\\n                name={`${name || ''}[${i}]`}\\n                src={(values[i] || {}).src || values[i]}\\n                errors={_.get(errors, i)}\\n                style=\\\"max-height: 160px\\\"\\n                iconIs={infoIndex.includes(i) ? 'info' : undefined}\\n                on:change={onChange.bind(null, i)}\\n            />\\n\\n            {#if values[i]}\\n                <button type=\\\"button\\\" on:click={onRemove.bind(null, i)}>\\n                    <Icon size=\\\"big\\\" type=\\\"close\\\"/>    \\n                </button>\\n            {/if}\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: grid;\\n        grid-template: auto / .5fr .5fr;\\n        grid-gap: var(--screen-padding);\\n    }\\n\\n    ul.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 40px;\\n        height: 40px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYiwrQkFBK0I7UUFDL0IsK0JBQStCO0lBQ25DOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sUUFBUTtRQUNSLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL3VwbG9hZEZpbGVzL1VwbG9hZEJveEdyb3VwLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHVsIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGdyaWQ7XG4gICAgICAgIGdyaWQtdGVtcGxhdGU6IGF1dG8gLyAuNWZyIC41ZnI7XG4gICAgICAgIGdyaWQtZ2FwOiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgfVxuXG4gICAgdWwuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgYnV0dG9uIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNDBweDtcbiAgICAgICAgaGVpZ2h0OiA0MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAiFI,EAAE,cAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAC/B,QAAQ,CAAE,IAAI,gBAAgB,CAAC,AACnC,CAAC,AAED,EAAE,SAAS,cAAC,CAAC,AACT,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,cAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
 
 const BOX_AMOUNT = 4;
@@ -5550,7 +6653,6 @@ const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$sl
 	let { multiple = undefined } = $$props;
 	let { disabled = undefined } = $$props;
 	let { infoIndex = [0] } = $$props;
-	let values = value || [];
 
 	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
@@ -5568,6 +6670,7 @@ const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$sl
 
 	do {
 		$$settled = true;
+		let values = value || [];
 
 		let error = invalid !== undefined
 		? invalid
@@ -5591,8 +6694,8 @@ const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$sl
 				invalid,
 				disabled,
 				multiple,
-				src: values[i],
 				name: `${name || ""}[${i}]`,
+				src: (values[i] || {}).src || values[i],
 				errors: get(errors, i),
 				style: "max-height: 160px",
 				iconIs: infoIndex.includes(i) ? "info" : undefined,
@@ -6067,7 +7170,7 @@ const ListItems = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 
 const css$t = {
 	code: "table.svelte-1pgy3nj tr:not(:last-child) td.svelte-1pgy3nj{padding-bottom:16px}table.svelte-1pgy3nj td.svelte-1pgy3nj:last-child{font-weight:300}",
-	map: "{\"version\":3,\"file\":\"StoryList.svelte\",\"sources\":[\"StoryList.svelte\"],\"sourcesContent\":[\"<script>\\n\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Modal from '@components/Modal.svelte'\\n    import Loader from '@components/Loader'\\n    import Button from '@components/Button.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let name = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let style = undefined\\n    export let readonly = undefined\\n\\n    let open = false\\n\\n    $: idProp = id || name\\n    $: classProp = classnames('story-list', $$props.class)\\n    $: styleProp = toCSSString({ ...style })\\n</script>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9TdG9yeUxpc3Quc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGdCQUFnQjtJQUNwQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvU3RvcnlMaXN0LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHRhYmxlIHRyOm5vdCg6bGFzdC1jaGlsZCkgdGQge1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMTZweDtcbiAgICB9XG5cbiAgICB0YWJsZSB0ZDpsYXN0LWNoaWxkIHtcbiAgICAgICAgZm9udC13ZWlnaHQ6IDMwMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<section id={idProp} class={classProp} style={styleProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">{label}</h2>\\n        <Br size=\\\"10\\\"/>\\n    {/if}\\n\\n    <table>\\n        <tbody>\\n            {#if value !== null && Array.isArray(value) && value.length}\\n                {#each value.filter(Boolean) as val}\\n                    <tr>\\n                        <td>{val.date}</td>\\n                        <td>—</td>\\n                        <td>{val.title}</td>\\n                    </tr>\\n                {/each}\\n            {:else if value === null}\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n            {/if}\\n        </tbody>\\n    </table>\\n\\n    {#if !readonly}\\n        <Br size=\\\"25\\\"/>\\n        <Button auto is=\\\"info\\\" on:click={() => open = true}>\\n            <h3 style=\\\"padding: 10px 25px\\\" class=\\\"font-w-500\\\">\\n                Додати подію\\n            </h3>\\n        </Button>\\n    {/if}\\n</section>\\n\\n<Modal size=\\\"medium\\\" {open}>\\n    Something\\n</Modal>   \"],\"names\":[],\"mappings\":\"AA0BI,oBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,eAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,oBAAK,CAAC,iBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"StoryList.svelte\",\"sources\":[\"StoryList.svelte\"],\"sourcesContent\":[\"<script>\\n\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Modal from '@components/Modal.svelte'\\n    import Loader from '@components/Loader'\\n    import Button from '@components/Button.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let name = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let style = undefined\\n    export let readonly = undefined\\n\\n    let open = false\\n\\n    $: idProp = id || name\\n    $: classProp = classnames('story-list', $$props.class)\\n    $: styleProp = toCSSString({ ...style })\\n\\n    function onRemove({ index }, e) {\\n        const val = [...value.filter((_, ind) => ind !== index)]\\n        dispatch('change', { e, name, value: val })\\n    }\\n</script>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9TdG9yeUxpc3Quc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGdCQUFnQjtJQUNwQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvU3RvcnlMaXN0LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHRhYmxlIHRyOm5vdCg6bGFzdC1jaGlsZCkgdGQge1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMTZweDtcbiAgICB9XG5cbiAgICB0YWJsZSB0ZDpsYXN0LWNoaWxkIHtcbiAgICAgICAgZm9udC13ZWlnaHQ6IDMwMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<section id={idProp} class={classProp} style={styleProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">{label}</h2>\\n        <Br size=\\\"10\\\"/>\\n    {/if}\\n\\n    <table>\\n        <tbody>\\n            {#if value !== null && Array.isArray(value) && value.length}\\n                {#each value.filter(Boolean) as val, i}\\n                    <tr>\\n                        <td>{val.date}</td>\\n                        <td>—</td>\\n                        <td>{val.title}</td>\\n                        {#if !readonly}\\n                            <td>\\n                                <Button \\n                                    auto \\n                                    style=\\\"vertical-align: middle\\\"\\n                                    on:click={onRemove.bind(null, { id: val.id, index: i })}\\n                                >\\n                                    <Icon type=\\\"close\\\" size=\\\"medium\\\"/>\\n                                </Button>\\n                            </td>\\n                        {/if}\\n                    </tr>\\n                {/each}\\n            {:else if value === null}\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n            {/if}\\n        </tbody>\\n    </table>\\n\\n    {#if !readonly}\\n        <Br size=\\\"25\\\"/>\\n        <Button auto is=\\\"info\\\" on:click={() => open = true}>\\n            <h3 style=\\\"padding: 10px 25px\\\" class=\\\"font-w-500\\\">\\n                Додати подію\\n            </h3>\\n        </Button>\\n    {/if}\\n</section>\\n\\n<Modal \\n    {open}\\n    id=\\\"story-life-modal\\\"\\n    size=\\\"medium\\\"\\n    on:close={() => open = false}\\n>\\n    Something\\n</Modal>   \"],\"names\":[],\"mappings\":\"AAgCI,oBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,eAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,oBAAK,CAAC,iBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
 };
 
 const StoryList = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -6079,6 +7182,7 @@ const StoryList = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	let { style = undefined } = $$props;
 	let { readonly = undefined } = $$props;
 	let open = false;
+
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
 	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
 	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
@@ -6099,10 +7203,27 @@ const StoryList = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
     <table class="${"svelte-1pgy3nj"}">
         <tbody>
             ${value !== null && Array.isArray(value) && value.length
-	? `${each(value.filter(Boolean), val => `<tr>
+	? `${each(value.filter(Boolean), (val, i) => `<tr>
                         <td class="${"svelte-1pgy3nj"}">${escape(val.date)}</td>
                         <td class="${"svelte-1pgy3nj"}">—</td>
                         <td class="${"svelte-1pgy3nj"}">${escape(val.title)}</td>
+                        ${!readonly
+		? `<td class="${"svelte-1pgy3nj"}">
+                                ${validate_component(Button, "Button").$$render(
+				$$result,
+				{
+					auto: true,
+					style: "vertical-align: middle"
+				},
+				{},
+				{
+					default: () => `
+                                    ${validate_component(Icon, "Icon").$$render($$result, { type: "close", size: "medium" }, {}, {})}
+                                `
+				}
+			)}
+                            </td>`
+		: ``}
                     </tr>`)}`
 	: `${value === null
 		? `<tr>
@@ -6145,11 +7266,20 @@ const StoryList = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	: ``}
 </section>
 
-${validate_component(Modal, "Modal").$$render($$result, { size: "medium", open }, {}, {
-		default: () => `
+${validate_component(Modal, "Modal").$$render(
+		$$result,
+		{
+			open,
+			id: "story-life-modal",
+			size: "medium"
+		},
+		{},
+		{
+			default: () => `
     Something
 `
-	})}`;
+		}
+	)}`;
 });
 
 /* src/components/app/SearchLine.svelte generated by Svelte v3.18.1 */
@@ -7357,6 +8487,13 @@ ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 
 /* src/routes/funds/components/_AnimalCard.svelte generated by Svelte v3.18.1 */
 
+function getVactinations(values) {
+	return [].concat(values || []).map(value => ({
+		done: true,
+		title: (find(vaccinations, ["value", value]) || {}).text
+	})).filter(v => v.title);
+}
+
 const AnimalCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { animal = {
 		avatar: null,
@@ -7511,7 +8648,7 @@ const AnimalCard = create_ssr_component(($$result, $$props, $$bindings, $$slots)
     ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
     <ul class="${"flex flex-column text-left"}">
         ${animal.vaccination !== null
-		? `${each(animal.vaccination, (item, i) => `<li>
+		? `${each(getVactinations(animal.vaccination), (item, i) => `<li>
                     ${i
 			? `${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
 			: ``}
@@ -7595,22 +8732,10 @@ ${text !== null
 
 const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items = [] } = $$props;
-
-	// Carousel & FancyBox
-	let propsBox = {};
-
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
 	return `<section class="${"flex"}" style="${"height: 240px"}">
-    ${validate_component(FancyBox, "FancyBox").$$render($$result, {}, {}, {
-		box: () => `<section slot="${"box"}" class="${"flex full-width"}">
-            ${validate_component(Carousel, "Carousel").$$render($$result, Object.assign({ items }, propsBox), {}, {})}
-        </section>`,
-		default: () => `
-        ${validate_component(Carousel, "Carousel").$$render($$result, { items, dotsBelow: false }, {}, {})}
-        
-    `
-	})}
+    ${validate_component(Carousel, "Carousel").$$render($$result, { items, dotsBelow: false }, {}, {})}
 </section>`;
 });
 
@@ -8234,32 +9359,7 @@ const AnimalCard$1 = create_ssr_component(($$result, $$props, $$bindings, $$slot
 			label: "Вакцинація:",
 			type: "checkbox",
 			name: "vaccination",
-			meta: {
-				options: [
-					{ text: "Від кліщів", value: "from-fungi" },
-					{ text: "Від сказу", value: "from-rabies" },
-					{
-						text: "Від парагрипу",
-						value: "from-parainfluenza"
-					},
-					{
-						text: "Від чума м'ясоїдних",
-						value: "from-carnivorous-plague"
-					},
-					{
-						text: "Від парвовіроз",
-						value: "from-parvovirus"
-					},
-					{
-						text: "Від аденовіроз",
-						value: "from-adenovirus"
-					},
-					{
-						text: "Від лептоспіроз",
-						value: "from-leptospirosis"
-					}
-				]
-			}
+			meta: { options: vaccinations }
 		}
 	];
 
@@ -9654,8 +10754,6 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	};
 
 	return `${($$result.head += `${($$result.title = `<title>Charitify - Charity page and donate.</title>`, "")}`, "")}
-
-
 
 ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}, {})}
 
@@ -11757,7 +12855,7 @@ function validateValue(value) {
  * @param   String  name  Header name
  * @return  String|Undefined
  */
-function find(map, name) {
+function find$1(map, name) {
 	name = name.toLowerCase();
 	for (const key in map) {
 		if (key.toLowerCase() === name) {
@@ -11839,7 +12937,7 @@ class Headers {
 	get(name) {
 		name = `${name}`;
 		validateName(name);
-		const key = find(this[MAP], name);
+		const key = find$1(this[MAP], name);
 		if (key === undefined) {
 			return null;
 		}
@@ -11882,7 +12980,7 @@ class Headers {
 		value = `${value}`;
 		validateName(name);
 		validateValue(value);
-		const key = find(this[MAP], name);
+		const key = find$1(this[MAP], name);
 		this[MAP][key !== undefined ? key : name] = [value];
 	}
 
@@ -11898,7 +12996,7 @@ class Headers {
 		value = `${value}`;
 		validateName(name);
 		validateValue(value);
-		const key = find(this[MAP], name);
+		const key = find$1(this[MAP], name);
 		if (key !== undefined) {
 			this[MAP][key].push(value);
 		} else {
@@ -11915,7 +13013,7 @@ class Headers {
 	has(name) {
 		name = `${name}`;
 		validateName(name);
-		return find(this[MAP], name) !== undefined;
+		return find$1(this[MAP], name) !== undefined;
 	}
 
 	/**
@@ -11927,7 +13025,7 @@ class Headers {
 	delete(name) {
 		name = `${name}`;
 		validateName(name);
-		const key = find(this[MAP], name);
+		const key = find$1(this[MAP], name);
 		if (key !== undefined) {
 			delete this[MAP][key];
 		}
@@ -12065,7 +13163,7 @@ function exportNodeCompatibleHeaders(headers) {
 
 	// http.request() only supports string as Host header. This hack makes
 	// specifying custom Host header possible.
-	const hostHeaderKey = find(headers[MAP], 'Host');
+	const hostHeaderKey = find$1(headers[MAP], 'Host');
 	if (hostHeaderKey !== undefined) {
 		obj[hostHeaderKey] = obj[hostHeaderKey][0];
 	}
