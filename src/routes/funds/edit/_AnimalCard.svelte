@@ -1,4 +1,5 @@
 <script>
+    import { options } from '@config'
     import { Br, Button, Card, Square, UploadBox, RadioRect, StoryList,FormBuilder } from '@components'
 
     export let data = undefined
@@ -130,36 +131,7 @@
             type: 'checkbox',
             name: 'vaccination',
             meta: {
-                options: [
-                    {
-                        text: 'Від кліщів',
-                        value: 'from-fungi'
-                    },
-                    {
-                        text: 'Від сказу',
-                        value: 'from-rabies'
-                    },
-                    {
-                        text: 'Від парагрипу',
-                        value: 'from-parainfluenza'
-                    },
-                    {
-                        text: 'Від чума м\'ясоїдних',
-                        value: 'from-carnivorous-plague'
-                    },
-                    {
-                        text: 'Від парвовіроз',
-                        value: 'from-parvovirus'
-                    },
-                    {
-                        text: 'Від аденовіроз',
-                        value: 'from-adenovirus'
-                    },
-                    {
-                        text: 'Від лептоспіроз',
-                        value: 'from-leptospirosis'
-                    },
-                ]
+                options: options.vaccinations
             },
         },
     ]

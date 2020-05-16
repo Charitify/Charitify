@@ -131,14 +131,25 @@
         isEdit[section] = false
         console.log(values)
     }
+
+    function onToggleMode() {
+        isEditMode = !isEditMode
+        if (!isEditMode) {
+            isEdit = {
+                topInfo: false,
+                description: false,
+                videos: false,
+                documents: false,
+                howToHelp: false,
+                animalCard: false,
+            }
+        }
+    }
 </script>
 
 <svelte:head>
     <title>Charitify - Charity page and donate.</title>
 </svelte:head>
-
-<style>
-</style>
 
 <DonationButton/>
 
@@ -147,7 +158,7 @@
 
     <div>
         <Br size="30"/>
-        <Button size="small" is="info" on:click={() => (isEditMode = !isEditMode)}>
+        <Button size="small" is="info" on:click={onToggleMode}>
             <span class="h3 font-secondary font-w-500 flex flex-align-center">
                 {isEditMode ? 'Зберегти' : 'Редагувати'}
                 <s></s>

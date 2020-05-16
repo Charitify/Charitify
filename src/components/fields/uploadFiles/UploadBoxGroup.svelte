@@ -20,8 +20,7 @@
 
     const BOX_AMOUNT = 4
 
-    let values = value || []
-
+    $: values = value || []
     $: error = invalid !== undefined ? invalid : !!(errors || []).length
     $: idProp = id || name
     $: itemsList = getCells(values)
@@ -62,8 +61,8 @@
                 {disabled}
                 {multiple}
                 bind:value
-                src={values[i]}
                 name={`${name || ''}[${i}]`}
+                src={(values[i] || {}).src || values[i]}
                 errors={_.get(errors, i)}
                 style="max-height: 160px"
                 iconIs={infoIndex.includes(i) ? 'info' : undefined}

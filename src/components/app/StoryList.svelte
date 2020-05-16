@@ -3,6 +3,7 @@
     import { createEventDispatcher } from 'svelte'
     import { classnames, toCSSString } from '@utils'
     import Br from '@components/Br.svelte'
+    import Icon from '@components/Icon.svelte'
     import Modal from '@components/Modal.svelte'
     import Loader from '@components/Loader'
     import Button from '@components/Button.svelte'
@@ -21,6 +22,11 @@
     $: idProp = id || name
     $: classProp = classnames('story-list', $$props.class)
     $: styleProp = toCSSString({ ...style })
+
+    function onRemove({ index }, e) {
+        const val = [...value.filter((_, ind) => ind !== index)]
+        dispatch('change', { e, name, value: val })
+    }
 </script>
 
 <style>
@@ -42,11 +48,22 @@
     <table>
         <tbody>
             {#if value !== null && Array.isArray(value) && value.length}
-                {#each value.filter(Boolean) as val}
+                {#each value.filter(Boolean) as val, i}
                     <tr>
                         <td>{val.date}</td>
                         <td>—</td>
                         <td>{val.title}</td>
+                        {#if !readonly}
+                            <td>
+                                <Button 
+                                    auto 
+                                    style="vertical-align: middle"
+                                    on:click={onRemove.bind(null, { id: val.id, index: i })}
+                                >
+                                    <Icon type="close" size="medium"/>
+                                </Button>
+                            </td>
+                        {/if}
                     </tr>
                 {/each}
             {:else if value === null}
@@ -88,6 +105,11 @@
     {/if}
 </section>
 
-<Modal size="medium" {open}>
+<Modal 
+    {open}
+    id="story-life-modal"
+    size="medium"
+    on:close={() => open = false}
+>
     Something
 </Modal>   

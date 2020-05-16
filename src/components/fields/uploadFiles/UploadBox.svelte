@@ -41,6 +41,8 @@
                 const reader = new FileReader();
                 reader.onload = e => validSrc = e.target.result
                 reader.readAsDataURL(f); // convert to base64 string
+            } else if (!file) {
+                validSrc = undefined
             }
         } catch(err) {
             console.log('UploadBox/getValidSrc error: ', err)

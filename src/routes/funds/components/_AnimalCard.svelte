@@ -1,4 +1,6 @@
 <script>
+    import { options } from '@config'
+    import { _ } from '@utils'
     import { Card, Br, FancyBox, Avatar, Icon, Loader, StoryList } from '@components'
 
     export let animal = {
@@ -13,6 +15,13 @@
         character: null,
         lifestory: null,
         vaccination: null,
+    }
+
+    function getVactinations(values) {
+        return [].concat(values || []).map(value => ({
+            done: true,
+            title: (_.find(options.vaccinations, ['value', value]) || {}).text,
+        })).filter(v => v.title)
     }
 </script>
 
@@ -112,7 +121,7 @@
     <Br size="15"/>
     <ul class="flex flex-column text-left">
         {#if animal.vaccination !== null}
-            {#each animal.vaccination as item, i}
+            {#each getVactinations(animal.vaccination) as item, i}
                 <li>
                     {#if i}
                         <Br size="10"/>
