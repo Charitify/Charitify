@@ -11,7 +11,7 @@ jobs:
   - stage: "Deploy"
     script:
       - openssl aes-256-cbc -K $encrypted_b46169d45b4f_key -iv $encrypted_b46169d45b4f_iv
-        -in charitify-travis-ci_rsa.enc -out ~\/.ssh/charitify-travis-ci_rsa -d
+        -in charitify-travis-ci_rsa.enc -out ./charitify-travis-ci_rsa -d
       - eval "$(ssh-agent -s)"
       - chmod 600 ./charitify-travis-ci_rsa
       - sudo echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
