@@ -1,17 +1,17 @@
 language: bash
 env:
-- SERVER_IP_ADDRESS=77.123.130.167
+  - SERVER_IP_ADDRESS=77.123.130.167
 stages:
-- Deploy
+  - Deploy
 jobs:
-- stage: Deploy
-  script:
-  - openssl aes-256-cbc -K $encrypted_b46169d45b4f_key -iv $encrypted_b46169d45b4f_iv
-    -in charitify-travis-ci_rsa.enc -out ~\/./charitify-travis-ci_rsa -d
-  - eval "$(ssh-agent -s)"
-  - chmod 600 ./charitify-travis-ci_rsa
-  - sudo echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  - ssh-add ./charitify-travis-ci_rsa
-  - ssh -i ./charitify-travis-ci_rsa TravisCIDeployKey@77.123.130.167 < ./deploy.sh
+  - stage: Deploy
+    script:
+      - openssl aes-256-cbc -K $encrypted_b46169d45b4f_key -iv $encrypted_b46169d45b4f_iv
+        -in charitify-travis-ci_rsa.enc -out ./charitify-travis-ci_rsa -d
+      - eval "$(ssh-agent -s)"
+      - chmod 600 ./charitify-travis-ci_rsa
+      - sudo echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+      - ssh-add ./charitify-travis-ci_rsa
+      - ssh -i ./charitify-travis-ci_rsa TravisCIDeployKey@77.123.130.167 < ./deploy.sh
 notifications:
   email: false
