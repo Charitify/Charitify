@@ -13,10 +13,10 @@ jobs:
       - openssl aes-256-cbc -K $encrypted_b46169d45b4f_key -iv $encrypted_b46169d45b4f_iv
         -in charitify-travis-ci_rsa.enc -out ~\/.ssh/charitify-travis-ci_rsa -d
       - eval "$(ssh-agent -s)"
-      - chmod 600 ./deploy_key
+      - chmod 600 ./charitify-travis-ci_rsa
       - sudo echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-      - ssh-add ./deploy_key
-      - ssh -i ./deploy_key TravisCIDeployKey@$SERVER_IP_ADDRESS < ./deploy.sh
+      - ssh-add ./charitify-travis-ci_rsa
+      - ssh -i ./charitify-travis-ci_rsa TravisCIDeployKey@$SERVER_IP_ADDRESS < ./deploy.sh
 
 notifications:
   email: false
