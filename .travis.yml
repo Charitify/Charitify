@@ -12,6 +12,6 @@ jobs:
       - chmod 600 ./charitify-travis-ci_rsa
       - sudo echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
       - ssh-add ./charitify-travis-ci_rsa
-      - ssh -i -t ./charitify-travis-ci_rsa TravisCIDeployKey@77.123.130.167 < ./deploy.sh
+      - ssh -t -i ./charitify-travis-ci_rsa TravisCIDeployKey@77.123.130.167 < ./deploy.sh
 notifications:
   email: false
