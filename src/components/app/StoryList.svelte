@@ -5,7 +5,7 @@
     import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
     import Modal from '@components/Modal.svelte'
-    import Loader from '@components/Loader'
+    import Loader from '@components/loader'
     import Button from '@components/Button.svelte'
 
     const dispatch = createEventDispatcher()

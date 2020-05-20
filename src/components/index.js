@@ -19,7 +19,7 @@ export { default as LazyToggle } from './LazyToggle.svelte'
 export { default as FormBuilder } from './FormBuilder.svelte'
 export { default as FieldErrors } from './FieldErrors.svelte'
 
-export { default as Loader } from './Loader'
+export { default as Loader } from './loader'
 
 export * from './app'
 export * from './map'

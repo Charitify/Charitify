@@ -64,7 +64,7 @@
                 name={`${name || ''}[${i}]`}
                 src={(values[i] || {}).src || values[i]}
                 errors={_.get(errors, i)}
-                style="max-height: 160px"
+                style={{ maxHeight: '160px' }}
                 iconIs={infoIndex.includes(i) ? 'info' : undefined}
                 on:change={onChange.bind(null, i)}
             />
