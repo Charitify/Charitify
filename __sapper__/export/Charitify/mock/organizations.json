@@ -1,0 +1,126 @@
+[
+  {
+    "id": "id",
+    "avatars": [
+      "https://placeimg.com/30/30/tech",
+      "https://placeimg.com/30/30/people",
+      "https://placeimg.com/30/30/any"
+    ],
+    "title": "This person needs your help",
+    "description": "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
+    "trust_rate": 9.5,
+    "percent": 2,
+    "org_head": "Tina Kandelaki",
+    "org_head_avatar": "https://placeimg.com/30/30/people",
+    "organization": "Head of the organization with loooooooong-naaaaaamed charity",
+    "location": {
+      "lat": 49.988358,
+      "lng": 36.232845,
+      "country": "Ukraine",
+      "city": "Kyiv",
+      "address": "Kulparkivska 103a"
+    },
+    "created_at": "2020-02-09T12:30:55.596Z",
+    "tags": ["org", "animals", "help", "need", "other looooooooong tag"]
+  },
+
+  {
+    "id": "id",
+    "avatar": [
+      "https://placeimg.com/30/30/tech",
+      "https://placeimg.com/30/30/people",
+      "https://placeimg.com/30/30/any"
+    ],
+    "title": "Another person who needs your quick help",
+    "description": "Really short description.",
+    "trust_rate": 4.5,
+    "percent": 83,
+    "org_head": "Tina Kandelaki",
+    "org_head_avatar": "https://placeimg.com/30/30/people",
+    "organization": "Head of another organization",
+    "location": {
+      "lat": 48.450001,
+      "lng": 34.983334,
+      "country": "Ukraine",
+      "city": "Kyiv",
+      "address": "Kulparkivska 103a"
+    },
+    "created_at": "2020-02-09T12:30:55.596Z",
+    "tags": ["org", "animals", "help", "need", "other looooooooong tag"]
+  },
+
+  {
+    "id": "id",
+    "src": [
+      "https://placeimg.com/30/30/tech",
+      "https://placeimg.com/30/30/people",
+      "https://placeimg.com/30/30/any"
+    ],
+    "title": "Short-named org",
+    "description": "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
+    "trust_rate": 6.2,
+    "percent": 25,
+    "org_head": "Tinaramisimuss el-de-la Kandelakinuskas",
+    "org_head_avatar": "https://placeimg.com/30/30/people",
+    "organization": "ORG of charity",
+    "location": {
+      "lat": 49.842957,
+      "lng": 24.031111,
+      "country": "Ukraine",
+      "city": "Ivano-Frankivsk",
+      "address": "Stusa 1"
+    },
+    "created_at": "2019-02-03T12:30:55.596Z",
+    "tags": []
+  },
+
+  {
+    "id": "id",
+    "avatar": [
+      "https://placeimg.com/30/30/tech",
+      "https://placeimg.com/30/30/people",
+      "https://placeimg.com/30/30/any"
+    ],
+    "title": "Needs",
+    "description": "Really short description.",
+    "trust_rate": 8.7,
+    "percent": 45,
+    "org_head": "Tina Kandelaki",
+    "org_head_avatar": "https://placeimg.com/30/30/people",
+    "organization": "ORG giant charity organization of big Charitify company",
+    "location": {
+      "lat": 49.553516,
+      "lng": 25.594767,
+      "country": "Ukraine",
+      "city": "Kyiv",
+      "address": "Kulparkivska 103a"
+    },
+    "created_at": "2020-02-09T12:30:55.596Z",
+    "tags": ["org", "animals", "help", "need", "other looooooooong tag"]
+  },
+
+  {
+    "id": "id",
+    "avatar": [
+      "https://placeimg.com/30/30/tech",
+      "https://placeimg.com/30/30/people",
+      "https://placeimg.com/30/30/any"
+    ],
+    "title": "Short-named org",
+    "description": "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
+    "trust_rate": 6.2,
+    "percent": 25,
+    "org_head": "Tinaramisimuss el-de-la Kandelakinuskas",
+    "org_head_avatar": "https://placeimg.com/30/30/people",
+    "organization": "ORG of charity",
+    "location": {
+      "lat": 48.9226,
+      "lng": 24.7111,
+      "country": "Ukraine",
+      "city": "Lviv",
+      "address": "Sadova 1"
+    },
+    "created_at": "2018-02-09T12:30:55.596Z",
+    "tags": ["org", "animals"]
+  }
+]

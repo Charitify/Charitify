@@ -1,0 +1,856 @@
+/*
+ *
+ * Some CSS formula templates:
+ *
+ * calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width])))
+ *
+ */
+
+/* ---------------------===================( Variables )===================--------------------- */
+:root {
+
+    /* -----------========( Colors )=========----------- */
+
+    /* Mono */
+
+    --color-white: 255, 255, 255;           /* #ffffff - white */
+    --color-black: 0, 0, 0;                 /* #000000 - black */
+
+    --color-light: 246, 253, 255;           /* #f6fdff - white blue */
+    --color-light-second: 248, 237, 228;    /* #f8ede4 - background */
+
+    --color-dark: 24, 32, 52;               /* #182034 - dark */
+    --color-dark-second: 43, 47, 61;        /* #2b2f3d - footer, header */
+
+    /* Multi */
+
+    --color-success: 14, 163, 83;           /* #0ea353 - buttons */
+    --color-warning: 218, 160, 11;          /* #daa00b */
+    --color-danger: 226, 43, 43;            /* #e22b2b - errors */
+    --color-info: 56, 151, 240;             /* #3897f0 - accent */
+
+    /* Font */
+
+    --color-font-light: var(--color-white);
+    --color-font-dark: var(--color-black);
+
+
+
+
+    /* -----------========( Current Theme )=========----------- */
+
+    /* Color */
+    --theme-color-primary: var(--color-white);
+    --theme-color-primary-opposite: var(--color-black);
+    --theme-color-secondary: var(--color-light-second);
+
+    --theme-bg-color: var(--color-light);
+    --theme-bg-color-opposite: var(--color-dark);
+
+    --theme-svg-fill: var(--color-black);
+    --theme-svg-fill-opposite: var(--color-white);
+
+    --theme-font-color: var(--color-font-dark);
+    --theme-font-color-opposite: var(--color-font-light);
+
+    /* Shadow */
+    --shadow-primary: 0px 0px 10px rgba(var(--color-black), 0.25);
+    --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.1);
+    --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.04);
+    --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.17);
+
+
+    /* -----------========( Breakpoints )=========----------- */
+
+    --screen-mobile-start: 320px;
+    --screen-mobile-end: 425px;
+
+    --screen-tablet-start: 426px;
+    --screen-tablet-end: 768px;
+
+    --screen-laptop-start: 769px;
+    --screen-laptop-end: 1440px;
+
+    --screen-desktop-start: 1441px;
+    --screen-desktop-end: 1920px;
+
+
+
+    /* -----------========( Shadows )=========----------- */
+
+    /* -----------========( Font )=========----------- */
+
+    --font-weight: 400;
+    --font-size-min: 14;
+    --font-size-max: 16;
+
+    /* (1.6 (22.4px) for 14px/300px -> 2 (32px) for 16px/1600px) = https://grtcalculator.com */
+    --font-line-height-min: 1.46;
+    --font-line-height-max: 1.8;
+
+    --content-width-min: 320;
+    --content-width-max: 1600;
+
+    /* ---------------------===================( Formulas )===================--------------------- */
+    --font-size: calc(var(--font-size-min) * 1px + (var(--font-size-max) - var(--font-size-min)) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
+    --font-line-height: calc((var(--font-size-min) * var(--font-line-height-min)) * 1px + ((var(--font-size-max) * var(--font-line-height-max)) - (var(--font-size-min) * var(--font-line-height-min))) * (100vw - var(--content-width-min) * 1px) / (var(--content-width-max) - var(--content-width-min)));
+
+    /* The most readable online fonts: "1. Verdana, 2. Arial, 3. Courier" -> (https://www.awai.com/2011/10/the-best-fonts-to-use-in-print-online-and-email/) */
+    /* Fonts supporting (https://www.cssfontstack.com/) */
+    --font-family-primary: 'Roboto', sans-serif;
+    --font-family-secondary: 'Montserrat', sans-serif;
+    
+    --font-size-h1: 2.25em; /* 32 */
+    --font-size-h2: 1.7em;  /* 24 */
+    --font-size-h3: 1.15em; /* 16 */
+    --font-size-h4: 1em;    /* 14 */
+    --font-size-h5: .825em; /* 12 */
+    --font-size-h6: .675em; /* 10 */
+
+    --font-line-height-h1: calc(var(--font-line-height) * 1.85);
+    --font-line-height-h2: calc(var(--font-line-height) * 1.4);
+    --font-line-height-h3: calc(var(--font-line-height) * 1.15);
+    --font-line-height-h4: calc(var(--font-line-height) * 1.15);
+    --font-line-height-h5: calc(var(--font-line-height) * 1.15);
+    --font-line-height-h6: calc(var(--font-line-height) * 1.15);    
+
+    /* -----------========( Other )=========----------- */
+
+    --screen-padding: 15px;
+
+    --min-interactive-size: 50px;
+
+    --border-radius-small: 3px;
+    --border-radius-medium: 5px;
+    --border-radius-big: 10px;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --theme-color-primary: var(--color-dark-second);
+        --theme-color-primary-opposite: var(--color-white);
+        --theme-color-secondary: var(--color-dark);
+
+        --theme-bg-color: var(--color-dark);
+        --theme-bg-color-opposite: var(--color-light);
+
+        --theme-svg-fill: var(--color-white);
+        --theme-svg-fill-opposite: var(--color-black);
+
+        --theme-font-color: var(--color-font-light);
+        --theme-font-color-opposite: var(--color-font-dark);
+
+        --shadow-primary: 0px 0px 10px rgba(var(--color-black), 5);
+        --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.2);
+        --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.1);
+        --shadow-field-inset: inset 3px 3px 10px rgba(var(--color-black), 0.3);
+    }
+}
+
+
+/* ---------------------===================( Reset/Normalize )===================--------------------- */
+
+/* All styles (https://dev.to/hankchizljaw/a-modern-css-reset-6p3/) */
+
+/* Prevent adjustments of font size after orientation changes in iOS. */
+html {
+    -webkit-text-size-adjust: 100%
+}
+
+/* Box sizing rules. Padding inside elements */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Make elements as blocks */
+main {
+    display: block;
+}
+
+/* Remove default color styles and change style of underline */
+/* (1) "text-decoration-skip-ink: auto" -> (https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-skip-ink) */
+a {
+    outline: none;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    text-decoration: none;
+    /*text-decoration-skip-ink: auto; !* (1) *!*/
+}
+
+/* Make labels intuitive clickable */
+label {
+    cursor: pointer;
+}
+
+/* Make images easier to work with */
+img {
+    max-width: 100%;
+    display: inline-block;
+}
+
+figure {
+    display: inline-block;
+}
+
+/* Remove list styles on ul, padding, margin */
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    display: list-item;
+}
+
+/* Reset default button styles */
+button {
+    padding: 0;
+    border: none;
+    outline: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    background-color: transparent;
+}
+
+/* Remove default margins */
+p,
+li,
+body,
+figure,
+figcaption,
+blockquote,
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Inherit fonts for inputs and buttons, remove controls */
+input,
+select,
+textarea {
+    padding: 14px 15px;
+    border: none;
+    resize: none;
+    cursor: text;
+    font: inherit;
+    outline: none;
+    overflow: hidden;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-indent: 1px;
+}
+
+/* Remove control arrows from input fields */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+/* Remove dropdown arrows from input fields */
+[list]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Remove all animations and transitions for people that prefer not to see them (https://css-tricks.com/introduction-reduced-motion-media-query/) */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+
+
+/* ---------------------===================( Settings )===================--------------------- */
+
+.theme-light {
+    --theme-color-primary: var(--color-white);
+    --theme-color-primary-opposite: var(--color-black);
+    --theme-color-secondary: var(--color-light-second);
+
+    --theme-bg-color: var(--color-light);
+    --theme-bg-color-opposite: var(--color-dark);
+
+    --theme-svg-fill: var(--color-black);
+    --theme-svg-fill-opposite: var(--color-white);
+
+    --theme-font-color: var(--color-font-dark);
+    --theme-font-color-opposite: var(--color-font-light);
+
+    --shadow-primary: 0px 0px 10px rgba(var(--color-black), 0.25);
+    --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.1);
+    --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.04);
+    --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.17);
+}
+
+.theme-dark {
+    --theme-color-primary: var(--color-dark-second);
+    --theme-color-primary-opposite: var(--color-white);
+    --theme-color-secondary: var(--color-dark);
+
+    --theme-bg-color: var(--color-dark);
+    --theme-bg-color-opposite: var(--color-light);
+
+    --theme-svg-fill: var(--color-white);
+    --theme-svg-fill-opposite: var(--color-black);
+
+    --theme-font-color: var(--color-font-light);
+    --theme-font-color-opposite: var(--color-font-dark);
+
+    --shadow-primary: 0px 0px 10px rgba(var(--color-black), 5);
+    --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.2);
+    --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.1);
+    --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.3);
+}
+
+html {
+    height: 100%; /* Commented out for correct working swiping of the FancyBox on IOS. */
+    overflow-x: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
+    text-align: left;
+    scroll-behavior: smooth;
+    touch-action: manipulation;
+    text-rendering: optimizeSpeed;
+    font-size: var(--font-size);
+    color: rgba(var(--theme-font-color));
+    line-height: var(--font-line-height);
+    font-family: var(--font-family-primary);
+    background-color: rgba(var(--theme-bg-color));
+    -webkit-overflow-scrolling: touch;
+}
+
+#sapper {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
+    transition: opacity .3s ease-in-out;
+
+    --header-height: 50px;
+}
+
+#main {
+    min-height: 100vh;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
+}
+
+h1 {
+    font-weight: 700;
+    font-family: var(--font-family-secondary);
+}
+
+h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    font-family: var(--font-family-secondary);
+}
+
+h1, .h1 {
+    font-size: var(--font-size-h1);
+    line-height: var(--font-line-height-h1);
+}
+
+h2, .h2 {
+    font-size: var(--font-size-h2);
+    line-height: var(--font-line-height-h2);
+}
+
+h3, .h3 {
+    font-size: var(--font-size-h3);
+    line-height: var(--font-line-height-h3);
+}
+
+h4, .h4, p, .p {
+    font-size: var(--font-size-h4);
+    line-height: var(--font-line-height-h4);
+}
+
+h5, .h5 {
+    font-size: var(--font-size-h5);
+    line-height: var(--font-line-height-h5);
+}
+
+h6, .h6 {
+    font-size: var(--font-size-h6);
+    line-height: var(--font-line-height-h6);
+}
+
+sub {
+    display: inline-block;
+    vertical-align: baseline;
+    font-weight: normal;
+    font-size: .825em;
+    line-height: calc(var(--font-line-height) * 1.2);
+}
+
+sup {
+    display: inline-block;
+    vertical-align: baseline;
+    font-weight: normal;
+    font-size: 1.2em;
+    line-height: calc(var(--font-line-height) * 1.2);
+}
+
+pre {
+    margin: 0;
+    font: inherit;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+s {
+    display: inline-block;
+    text-decoration: inherit;
+}
+
+s:after {
+    content: '\00a0';
+}
+
+s.small:after {
+    content: '\2009';
+}
+
+b {
+    font-weight: bold;
+}
+
+table td {
+    vertical-align: baseline;
+}
+
+
+/* ---------------------===================( Global Theme )===================--------------------- */
+
+/* Background patterns: https://leaverou.github.io/css3patterns/ */
+#sapper, .theme-bg {
+    color: rgba(var(--theme-font-color));
+    background-color: rgba(var(--theme-bg-color));
+}
+
+.theme-bg-color {
+    background-color: rgba(var(--theme-bg-color));
+}
+
+.theme-bg-color-secondary {
+    background-color: rgba(var(--theme-color-secondary));
+}
+
+.theme-svg-fill, .theme-svg-fill * {
+    fill: var(--theme-svg-fill);
+    stroke: var(--theme-svg-fill);
+}
+
+.theme-svg-fill-opposite, .theme-svg-fill-opposite * {
+    fill: var(--theme-svg-fill-opposite);
+    stroke: var(--theme-svg-fill-opposite);
+}
+
+
+
+/* ---------------------===================( Focus styles )===================--------------------- */
+
+a:not([class]):focus,
+button:not([class]):focus {
+    text-decoration: underline solid rgb(var(--color-info));
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:not([class]):focus {
+    border-color: rgb(var(--color-success));
+}
+
+::selection {
+    background-color: rgb(var(--color-info), .5);
+}
+
+/* ---------------------===================( Utils/Helpers )===================--------------------- */
+
+.underline {
+    text-decoration: underline;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.first-letter {
+    display: inline-block;
+}
+
+.first-letter:first-letter {
+    text-transform: uppercase;
+}
+
+/* ----------=========( Pointer events )=========----------- */
+.pointer-none {
+    pointer-events: none;
+}
+
+.pointer-auto {
+    pointer-events: auto;
+}
+
+/* ----------=========( Containers )=========----------- */
+.container {
+    padding-left: var(--screen-padding);
+    padding-right: var(--screen-padding);
+}
+
+.full-container {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+
+.full-width {
+    width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+/* ----------=========( Visibility )=========----------- */
+[hidden], .hidden {
+    display: none !important;
+}
+
+[zero], .zero {
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+[invisible], .invisible {
+    visibility: hidden !important;
+}
+
+
+/* ----------=========( Absolute )=========----------- */
+.full-absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* ----------=========( Displaying )=========----------- */
+.flex {
+    display: flex;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.inline {
+    display: inline;
+}
+
+
+/* ----------=========( Font )=========----------- */
+.font-primary {
+    font-family: var(--font-family-primary);
+}
+
+.font-secondary {
+    font-family: var(--font-family-secondary);
+}
+
+.font-w-300 {
+    font-weight: 300;
+}
+
+.font-w-400, .font-w-normal {
+    font-weight: 400;
+}
+
+.font-w-500 {
+    font-weight: 500;
+}
+
+.font-w-600 {
+    font-weight: 600;
+}
+
+.font-w-700 {
+    font-weight: 700;
+}
+
+/* ----------=========( Scroll box )=========----------- */
+.scroll-box {
+    flex: 1 1 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scroll-x-center {
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scroll-x-center > * {
+    position: relative;
+    transform: translateZ(0);
+    scroll-snap-stop: always;
+    scroll-snap-align: center;
+}
+
+.scroll-y-center {
+    scroll-snap-type: y mandatory;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.scroll-y-center > * {
+    position: relative;
+    transform: translateZ(0);
+    scroll-snap-stop: always;
+    scroll-snap-align: center;
+}
+
+.body-scroll-lock #sapper {
+    opacity: .2;
+}
+
+/* ----------=========( Text align )=========----------- */
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+/* ----------=========( Flex )=========----------- */
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-none {
+    flex: none;
+}
+
+.flex-center {
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+}
+
+.flex-self-stretch {
+    align-self: stretch;
+}
+
+.flex-self-start {
+    align-self: flex-start;
+}
+
+.flex-self-end {
+    align-self: flex-end;
+}
+
+.flex-self-baseline {
+    align-self: baseline;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-justify-between  {
+    justify-content: space-between;
+}
+
+.flex-justify-center  {
+    justify-content: center;
+}
+
+.flex-justify-start  {
+    justify-content: flex-start;
+}
+
+.flex-justify-end  {
+    justify-content: flex-end;
+}
+
+.flex-justify-around  {
+    justify-content: space-around;
+}
+
+.flex-justify-stretch  {
+    justify-content: stretch;
+}
+
+.flex-align-center  {
+    align-items: center;
+}
+
+.flex-align-start  {
+    align-items: flex-start;
+}
+
+.flex-align-end  {
+    align-items: flex-end;
+}
+
+.flex-align-stretch  {
+    align-items: stretch;
+}
+
+.flex-align-baseline  {
+    align-items: baseline;
+}
+
+.flex-wrap  {
+    flex-wrap: wrap;
+}
+
+.flex-nowrap  {
+    flex-wrap: nowrap;
+}
+
+/* ----------=========( Text )=========----------- */
+.text-bold {
+    font-weight: bold;
+}
+
+.text-ellipsis {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.text-ellipsis-multiline {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: var(--max-lines);
+    -webkit-box-orient: vertical;  
+}
+
+/* ----------=========( Text color )=========----------- */
+.text-success {
+    color: rgb(var(--color-success));
+}
+
+.text-danger {
+    color: rgb(var(--color-danger));
+}
+
+.text-info {
+    color: rgb(var(--color-info));
+}
+
+.text-white {
+    color: rgb(var(--color-white));
+}
+
+.text-black {
+    color: rgb(var(--color-black));
+}
+
+/* ----------=========( Background color )=========----------- */
+.bg-success {
+    background-color: rgb(var(--color-success));
+}
+
+.bg-danger {
+    background-color: rgb(var(--color-danger));
+}
+
+.bg-info {
+    background-color: rgb(var(--color-info));
+}
+
+/* ----------=========( Border color )=========----------- */
+.border-success {
+    border-color: rgb(var(--color-success));
+}
+
+.border-danger {
+    border-color: rgb(var(--color-danger));
+}
+
+.border-info {
+    border-color: rgb(var(--color-info));
+}
