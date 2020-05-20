@@ -6,14 +6,16 @@
     import { modals } from "@store";
     import Portal from "./Portal.svelte";
     import Br from "./Br.svelte";
+    import Icon from "./Icon.svelte";
 
     const dispatch = createEventDispatcher()
     
     const DURATION = 250
-    const THRESHOLD = 100
+    const THRESHOLD = 50
+    const SWIPE_SPEED = .5
     const THRESHOLD_RANGES = { x: [0, 100], y: [1, 99] }
     const START_POSITION = {
-        x: 300,
+        x: 50,
         y: 0
     }
 
@@ -110,28 +112,42 @@
                 .onLeft(isSwipe.left ? handleHorizontalSwipe : null)
                 .onRight(isSwipe.right ? handleHorizontalSwipe : null)
                 .onTouchEnd(async () => {
+                    const shift = 50
+
                     if (xSwipe > THRESHOLD) {
+                        setDuration(el, DURATION)
+                        setDuration(refHeader, DURATION)
+                        setTimeout(() => setDuration(el, 0), DURATION)
+                        setTimeout(() => setDuration(refHeader, 0), DURATION)
                         setActive(false)
-                        drawOpacity(el, xSwipe + 50, ySwipe)
-                        drawOpacity(refHeader, xSwipe + 50, ySwipe)
-                        drawTransform(el, xSwipe + 50, ySwipe)
-                        drawTransform(refHeader, xSwipe + 50, ySwipe)
+                        drawOpacity(el, xSwipe + shift, ySwipe)
+                        drawOpacity(refHeader, xSwipe + shift, ySwipe)
+                        drawTransform(el, xSwipe + shift, ySwipe)
+                        drawTransform(refHeader, xSwipe + shift, ySwipe)
                         await delay(DURATION)
                     } else if (xSwipe < -THRESHOLD) {
+                        setDuration(el, DURATION)
+                        setDuration(refHeader, DURATION)
+                        setTimeout(() => setDuration(el, 0), DURATION)
+                        setTimeout(() => setDuration(refHeader, 0), DURATION)
                         setActive(false)
-                        drawOpacity(el, xSwipe - 50, ySwipe)
-                        drawOpacity(refHeader, xSwipe - 50, ySwipe)
-                        drawTransform(el, xSwipe - 50, ySwipe)
-                        drawTransform(refHeader, xSwipe - 50, ySwipe)
+                        drawOpacity(el, xSwipe - shift, ySwipe)
+                        drawOpacity(refHeader, xSwipe - shift, ySwipe)
+                        drawTransform(el, xSwipe - shift, ySwipe)
+                        drawTransform(refHeader, xSwipe - shift, ySwipe)
                         await delay(DURATION)
                     }
                     
                     if (ySwipe > THRESHOLD) {
+                        setDuration(el, DURATION)
+                        setDuration(refHeader, DURATION)
+                        setTimeout(() => setDuration(el, 0), DURATION)
+                        setTimeout(() => setDuration(refHeader, 0), DURATION)
                         setActive(false)
-                        drawOpacity(el, xSwipe, ySwipe + 50)
-                        drawOpacity(refHeader, xSwipe, ySwipe + 50)
-                        drawTransform(el, xSwipe, ySwipe + 50)
-                        drawTransform(refHeader, xSwipe, ySwipe + 50)
+                        drawOpacity(el, xSwipe, ySwipe + shift)
+                        drawOpacity(refHeader, xSwipe, ySwipe + shift)
+                        drawTransform(el, xSwipe, ySwipe + shift)
+                        drawTransform(refHeader, xSwipe, ySwipe + shift)
                         await delay(DURATION)
                     } else if (ySwipe < -THRESHOLD) {
                         setDuration(el, DURATION)
@@ -139,10 +155,10 @@
                         setTimeout(() => setDuration(el, 0), DURATION)
                         setTimeout(() => setDuration(refHeader, 0), DURATION)
                         setActive(false)
-                        drawOpacity(el, xSwipe, ySwipe - 50)
-                        drawOpacity(refHeader, xSwipe, ySwipe - 50)
-                        drawTransform(el, xSwipe, ySwipe - 50)
-                        drawTransform(refHeader, xSwipe, ySwipe - 50)
+                        drawOpacity(el, xSwipe, ySwipe - shift)
+                        drawOpacity(refHeader, xSwipe, ySwipe - shift)
+                        drawTransform(el, xSwipe, ySwipe - shift)
+                        drawTransform(refHeader, xSwipe, ySwipe - shift)
                         await delay(DURATION)
                     }
 
@@ -167,7 +183,7 @@
     function handleVerticalSwipe(yDown, yUp, evt, el) {
         const dir = yUp - yDown
         if (!isAllowed.up && dir > 0 || !isAllowed.down && dir < 0) return
-        ySwipe = dir
+        ySwipe = dir * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawTransform(refHeader, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
@@ -176,7 +192,7 @@
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
         const dir = xUp - xDown
         if (!isAllowed.left && dir > 0 || !isAllowed.right && dir < 0) return
-        xSwipe = dir
+        xSwipe = dir * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawTransform(refHeader, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
@@ -202,8 +218,9 @@
     }
 
     function appear(node, params) {
+        if (!active) return
 		const existingTransform = getComputedStyle(node).transform.replace('none', '');
-        const getScale = t => .6 + .4 * t
+        const getScale = t => .9 + .1 * t
         const getX = t => startPosition.x - startPosition.x * t
 		return {
 			duration: DURATION,
@@ -217,8 +234,8 @@
         setTimeout(() => setDuration(ref, 0), DURATION)
         setTimeout(() => setDuration(refHeader, 0), DURATION)
         setStartPosition()
-        drawOpacity(ref, startPosition.x, startPosition.y)
-        drawOpacity(refHeader, startPosition.x, startPosition.y)
+        drawOpacity(ref, startPosition.x * 2, startPosition.y)
+        drawOpacity(refHeader, startPosition.x * 2, startPosition.y)
         setTimeout(() => setActive(false), DURATION)
     }
 </script>
@@ -245,7 +262,9 @@
                             on:click={onCloseModal}
                         >
                             <h2 style="padding: 15px 20px">Закрити</h2>
-                            <span class="close">&#10005;</span>
+                            <span class="close">
+                                 <Icon type="close" size="big" is="light"/>
+                            </span>
                         </button>
                     </slot>
                 </Portal>   
@@ -282,7 +301,7 @@
         touch-action: manipulation;
         user-select: none;
         background-color: rgba(var(--color-black), .75);
-        outline: 50px solid rgba(var(--color-black), .75);
+        outline: 150px solid rgba(var(--color-black), .75);
         transition-timing-function: ease-out;
         opacity: 0;
         pointer-events: none;

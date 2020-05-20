@@ -4,12 +4,13 @@
 
     const dispatch = createEventDispatcher()
 
-    export let is = undefined
+    export let is = undefined // theme, theme-border, white, success, warning, danger, dark, dark-border
     export let id = undefined
     export let rel = undefined
     export let href = undefined
     export let auto = false
     export let type = 'button'
+    export let form = undefined
     export let size = undefined
     export let title = undefined
     export let style = undefined
@@ -62,6 +63,7 @@
 {:else}
     <button
             {id}
+            {form}
             {type}
             {style}
             {disabled}
@@ -124,6 +126,44 @@
         background-color: rgba(var(--color-black), 0.1);
     }
 
+    /* theme */
+
+    :global(.btn).theme {
+        color: rgba(var(--theme-font-color));
+        background-color: rgba(var(--theme-color-secondary));
+    }
+
+    :global(.btn).theme:focus {
+        background-color: rgba(var(--theme-color-secondary), .85);
+    }
+
+    :global(.btn).theme:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).theme:active {
+        box-shadow: var(--shadow-primary);
+    }
+
+    /* theme */
+
+    :global(.btn).theme-border {
+        color: rgba(var(--theme-font-color));
+        border: 2px solid rgba(var(--theme-color-primary-opposite));
+    }
+
+    :global(.btn).theme-border:focus {
+        background-color: rgba(var(--theme-color-secondary), .85);
+    }
+
+    :global(.btn).them-border:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).theme-border:active {
+        box-shadow: var(--shadow-primary);
+    }
+
     /* White */
 
     :global(.btn).white {
@@ -140,6 +180,44 @@
     }
 
     :global(.btn).white:active {
+        box-shadow: var(--shadow-primary);
+    }
+
+    /* Dark */
+
+    :global(.btn).dark {
+        color: rgba(var(--color-font-light));
+        background-color: rgba(var(--color-dark));
+    }
+
+    :global(.btn).dark:focus {
+        background-color: rgba(var(--color-dark), .85);
+    }
+
+    :global(.btn).dark:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).dark:active {
+        box-shadow: var(--shadow-primary);
+    }
+
+    /* Dark-border */
+
+    :global(.btn).dark-border {
+        color: rgba(var(--theme-font-color));
+        border: 2px solid rgba(var(--theme-font-color));
+    }
+
+    :global(.btn).dark-border:focus {
+        background-color: rgba(var(--color-dark), .85);
+    }
+
+    :global(.btn).dark-border:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).dark-border:active {
         box-shadow: var(--shadow-primary);
     }
 
@@ -178,6 +256,45 @@
     }
 
     :global(.btn).warning:active {
+        box-shadow: var(--shadow-primary);
+    }
+
+    /* Info */
+
+    :global(.btn).info {
+        color: rgba(var(--color-font-light));
+        border: 2px solid rgba(var(--color-info));
+        background-color: rgba(var(--color-info));
+    }
+
+    :global(.btn).info:focus {
+        background-color: rgba(var(--color-info), .85);
+    }
+
+    :global(.btn).info:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).info:active {
+        box-shadow: var(--shadow-primary);
+    }
+
+    /* Info-border  */
+
+    :global(.btn).info-border {
+        color: rgba(var(--color-info));
+        border: 2px solid rgba(var(--color-info));
+    }
+
+    :global(.btn).info-border:focus {
+        background-color: rgba(var(--color-dark), .85);
+    }
+
+    :global(.btn).info-border:hover {
+        box-shadow: var(--shadow-primary);
+    }
+
+    :global(.btn).info-border:active {
         box-shadow: var(--shadow-primary);
     }
 

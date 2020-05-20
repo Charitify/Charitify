@@ -1,8 +1,13 @@
 <script>
+    /**
+     * @info see more icons: https://www.svelte-icons.gibdig.com/
+     */
     import { classnames, toCSSString } from '@utils'
+    import { icons } from '@config'
+
 
     export let type
-    export let is = null // primary|warning|danger|light|dark
+    export let is = null // primary|info|danger|light|dark
     export let size = null // small|medium|big
     export let rotate = 0
     export let style = undefined
@@ -17,29 +22,30 @@
     $: classProp = classnames('ico', is, size, $$props.class)
 </script>
 
-<svg
-        {id}
-        title={titleProp}
-        class={classProp}
-        style={styleProp}
-        aria-label={ariaLabelProp}
->
-    <use xlink:href={`#ico-${type}`} class="ico-use"/>
-</svg>
+<i {id} title={titleProp} style={styleProp} class={classProp}>
+    <svelte:component this={icons[type]}/>
+</i>
 
 <style>
-    svg {
-        display: inherit;
+    .ico {
         flex-grow: 1;
         align-self: stretch;
+        display: inline-flex;
+        vertical-align: middle;
     }
 
-    svg:not(.custom) * {
-        fill: rgba(var(--theme-svg-fill));
-        stroke: rgba(var(--theme-svg-fill));
+    .ico:not(.custom) {
+        color: rgba(var(--theme-svg-fill));
     }
 
     /* ------------=========( Size )=========------------ */
+    .tiny {
+        width: 13px;
+        height: 13px;
+        flex: none;
+        align-self: auto;
+    }
+
     .small {
         width: 18px;
         height: 18px;
@@ -69,28 +75,23 @@
     }
 
     /* ------------=========( Color )=========------------ */
-    svg.primary * {
-        fill: rgb(var(--color-success));
-        stroke: rgb(var(--color-success));
+    .ico.primary {
+        color: rgb(var(--color-success));
     }
 
-    svg.danger * {
-        fill: rgb(var(--color-danger));
-        stroke: rgb(var(--color-danger));
+    .ico.danger {
+        color: rgb(var(--color-danger));
     }
 
-    svg.info * {
-        fill: rgb(var(--color-info));
-        stroke: rgb(var(--color-info));
+    .ico.info {
+        color: rgb(var(--color-info));
     }
 
-    svg.light * {
-        fill: rgb(var(--color-white));
-        stroke: rgb(var(--color-white));
+    .ico.light {
+        color: rgb(var(--color-white));
     }
 
-    svg.dark * {
-        fill: rgb(var(--color-black));
-        stroke: rgb(var(--color-black));
+    .ico.dark {
+        color: rgb(var(--color-black));
     }
 </style>

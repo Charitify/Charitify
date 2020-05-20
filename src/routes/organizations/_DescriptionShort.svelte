@@ -3,19 +3,16 @@
 
     export let title
     export let text
-
-    let active = false
-    setInterval(() => active = !active, 3000)
 </script>
 
-{#if title && active}
+{#if title}
     <h2>{title}</h2>
 {:else}
     <div style="width: 85%"><Loader type="h2"/>  </div>
 {/if}
 <Br size="10" />
 
-{#if text && active}
+{#if text}
 <pre class="font-w-300">
     {text}
 </pre>

@@ -2,6 +2,7 @@
     import Icon from '@components/Icon.svelte'
     import Card from '@components/Card.svelte'
     import Avatar from '@components/Avatar.svelte'
+    import Loader from '@components/loader'
 
     /**
      * @type {{
@@ -19,29 +20,39 @@
     <Card>
         <ul class="full-width">
             {#each items as item}
-                {#if item.title && item.src}
-                    <li key={item.id}>
-                        <div class="relative">
-                            <Avatar src={item.src} size="medium" alt={item.subtitle}/>
-                            {#if item.checked}
-                                <div class="absolute flex" style="top: -1px; right: -1px; width: 20px; height: 20px; overflow: hidden">
-                                    <Icon type="polygon" is="info"/>
-                                    <div class="absolute-center flex" style="width: 10px; height: 10px;">
-                                        <Icon type="check-flag" is="light"/>
-                                    </div>
+                <li key={item.id}>
+                    <div class="relative">
+                        <Avatar src={item.src} size="medium" alt={item.subtitle}/>
+                        {#if item.checked}
+                            <div class="absolute flex" style="top: -1px; right: -1px; width: 20px; height: 20px; overflow: hidden">
+                                <Icon type="polygon" is="info"/>
+                                <div class="absolute-center flex" style="width: 10px; height: 10px;">
+                                    <Icon type="check-flag" is="light"/>
                                 </div>
-                            {/if}
-                        </div>
-                        <s></s>
-                        <s></s>
-                        <s></s>
-                        <s></s>
-                        <div style="overflow: hidden;" class="flex flex-column flex-justify-center">
+                            </div>
+                        {/if}
+                    </div>
+                    <s></s>
+                    <s></s>
+                    <s></s>
+                    <s></s>
+                    <div style="overflow: hidden;" class="flex flex-column flex-justify-center">
+                        {#if item.title !== null}
                             <h2 class="text-ellipsis">{ item.title }</h2>
-                            <span class="h4 font-w-300 text-ellipsis">{ item.subtitle }<span/>
-                        </div>
-                    </li>
-                {/if}
+                        {:else}
+                            <span class="h2 relative flex-self-start">
+                                <span style="visibility: hidden">₴ 1000</span>
+                                <Loader type="h2" absolute/>
+                            </span>  
+                        {/if}
+
+                        {#if item.subtitle !== null}
+                            <span class="h4 font-w-300 text-ellipsis">{ item.subtitle }</span>
+                        {:else}
+                            <Loader type="h4"/>
+                        {/if}
+                    </div>
+                </li>
             {/each}
         </ul>
     </Card>

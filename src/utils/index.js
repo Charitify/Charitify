@@ -1,6 +1,7 @@
 export * as _ from './lodash'
 export * as bodyScroll from './bodyScroll'
 
+export { default as uuid } from './uuid'
 export { default as delay } from './delay'
 export { default as safeGet } from './safeGet'
 export { default as waitUntil } from './waitUntil'

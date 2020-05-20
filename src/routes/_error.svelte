@@ -16,11 +16,13 @@
 <br>
 <br>
 <br>
-<h1 class="text-center">Error: {status}</h1>
+<div class="text-center">
+	<h1>ой 🙃</h1>
+</div>
+<div hidden class="text-center">
+	<h1>Error: {status}</h1>
+	<br>
+	<p>Reason: {error.message}</p>
+</div>
 <br>
-<p class="text-center">Reason: {error.message}</p>
 <br>
-<br>
-{#if dev && error.stack}
-	<pre>{error.stack}</pre>
-{/if}

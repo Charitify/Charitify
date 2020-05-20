@@ -3,8 +3,9 @@
     // See here for generating: https://danilowoz.com/create-content-loader/
     
     import { onMount } from 'svelte'
-    import { classnames } from '@utils'
+    import { classnames, uuid } from '@utils'
     import Text from './Text.svelte'
+    import Circle from './Circle.svelte'
 
     export let width = '100%' 
     export let height = '100%'
@@ -12,13 +13,16 @@
     export let dark = '#555555';
     export let opacity = .2;
     export let border = false;
-    export let type = 'p'; // h1, h2, h3, h4, h5, h6, p, pre
+    export let absolute = false;
+    export let type = undefined; // h1, h2, h3, h4, h5, h6, p, pre, avatar
+
+    const uid = uuid()
 
     let hTypes = {
         p: 21,
         h1: 35,
-        h2: 26,
-        h3: 21,
+        h2: 29,
+        h3: 26,
         h4: 21,
         h5: 21,
         h6: 21,
@@ -27,35 +31,30 @@
 
     onMount(() => {
         const style = getComputedStyle(document.body);
-        console.log(style.getPropertyValue('font-size'));
-        console.log();
-
         const lh = Number.parseInt(style.getPropertyValue('line-height'))
-        const balance = -2
+        const balance = 0
 
         hTypes = {
             p: lh * 1.15 + balance,
             h1: lh * 1.85 + balance,
             h2: lh * 1.4 + balance,
-            h3: lh * 1.15 + balance,
+            h3: lh * 1.3 + balance,
             h4: lh * 1.15 + balance,
             h5: lh * 1.15 + balance,
             h6: lh * 1.15 + balance,
             pre: lh * 1.15 + balance,
         }
-
-        console.log(hTypes)
     })
 
     $: areaWidth = width.replace('%', '')
-    $: areaHeight = hTypes[type] || height.replace('%', '')
-    $: classProp = classnames('loader', { border })
+    $: areaHeight = hTypes[type] || height
+    $: classProp = classnames('loader', { border, absolute })
 </script>
 
 <section 
     class={classProp}
     style={`opacity: ${opacity}; outline-color: ${light};`}
->  
+>
     <svg
         role="img"
         width="100%"
@@ -70,57 +69,61 @@
             y="0"
             width="100%"
             height="100%"
-            clip-path="url(#clip-path)"
-            style='fill: url("#fill");'
+            clip-path={`url(#clip-path-${uid})`}
+            style='fill: url("#loader-fill");'
         ></rect>
         <defs>
-            <clipPath id="clip-path">
+            <clipPath id={`clip-path-${uid}`}>
                 <slot>
-                    {#if type}
+                    {#if 'avatar'.includes(type)}
+                        <Circle/>
+                    {:else if 'h1,h2,h3,h4,h5,h6,p,pre'.includes(type)}
                         <Text/>
+                    {:else}
+                        <rect x="0" y="0" rx="3" ry="3" width="100%" height="100%" />
                     {/if}
                 </slot>
             </clipPath>
-            <linearGradient id="fill">
-            <stop
-                offset="0.599964"
-                stop-color={light}
-                stop-opacity="1"
-            >
-                <animate
-                attributeName="offset"
-                values="-2; -2; 1"
-                keyTimes="0; 0.25; 1"
-                dur="2s"
-                repeatCount="indefinite"
-                ></animate>
-            </stop>
-            <stop
-                offset="1.59996"
-                stop-color={dark}
-                stop-opacity="1"
-            >
-                <animate
-                attributeName="offset"
-                values="-1; -1; 2"
-                keyTimes="0; 0.25; 1"
-                dur="2s"
-                repeatCount="indefinite"
-                ></animate>
-            </stop>
-            <stop
-                offset="2.59996"
-                stop-color={light}
-                stop-opacity="1"
-            >
-                <animate
-                attributeName="offset"
-                values="0; 0; 3"
-                keyTimes="0; 0.25; 1"
-                dur="2s"
-                repeatCount="indefinite"
-                ></animate>
-            </stop>
+            <linearGradient id="loader-fill">
+                <stop
+                    offset="0.599964"
+                    stop-color={light}
+                    stop-opacity="1"
+                >
+                    <animate
+                    attributeName="offset"
+                    values="-2; -2; 1"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                    ></animate>
+                </stop>
+                <stop
+                    offset="1.59996"
+                    stop-color={dark}
+                    stop-opacity="1"
+                >
+                    <animate
+                    attributeName="offset"
+                    values="-1; -1; 2"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                    ></animate>
+                </stop>
+                <stop
+                    offset="2.59996"
+                    stop-color={light}
+                    stop-opacity="1"
+                >
+                    <animate
+                    attributeName="offset"
+                    values="0; 0; 3"
+                    keyTimes="0; 0.25; 1"
+                    dur="2s"
+                    repeatCount="indefinite"
+                    ></animate>
+                </stop>
             </linearGradient>
         </defs>
     </svg>
@@ -131,11 +134,21 @@
         display: flex;
         flex: 1 1 auto;
         align-self: stretch;
+        transform: translateZ(0);
     }
 
     .loader svg {
         flex: 1 1 auto;
         align-self: stretch;
+        transform: translateZ(0);
+    }
+
+    .loader.absolute {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
 
     .loader.border {

@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { classnames } from '@utils'
+    import Icon from '@components/Icon.svelte'
 
     const dispatch = createEventDispatcher()
 
@@ -35,9 +36,9 @@
 
 <button type="button" title="I trust" class={classProp} on:click={onClickHandler}>
     <div class="full-absolute">
-        <svg>
-            <use xlink:href="#ico-heart-filled" class="ico-use"/>
-        </svg>
+        <span>
+            <Icon type="heart" is={isActive ? 'light' : 'danger'}/>
+        </span>
     </div>
 </button>
 
@@ -65,19 +66,20 @@
         background-color: rgba(var(--color-danger), 1);
     }
 
-    .trust-btn.isActive svg {
-        fill: rgba(var(--color-white));
+    .trust-btn.isActive span {
+        color: rgba(var(--color-white));
         animation: none;
         transform: scale(1.1)
     }
 
-    svg {
+    span {
+        display: flex;
         width: 50%;
         height: 50%;
         margin-top: 3px;
         max-width: calc(100% - 10px);
         max-height: calc(100% - 10px);
-        fill: rgba(var(--color-danger));
+        color: rgba(var(--color-danger));
         animation: pulse 2s infinite;
     }
 

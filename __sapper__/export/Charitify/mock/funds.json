@@ -1,0 +1,53 @@
+[
+  {
+  "id": "id",
+
+  "type": "animal",
+
+  "is_liked": true,
+
+  "tags": ["Дім", "Сірка", "тварини", "безпритульні"],
+
+  "likes": 2,
+  "views": 12,
+
+  "updated_at": "2020-02-09T12:30:55.596Z",
+  "created_at": "2020-02-09T12:30:55.596Z",
+
+  "title": "Збережемо тварин разом завдяки новим домам",
+  "subtitle": "Збір грошей на допомогу безпритульним тваринам",
+
+  "need_sum": 3000000,
+  "curremt_sum": 2500000,
+  "currency": "₴",
+
+  "location": {
+    "lat": 48.9226,
+    "lng": 24.7111,
+    "short": "UA",
+    "country": "Ukraine",
+    "city": "Ivano-Frankivsk",
+    "address": "Stusa 1"
+  },
+
+  "avatars": [
+    {
+      "id": "id",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/people"
+    },
+    {
+      "id": "id",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/people",
+      "src2x": "https://placeimg.com/1000/1000/people"
+    },
+    {
+      "id": "id",
+      "description": "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+      "src": "https://placeimg.com/300/300/people",
+      "src2x": "https://placeimg.com/1000/1000/people"
+    }
+  ]
+ }
+]

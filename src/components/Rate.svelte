@@ -7,19 +7,19 @@
 
 <ul class="rate">
     <li>
-        <Icon {is} {size} type="heart-filled"/>
+        <Icon {is} {size} type="heart"/>
     </li>
     <li>
-        <Icon {is} {size} type="heart-filled"/>
+        <Icon {is} {size} type="heart"/>
     </li>
     <li>
-        <Icon {is} {size} type="heart-filled"/>
+        <Icon {is} {size} type="heart"/>
     </li>
     <li>
-        <Icon {is} {size} type="heart-filled"/>
+        <Icon {is} {size} type="heart"/>
     </li>
     <li>
-        <Icon {is} {size} type="heart-filled"/>
+        <Icon {is} {size} type="heart"/>
     </li>
 </ul>
 

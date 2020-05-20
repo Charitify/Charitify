@@ -1,95 +1,124 @@
 <script>
-    import { Input, Picture, Button, Space } from '@components'
+    import { onMount } from 'svelte'
+    import { API } from '@services'
+    import { delay, safeGet } from '@utils'
+    import { Br, Icon, Card, Avatar, Button, FundCards, EditArea } from '@components'
+    import Usercard from './_Usercard.svelte'
 
-    const inputs = [
-        {
-            placeholder: 'username',
-        },
-        {
-            placeholder: 'Full name',
-        },
-        {
-            placeholder: 'sex (checkboxes or dropdown)',
-        },
-        {
-            placeholder: 'birth',
-        },
-        {
-            placeholder: 'email',
-        },
-        {
-            placeholder: 'tel',
-        },
-        {
-            placeholder: 'location (autocomplete)',
-        },
-    ]
+    let href = '.'
 
-    const USERNAME = 'bublikus.script'
+    // Entities
+    let organization = {}
+    let funds
+
+    $: contacts = safeGet(() => organization.contacts.map(c => ({
+        title: c.title,
+        href: c.value,
+        type: c.type,
+    })), null)
+    $: animalFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
+        id: f.id,
+        src: f.avatars[0].src,
+        type: f.type,
+        title: f.title,
+        total: f.need_sum,
+        current: f.curremt_sum,
+        currency: f.currency,
+        city: f.location.city,
+    })), null)
+    $: othersFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
+        id: f.id,
+        src: f.avatars[0].src,
+        type: f.type,
+        title: f.title,
+        total: f.need_sum,
+        current: f.curremt_sum,
+        currency: f.currency,
+        city: f.location.city,
+    })), null)
+
+    onMount(async () => {
+        await delay(7000)
+        organization = await API.getOrganization(1);
+        funds = await API.getFunds()
+    });
 </script>
 
-<section class="container">
-    <br>
-    <div class="user-avatar">
-        <Picture src="https://placeimg.com/100/100/people" alt="user avatar"/>
+<section class="container theme-bg-color-secondary">
+    <Br size="var(--header-height)"/>
+    <Br size="35"/>
+
+    <h1 class="text-center">Про мене</h1>
+    <Br size="20"/>
+
+    <Usercard
+            items={contacts}
+            title={safeGet(() => organization.name)}
+            subtitle={safeGet(() => organization.title)}
+            src={safeGet(() => organization.avatar)}
+            srcBig={safeGet(() => organization.avatarBig)}
+    />
+
+    <Br size="15" />
+
+    <div class="full-container">
+        <EditArea>
+            <Br size="40" />
+            <h1>Мої організації</h1>
+            <Br size="5" />
+            <div class="full-container">
+                <FundCards items={animalFunds}>
+                    <div slot="button" let:id={id}>
+                        <Button size="small" is="info" href={id}>
+                            <span class="h3 font-secondary font-w-500 flex flex-align-center">
+                                Редагувати
+                                <s></s>
+                                <s></s>
+                                <Icon type="edit" size="small" is="light"/>
+                            </span>
+                        </Button>
+                    </div>
+                </FundCards>
+            </div>
+
+            <Br size="35" />
+            <Button size="big" is="success" href={href}>
+                <span class="h2 font-secondary font-w-600">
+                    Додати
+                </span>
+            </Button>
+            <Br size="40" />
+        </EditArea>
     </div>
-    <br>
-    <br>
-    <section style="display: flex; flex-direction: row">
-        <Button is="success" auto>success</Button>
-        <Space size="2"/>
-        <Button is="warning" auto>warning</Button>
-        <Space size="2"/>
-        <Button is="danger" auto>danger</Button>
-        <Space size="2"/>
-        <Button is="info" auto>info</Button>
-    </section>
-    <br>
-    <br>
-    <a href={`https://instagram.com/${USERNAME}/`}>Link to Instagram Page</a>
-    <br>
-    <br>
-    <a href={`instagram://user?username=${USERNAME}`}>Link to Instagram Profile</a>
-    <br>
-    <br>
-    <ul>
-        {#each inputs as inp}
-            <li>
-                <Input {...inp}/>
-            </li>
-        {/each}
-    </ul>
+
+    <Br size="15" />
+
+    <h1>Мої фонди</h1>
+    <Br size="5" />
+    <div class="full-container">
+        <FundCards items={othersFunds}>
+            <div slot="button" let:id={id}>
+                <Button size="small" is="info" href={id}>
+                    <span class="h3 font-secondary font-w-500 flex flex-align-center">
+                        Редагувати
+                        <s></s>
+                        <s></s>
+                        <Icon type="edit" size="small" is="light"/>
+                    </span>
+                </Button>
+            </div>
+        </FundCards>
+    </div>
+
+    <Br size="35" />
+    <Button size="big" is="success" href={href}>
+        <span class="h2 font-secondary font-w-600">
+            Додати
+        </span>
+    </Button>
+
+    <Br size="125" />
 </section>
 
 <style>
-    section {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-    }
-
-    ul {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin: 0 -5px;
-    }
-
-    li {
-        flex: 1 1 50%;
-        padding: 5px;
-    }
-
-    .user-avatar {
-        flex: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        overflow: hidden;
-        box-shadow: var(--shadow-primary);
-        background-color: rgba(var(--theme-bg-color));
-    }
 </style>

@@ -1,30 +1,24 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
-    import { classnames } from '@utils'
-
-    const dispatch = createEventDispatcher()
-
-    export let name
+    export let name = undefined
     export let id = undefined
     export let title = undefined
     export let ariaLabel = undefined
-    export let autocomplete = true
+    export let method = undefined
+    export let autocomplete = undefined
 
     let titleProp = title || ariaLabel
     let ariaLabelProp = ariaLabel || title
-    let autocompleteProp = autocomplete ? 'on' : 'off'
-
-    $: classProp = classnames('form', $$props.class)
 </script>
 
 <form
         {id}
         {name}
+        {method}
+        {autocomplete}
         title={titleProp}
-        class={classProp}
+        class={$$props.class}
         aria-label={ariaLabelProp}
-        autocomplete={autocompleteProp}
-        on:submit|preventDefault={e => dispatch('submit', e)}
+        on:submit|preventDefault
 >
     <slot></slot>
 </form>

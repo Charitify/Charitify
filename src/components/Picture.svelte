@@ -12,24 +12,25 @@
     export let width = undefined
     export let height = undefined
 
-    let isError = false
     let loadingSrcSmall = true
     let loadingSrcBig = true
+    let isErrorSmall = false
+    let isErrorBig = false
 
-    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isError })
+    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isErrorSmall, isErrorBig })
 
     function imgService(node, postFix) {
         if (node.complete) {
             onLoad(node, postFix)
         } else {
-            node.onload = () => onLoad(node, postFix)
-            node.onerror = () => onError(node, postFix)
+            node.onload = onLoad.bind(null, node, postFix)
+            node.onerror = onError.bind(null, node, postFix)
         }
     }
 
     function onLoad(node, postFix) {
         changeLoading(postFix, false)
-        isError = false
+        changeError(postFix, false)
         dispatch(`load${postFix}`, node)
 
         if (!srcBig || !loadingSrcBig) {
@@ -39,7 +40,7 @@
 
     function onError(node, postFix) {
         changeLoading(postFix, false)
-        isError = true
+        changeError(postFix, true)
         dispatch(`error${postFix}`, node)
     }
 
@@ -54,10 +55,22 @@
         }
     }
 
+    function changeError(type, isError) {
+        switch (type) {
+            case 'Small':
+                isErrorSmall = isError
+                break
+            case 'Big':
+                isErrorBig = isError
+                break
+        }
+    }
+
 </script>
 
 <figure class={wrapClassProp}>
-    <img
+    {#if src}
+        <img
             use:imgService={'Small'}
             {id}
             {alt}
@@ -65,16 +78,17 @@
             {width}
             {height}
             class="pic pic-1x"
-    />
+        />
+    {/if}
 
     {#if srcBig && !loadingSrcSmall}
         <img
-                use:imgService={'Big'}
-                {alt}
-                {width}
-                {height}
-                src={srcBig}
-                class="pic pic-2x"
+            use:imgService={'Big'}
+            {alt}
+            {width}
+            {height}
+            src={srcBig}
+            class="pic pic-2x"
         />
     {/if}
 
@@ -100,7 +114,7 @@
         overflow: hidden;
         align-self: stretch;
         object-position: center;
-        transition: opacity .3s ease-in;
+        transition: opacity .5s ease-in;
     }
 
     .picture .pic-2x {
@@ -119,8 +133,8 @@
         object-fit: contain;
     }
 
-    .picture.isError .pic-1x,
-    .picture.isError .pic-2x,
+    .picture.isErrorSmall .pic-1x,
+    .picture.isErrorBig .pic-2x,
     .picture.loadingSrcSmall .pic-1x,
     .picture.loadingSrcBig .pic-2x {
         opacity: 0;

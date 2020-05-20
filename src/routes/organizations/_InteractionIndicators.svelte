@@ -1,11 +1,11 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { Icon, Button } from "@components";
+  import { Icon, Button, Loader } from "@components";
 
   const dispatch = createEventDispatcher()
 
-  export let likes = 0;
-  export let views = 0;
+  export let likes = null;
+  export let views = null;
   export let isLiked = false;
 </script>
 
@@ -17,10 +17,17 @@
     style={`opacity: ${isLiked ? 1 : .5}`}
     on:click={() => dispatch('click', !isLiked)}
 >
-    <Icon is="danger" type="heart-filled" size="medium" />
+    <Icon is="danger" type="heart" size="medium" />
     <s />
     <s />
-    <span class="font-secondary font-w-600 h3">{likes}</span>
+    {#if likes !== null}
+      <span class="font-secondary font-w-600 h3">{likes}</span>
+    {:else}
+      <span class="font-secondary font-w-600 h3 relative">
+        <span style="visibility: hidden">199</span>
+        <Loader type="h3" absolute/>
+      </span>  
+    {/if}
   </Button>
 
   <span class="flex">
@@ -35,6 +42,13 @@
     <Icon type="eye" size="medium" class="theme-svg-fill" />
     <s />
     <s />
-    <span class="font-secondary font-w-600 h3">{views}</span>
+    {#if views !== null}
+      <span class="font-secondary font-w-600 h3">{views}</span>
+    {:else}
+      <span class="font-secondary font-w-600 h3 relative">
+        <span style="visibility: hidden">199</span>
+        <Loader type="h3" absolute/>
+      </span>  
+    {/if}
   </span>
 </p>

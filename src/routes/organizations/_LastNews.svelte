@@ -2,13 +2,13 @@
     import { onMount } from 'svelte'
     import { modals } from '@store'
     import { bodyScroll, safeGet } from '@utils'
-    import { Br, NewsList, Modal, FancyBox, Carousel } from '@components'
+    import { Br, NewsList, Modal, FancyBox, Carousel, Loader } from '@components'
     import TopCarousel from './_TopCarousel.svelte'
     import Trust from './_Trust.svelte'
     import DescriptionShort from './_DescriptionShort.svelte'
     import InteractionIndicators from './_InteractionIndicators.svelte'
     
-    export let items = []
+    export let items
     export let carousel = []
     export let iconsLine = {}
     export let organization = {}
@@ -27,16 +27,25 @@
     <section class="container flex flex-column relative">
         <Br/>
 
-        <h1>{ descriptionShort.title }</h1>
+        {#if descriptionShort.title !== null}
+            <h1>{ descriptionShort.title }</h1>
+        {:else}
+            <Loader type="h1"/>
+        {/if}
         <Br size="5"/>
-        <p>{ descriptionShort.title }</p>
+        {#if descriptionShort.title !== null}
+            <p>{ descriptionShort.title }</p>
+        {:else}
+            <div style="width: 40%"><Loader type="p"/></div>
+        {/if}
         <Br size="25"/>
         
         <section class="flex" style="height: 240px">
             <Carousel items={carousel} stopPropagation={true}/>
         </section>
 
-        <DescriptionShort text={descriptionShort.text}/>
+        <Br size="25"/>
+        <DescriptionShort text={descriptionShort.text} title={descriptionShort.title}/>
         <Br size="10" />
 
         <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>

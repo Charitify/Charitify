@@ -27,7 +27,7 @@
     let parent = null
 
     $: activeDot = initIndex
-    $: classProp = classnames('carousel', size, $$props.class, { dotsBelow, rounded })
+    $: classProp = classnames('carousel', size, $$props.class, { dots, dotsBelow, rounded, filled: items && items.length })
     $: setScrollPosition(parent, initIndex)
 
     function carousel(node) {
@@ -85,22 +85,24 @@
         use:carousel
         class="carousel-inner scroll-x-center"
     >
-        {#each items as item, index}
-            <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
-                <slot {item} {index}>
-                    <FancyBox disabled={disableFancy}>
-                        <Picture key="picture" {...item} alt={item.alt || 'Фото слайду'}/>
-                        <section slot="box" class="flex full-width">
+        {#if items !== null}
+            {#each items as item, index}
+                <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
+                    <slot {item} {index}>
+                        <FancyBox disabled={disableFancy}>
                             <Picture key="picture" {...item} alt={item.alt || 'Фото слайду'}/>
-                        </section>
-                    </FancyBox>
-                </slot>
-            </li>
-        {/each}
+                            <section slot="box" class="flex full-width">
+                                <Picture key="picture" {...item} alt={item.alt || 'Фото слайду'}/>
+                            </section>
+                        </FancyBox>
+                    </slot>
+                </li>
+            {/each}
+        {/if}
     </ul>
 
 
-    {#if dots}
+    {#if dots && Array.isArray(items)}
         <ul class="carousel-dots">
             {#each items as _item, i}
                 <li class={i === activeDot ? 'active' : ''}></li>
@@ -125,8 +127,12 @@
         justify-content: stretch;
     }
 
-    .carousel.dotsBelow {
+    .carousel.dots.dotsBelow.filled {
         padding-bottom: 40px;
+    }
+
+    .carousel.filled > .carousel-inner {
+        background-color: transparent;
     }
 
     .carousel.dotsBelow .carousel-dots {

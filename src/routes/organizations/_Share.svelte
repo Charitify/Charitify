@@ -7,7 +7,7 @@
     <Icon type="share" size="medium" class="theme-svg-fill" />
     <s />
     <s />
-    <p class="font-w-500">Поділитись</p>
+    <h3 class="font-w-500">Поділитись</h3>
   </Button>
   <s />
   <s />
@@ -18,6 +18,6 @@
     <Icon type="link" size="medium" class="theme-svg-fill" />
     <s />
     <s />
-    <p class="font-w-500">Скопіювати</p>
+    <h3 class="font-w-500">Скопіювати</h3>
   </Button>
 </p>

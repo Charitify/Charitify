@@ -3,12 +3,14 @@
     import { fly } from 'svelte/transition'
     import { Swipe } from '@services'
     import { classnames, delay, bodyScroll, safeGet } from '@utils'
+    import Icon from '@components/Icon.svelte';
     import Portal from './Portal.svelte';
 
     const dispatch = createEventDispatcher()
     
-    const DURATION = 150
-    const THRESHOLD = 100
+    const DURATION = 250
+    const THRESHOLD = 50
+    const SWIPE_SPEED = .5
     const START_POSITION = {
         x: 0,
         y: 20
@@ -76,11 +78,15 @@
                 .onRight(isSwipe.right ? handleHorizontalSwipe : null)
                 .onTouchEnd(async () => {
                     if (xSwipe > THRESHOLD) {
+                        setDuration(ref, DURATION)
+                        setTimeout(() => setDuration(ref, 0), DURATION)
                         setActive(false)
                         drawTransform(el, xSwipe + 50, ySwipe)
                         drawOpacity(el, xSwipe + 50, ySwipe)
                         await delay(DURATION)
                     } else if (xSwipe < -THRESHOLD) {
+                        setDuration(ref, DURATION)
+                        setTimeout(() => setDuration(ref, 0), DURATION)
                         setActive(false)
                         drawTransform(el, xSwipe - 50, ySwipe)
                         drawOpacity(el, xSwipe - 50, ySwipe)
@@ -88,6 +94,8 @@
                     }
                     
                     if (ySwipe > THRESHOLD) {
+                        setDuration(ref, DURATION)
+                        setTimeout(() => setDuration(ref, 0), DURATION)
                         setActive(false)
                         drawTransform(el, xSwipe, ySwipe + 50)
                         drawOpacity(el, xSwipe, ySwipe + 50)
@@ -116,12 +124,12 @@
     }
 
     function handleVerticalSwipe(yDown, yUp, evt, el) {
-        ySwipe = yUp - yDown
+        ySwipe = (yUp - yDown) * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
-        xSwipe = xUp - xDown
+        xSwipe = (xUp - xDown) * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
         drawOpacity(el, xSwipe, ySwipe)
     }
@@ -151,7 +159,9 @@
             use:addSwipe
             class={classProp}
         >
-            <button type="button" on:click={onClick}>&#10005;</button>
+            <button type="button" on:click={onClick}>
+                <Icon type="close" size="big" is="light"/>
+            </button>
             {#if slots.box}
                 <slot name="box"></slot>
             {:else}
@@ -188,7 +198,7 @@
         user-select: none;
         touch-action: manipulation;
         background-color: rgba(var(--color-black), .75);
-        outline: 20px solid rgba(var(--color-black), .75);
+        outline: 150px solid rgba(var(--color-black), .75);
         transition-timing-function: linear;
         opacity: 0;
         padding: 0 var(--screen-padding);
@@ -210,13 +220,14 @@
 
     button {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 0;
+        right: 0;
         font-size: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: var(--min-interactive-size);
-        height: var(--min-interactive-size);
+        width: 60px;
+        height: 60px;
+        color: rgb(var(--color-white));
     }
 </style>

@@ -6,6 +6,7 @@
     import Form from '@components/Form.svelte'
     import Input from '@components/fields/Input.svelte'
     import Button from '@components/Button.svelte'
+    import Loader from '@components/loader'
     import Comment from './Comment.svelte'
 
     const dispatch = createEventDispatcher()
@@ -31,7 +32,7 @@
      *      created_at: string,
      * }}
      */
-    export let items = []
+    export let items = new Array(4).fill({ comment: null })
 </script>
 
 <section class="comments">
@@ -41,11 +42,16 @@
                 <Comment
                         src={comment.avatar}
                         title={comment.author}
-                        date={new Date(comment.created_at).toLocaleDateString()}
+                        date={comment.created_at && new Date(comment.created_at).toLocaleDateString()}
                         amount={comment.likes}
                         checked={comment.checked}
                 >
-                    {comment.comment}
+                    {#if comment.comment !== null}
+                        {comment.comment}
+                    {:else}
+                        <Loader type="h4"/>
+                        <Loader type="h4"/>
+                    {/if}
                 </Comment>
             </li>
         {/each}
@@ -54,8 +60,8 @@
     <Br size="20"/>  
 
     <p class="h3 font-w-500 font-secondary underline text-center">
-        <span>All comments</span>
-        <span class="font-w-600">⋁</span>
+        <span>Всі коментарі</span>
+        <Icon type="caret-down" size="small"/>
     </p>
 
     {#if withForm}

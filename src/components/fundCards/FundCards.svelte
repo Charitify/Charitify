@@ -1,5 +1,6 @@
 <script>
     import Carousel from '@components/Carousel.svelte'
+    import Button from '@components/Button.svelte'
     import FundCard from './FundCard.svelte'
 
     /**
@@ -13,19 +14,29 @@
      *  title: string,
      * }}
      */
-    export let items = []
+    export let items = [{}, {}, {}]
 </script>
 
 <Carousel {items} size="auto" let:index={index} let:item={item} class="charities">
     <div class={!index ? 'start' : index === items.length - 1 ? 'end' : ''} key={item.id}>
-       <FundCard
+        <FundCard
             src={item.src}
             total={item.total}
             current={item.current}
             currency={item.currency}
             city={item.city}
             title={item.title}
-       />
+        >
+            <span slot="button" let:id={id}>
+                <slot name="button">
+                    <Button size="big" is="success" href={id}>
+                        <span class="h2 font-secondary font-w-600">
+                            Допомогти
+                        </span>
+                    </Button>
+                </slot>
+            </span>
+        </FundCard>
     </div>
 </Carousel>
 

@@ -16,20 +16,20 @@
     let lastY = 0
     $: classProp = classnames('container', { active: isHeaderVisible })
     onMount(() => {
-        onScroll = (e) => requestAnimationFrame(function() {
+        onScroll = () => requestAnimationFrame(function() {
             const currentY = window.pageYOffset;
-            const dirrection = currentY - lastY
-            if (dirrection < -gap || currentY < 50) { // up
+            const direction = currentY - lastY
+            if (direction < -gap || currentY < 50) { // up (50 - max scrollTop for displaying header)
                 if (!isHeaderVisible) isHeaderVisible = true
                 lastY = currentY + gap;
-            } else if (dirrection > gap) { // down
+            } else if (direction > gap) { // down
                 if (isHeaderVisible) isHeaderVisible = false
                 lastY = currentY - gap;
             }
         })
     })
 
-    let themeName = safeGet(() => Storages.cookieStorage.get('theme') || Storages.localStorage.get('theme')) || 'theme-light'
+    let themeName = safeGet(() => Storages.cookieStorage.get('theme') || Storages.localStorage.get('theme'))
     function changeTheme(theme) {
         themeName = theme
         document.body.classList.remove('theme-dark')

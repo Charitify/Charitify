@@ -5,7 +5,7 @@
     import FancyBox from '@components/FancyBox.svelte'
     import Carousel from '@components/Carousel.svelte'
 
-    export let items = []
+    export let items = new Array(5).fill({})
 
     let active = false
 </script>

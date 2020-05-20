@@ -11,7 +11,7 @@
      *  checked: boolean,
      * }[]}
      */
-    export let items = []
+    export let items = new Array(8).fill({ title: null, subtitle: null })
 
     let itemsPrev = []
     let container = null
@@ -26,6 +26,7 @@
             acc[lastInd].push(item)
         } else {
             acc.push([])
+            acc[lastInd + 1].push(item)
         }
         return acc
     }, []).reverse()
@@ -42,7 +43,7 @@
 
     function scrollEnd(node) {
         try {
-            node.scrollTo(node.scrollWidth, 0)
+            node && node.scrollTo(node.scrollWidth, 0)
         } catch (err) {
             console.warn(`The Magic told me "${err.message}". It's a weird reason, I know, but I couldn't scroll to the end of ${node} with it: `, err)
         }
