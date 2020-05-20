@@ -22,7 +22,6 @@ script:
 
 after_success:
   - rsync
-    # -e "ssh -i ~/.ssh/charitify-travis-ci_rsa"
     -zarvh $TRAVIS_BUILD_DIR/__sapper__/
           root@$SERVER_IP_ADDRESS:/home/Charitify/__sapper__
 
