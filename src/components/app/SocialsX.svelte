@@ -1,6 +1,6 @@
 <script>
     import Icon from '../Icon.svelte'
-    import Loader from '../Loader/Loader.svelte'
+    import Loader from '../loader/Loader.svelte'
 
     /**
      * @type {{

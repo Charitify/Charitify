@@ -3,7 +3,7 @@
     import { classnames, _ } from '@utils'
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
-    import Loader from '@components/Loader'
+    import Loader from '@components/loader'
     import { 
         Input,
         Select,
