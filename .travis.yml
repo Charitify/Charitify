@@ -21,7 +21,6 @@ script:
   - npm run export __sapper__/export/index.html
 
 after_success:
-  - ls
   - rsync
     -e "ssh -i ~/.ssh/charitify-travis-ci_rsa"
     -zarvh $TRAVIS_BUILD_DIR/__sapper__/
