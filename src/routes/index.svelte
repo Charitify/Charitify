@@ -47,7 +47,7 @@
     <section class="container">
 
         <TitleSubTitle
-                title="Charitify"
+                title="Charitify built and deployed from Master"
                 subtitle="Charity application for helping those in need"
         />
 

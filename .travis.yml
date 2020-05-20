@@ -1,0 +1,30 @@
+language: node_js
+env:
+  - SERVER_IP_ADDRESS=77.123.130.167
+node_js:
+  - node
+git:
+  quiet: true
+cache: npm
+before_install:
+  - openssl aes-256-cbc -K $encrypted_b46169d45b4f_key -iv $encrypted_b46169d45b4f_iv
+    -in charitify-travis-ci_rsa.enc -out ./charitify-travis-ci_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 ./charitify-travis-ci_rsa
+  - sudo echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - ssh-add ./charitify-travis-ci_rsa
+
+install:
+  - npm install
+
+script:
+  - npm run export __sapper__/export/index.html
+
+after_success:
+  - rsync
+    -e "ssh -i ~/.ssh/charitify-travis-ci_rsa"
+    -zarvh $TRAVIS_BUILD_DIR/__sapper__/
+          root@$SERVER_IP_ADDRESS:/home/Charitify/__sapper__
+
+notifications:
+  email: false
