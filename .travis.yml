@@ -13,7 +13,12 @@ before_install:
   - chmod 600 ./charitify-travis-ci_rsa
   - sudo echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - ssh-add ./charitify-travis-ci_rsa
-  - npm i
+
+install:
+  - npm install
+
+script:
+  - npm run export __sapper__/export/index.html
 
 after_success:
   - ls
