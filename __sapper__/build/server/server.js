@@ -3,7 +3,7 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var sirv = _interopDefault(require('sirv'));
-var polka = _interopDefault(require('polka'));
+var express = _interopDefault(require('express'));
 var compression = _interopDefault(require('compression'));
 var fs = _interopDefault(require('fs'));
 var path = _interopDefault(require('path'));
@@ -4227,7 +4227,7 @@ function disableDoubleTapZoom(elements) {
 }
 
 var setup = {
-  BACKEND_URL: './mock', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
+  BACKEND_URL: '/api/', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
 
   MAPBOX_KEY: 'mapbox',
 };
@@ -4630,6 +4630,27 @@ var icons = {
     'cancel-circle': IoIosCloseCircleOutline,
 };
 
+/**
+ *
+ * @description API URLs builders.
+ */
+var endpoints = {
+    USER: (id) => `users/${id || ':id'}`,
+    USERS: () => `users`,
+  
+    RECENT: (id) => `recents/${id || ':id'}`,
+    RECENTS: () => `recents`,
+  
+    COMMENT: (id) => `comments/${id || ':id'}`,
+    COMMENTS: () => `comments`,
+  
+    FUND: (id) => `funds/${id || ':id'}`,
+    FUNDS: () => `funds`,
+  
+    ORGANIZATION: (id) => `organizations/${id || ':id'}`,
+    ORGANIZATIONS: () => `organizations`,
+  };
+
 const vaccinations = [
     {
         text: 'Від кліщів',
@@ -4738,27 +4759,6 @@ const Card = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
     ${$$slots.default ? $$slots.default({}) : ``}
 </section>`;
 });
-
-/**
- *
- * @description API URLs builders.
- */
-const endpoints = {
-  USER: (id) => `user.json?id=${id}`,
-  USERS: () => `users.json`,
-
-  RECENT: (id) => `recent.json?id=${id}`,
-  RECENTS: () => `recents.json`,
-
-  COMMENT: (id) => `comment.json?id=${id}`,
-  COMMENTS: () => `comments.json`,
-
-  FUND: (id) => `fund.json?id=${id}`,
-  FUNDS: () => `funds.json`,
-
-  ORGANIZATION: (id) => `organization.json?id=${id}`,
-  ORGANIZATIONS: () => `organizations.json`,
-};
 
 class APIService {
   /**
@@ -10793,7 +10793,7 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 	onMount(async () => {
 		await delay(7000);
-		organization = await API.getOrganization(1);
+		organization = await API.getOrganization(organizationId);
 		comments = await API.getComments();
 		funds = await API.getFunds();
 	});
@@ -11314,7 +11314,7 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 	onMount(async () => {
 		await delay(15000);
-		charity = await API.getFund(1);
+		charity = await API.getFund(charityId);
 		comments = await API.getComments();
 	});
 
@@ -14961,10 +14961,996 @@ function serve({ prefix, pathname, cache_control }
 
 function noop$1(){}
 
+var id = "id";
+var username = "tina";
+var full_name = "Tina Kandelaki";
+var sex = "male";
+var birth = "2000-02-09T12:30:55.596Z";
+var email = "some@email.maybe";
+var tel = "+380959595959";
+var created_at = "2020-02-09T12:30:55.596Z";
+var location = {
+	lat: 48.9226,
+	lng: 24.7111,
+	country: "Ukraine",
+	city: "Ivano-Frankivsk",
+	address: "Stusa 1"
+};
+var role = "GUEST|USER|MODERATOR|ADMIN";
+var prefer_field_name = "username";
+var user = {
+	id: id,
+	username: username,
+	full_name: full_name,
+	sex: sex,
+	birth: birth,
+	email: email,
+	tel: tel,
+	created_at: created_at,
+	location: location,
+	role: role,
+	prefer_field_name: prefer_field_name
+};
+
+var users = [
+	{
+		id: "id",
+		username: "tina",
+		full_name: "Tina Kandelaki",
+		sex: "male",
+		birth: "2000-02-09T12:30:55.596Z",
+		email: "some@email.maybe",
+		tel: "+380959595959",
+		created_at: "2020-02-09T12:30:55.596Z",
+		location: {
+			lat: 48.9226,
+			lng: 24.7111,
+			country: "Ukraine",
+			city: "Ivano-Frankivsk",
+			address: "Stusa 1"
+		},
+		role: "GUEST",
+		prefer_field_name: "username"
+	},
+	{
+		id: "id",
+		username: "tina",
+		full_name: "Tina Kandelaki",
+		sex: "male",
+		birth: "2000-02-09T12:30:55.596Z",
+		email: "some@email.maybe",
+		tel: "+380959595959",
+		created_at: "2020-02-09T12:30:55.596Z",
+		location: {
+			lat: 48.9226,
+			lng: 24.7111,
+			country: "Ukraine",
+			city: "Ivano-Frankivsk",
+			address: "Stusa 1"
+		},
+		role: "USER",
+		prefer_field_name: "username"
+	},
+	{
+		id: "id",
+		username: "tina",
+		full_name: "Tina Kandelaki",
+		sex: "male",
+		birth: "2000-02-09T12:30:55.596Z",
+		email: "some@email.maybe",
+		tel: "+380959595959",
+		created_at: "2020-02-09T12:30:55.596Z",
+		location: {
+			lat: 48.9226,
+			lng: 24.7111,
+			country: "Ukraine",
+			city: "Ivano-Frankivsk",
+			address: "Stusa 1"
+		},
+		role: "MODERATOR",
+		prefer_field_name: "username"
+	}
+];
+
+var id$1 = "id";
+var type = "animal";
+var is_liked = true;
+var tags = [
+	"Дім",
+	"Сірка",
+	"тварини",
+	"безпритульні"
+];
+var likes = 2;
+var views = 12;
+var updated_at = "2020-02-09T12:30:55.596Z";
+var created_at$1 = "2020-02-09T12:30:55.596Z";
+var title = "Збережемо тварин разом";
+var subtitle = "Збір грошей на допомогу безпритульним тваринам";
+var description = "Терміново шукаємо добрі руки 🤲🥰\nБадді підкинули під кафе біля самої траси!\nБіля нього були тільки залишки черствого хліба... 💔\nЗа що можна було покинути малюка напризволяще? 🥺\nВ чому він міг провинитися? Йому всього 2 місяці.\nЗараз буде проходити обробку від паразитів та вакцинацію 💉";
+var need_sum = 2000000;
+var curremt_sum = 350000;
+var currency = "₴";
+var location$1 = {
+	lat: 48.9226,
+	lng: 24.7111,
+	short: "UA",
+	country: "Ukraine",
+	city: "Ivano-Frankivsk",
+	address: "Stusa 1"
+};
+var organization$1 = {
+	id: "id",
+	name: "Дім Сірка",
+	phone: "+38 (093) 205-43-92",
+	avatar: "https://placeimg.com/30/30/tech",
+	head_id: "id",
+	head_name: "Tinaramisimuss el-de-la Kandelakinuskas",
+	head_avatar: "https://placeimg.com/50/50/people"
+};
+var avatars = [
+	{
+		id: "id",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/people"
+	},
+	{
+		id: "id",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/people",
+		src2x: "https://placeimg.com/1000/1000/people"
+	},
+	{
+		id: "id",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/people",
+		src2x: "https://placeimg.com/1000/1000/people"
+	}
+];
+var animal = {
+	id: "id",
+	name: "Волтер",
+	breed: "Jack Russell Terrier",
+	birth: "2019-03-18",
+	sex: "male",
+	sterilization: false,
+	character: "Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми",
+	character_short: "😃",
+	avatars: [
+		{
+			id: "id",
+			description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+			src: "https://placeimg.com/300/300/people"
+		},
+		{
+			id: "id",
+			description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+			src: "https://placeimg.com/300/300/people",
+			src2x: "https://placeimg.com/1000/1000/people"
+		}
+	],
+	lifestory: [
+		{
+			date: "2017-02-09T12:30:55.596Z",
+			title: "Його перший день народження"
+		},
+		{
+			date: "2017-05-09T12:30:55.596Z",
+			title: "Ми приютили його з вулиці"
+		},
+		{
+			date: "2017-09-09T12:30:55.596Z",
+			title: "Зробили вакцинацію проти бліх"
+		},
+		{
+			date: "2018-01-09T12:30:55.596Z",
+			title: "Знайшов для себе улюблену іграшку"
+		}
+	],
+	vaccination: [
+		"from-fungi",
+		"from-carnivorous-plague",
+		"from-adenovirus"
+	]
+};
+var donators = [
+	{
+		id: "id",
+		name: "Добра людина",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 5,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Микола Петрович",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 15,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Добра людина",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 235.45,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Микола Петрович",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 105,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Добра людина",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 1235,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	}
+];
+var documents = [
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech",
+		src2x: "https://placeimg.com/1000/1000/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech",
+		src2x: "https://placeimg.com/1000/1000/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	}
+];
+var media = [
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech",
+		src2x: "https://placeimg.com/1000/1000/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	}
+];
+var fund = {
+	id: id$1,
+	type: type,
+	is_liked: is_liked,
+	tags: tags,
+	likes: likes,
+	views: views,
+	updated_at: updated_at,
+	created_at: created_at$1,
+	title: title,
+	subtitle: subtitle,
+	description: description,
+	need_sum: need_sum,
+	curremt_sum: curremt_sum,
+	currency: currency,
+	location: location$1,
+	organization: organization$1,
+	avatars: avatars,
+	animal: animal,
+	donators: donators,
+	documents: documents,
+	media: media
+};
+
+var funds = [
+	{
+		id: "id",
+		type: "animal",
+		is_liked: true,
+		tags: [
+			"Дім",
+			"Сірка",
+			"тварини",
+			"безпритульні"
+		],
+		likes: 2,
+		views: 12,
+		updated_at: "2020-02-09T12:30:55.596Z",
+		created_at: "2020-02-09T12:30:55.596Z",
+		title: "Збережемо тварин разом завдяки новим домам",
+		subtitle: "Збір грошей на допомогу безпритульним тваринам",
+		need_sum: 3000000,
+		curremt_sum: 2500000,
+		currency: "₴",
+		location: {
+			lat: 48.9226,
+			lng: 24.7111,
+			short: "UA",
+			country: "Ukraine",
+			city: "Ivano-Frankivsk",
+			address: "Stusa 1"
+		},
+		avatars: [
+			{
+				id: "id",
+				description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+				src: "https://placeimg.com/300/300/people"
+			},
+			{
+				id: "id",
+				description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+				src: "https://placeimg.com/300/300/people",
+				src2x: "https://placeimg.com/1000/1000/people"
+			},
+			{
+				id: "id",
+				description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+				src: "https://placeimg.com/300/300/people",
+				src2x: "https://placeimg.com/1000/1000/people"
+			}
+		]
+	}
+];
+
+var comments = [
+	{
+		id: "id",
+		"author.id": "author.id",
+		"author.name": "Дивна дитина",
+		"author.login": "nicole_kidman",
+		"author.avatar": "https://placeimg.com/30/30/people",
+		comment: "Я не розумію цього. Чого світ такий жорсткий? Добре, що є люди, які роблять добрі справи!",
+		likes: 2,
+		reply_to: "",
+		created_at: "2020-02-06T09:50:59.178Z",
+		checked: false
+	},
+	{
+		id: "id",
+		"author.id": "author.id",
+		"author.name": "Добра людина",
+		"author.login": "nicole_kidman_1",
+		"author.avatar": "https://placeimg.com/30/30/people",
+		created_at: "2020-02-05T09:50:59.178Z",
+		comment: "👍",
+		likes: 0,
+		reply_to: "",
+		checked: true
+	},
+	{
+		id: "id",
+		"author.id": "author.id",
+		"author.name": "Валентина Петрівна",
+		"author.login": "nicole_kidman",
+		"author.avatar": "https://placeimg.com/30/30/people",
+		created_at: "2020-02-04T09:50:59.178Z",
+		comment: "Я вас, [% Дивна дитина %], підтримую.",
+		likes: 11,
+		reply_to: "comment_id",
+		checked: false
+	},
+	{
+		id: "id",
+		"author.id": "author.id",
+		"author.name": "niki_123",
+		"author.login": "nicole_kidman",
+		"author.avatar": "https://placeimg.com/30/30/people",
+		created_at: "2020-01-03T09:50:59.178Z",
+		comment: "+100грн",
+		likes: 2,
+		reply_to: "",
+		checked: false
+	},
+	{
+		id: "id",
+		"author.id": "author.id",
+		"author.name": "Петро",
+		"author.login": "nicole_kidman",
+		"author.avatar": "https://placeimg.com/30/30/people",
+		created_at: "2020-01-31T09:50:59.178Z",
+		comment: "Здоров'я!",
+		likes: 3,
+		reply_to: "",
+		checked: false
+	}
+];
+
+var recent_news = [
+	{
+		id: "id",
+		avatars: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "Short-named recent news",
+		description: "These guys rise a pound of vegetables. They like vegetables and long text under photos.",
+		org_id: "org_id",
+		org_head: "Tina Kandelaki",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "ORG giant charity organization of big Charitify company",
+		created_at: "2019-02-03T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		avatars: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "Loooooooooong-named recent news that tries to explain main sense of itself.",
+		description: "The second description of these new guys who rise 2 pound of fruit. They also vegans and here is long text under photos should be too.",
+		org_id: "org_id",
+		org_head: "Tinaramisimuss el-de-la Kandelakinuskas",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "ORG of charity",
+		created_at: "2019-02-03T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		avatars: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "Short-named recent news",
+		description: "These guys rise a pound of vegetables. They like vegetables and long text under photos.",
+		org_id: "org_id",
+		org_head: "Tina Kandelaki",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "ORG giant charity organization of big Charitify company",
+		created_at: "2019-02-03T12:30:55.596Z"
+	}
+];
+
+var id$2 = "id";
+var is_liked$1 = false;
+var tags$1 = [
+	"Дім",
+	"Сірка",
+	"тварини",
+	"безпритульні"
+];
+var likes$1 = 2;
+var views$1 = 12;
+var avatar = "https://placeimg.com/30/30/people";
+var avatarBig = "https://placeimg.com/300/300/people";
+var updated_at$1 = "2020-02-09T12:30:55.596Z";
+var created_at$2 = "2020-02-09T12:30:55.596Z";
+var name = "Дім Сірка";
+var subtitle$1 = "Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться у Львові, вул. Сахарова 3";
+var description$1 = "Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться у Львові, вул. Сахарова 3 Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків.";
+var need_sum$1 = 20000;
+var curremt_sum$1 = 3500;
+var currency$1 = "₴";
+var head = {
+	id: "id",
+	name: "Tinaramisimuss el-de-la Kandelakinuskas",
+	avatar: "https://placeimg.com/50/50/people"
+};
+var news = [
+	{
+		id: "id1",
+		src: "https://placeimg.com/50/50/people",
+		likes: 3,
+		is_liked: true,
+		title: "Ми поставили нові будки і пофарбували їх",
+		subtitle: "Сьогодні була хороша погода і пара зайвих рук для того, щоб обладнати дім наших менших. Вини бігали навколо нас з цікавістю, напевне хотіли вже поскоріш побачити результат.",
+		created_at: "2020-04-04T12:30:55.596Z"
+	},
+	{
+		id: "id2",
+		src: "https://placeimg.com/50/50/people",
+		likes: 1,
+		is_liked: false,
+		title: "завезли корм",
+		subtitle: "дякуючи вам ми закупили нові коробки корму",
+		created_at: "2020-04-04T12:30:55.596Z"
+	},
+	{
+		id: "id3",
+		src: "https://placeimg.com/50/50/people",
+		likes: 0,
+		is_liked: false,
+		title: "3 песиків взяли додому!",
+		subtitle: "Троє наших улюбленців нарешті знайшли свої доми",
+		created_at: "2020-04-04T12:30:55.596Z"
+	},
+	{
+		id: "id4",
+		src: "https://placeimg.com/50/50/people",
+		likes: 23,
+		is_liked: true,
+		title: "маленкій Доретті зробили операцію на лапку.",
+		subtitle: "лікарі сказали, що операція пройшла успішно. Скоро Доретті буде бігати разом з усіма друзями.",
+		created_at: "2020-04-04T12:30:55.596Z"
+	},
+	{
+		id: "id5",
+		src: "https://placeimg.com/50/50/people",
+		likes: 0,
+		is_liked: false,
+		title: "Вже пізня година, надобраніч.",
+		subtitle: "Всі наші лапки смачно повечеряли і лягли спати. До завтра з новими силами!",
+		created_at: "2020-04-04T12:30:55.596Z"
+	}
+];
+var contacts = [
+	{
+		type: "phone",
+		title: "+38 (093) 455-32-12",
+		value: "+38 (093) 455-32-12"
+	},
+	{
+		type: "email",
+		title: "sergey.zastrow@gmail.com",
+		value: "sergey.zastrow@gmail.com"
+	},
+	{
+		type: "location",
+		title: "Львів, Україна",
+		value: "http://maps.google.com/?daddr=Львів,+Україна"
+	},
+	{
+		type: "telegram",
+		title: "Telegram",
+		value: "https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w"
+	},
+	{
+		type: "facebook",
+		title: "Facebook",
+		value: "https://www.facebook.com/groups/3544553825618540"
+	},
+	{
+		type: "viber",
+		title: "Viber",
+		value: "viber://forward?text=Check%20this%20out%3A%20%20https%3A%2F%2Fwww.viber.com%2Fblog%2F2017-06-25%2Finvite-friends-your-group-chat%2F"
+	}
+];
+var location$2 = {
+	lat: 48.9226,
+	lng: 24.7111,
+	short: "UA",
+	country: "Ukraine",
+	city: "Ivano-Frankivsk",
+	address: "Stusa 1",
+	virtual_tour: "https://www.google.com/maps/embed?pb=!4v1584897060810!6m8!1m7!1skKRg7TofqDSsrkcJRbBDug!2m2!1d48.89874683261886!2d24.75621937486022!3f291.2976377703877!4f-17.03315422439765!5f0.7820865974627469",
+	map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20985.072890836364!2d24.74703549119322!3d48.8937812401519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4730c391910041fd%3A0x6a789a2223e12e2d!2sBo%20Dim%20Sirka%20.%20Prytulok!5e0!3m2!1sen!2sus!4v1584897512173!5m2!1sen!2sus"
+};
+var avatars$1 = [
+	{
+		id: "id",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/people"
+	},
+	{
+		id: "id",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/people",
+		src2x: "https://placeimg.com/1000/1000/people"
+	},
+	{
+		id: "id",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/people",
+		src2x: "https://placeimg.com/1000/1000/people"
+	}
+];
+var funds$1 = [
+	{
+		id: "id",
+		type: "animal",
+		title: "Допоможи Сірку",
+		city: "Львів",
+		currency: "₴",
+		need_sum: 20000,
+		curremt_sum: 3500
+	},
+	{
+		id: "id",
+		type: "animal",
+		title: "Допоможи Сірку",
+		city: "Львів",
+		currency: "₴",
+		need_sum: 20000,
+		curremt_sum: 3500
+	},
+	{
+		id: "id",
+		type: "animal",
+		title: "Допоможи Сірку",
+		city: "Львів",
+		currency: "₴",
+		need_sum: 20000,
+		curremt_sum: 3500
+	},
+	{
+		id: "id",
+		type: "other",
+		title: "Збираємо кошти на корм для 100 собак і кішок",
+		city: "Львів",
+		currency: "₴",
+		need_sum: 9000000,
+		curremt_sum: 350000
+	},
+	{
+		id: "id",
+		type: "animal",
+		title: "Допоможи Сірку",
+		city: "Львів",
+		currency: "₴",
+		need_sum: 20000,
+		curremt_sum: 3500
+	}
+];
+var donators$1 = [
+	{
+		id: "id",
+		name: "Добра людина",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 5,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Микола Петрович",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 15,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Добра людина",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 235.45,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Микола Петрович",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 105,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	},
+	{
+		id: "id",
+		name: "Добра людина",
+		avatar: "https://placeimg.com/50/50/people",
+		amount: 1235,
+		currency: "₴",
+		date: "2018-01-09T12:30:55.596Z"
+	}
+];
+var documents$1 = [
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech",
+		src2x: "https://placeimg.com/1000/1000/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	}
+];
+var media$1 = [
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech",
+		src2x: "https://placeimg.com/1000/1000/tech"
+	},
+	{
+		id: "id",
+		title: "Акція добра",
+		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
+		src: "https://placeimg.com/300/300/tech"
+	}
+];
+var organization$2 = {
+	id: id$2,
+	is_liked: is_liked$1,
+	tags: tags$1,
+	likes: likes$1,
+	views: views$1,
+	avatar: avatar,
+	avatarBig: avatarBig,
+	updated_at: updated_at$1,
+	created_at: created_at$2,
+	name: name,
+	subtitle: subtitle$1,
+	description: description$1,
+	need_sum: need_sum$1,
+	curremt_sum: curremt_sum$1,
+	currency: currency$1,
+	head: head,
+	news: news,
+	contacts: contacts,
+	location: location$2,
+	avatars: avatars$1,
+	funds: funds$1,
+	donators: donators$1,
+	documents: documents$1,
+	media: media$1
+};
+
+var organizations$1 = [
+	{
+		id: "id",
+		avatars: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "This person needs your help",
+		description: "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
+		trust_rate: 9.5,
+		percent: 2,
+		org_head: "Tina Kandelaki",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "Head of the organization with loooooooong-naaaaaamed charity",
+		location: {
+			lat: 49.988358,
+			lng: 36.232845,
+			country: "Ukraine",
+			city: "Kyiv",
+			address: "Kulparkivska 103a"
+		},
+		created_at: "2020-02-09T12:30:55.596Z",
+		tags: [
+			"org",
+			"animals",
+			"help",
+			"need",
+			"other looooooooong tag"
+		]
+	},
+	{
+		id: "id",
+		avatar: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "Another person who needs your quick help",
+		description: "Really short description.",
+		trust_rate: 4.5,
+		percent: 83,
+		org_head: "Tina Kandelaki",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "Head of another organization",
+		location: {
+			lat: 48.450001,
+			lng: 34.983334,
+			country: "Ukraine",
+			city: "Kyiv",
+			address: "Kulparkivska 103a"
+		},
+		created_at: "2020-02-09T12:30:55.596Z",
+		tags: [
+			"org",
+			"animals",
+			"help",
+			"need",
+			"other looooooooong tag"
+		]
+	},
+	{
+		id: "id",
+		src: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "Short-named org",
+		description: "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
+		trust_rate: 6.2,
+		percent: 25,
+		org_head: "Tinaramisimuss el-de-la Kandelakinuskas",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "ORG of charity",
+		location: {
+			lat: 49.842957,
+			lng: 24.031111,
+			country: "Ukraine",
+			city: "Ivano-Frankivsk",
+			address: "Stusa 1"
+		},
+		created_at: "2019-02-03T12:30:55.596Z",
+		tags: [
+		]
+	},
+	{
+		id: "id",
+		avatar: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "Needs",
+		description: "Really short description.",
+		trust_rate: 8.7,
+		percent: 45,
+		org_head: "Tina Kandelaki",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "ORG giant charity organization of big Charitify company",
+		location: {
+			lat: 49.553516,
+			lng: 25.594767,
+			country: "Ukraine",
+			city: "Kyiv",
+			address: "Kulparkivska 103a"
+		},
+		created_at: "2020-02-09T12:30:55.596Z",
+		tags: [
+			"org",
+			"animals",
+			"help",
+			"need",
+			"other looooooooong tag"
+		]
+	},
+	{
+		id: "id",
+		avatar: [
+			"https://placeimg.com/30/30/tech",
+			"https://placeimg.com/30/30/people",
+			"https://placeimg.com/30/30/any"
+		],
+		title: "Short-named org",
+		description: "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
+		trust_rate: 6.2,
+		percent: 25,
+		org_head: "Tinaramisimuss el-de-la Kandelakinuskas",
+		org_head_avatar: "https://placeimg.com/30/30/people",
+		organization: "ORG of charity",
+		location: {
+			lat: 48.9226,
+			lng: 24.7111,
+			country: "Ukraine",
+			city: "Lviv",
+			address: "Sadova 1"
+		},
+		created_at: "2018-02-09T12:30:55.596Z",
+		tags: [
+			"org",
+			"animals"
+		]
+	}
+];
+
+var news_controller = new class {
+
+    getNews(req, res) {
+        console.log(req.params);
+        res.json(recent_news);
+    }
+
+    getNewss(req, res) {
+        console.log(req.params);
+        res.json(recent_news);
+    }
+};
+
+var users_controller = new class {
+
+    getUser(req, res) {
+        console.log(req.params);
+        res.json(user);
+    }
+
+    getUsers(req, res) {
+        res.json(users);
+    }
+};
+
+var funds_controller = new class {
+
+    getFund(req, res) {
+        console.log(req.params);
+        res.json(fund);
+    }
+
+    getFunds(req, res) {
+        res.json(funds);
+    }
+};
+
+var comments_controller = new class {
+
+    getComment(req, res) {
+        console.log(req.params);
+        res.json(comments);
+    }
+
+    getComments(req, res) {
+        console.log(req.params);
+        res.json(comments);
+    }
+};
+
+var organizations_controller = new class {
+
+    getOrganization(req, res) {
+        console.log(req.params);
+        res.json(organization$2);
+    }
+
+    getOrganizations(req, res) {
+        res.json(organizations$1);
+    }
+};
+
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
-polka() // You can also use Express
+function getUrl(path) {
+	return `${setup.BACKEND_URL}${path}`
+}
+
+express() // You can also use Polka
+	.get(getUrl(endpoints.FUND()), funds_controller.getFund)
+	.get(getUrl(endpoints.FUNDS()), funds_controller.getFunds)
+	.get(getUrl(endpoints.USER()), users_controller.getUser)
+	.get(getUrl(endpoints.USERS()), users_controller.getUsers)
+	.get(getUrl(endpoints.RECENT()), news_controller.getNews)
+	.get(getUrl(endpoints.RECENTS()), news_controller.getNewss)
+	.get(getUrl(endpoints.COMMENT()), comments_controller.getComment)
+	.get(getUrl(endpoints.COMMENTS()), comments_controller.getComments)
+	.get(getUrl(endpoints.ORGANIZATION()), organizations_controller.getOrganization)
+	.get(getUrl(endpoints.ORGANIZATIONS()), organizations_controller.getOrganizations)
 	.use(
 		'/Charitify',
 		compression({ threshold: 0 }),
