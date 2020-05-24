@@ -4227,7 +4227,7 @@ function disableDoubleTapZoom(elements) {
 }
 
 var setup = {
-  BACKEND_URL: '/api/', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
+  BACKEND_URL: '/Charitify/', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
 
   MAPBOX_KEY: 'mapbox',
 };
@@ -4635,20 +4635,20 @@ var icons = {
  * @description API URLs builders.
  */
 var endpoints = {
-    USER: (id) => `users/${id || ':id'}`,
-    USERS: () => `users`,
+    USER: (id) => `apiusers/${id || ':id'}`,
+    USERS: () => `apiusers`,
   
-    RECENT: (id) => `recents/${id || ':id'}`,
-    RECENTS: () => `recents`,
+    RECENT: (id) => `apirecents/${id || ':id'}`,
+    RECENTS: () => `apirecents`,
   
-    COMMENT: (id) => `comments/${id || ':id'}`,
-    COMMENTS: () => `comments`,
+    COMMENT: (id) => `apicomments/${id || ':id'}`,
+    COMMENTS: () => `apicomments`,
   
-    FUND: (id) => `funds/${id || ':id'}`,
-    FUNDS: () => `funds`,
+    FUND: (id) => `apifunds/${id || ':id'}`,
+    FUNDS: () => `apifunds`,
   
-    ORGANIZATION: (id) => `organizations/${id || ':id'}`,
-    ORGANIZATIONS: () => `organizations`,
+    ORGANIZATION: (id) => `apiorganizations/${id || ':id'}`,
+    ORGANIZATIONS: () => `apiorganizations`,
   };
 
 const vaccinations = [
