@@ -9,6 +9,7 @@ import sapperEnv from 'sapper-environment'
 import sveltePreprocess from 'svelte-preprocess'
 import alias from '@rollup/plugin-alias'
 import visualizer from 'rollup-plugin-visualizer';
+import json from '@rollup/plugin-json';
 import pkg from './package.json'
 
 const mode = process.env.NODE_ENV
@@ -36,6 +37,7 @@ const aliases = alias({
 		{ find: '@shared', replacement: `${__dirname}/src/shared` },
 		{ find: '@services', replacement: `${__dirname}/src/services` },
 		{ find: '@components', replacement: `${__dirname}/src/components` },
+		{ find: '@controllers', replacement: `${__dirname}/src/controllers` },
 	]
 })
 
@@ -45,6 +47,7 @@ export default {
 		output: config.client.output(),
 		plugins: [
 			aliases,
+			json(),
 			replace({
 				...sapperEnv(''),
 				'process.browser': true,
@@ -99,6 +102,7 @@ export default {
 		output: config.server.output(),
 		plugins: [
 			aliases,
+			json(),
 			replace({
 				'process.browser': false,
 				'process.env.NODE_ENV': JSON.stringify(mode)

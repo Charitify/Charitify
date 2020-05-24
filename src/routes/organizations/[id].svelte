@@ -152,7 +152,7 @@
 
     onMount(async () => {
         await delay(7000)
-        organization = await API.getOrganization(1);
+        organization = await API.getOrganization(organizationId);
         comments = await API.getComments()
         funds = await API.getFunds()
     });
