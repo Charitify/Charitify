@@ -1,0 +1,7 @@
+export { default as MapView } from './_Map.svelte'
+export { default as AboutView } from './_About.svelte'
+export { default as VideosView } from './_Videos.svelte'
+export { default as ContactsView } from './_Contacts.svelte'
+export { default as DocumentsView } from './_Documents.svelte'
+export { default as DescriptionView } from './_Description.svelte'
+export { default as OrganizationButtonView } from './_OrganizationButton.svelte'

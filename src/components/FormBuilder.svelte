@@ -10,6 +10,7 @@
         ReadField,
         UploadBox,
         RadioRect,
+        AvatarUpload,
         CheckboxGroup,
         UploadBoxGroup,
     } from '@components/fields'
@@ -115,6 +116,15 @@
             />
         {:else if ['files'].includes(item.type)}
             <UploadBoxGroup
+                    {...item.meta}
+                    name={item.name}
+                    label={item.label}
+                    value={values[item.name]}
+                    errors={errors[item.name]}
+                    on:change={onChange}
+            />
+        {:else if ['avatar'].includes(item.type)}
+            <AvatarUpload
                     {...item.meta}
                     name={item.name}
                     label={item.label}

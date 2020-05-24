@@ -6,23 +6,30 @@
 
     let formFields = [
         {
-            label: 'Ціль фонду:',
-            type: 'text',
-            name: 'title',
+            label: 'Фотогалерея:',
+            type: 'files',
+            name: 'avatars',
             meta: {
-                disabled: true,
-                placeholder: 'Тільки спільними силами...',
-                maxlength: 25,
+                multiple: true,
+            }
+        },
+        {
+            label: 'Назва організації:',
+            type: 'text',
+            name: 'name',
+            meta: {
+                placeholder: 'Назва...',
+                maxlength: 20,
             },
         },
         {
-            label: 'Опис фонду:',
+            label: 'Мета організації:',
             type: 'textarea',
-            name: 'description',
+            name: 'subtitle',
             meta: {
                 rows: 6,
-                placeholder: 'У нас добра мета...',
-                max: 250,
+                placeholder: 'Ми піклуємось про...',
+                maxlength: 250,
             },
         },
     ]
@@ -44,6 +51,6 @@
         submit={onSubmit}
         on:change
     />
-</EditCard>  
+</EditCard>   
 
 

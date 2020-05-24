@@ -6,7 +6,7 @@
 
     let formFields = [
         {
-            label: 'Документи:',
+            label: 'Сертифікати:',
             type: 'files',
             name: 'documents',
             meta: {
@@ -33,6 +33,5 @@
         submit={onSubmit}
         on:change
     />
-</EditCard> 
-
+</EditCard>
 

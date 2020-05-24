@@ -3,29 +3,56 @@
     import { onMount } from "svelte";
     import { API } from "@services";
     import { delay, safeGet } from "@utils";
-    import { Br, Footer } from "@components";
-
-    import OrganizationButton from './_OrganizationButton.svelte'
-    import TopCarousel from './_TopCarousel.svelte'
-    import DescriptionShort from './_DescriptionShort.svelte'
-    import InteractionIndicators from './_InteractionIndicators.svelte'
-    import FundList from './_FundList.svelte'
-    import Description from './_Description.svelte'
-    import Share from './_Share.svelte'
-    import Trust from './_Trust.svelte'
-    import Donators from './_Donators.svelte'
-    import LastNews from './_LastNews.svelte'
-    import Certificates from './_Certificates.svelte'
-    import Videos from './_Videos.svelte'
-    import ContactsCard from './_ContactsCard.svelte'
-    import VirtualTour from './_VirtualTour.svelte'
-    import WeOnMap from './_WeOnMap.svelte'
-    import Comments from './_Comments.svelte'
+    import { 
+        Br, 
+        Icon, 
+        Footer, 
+        Button, 
+        EditArea, 
+        LazyToggle,
+    } from '@components'
+    import {
+        Share,
+        Trust,
+        Comments,
+        FundList,
+        Donators,
+        LastNews,
+        InteractionIndicators,
+    } from './components'
+    import {
+        MapView,
+        AboutView,
+        VideosView,
+        ContactsView,
+        DocumentsView,
+        DescriptionView,
+        OrganizationButtonView,
+    } from './view'
+    import {
+        MapEdit,
+        AboutEdit,
+        VideosEdit,
+        ContactsEdit,
+        DocumentsEdit,
+        DescriptionEdit,
+        OrganizationButtonEdit,
+    } from './edit'
 
     const { page } = stores();
 
     // Organization
     let organizationId = $page.params.id;
+    let isEditMode = false
+    let isEdit = {
+        topInfo: false,
+        description: false,
+        about: false,
+        documents: false,
+        videos: false,
+        contacts: false,
+        map: false,
+    }
 
     // Entities
     let organization = {};
@@ -34,13 +61,15 @@
     
     $: organizationBlock = {
         id: organization.id,
-        name: organization.title,
+        name: organization.name,
         avatar: organization.avatar,
+        avatarBig: organization.avatarBig,
     };
     $: carouselTop = (organization.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
     $: descriptionShort = {
-        title: organization.title || null,
-        text: organization.subtitle || null,
+        name: organization.name || null,
+        subtitle: organization.subtitle || null,
+        description: organization.description || null,
     };
     $: animalFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
         id: f.id,
@@ -122,89 +151,242 @@
     };
 
     onMount(async () => {
-        await delay(20000)
+        await delay(7000)
         organization = await API.getOrganization(1);
         comments = await API.getComments()
         funds = await API.getFunds()
     });
+
+    async function onSubmit(section, values) {
+        isEdit[section] = false
+        console.log(values)
+    }
+
+    function onCancel(section) {
+        isEdit[section] = false
+    }
+
+    function onToggleMode() {
+        isEditMode = !isEditMode
+        if (!isEditMode) {
+            isEdit = {
+                topInfo: false,
+                description: false,
+                about: false,
+                documents: false,
+                videos: false,
+                contacts: false,
+                map: false,
+            }
+        }
+    }
 </script>
-
-<style>
-
-</style>
 
 <svelte:head>
     <title>Charitify - Organization page.</title>
 </svelte:head>
 
 <section class="container theme-bg-color-secondary">
-    <Br size="var(--header-height)" />
-    <Br size="30" />
+    <Br size="var(--header-height)"/>
 
-    <OrganizationButton id={organizationBlock.id} src={organizationBlock.avatar} title={organizationBlock.name}/>
+    <div>
+        <Br size="30"/>
+        <Button size="small" is="info" on:click={onToggleMode}>
+            <span class="h3 font-secondary font-w-500 flex flex-align-center">
+                {isEditMode ? 'Зберегти' : 'Редагувати'}
+                <s></s>
+                <s></s>
+                {#if !isEditMode}
+                    <Icon type="edit" size="small" is="light"/>
+                {/if}
+            </span>
+        </Button>
+        <Br size="30"/>
+    </div>
+
+    <!-- Top organization info -->
+    <LazyToggle active={isEdit.topInfo}>
+        <OrganizationButtonEdit 
+            data={organizationBlock}
+            submit={onSubmit.bind(null, 'topInfo')} 
+            on:cancel={onCancel.bind(null, 'topInfo')} 
+        />
+    </LazyToggle>
+    <LazyToggle active={!isEdit.topInfo} mounted class="full-container">
+        <EditArea on:click={() => isEdit.topInfo = !isEdit.topInfo} off={!isEditMode}>    
+            <Br size="30"/>
+            <OrganizationButtonView organization={organizationBlock}/>
+        </EditArea>
+    </LazyToggle>
+    {#if isEditMode}
+        <Br size="50" />
+    {/if}
+    <!-- END: Top organization info -->
+
     <Br size="20" />
+    
+    <!-- Description -->
+    <LazyToggle active={isEdit.description}>
+        <DescriptionEdit 
+            data={{ ...descriptionShort, avatars: carouselTop }}
+            submit={onSubmit.bind(null, 'description')} 
+            on:cancel={onCancel.bind(null, 'description')} 
+        />
+    </LazyToggle>
+    <LazyToggle active={!isEdit.description} mounted class="full-container">
+        <EditArea on:click={() => isEdit.description = !isEdit.description} off={!isEditMode}>
+            {#if isEditMode}
+                <Br size="30" />
+            {/if}  
+            <DescriptionView 
+                {carouselTop}
+                title={descriptionShort.name} 
+                text={descriptionShort.subtitle}
+            />
+        </EditArea>
+    </LazyToggle>
+    {#if isEditMode}
+        <Br size="30" />
+    {/if}
+    <!-- END: Description -->
 
-    <TopCarousel items={carouselTop}/>
-    <Br size="60" />
-
-    <DescriptionShort title={descriptionShort.title} text={descriptionShort.text}/>
     <Br size="10" />
+    <LazyToggle active={!isEditMode} mounted>
+        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
+        <Br size="50"/>
+        <FundList title="Фонди тварин" items={animalFunds}/>
+        <Br size="45" />
+        <FundList title="Інші фонди" items={othersFunds}/>
+    </LazyToggle>
+    <Br size="30" />
+    
+    <!-- About -->
+    <LazyToggle active={isEdit.about}>
+        <AboutEdit 
+            data={descriptionShort}
+            submit={onSubmit.bind(null, 'about')} 
+            on:cancel={onCancel.bind(null, 'about')} 
+        />
+    </LazyToggle>
+    <LazyToggle active={!isEdit.about} mounted class="full-container">
+        <EditArea on:click={() => isEdit.about = !isEdit.about} off={!isEditMode}>    
+            <Br size="30"/>
+            <AboutView
+                title="Про нас"
+                text={descriptionShort.description}
+            />
+        </EditArea>
+    </LazyToggle>
+    <!-- END: About -->
 
-    <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
-    <Br size="50" />
-
-    <FundList title="Фонди тварин" items={animalFunds}/>
-    <Br size="45" />
-
-    <FundList title="Інші фонди" items={othersFunds}/>
-    <Br size="45" />
-
-    <Description title={descriptionBlock.title} text={descriptionBlock.text}/>
     <Br size="10" />
-
-    <Share />
-    <Br size="50" />
-
-    <Trust active={organization.isLiked}/>
-    <Br size="50" />
-
-    <Donators items={donators}/>
+    <LazyToggle active={!isEditMode} mounted>
+        <Share />
+        <Br size="50" />
+        <Trust active={organization.isLiked}/>
+        <Br size="50" />
+        <Donators items={donators}/>
+        <Br size="60" />
+        <LastNews 
+            items={lastNews} 
+            carousel={carouselTop}
+            iconsLine={iconsLine}
+            organization={organization}
+            descriptionShort={descriptionShort}
+        />
+    </LazyToggle>
     <Br size="60" />
 
-    <LastNews 
-        items={lastNews} 
-        carousel={carouselTop}
-        iconsLine={iconsLine}
-        organization={organization}
-        descriptionShort={descriptionShort}
-    />
-    <Br size="60" />
-
-    <Certificates items={documents}/>
-    <Br size="45" />
-
-    <Videos items={media}/>
-    <Br size="70" />
-
-    <ContactsCard 
-        items={contacts}
-        orgName={organization.title}
-        avatar={organization.avatar}
-        avatarBig={organization.avatarBig}
-    />
-    <Br size="60" />
-
-    <VirtualTour src={location.virtual_tour}/>
-    <Br size="60" />
-
-    <WeOnMap src={location.map}/>
-    <Br size="60" />
-
-    <Comments items={commentsData.comments}/>
+    <!-- Documents -->
+    <LazyToggle active={isEdit.documents}>
+        <DocumentsEdit 
+            data={{ documents }}
+            submit={onSubmit.bind(null, 'documents')} 
+            on:cancel={onCancel.bind(null, 'documents')} 
+        />
+    </LazyToggle>
+    <LazyToggle active={!isEdit.documents} mounted class="full-container">
+        <EditArea on:click={() => isEdit.documents = !isEdit.documents} off={!isEditMode}>    
+            <Br size="30"/>
+            <DocumentsView items={documents}/>
+        </EditArea>
+    </LazyToggle>
+    {#if isEditMode}
+        <Br size="30" />
+    {/if}
+    <!-- END: Documents -->
+    
     <Br size="40" />
+
+    <!-- Videos -->
+    <LazyToggle active={isEdit.videos}>
+        <VideosEdit 
+            data={{ media }}
+            submit={onSubmit.bind(null, 'videos')}
+            on:cancel={onCancel.bind(null, 'videos')} 
+        />
+    </LazyToggle>
+    <LazyToggle active={!isEdit.videos} mounted class="full-container">
+        <EditArea on:click={() => isEdit.videos = !isEdit.videos} off={!isEditMode}>    
+            <Br size="15"/>
+            <VideosView items={media}/>
+        </EditArea>
+    </LazyToggle>
+    {#if isEditMode}
+        <Br size="30" />
+    {/if}
+    <!-- END: Videos -->
+    
+    <Br size="40" />
+
+    <!-- Contacts -->
+    <LazyToggle active={isEdit.contacts}>
+        <ContactsEdit 
+            data={{ ...organization. contacts }}
+            submit={onSubmit.bind(null, 'contacts')} 
+            on:cancel={onCancel.bind(null, 'contacts')} 
+        />
+    </LazyToggle>
+    <LazyToggle active={!isEdit.contacts} mounted class="full-container">
+        <EditArea on:click={() => isEdit.contacts = !isEdit.contacts} off={!isEditMode}>    
+            <Br size="30"/>
+            <ContactsView {contacts} {organization}/>
+        </EditArea>
+    </LazyToggle>
+    {#if isEditMode}
+        <Br size="10" />
+    {/if}
+    <!-- END: Contacts -->
+
+    <Br size="60" />
+
+    <!-- Map -->
+    <LazyToggle active={isEdit.map}>
+        <MapEdit 
+            data={location}
+            submit={onSubmit.bind(null, 'map')} 
+            on:cancel={onCancel.bind(null, 'map')} 
+        />
+    </LazyToggle>
+    <LazyToggle active={!isEdit.map} mounted class="full-container">
+        <EditArea on:click={() => isEdit.map = !isEdit.map} off={!isEditMode}>    
+            <Br size="15"/>
+            <MapView {location}/>
+        </EditArea>
+    </LazyToggle>
+    {#if isEditMode}
+        <Br size="10" />
+    {/if}
+    <!-- END: Map -->
+    
+    <Br size="60" />
+
+    <LazyToggle active={!isEditMode} mounted>
+        <Comments items={commentsData.comments}/>
+        <Br size="40" />
+    </LazyToggle>
 
     <div class="full-container">
         <Footer />
     </div>
-
 </section>

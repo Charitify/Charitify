@@ -6,12 +6,19 @@
 
     let formFields = [
         {
-            label: 'Документи:',
-            type: 'files',
-            name: 'documents',
+            label: 'Відео 1:',
+            type: 'url',
+            name: 'media[0]',
             meta: {
-                multiple: true,
-                accept: 'image/jpeg,image/png,application/pdf',
+                placeholder: 'https://www.youtube.com/watch?v=oUcAUwptos4&t',
+            }
+        },
+        {
+            label: 'Відео 2:',
+            type: 'url',
+            name: 'media[1]',
+            meta: {
+                placeholder: 'https://www.youtube.com/watch?v=oUcAUwptos4&t',
             }
         },
     ]
@@ -24,15 +31,15 @@
     }
 </script>
 
-<EditCard form="documents-form" on:cancel>
+<EditCard form="organization-form" on:cancel>
     <FormBuilder 
-        id="documents-form"
+        id="videos-form"
         items={formFields}
         data={formValues}
         errors={formErrors}
         submit={onSubmit}
         on:change
     />
-</EditCard> 
+</EditCard>    
 
 

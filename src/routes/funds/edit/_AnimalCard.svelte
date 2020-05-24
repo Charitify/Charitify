@@ -1,14 +1,13 @@
 <script>
     import { options } from '@config'
-    import { Br, Button, Card, Square, UploadBox, RadioRect, StoryList,FormBuilder } from '@components'
+    import { Br, Square, RadioRect, StoryList, EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
 
     let formFields = [
-         {
-            label: 'Аватар:',
-            type: 'custom-avatar',
+        {
+            type: 'avatar',
             name: 'avatar',
             meta: {
                 accept: 'image/jpeg,image/png',
@@ -144,9 +143,7 @@
     }
 </script>
 
-<Card class="container">
-    <Br size="30"/>
-
+<EditCard form="animal-form" on:cancel>
     <FormBuilder 
         id="animal-form"
         items={formFields}
@@ -158,19 +155,7 @@
         let:value={value}
         let:onChange={onChange}
     >
-        {#if item.type === 'custom-avatar'}
-            <section class="flex flex-justify-center" style="padding: 10px 0">
-                <UploadBox 
-                    round
-                    style={{ width: '145px' }}
-                    {...item.meta}
-                    src={value}
-                    name={item.name}
-                    on:change={onChange} 
-                />  
-            </section>
-
-        {:else if item.type === 'custom-character'}
+        {#if item.type === 'custom-character'}
             <section>
                 <h2 class="text-left">
                     { item.label }
@@ -208,16 +193,6 @@
             </section>
         {/if}
     </FormBuilder>
-
-    <Br size="40"/>
-
-    <Button size="small" type="submit" form="animal-form" is="info">
-        <span class="h3 font-secondary font-w-500 flex flex-align-center">
-            Зберегти
-        </span>
-    </Button>
-
-    <Br size="40"/>
-</Card>    
+</EditCard>
 
 

@@ -6,13 +6,14 @@
 
     let formFields = [
         {
-            label: 'Документи:',
-            type: 'files',
-            name: 'documents',
+            label: 'Про нас:',
+            type: 'textarea',
+            name: 'description',
             meta: {
-                multiple: true,
-                accept: 'image/jpeg,image/png,application/pdf',
-            }
+                rows: 6,
+                placeholder: 'Ми піклуємось про...',
+                maxlength: 250,
+            },
         },
     ]
 
@@ -24,15 +25,15 @@
     }
 </script>
 
-<EditCard form="documents-form" on:cancel>
+<EditCard form="about-form" on:cancel>
     <FormBuilder 
-        id="documents-form"
+        id="about-form"
         items={formFields}
         data={formValues}
         errors={formErrors}
         submit={onSubmit}
         on:change
     />
-</EditCard> 
+</EditCard>
 
 

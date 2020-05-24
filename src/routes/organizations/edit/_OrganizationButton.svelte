@@ -6,13 +6,20 @@
 
     let formFields = [
         {
-            label: 'Документи:',
-            type: 'files',
-            name: 'documents',
+            type: 'avatar',
+            name: 'avatar',
             meta: {
-                multiple: true,
-                accept: 'image/jpeg,image/png,application/pdf',
+                accept: 'image/jpeg,image/png',
             }
+        },
+        {
+            label: 'Назва організації:',
+            type: 'text',
+            name: 'name',
+            meta: {
+                placeholder: 'Локі...',
+                maxlength: 20,
+            },
         },
     ]
 
@@ -24,15 +31,14 @@
     }
 </script>
 
-<EditCard form="documents-form" on:cancel>
+<EditCard form="organization-form" on:cancel>
     <FormBuilder 
-        id="documents-form"
+        id="organization-form"
         items={formFields}
         data={formValues}
         errors={formErrors}
         submit={onSubmit}
         on:change
     />
-</EditCard> 
-
+</EditCard>   
 

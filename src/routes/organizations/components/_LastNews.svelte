@@ -27,14 +27,14 @@
     <section class="container flex flex-column relative">
         <Br/>
 
-        {#if descriptionShort.title !== null}
-            <h1>{ descriptionShort.title }</h1>
+        {#if descriptionShort.name !== null}
+            <h1>{ descriptionShort.name }</h1>
         {:else}
             <Loader type="h1"/>
         {/if}
         <Br size="5"/>
-        {#if descriptionShort.title !== null}
-            <p>{ descriptionShort.title }</p>
+        {#if descriptionShort.name !== null}
+            <p>{ descriptionShort.name }</p>
         {:else}
             <div style="width: 40%"><Loader type="p"/></div>
         {/if}
@@ -45,7 +45,7 @@
         </section>
 
         <Br size="25"/>
-        <DescriptionShort text={descriptionShort.text} title={descriptionShort.title}/>
+        <DescriptionShort text={descriptionShort.text} title={descriptionShort.name}/>
         <Br size="10" />
 
         <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>

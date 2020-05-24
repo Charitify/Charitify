@@ -6,12 +6,19 @@
 
     let formFields = [
         {
-            label: 'Документи:',
-            type: 'files',
-            name: 'documents',
+            label: 'Адрес:',
+            type: 'url',
+            name: 'location.address',
             meta: {
-                multiple: true,
-                accept: 'image/jpeg,image/png,application/pdf',
+                placeholder: 'https://www.google.com.ua/maps/place/...',
+            }
+        },
+        {
+            label: '3D - Тур:',
+            type: 'url',
+            name: 'location.virtual_tour',
+            meta: {
+                placeholder: 'https://www.google.com.ua/maps/@48.8994332,24.7567114...',
             }
         },
     ]
@@ -24,15 +31,14 @@
     }
 </script>
 
-<EditCard form="documents-form" on:cancel>
+<EditCard form="map-form" on:cancel>
     <FormBuilder 
-        id="documents-form"
+        id="map-form"
         items={formFields}
         data={formValues}
         errors={formErrors}
         submit={onSubmit}
         on:change
     />
-</EditCard> 
-
+</EditCard>
 
