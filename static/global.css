@@ -35,8 +35,6 @@
     --color-font-dark: var(--color-black);
 
 
-
-
     /* -----------========( Current Theme )=========----------- */
 
     /* Color */
@@ -73,7 +71,6 @@
 
     --screen-desktop-start: 1441px;
     --screen-desktop-end: 1920px;
-
 
 
     /* -----------========( Shadows )=========----------- */
@@ -281,7 +278,6 @@ input::-webkit-inner-spin-button {
 }
 
 
-
 /* ---------------------===================( Settings )===================--------------------- */
 
 .theme-light {
@@ -478,7 +474,6 @@ table td {
     fill: var(--theme-svg-fill-opposite);
     stroke: var(--theme-svg-fill-opposite);
 }
-
 
 
 /* ---------------------===================( Focus styles )===================--------------------- */
@@ -695,7 +690,6 @@ button:not([class]):focus {
 }
 
 /* ----------=========( Flex )=========----------- */
-
 .flex-1 {
     flex: 1;
 }
