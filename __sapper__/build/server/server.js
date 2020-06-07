@@ -1384,6 +1384,156 @@ function get(object, path, defaultValue) {
   return result === undefined ? defaultValue : result;
 }
 
+var defineProperty = (function() {
+  try {
+    var func = getNative(Object, 'defineProperty');
+    func({}, '', {});
+    return func;
+  } catch (e) {}
+}());
+
+/**
+ * The base implementation of `assignValue` and `assignMergeValue` without
+ * value checks.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function baseAssignValue(object, key, value) {
+  if (key == '__proto__' && defineProperty) {
+    defineProperty(object, key, {
+      'configurable': true,
+      'enumerable': true,
+      'value': value,
+      'writable': true
+    });
+  } else {
+    object[key] = value;
+  }
+}
+
+/** Used for built-in method references. */
+var objectProto$5 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
+
+/**
+ * Assigns `value` to `key` of `object` if the existing value is not equivalent
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function assignValue(object, key, value) {
+  var objValue = object[key];
+  if (!(hasOwnProperty$4.call(object, key) && eq(objValue, value)) ||
+      (value === undefined && !(key in object))) {
+    baseAssignValue(object, key, value);
+  }
+}
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  var type = typeof value;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+
+  return !!length &&
+    (type == 'number' ||
+      (type != 'symbol' && reIsUint.test(value))) &&
+        (value > -1 && value % 1 == 0 && value < length);
+}
+
+/**
+ * The base implementation of `_.set`.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {Array|string} path The path of the property to set.
+ * @param {*} value The value to set.
+ * @param {Function} [customizer] The function to customize path creation.
+ * @returns {Object} Returns `object`.
+ */
+function baseSet(object, path, value, customizer) {
+  if (!isObject(object)) {
+    return object;
+  }
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      lastIndex = length - 1,
+      nested = object;
+
+  while (nested != null && ++index < length) {
+    var key = toKey(path[index]),
+        newValue = value;
+
+    if (index != lastIndex) {
+      var objValue = nested[key];
+      newValue = customizer ? customizer(objValue, key, nested) : undefined;
+      if (newValue === undefined) {
+        newValue = isObject(objValue)
+          ? objValue
+          : (isIndex(path[index + 1]) ? [] : {});
+      }
+    }
+    assignValue(nested, key, newValue);
+    nested = nested[key];
+  }
+  return object;
+}
+
+/**
+ * Sets the value at `path` of `object`. If a portion of `path` doesn't exist,
+ * it's created. Arrays are created for missing index properties while objects
+ * are created for all other missing properties. Use `_.setWith` to customize
+ * `path` creation.
+ *
+ * **Note:** This method mutates `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to modify.
+ * @param {Array|string} path The path of the property to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.set(object, 'a[0].b.c', 4);
+ * console.log(object.a[0].b.c);
+ * // => 4
+ *
+ * _.set(object, ['x', '0', 'y', 'z'], 5);
+ * console.log(object.x[0].y.z);
+ * // => 5
+ */
+function set(object, path, value) {
+  return object == null ? object : baseSet(object, path, value);
+}
+
 /**
  * Removes all key-value entries from the stack.
  *
@@ -1875,10 +2025,10 @@ function stubArray() {
 }
 
 /** Used for built-in method references. */
-var objectProto$5 = Object.prototype;
+var objectProto$6 = Object.prototype;
 
 /** Built-in value references. */
-var propertyIsEnumerable = objectProto$5.propertyIsEnumerable;
+var propertyIsEnumerable = objectProto$6.propertyIsEnumerable;
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeGetSymbols = Object.getOwnPropertySymbols;
@@ -1934,13 +2084,13 @@ function baseIsArguments(value) {
 }
 
 /** Used for built-in method references. */
-var objectProto$6 = Object.prototype;
+var objectProto$7 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$4 = objectProto$6.hasOwnProperty;
+var hasOwnProperty$5 = objectProto$7.hasOwnProperty;
 
 /** Built-in value references. */
-var propertyIsEnumerable$1 = objectProto$6.propertyIsEnumerable;
+var propertyIsEnumerable$1 = objectProto$7.propertyIsEnumerable;
 
 /**
  * Checks if `value` is likely an `arguments` object.
@@ -1961,7 +2111,7 @@ var propertyIsEnumerable$1 = objectProto$6.propertyIsEnumerable;
  * // => false
  */
 var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty$4.call(value, 'callee') &&
+  return isObjectLike(value) && hasOwnProperty$5.call(value, 'callee') &&
     !propertyIsEnumerable$1.call(value, 'callee');
 };
 
@@ -2015,30 +2165,6 @@ var nativeIsBuffer = Buffer$1 ? Buffer$1.isBuffer : undefined;
  * // => false
  */
 var isBuffer = nativeIsBuffer || stubFalse;
-
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  var type = typeof value;
-  length = length == null ? MAX_SAFE_INTEGER : length;
-
-  return !!length &&
-    (type == 'number' ||
-      (type != 'symbol' && reIsUint.test(value))) &&
-        (value > -1 && value % 1 == 0 && value < length);
-}
 
 /** Used as references for various `Number` constants. */
 var MAX_SAFE_INTEGER$1 = 9007199254740991;
@@ -2192,10 +2318,10 @@ var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
 var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
 
 /** Used for built-in method references. */
-var objectProto$7 = Object.prototype;
+var objectProto$8 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$5 = objectProto$7.hasOwnProperty;
+var hasOwnProperty$6 = objectProto$8.hasOwnProperty;
 
 /**
  * Creates an array of the enumerable property names of the array-like `value`.
@@ -2215,7 +2341,7 @@ function arrayLikeKeys(value, inherited) {
       length = result.length;
 
   for (var key in value) {
-    if ((inherited || hasOwnProperty$5.call(value, key)) &&
+    if ((inherited || hasOwnProperty$6.call(value, key)) &&
         !(skipIndexes && (
            // Safari 9 has enumerable `arguments.length` in strict mode.
            key == 'length' ||
@@ -2233,7 +2359,7 @@ function arrayLikeKeys(value, inherited) {
 }
 
 /** Used for built-in method references. */
-var objectProto$8 = Object.prototype;
+var objectProto$9 = Object.prototype;
 
 /**
  * Checks if `value` is likely a prototype object.
@@ -2244,7 +2370,7 @@ var objectProto$8 = Object.prototype;
  */
 function isPrototype(value) {
   var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$8;
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$9;
 
   return value === proto;
 }
@@ -2267,10 +2393,10 @@ function overArg(func, transform) {
 var nativeKeys = overArg(Object.keys, Object);
 
 /** Used for built-in method references. */
-var objectProto$9 = Object.prototype;
+var objectProto$a = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$6 = objectProto$9.hasOwnProperty;
+var hasOwnProperty$7 = objectProto$a.hasOwnProperty;
 
 /**
  * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
@@ -2285,7 +2411,7 @@ function baseKeys(object) {
   }
   var result = [];
   for (var key in Object(object)) {
-    if (hasOwnProperty$6.call(object, key) && key != 'constructor') {
+    if (hasOwnProperty$7.call(object, key) && key != 'constructor') {
       result.push(key);
     }
   }
@@ -2368,10 +2494,10 @@ function getAllKeys(object) {
 var COMPARE_PARTIAL_FLAG$2 = 1;
 
 /** Used for built-in method references. */
-var objectProto$a = Object.prototype;
+var objectProto$b = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$7 = objectProto$a.hasOwnProperty;
+var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
 
 /**
  * A specialized version of `baseIsEqualDeep` for objects with support for
@@ -2399,7 +2525,7 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
   var index = objLength;
   while (index--) {
     var key = objProps[index];
-    if (!(isPartial ? key in other : hasOwnProperty$7.call(other, key))) {
+    if (!(isPartial ? key in other : hasOwnProperty$8.call(other, key))) {
       return false;
     }
   }
@@ -2522,10 +2648,10 @@ var argsTag$2 = '[object Arguments]',
     objectTag$2 = '[object Object]';
 
 /** Used for built-in method references. */
-var objectProto$b = Object.prototype;
+var objectProto$c = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
+var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
 
 /**
  * A specialized version of `baseIsEqual` for arrays and objects which performs
@@ -2568,8 +2694,8 @@ function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
       : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
   }
   if (!(bitmask & COMPARE_PARTIAL_FLAG$3)) {
-    var objIsWrapped = objIsObj && hasOwnProperty$8.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty$8.call(other, '__wrapped__');
+    var objIsWrapped = objIsObj && hasOwnProperty$9.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty$9.call(other, '__wrapped__');
 
     if (objIsWrapped || othIsWrapped) {
       var objUnwrapped = objIsWrapped ? object.value() : object,
@@ -3199,10 +3325,10 @@ var mapTag$3 = '[object Map]',
     setTag$3 = '[object Set]';
 
 /** Used for built-in method references. */
-var objectProto$c = Object.prototype;
+var objectProto$d = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
+var hasOwnProperty$a = objectProto$d.hasOwnProperty;
 
 /**
  * Checks if `value` is an empty object, collection, map, or set.
@@ -3254,7 +3380,7 @@ function isEmpty(value) {
     return !baseKeys(value).length;
   }
   for (var key in value) {
-    if (hasOwnProperty$9.call(value, key)) {
+    if (hasOwnProperty$a.call(value, key)) {
       return false;
     }
   }
@@ -3280,60 +3406,6 @@ function arrayEach(array, iteratee) {
     }
   }
   return array;
-}
-
-var defineProperty = (function() {
-  try {
-    var func = getNative(Object, 'defineProperty');
-    func({}, '', {});
-    return func;
-  } catch (e) {}
-}());
-
-/**
- * The base implementation of `assignValue` and `assignMergeValue` without
- * value checks.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function baseAssignValue(object, key, value) {
-  if (key == '__proto__' && defineProperty) {
-    defineProperty(object, key, {
-      'configurable': true,
-      'enumerable': true,
-      'value': value,
-      'writable': true
-    });
-  } else {
-    object[key] = value;
-  }
-}
-
-/** Used for built-in method references. */
-var objectProto$d = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty$a = objectProto$d.hasOwnProperty;
-
-/**
- * Assigns `value` to `key` of `object` if the existing value is not equivalent
- * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * for equality comparisons.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function assignValue(object, key, value) {
-  var objValue = object[key];
-  if (!(hasOwnProperty$a.call(object, key) && eq(objValue, value)) ||
-      (value === undefined && !(key in object))) {
-    baseAssignValue(object, key, value);
-  }
 }
 
 /**
@@ -4227,7 +4299,7 @@ function disableDoubleTapZoom(elements) {
 }
 
 var setup = {
-  BACKEND_URL: '/Charitify/', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
+  BACKEND_URL: 'mock', // '/Charitify/', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
 
   MAPBOX_KEY: 'mapbox',
 };
@@ -4635,21 +4707,37 @@ var icons = {
  * @description API URLs builders.
  */
 var endpoints = {
-    USER: (id) => `apiusers/${id || ':id'}`,
-    USERS: () => `apiusers`,
-  
-    RECENT: (id) => `apirecents/${id || ':id'}`,
-    RECENTS: () => `apirecents`,
-  
-    COMMENT: (id) => `apicomments/${id || ':id'}`,
-    COMMENTS: () => `apicomments`,
-  
-    FUND: (id) => `apifunds/${id || ':id'}`,
-    FUNDS: () => `apifunds`,
-  
-    ORGANIZATION: (id) => `apiorganizations/${id || ':id'}`,
-    ORGANIZATIONS: () => `apiorganizations`,
-  };
+    USER: (id) => `user.json`,
+    USERS: () => `users.json`,
+
+    RECENT: (id) => `recent.json`,
+    RECENTS: () => `recents.json`,
+
+    COMMENT: (id) => `comment.json`,
+    COMMENTS: () => `comments.json`,
+
+    FUND: (id) => `fund.json`,
+    FUNDS: () => `funds.json`,
+
+    ORGANIZATION: (id) => `organization.json`,
+    ORGANIZATIONS: () => `organizations.json`,
+};
+// export default {
+//     USER: (id) => `apiusers/${id || ':id'}`,
+//     USERS: () => `apiusers`,
+//
+//     RECENT: (id) => `apirecents/${id || ':id'}`,
+//     RECENTS: () => `apirecents`,
+//
+//     COMMENT: (id) => `apicomments/${id || ':id'}`,
+//     COMMENTS: () => `apicomments`,
+//
+//     FUND: (id) => `apifunds/${id || ':id'}`,
+//     FUNDS: () => `apifunds`,
+//
+//     ORGANIZATION: (id) => `apiorganizations/${id || ':id'}`,
+//     ORGANIZATIONS: () => `apiorganizations`,
+// }
 
 const vaccinations = [
     {
@@ -6854,8 +6942,12 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	let submitting = false;
 
 	function onChange({ detail: { name, value } }) {
-		values = { ...values, [name]: value };
+		values = set(values, name, value);
 		dispatch("change", values);
+	}
+
+	function getValue(values, name) {
+		return get(values, name) || "";
 	}
 
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
@@ -6885,28 +6977,28 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 			"time"
 		].includes(item.type)
 		? `${values[item.name] !== null
-			? `${validate_component(Input, "Input").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			? `${validate_component(Input, "Input").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 			: `<div>
                     ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                     ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
                 </div>`}`
 		: `${["checkbox"].includes(item.type)
-			? `${validate_component(CheckboxGroup, "CheckboxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			? `${validate_component(CheckboxGroup, "CheckboxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 			: `${["select"].includes(item.type)
 				? `${values[item.name] !== null
-					? `${validate_component(Select, "Select").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					? `${validate_component(Select, "Select").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 					: `<div>
                     ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                     ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
                 </div>`}`
 				: `${["file"].includes(item.type)
-					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 					: `${["files"].includes(item.type)
-						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 						: `${["avatar"].includes(item.type)
-							? `${validate_component(AvatarUpload, "AvatarUpload").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+							? `${validate_component(AvatarUpload, "AvatarUpload").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 							: `${["radio-rect"].includes(item.type)
-								? `${validate_component(RadioRect, "RadioRect").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+								? `${validate_component(RadioRect, "RadioRect").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 								: `${$$slots.default
 									? $$slots.default({
 											item,
@@ -6917,7 +7009,7 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 										})
 									: `
                 ${values[item.name] !== null
-										? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: values[item.name] }), {}, {})}`
+										? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: getValue(values, item.name) }), {}, {})}`
 										: `<div>
                         ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                         ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
@@ -9512,17 +9604,16 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 /* src/routes/funds/components/_HowToHelp.svelte generated by Svelte v3.18.1 */
 
 const HowToHelp = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { data = { phone: null } } = $$props;
+	let { data = { phone: null, how_to_help: null } } = $$props;
 	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
 
 	return `<h1>Як допомогти</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
 <ul style="${"list-style: disc outside none; padding-left: var(--screen-padding)"}" class="${"h3 font-w-500 font-secondary"}">
-    ${data.phone !== null
-	? `<li style="${"padding-bottom: 5px"}">Ви пожете купити йому поїсти</li>
-        <li style="${"padding-bottom: 5px"}">Можете особисто відвідати його у нас</li>
-        <li style="${"padding-bottom: 5px"}">Купити вакцінацію для Волтера</li>
-        <li style="${"padding-bottom: 5px"}">Допомогти любим інщим способом</li>`
+    ${data.how_to_help !== null
+	? `${typeof data.how_to_help === "string"
+		? `${each(data.how_to_help.split(/\n?• /).filter(Boolean), line => `<li style="${"padding-bottom: 5px"}">${escape(line)}</li>`)}`
+		: ``}`
 	: `<li style="${"padding-bottom: 5px"}">
             <span class="${"font-secondary font-w-500 p relative"}">
                 <span style="${"visibility: hidden"}">Допомогти любим способом</span>
@@ -10033,24 +10124,16 @@ const Videos$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 		
 	} } = $$props;
 
-	let formFields = [
-		{
-			label: "Відео 1:",
-			type: "url",
-			name: "video[0]",
-			meta: {
-				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
-			}
-		},
-		{
-			label: "Відео 2:",
-			type: "url",
-			name: "video[1]",
-			meta: {
-				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
-			}
+	const dispatch = createEventDispatcher();
+
+	const defaultField = {
+		label: "Відео 1:",
+		type: "url",
+		name: "videos[0].src",
+		meta: {
+			placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
 		}
-	];
+	};
 
 	async function onSubmit(e) {
 		await submit(e);
@@ -10058,8 +10141,16 @@ const Videos$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
 	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let currentValues = data || {};
 	let formValues = data || {};
 	let formErrors = {};
+	let fieldsAmount = safeGet(() => currentValues.videos.filter(v => v.src).length, 0, true);
+
+	let formFields = Array.from(new Array(Math.max(2, fieldsAmount + 1))).map((f, i) => ({
+		...defaultField,
+		label: `Відео ${i + 1}:`,
+		name: `videos[${i}].src`
+	}));
 
 	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "videos-form" }, {}, {
 		default: () => `
@@ -10222,7 +10313,7 @@ const HowToHelp$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 		{
 			label: "Як можна допомогти:",
 			type: "textarea",
-			name: "howtohelp",
+			name: "how_to_help",
 			meta: { placeholder: "· Привести корм", rows: 6 }
 		}
 	];
@@ -11313,7 +11404,7 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	let comments;
 
 	onMount(async () => {
-		await delay(15000);
+		await delay(5000);
 		charity = await API.getFund(charityId);
 		comments = await API.getComments();
 	});
@@ -11397,7 +11488,10 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 		true
 	);
 
-	let howToHelp = safeGet(() => ({ phone: charity.organization.phone }));
+	let howToHelp = safeGet(() => ({
+		phone: charity.organization.phone,
+		how_to_help: charity.how_to_help
+	}));
 
 	let commentsData = {
 		comments: safeGet(() => comments.map(c => ({
@@ -11592,7 +11686,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
         ${validate_component(Documents$3, "DocumentsEdit").$$render(
 			$$result,
 			{
-				data: documents,
+				data: { documents },
 				submit: onSubmit.bind(null, "documents")
 			},
 			{},
@@ -11629,7 +11723,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
         ${validate_component(Videos$2, "VideosEdit").$$render(
 			$$result,
 			{
-				data: media,
+				data: { videos: media },
 				submit: onSubmit.bind(null, "videos")
 			},
 			{},
@@ -14961,996 +15055,22 @@ function serve({ prefix, pathname, cache_control }
 
 function noop$1(){}
 
-var id = "id";
-var username = "tina";
-var full_name = "Tina Kandelaki";
-var sex = "male";
-var birth = "2000-02-09T12:30:55.596Z";
-var email = "some@email.maybe";
-var tel = "+380959595959";
-var created_at = "2020-02-09T12:30:55.596Z";
-var location = {
-	lat: 48.9226,
-	lng: 24.7111,
-	country: "Ukraine",
-	city: "Ivano-Frankivsk",
-	address: "Stusa 1"
-};
-var role = "GUEST|USER|MODERATOR|ADMIN";
-var prefer_field_name = "username";
-var user = {
-	id: id,
-	username: username,
-	full_name: full_name,
-	sex: sex,
-	birth: birth,
-	email: email,
-	tel: tel,
-	created_at: created_at,
-	location: location,
-	role: role,
-	prefer_field_name: prefer_field_name
-};
-
-var users = [
-	{
-		id: "id",
-		username: "tina",
-		full_name: "Tina Kandelaki",
-		sex: "male",
-		birth: "2000-02-09T12:30:55.596Z",
-		email: "some@email.maybe",
-		tel: "+380959595959",
-		created_at: "2020-02-09T12:30:55.596Z",
-		location: {
-			lat: 48.9226,
-			lng: 24.7111,
-			country: "Ukraine",
-			city: "Ivano-Frankivsk",
-			address: "Stusa 1"
-		},
-		role: "GUEST",
-		prefer_field_name: "username"
-	},
-	{
-		id: "id",
-		username: "tina",
-		full_name: "Tina Kandelaki",
-		sex: "male",
-		birth: "2000-02-09T12:30:55.596Z",
-		email: "some@email.maybe",
-		tel: "+380959595959",
-		created_at: "2020-02-09T12:30:55.596Z",
-		location: {
-			lat: 48.9226,
-			lng: 24.7111,
-			country: "Ukraine",
-			city: "Ivano-Frankivsk",
-			address: "Stusa 1"
-		},
-		role: "USER",
-		prefer_field_name: "username"
-	},
-	{
-		id: "id",
-		username: "tina",
-		full_name: "Tina Kandelaki",
-		sex: "male",
-		birth: "2000-02-09T12:30:55.596Z",
-		email: "some@email.maybe",
-		tel: "+380959595959",
-		created_at: "2020-02-09T12:30:55.596Z",
-		location: {
-			lat: 48.9226,
-			lng: 24.7111,
-			country: "Ukraine",
-			city: "Ivano-Frankivsk",
-			address: "Stusa 1"
-		},
-		role: "MODERATOR",
-		prefer_field_name: "username"
-	}
-];
-
-var id$1 = "id";
-var type = "animal";
-var is_liked = true;
-var tags = [
-	"Дім",
-	"Сірка",
-	"тварини",
-	"безпритульні"
-];
-var likes = 2;
-var views = 12;
-var updated_at = "2020-02-09T12:30:55.596Z";
-var created_at$1 = "2020-02-09T12:30:55.596Z";
-var title = "Збережемо тварин разом";
-var subtitle = "Збір грошей на допомогу безпритульним тваринам";
-var description = "Терміново шукаємо добрі руки 🤲🥰\nБадді підкинули під кафе біля самої траси!\nБіля нього були тільки залишки черствого хліба... 💔\nЗа що можна було покинути малюка напризволяще? 🥺\nВ чому він міг провинитися? Йому всього 2 місяці.\nЗараз буде проходити обробку від паразитів та вакцинацію 💉";
-var need_sum = 2000000;
-var curremt_sum = 350000;
-var currency = "₴";
-var location$1 = {
-	lat: 48.9226,
-	lng: 24.7111,
-	short: "UA",
-	country: "Ukraine",
-	city: "Ivano-Frankivsk",
-	address: "Stusa 1"
-};
-var organization$1 = {
-	id: "id",
-	name: "Дім Сірка",
-	phone: "+38 (093) 205-43-92",
-	avatar: "https://placeimg.com/30/30/tech",
-	head_id: "id",
-	head_name: "Tinaramisimuss el-de-la Kandelakinuskas",
-	head_avatar: "https://placeimg.com/50/50/people"
-};
-var avatars = [
-	{
-		id: "id",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/people"
-	},
-	{
-		id: "id",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/people",
-		src2x: "https://placeimg.com/1000/1000/people"
-	},
-	{
-		id: "id",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/people",
-		src2x: "https://placeimg.com/1000/1000/people"
-	}
-];
-var animal = {
-	id: "id",
-	name: "Волтер",
-	breed: "Jack Russell Terrier",
-	birth: "2019-03-18",
-	sex: "male",
-	sterilization: false,
-	character: "Дуже грайливий і милий песик. Любить проводити час з іншими собаками, дуже любить гратись з дітьми",
-	character_short: "😃",
-	avatars: [
-		{
-			id: "id",
-			description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-			src: "https://placeimg.com/300/300/people"
-		},
-		{
-			id: "id",
-			description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-			src: "https://placeimg.com/300/300/people",
-			src2x: "https://placeimg.com/1000/1000/people"
-		}
-	],
-	lifestory: [
-		{
-			date: "2017-02-09T12:30:55.596Z",
-			title: "Його перший день народження"
-		},
-		{
-			date: "2017-05-09T12:30:55.596Z",
-			title: "Ми приютили його з вулиці"
-		},
-		{
-			date: "2017-09-09T12:30:55.596Z",
-			title: "Зробили вакцинацію проти бліх"
-		},
-		{
-			date: "2018-01-09T12:30:55.596Z",
-			title: "Знайшов для себе улюблену іграшку"
-		}
-	],
-	vaccination: [
-		"from-fungi",
-		"from-carnivorous-plague",
-		"from-adenovirus"
-	]
-};
-var donators = [
-	{
-		id: "id",
-		name: "Добра людина",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 5,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Микола Петрович",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 15,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Добра людина",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 235.45,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Микола Петрович",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 105,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Добра людина",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 1235,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	}
-];
-var documents = [
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech",
-		src2x: "https://placeimg.com/1000/1000/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech",
-		src2x: "https://placeimg.com/1000/1000/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	}
-];
-var media = [
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech",
-		src2x: "https://placeimg.com/1000/1000/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	}
-];
-var fund = {
-	id: id$1,
-	type: type,
-	is_liked: is_liked,
-	tags: tags,
-	likes: likes,
-	views: views,
-	updated_at: updated_at,
-	created_at: created_at$1,
-	title: title,
-	subtitle: subtitle,
-	description: description,
-	need_sum: need_sum,
-	curremt_sum: curremt_sum,
-	currency: currency,
-	location: location$1,
-	organization: organization$1,
-	avatars: avatars,
-	animal: animal,
-	donators: donators,
-	documents: documents,
-	media: media
-};
-
-var funds = [
-	{
-		id: "id",
-		type: "animal",
-		is_liked: true,
-		tags: [
-			"Дім",
-			"Сірка",
-			"тварини",
-			"безпритульні"
-		],
-		likes: 2,
-		views: 12,
-		updated_at: "2020-02-09T12:30:55.596Z",
-		created_at: "2020-02-09T12:30:55.596Z",
-		title: "Збережемо тварин разом завдяки новим домам",
-		subtitle: "Збір грошей на допомогу безпритульним тваринам",
-		need_sum: 3000000,
-		curremt_sum: 2500000,
-		currency: "₴",
-		location: {
-			lat: 48.9226,
-			lng: 24.7111,
-			short: "UA",
-			country: "Ukraine",
-			city: "Ivano-Frankivsk",
-			address: "Stusa 1"
-		},
-		avatars: [
-			{
-				id: "id",
-				description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-				src: "https://placeimg.com/300/300/people"
-			},
-			{
-				id: "id",
-				description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-				src: "https://placeimg.com/300/300/people",
-				src2x: "https://placeimg.com/1000/1000/people"
-			},
-			{
-				id: "id",
-				description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-				src: "https://placeimg.com/300/300/people",
-				src2x: "https://placeimg.com/1000/1000/people"
-			}
-		]
-	}
-];
-
-var comments = [
-	{
-		id: "id",
-		"author.id": "author.id",
-		"author.name": "Дивна дитина",
-		"author.login": "nicole_kidman",
-		"author.avatar": "https://placeimg.com/30/30/people",
-		comment: "Я не розумію цього. Чого світ такий жорсткий? Добре, що є люди, які роблять добрі справи!",
-		likes: 2,
-		reply_to: "",
-		created_at: "2020-02-06T09:50:59.178Z",
-		checked: false
-	},
-	{
-		id: "id",
-		"author.id": "author.id",
-		"author.name": "Добра людина",
-		"author.login": "nicole_kidman_1",
-		"author.avatar": "https://placeimg.com/30/30/people",
-		created_at: "2020-02-05T09:50:59.178Z",
-		comment: "👍",
-		likes: 0,
-		reply_to: "",
-		checked: true
-	},
-	{
-		id: "id",
-		"author.id": "author.id",
-		"author.name": "Валентина Петрівна",
-		"author.login": "nicole_kidman",
-		"author.avatar": "https://placeimg.com/30/30/people",
-		created_at: "2020-02-04T09:50:59.178Z",
-		comment: "Я вас, [% Дивна дитина %], підтримую.",
-		likes: 11,
-		reply_to: "comment_id",
-		checked: false
-	},
-	{
-		id: "id",
-		"author.id": "author.id",
-		"author.name": "niki_123",
-		"author.login": "nicole_kidman",
-		"author.avatar": "https://placeimg.com/30/30/people",
-		created_at: "2020-01-03T09:50:59.178Z",
-		comment: "+100грн",
-		likes: 2,
-		reply_to: "",
-		checked: false
-	},
-	{
-		id: "id",
-		"author.id": "author.id",
-		"author.name": "Петро",
-		"author.login": "nicole_kidman",
-		"author.avatar": "https://placeimg.com/30/30/people",
-		created_at: "2020-01-31T09:50:59.178Z",
-		comment: "Здоров'я!",
-		likes: 3,
-		reply_to: "",
-		checked: false
-	}
-];
-
-var recent_news = [
-	{
-		id: "id",
-		avatars: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "Short-named recent news",
-		description: "These guys rise a pound of vegetables. They like vegetables and long text under photos.",
-		org_id: "org_id",
-		org_head: "Tina Kandelaki",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "ORG giant charity organization of big Charitify company",
-		created_at: "2019-02-03T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		avatars: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "Loooooooooong-named recent news that tries to explain main sense of itself.",
-		description: "The second description of these new guys who rise 2 pound of fruit. They also vegans and here is long text under photos should be too.",
-		org_id: "org_id",
-		org_head: "Tinaramisimuss el-de-la Kandelakinuskas",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "ORG of charity",
-		created_at: "2019-02-03T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		avatars: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "Short-named recent news",
-		description: "These guys rise a pound of vegetables. They like vegetables and long text under photos.",
-		org_id: "org_id",
-		org_head: "Tina Kandelaki",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "ORG giant charity organization of big Charitify company",
-		created_at: "2019-02-03T12:30:55.596Z"
-	}
-];
-
-var id$2 = "id";
-var is_liked$1 = false;
-var tags$1 = [
-	"Дім",
-	"Сірка",
-	"тварини",
-	"безпритульні"
-];
-var likes$1 = 2;
-var views$1 = 12;
-var avatar = "https://placeimg.com/30/30/people";
-var avatarBig = "https://placeimg.com/300/300/people";
-var updated_at$1 = "2020-02-09T12:30:55.596Z";
-var created_at$2 = "2020-02-09T12:30:55.596Z";
-var name = "Дім Сірка";
-var subtitle$1 = "Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться у Львові, вул. Сахарова 3";
-var description$1 = "Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків. Пропонуємо вам відвідати наш притулок, який знаходиться у Львові, вул. Сахарова 3 Організація Добра – благодійний фонд, який опікується долею безпритульних котиків та песиків.";
-var need_sum$1 = 20000;
-var curremt_sum$1 = 3500;
-var currency$1 = "₴";
-var head = {
-	id: "id",
-	name: "Tinaramisimuss el-de-la Kandelakinuskas",
-	avatar: "https://placeimg.com/50/50/people"
-};
-var news = [
-	{
-		id: "id1",
-		src: "https://placeimg.com/50/50/people",
-		likes: 3,
-		is_liked: true,
-		title: "Ми поставили нові будки і пофарбували їх",
-		subtitle: "Сьогодні була хороша погода і пара зайвих рук для того, щоб обладнати дім наших менших. Вини бігали навколо нас з цікавістю, напевне хотіли вже поскоріш побачити результат.",
-		created_at: "2020-04-04T12:30:55.596Z"
-	},
-	{
-		id: "id2",
-		src: "https://placeimg.com/50/50/people",
-		likes: 1,
-		is_liked: false,
-		title: "завезли корм",
-		subtitle: "дякуючи вам ми закупили нові коробки корму",
-		created_at: "2020-04-04T12:30:55.596Z"
-	},
-	{
-		id: "id3",
-		src: "https://placeimg.com/50/50/people",
-		likes: 0,
-		is_liked: false,
-		title: "3 песиків взяли додому!",
-		subtitle: "Троє наших улюбленців нарешті знайшли свої доми",
-		created_at: "2020-04-04T12:30:55.596Z"
-	},
-	{
-		id: "id4",
-		src: "https://placeimg.com/50/50/people",
-		likes: 23,
-		is_liked: true,
-		title: "маленкій Доретті зробили операцію на лапку.",
-		subtitle: "лікарі сказали, що операція пройшла успішно. Скоро Доретті буде бігати разом з усіма друзями.",
-		created_at: "2020-04-04T12:30:55.596Z"
-	},
-	{
-		id: "id5",
-		src: "https://placeimg.com/50/50/people",
-		likes: 0,
-		is_liked: false,
-		title: "Вже пізня година, надобраніч.",
-		subtitle: "Всі наші лапки смачно повечеряли і лягли спати. До завтра з новими силами!",
-		created_at: "2020-04-04T12:30:55.596Z"
-	}
-];
-var contacts = [
-	{
-		type: "phone",
-		title: "+38 (093) 455-32-12",
-		value: "+38 (093) 455-32-12"
-	},
-	{
-		type: "email",
-		title: "sergey.zastrow@gmail.com",
-		value: "sergey.zastrow@gmail.com"
-	},
-	{
-		type: "location",
-		title: "Львів, Україна",
-		value: "http://maps.google.com/?daddr=Львів,+Україна"
-	},
-	{
-		type: "telegram",
-		title: "Telegram",
-		value: "https://t.me/joinchat/AAAAAE9B8u_wO9d4NiJp3w"
-	},
-	{
-		type: "facebook",
-		title: "Facebook",
-		value: "https://www.facebook.com/groups/3544553825618540"
-	},
-	{
-		type: "viber",
-		title: "Viber",
-		value: "viber://forward?text=Check%20this%20out%3A%20%20https%3A%2F%2Fwww.viber.com%2Fblog%2F2017-06-25%2Finvite-friends-your-group-chat%2F"
-	}
-];
-var location$2 = {
-	lat: 48.9226,
-	lng: 24.7111,
-	short: "UA",
-	country: "Ukraine",
-	city: "Ivano-Frankivsk",
-	address: "Stusa 1",
-	virtual_tour: "https://www.google.com/maps/embed?pb=!4v1584897060810!6m8!1m7!1skKRg7TofqDSsrkcJRbBDug!2m2!1d48.89874683261886!2d24.75621937486022!3f291.2976377703877!4f-17.03315422439765!5f0.7820865974627469",
-	map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20985.072890836364!2d24.74703549119322!3d48.8937812401519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4730c391910041fd%3A0x6a789a2223e12e2d!2sBo%20Dim%20Sirka%20.%20Prytulok!5e0!3m2!1sen!2sus!4v1584897512173!5m2!1sen!2sus"
-};
-var avatars$1 = [
-	{
-		id: "id",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/people"
-	},
-	{
-		id: "id",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/people",
-		src2x: "https://placeimg.com/1000/1000/people"
-	},
-	{
-		id: "id",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/people",
-		src2x: "https://placeimg.com/1000/1000/people"
-	}
-];
-var funds$1 = [
-	{
-		id: "id",
-		type: "animal",
-		title: "Допоможи Сірку",
-		city: "Львів",
-		currency: "₴",
-		need_sum: 20000,
-		curremt_sum: 3500
-	},
-	{
-		id: "id",
-		type: "animal",
-		title: "Допоможи Сірку",
-		city: "Львів",
-		currency: "₴",
-		need_sum: 20000,
-		curremt_sum: 3500
-	},
-	{
-		id: "id",
-		type: "animal",
-		title: "Допоможи Сірку",
-		city: "Львів",
-		currency: "₴",
-		need_sum: 20000,
-		curremt_sum: 3500
-	},
-	{
-		id: "id",
-		type: "other",
-		title: "Збираємо кошти на корм для 100 собак і кішок",
-		city: "Львів",
-		currency: "₴",
-		need_sum: 9000000,
-		curremt_sum: 350000
-	},
-	{
-		id: "id",
-		type: "animal",
-		title: "Допоможи Сірку",
-		city: "Львів",
-		currency: "₴",
-		need_sum: 20000,
-		curremt_sum: 3500
-	}
-];
-var donators$1 = [
-	{
-		id: "id",
-		name: "Добра людина",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 5,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Микола Петрович",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 15,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Добра людина",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 235.45,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Микола Петрович",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 105,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	},
-	{
-		id: "id",
-		name: "Добра людина",
-		avatar: "https://placeimg.com/50/50/people",
-		amount: 1235,
-		currency: "₴",
-		date: "2018-01-09T12:30:55.596Z"
-	}
-];
-var documents$1 = [
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech",
-		src2x: "https://placeimg.com/1000/1000/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	}
-];
-var media$1 = [
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech",
-		src2x: "https://placeimg.com/1000/1000/tech"
-	},
-	{
-		id: "id",
-		title: "Акція добра",
-		description: "Цю акцію ми провели 2019-го, літом, коли всі мали можливість",
-		src: "https://placeimg.com/300/300/tech"
-	}
-];
-var organization$2 = {
-	id: id$2,
-	is_liked: is_liked$1,
-	tags: tags$1,
-	likes: likes$1,
-	views: views$1,
-	avatar: avatar,
-	avatarBig: avatarBig,
-	updated_at: updated_at$1,
-	created_at: created_at$2,
-	name: name,
-	subtitle: subtitle$1,
-	description: description$1,
-	need_sum: need_sum$1,
-	curremt_sum: curremt_sum$1,
-	currency: currency$1,
-	head: head,
-	news: news,
-	contacts: contacts,
-	location: location$2,
-	avatars: avatars$1,
-	funds: funds$1,
-	donators: donators$1,
-	documents: documents$1,
-	media: media$1
-};
-
-var organizations$1 = [
-	{
-		id: "id",
-		avatars: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "This person needs your help",
-		description: "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
-		trust_rate: 9.5,
-		percent: 2,
-		org_head: "Tina Kandelaki",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "Head of the organization with loooooooong-naaaaaamed charity",
-		location: {
-			lat: 49.988358,
-			lng: 36.232845,
-			country: "Ukraine",
-			city: "Kyiv",
-			address: "Kulparkivska 103a"
-		},
-		created_at: "2020-02-09T12:30:55.596Z",
-		tags: [
-			"org",
-			"animals",
-			"help",
-			"need",
-			"other looooooooong tag"
-		]
-	},
-	{
-		id: "id",
-		avatar: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "Another person who needs your quick help",
-		description: "Really short description.",
-		trust_rate: 4.5,
-		percent: 83,
-		org_head: "Tina Kandelaki",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "Head of another organization",
-		location: {
-			lat: 48.450001,
-			lng: 34.983334,
-			country: "Ukraine",
-			city: "Kyiv",
-			address: "Kulparkivska 103a"
-		},
-		created_at: "2020-02-09T12:30:55.596Z",
-		tags: [
-			"org",
-			"animals",
-			"help",
-			"need",
-			"other looooooooong tag"
-		]
-	},
-	{
-		id: "id",
-		src: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "Short-named org",
-		description: "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
-		trust_rate: 6.2,
-		percent: 25,
-		org_head: "Tinaramisimuss el-de-la Kandelakinuskas",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "ORG of charity",
-		location: {
-			lat: 49.842957,
-			lng: 24.031111,
-			country: "Ukraine",
-			city: "Ivano-Frankivsk",
-			address: "Stusa 1"
-		},
-		created_at: "2019-02-03T12:30:55.596Z",
-		tags: [
-		]
-	},
-	{
-		id: "id",
-		avatar: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "Needs",
-		description: "Really short description.",
-		trust_rate: 8.7,
-		percent: 45,
-		org_head: "Tina Kandelaki",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "ORG giant charity organization of big Charitify company",
-		location: {
-			lat: 49.553516,
-			lng: 25.594767,
-			country: "Ukraine",
-			city: "Kyiv",
-			address: "Kulparkivska 103a"
-		},
-		created_at: "2020-02-09T12:30:55.596Z",
-		tags: [
-			"org",
-			"animals",
-			"help",
-			"need",
-			"other looooooooong tag"
-		]
-	},
-	{
-		id: "id",
-		avatar: [
-			"https://placeimg.com/30/30/tech",
-			"https://placeimg.com/30/30/people",
-			"https://placeimg.com/30/30/any"
-		],
-		title: "Short-named org",
-		description: "Description of an organization that explains the major activities of the current organization and also makes space more filled out by the long text inside.",
-		trust_rate: 6.2,
-		percent: 25,
-		org_head: "Tinaramisimuss el-de-la Kandelakinuskas",
-		org_head_avatar: "https://placeimg.com/30/30/people",
-		organization: "ORG of charity",
-		location: {
-			lat: 48.9226,
-			lng: 24.7111,
-			country: "Ukraine",
-			city: "Lviv",
-			address: "Sadova 1"
-		},
-		created_at: "2018-02-09T12:30:55.596Z",
-		tags: [
-			"org",
-			"animals"
-		]
-	}
-];
-
-var news_controller = new class {
-
-    getNews(req, res) {
-        console.log(req.params);
-        res.json(recent_news);
-    }
-
-    getNewss(req, res) {
-        console.log(req.params);
-        res.json(recent_news);
-    }
-};
-
-var users_controller = new class {
-
-    getUser(req, res) {
-        console.log(req.params);
-        res.json(user);
-    }
-
-    getUsers(req, res) {
-        res.json(users);
-    }
-};
-
-var funds_controller = new class {
-
-    getFund(req, res) {
-        console.log(req.params);
-        res.json(fund);
-    }
-
-    getFunds(req, res) {
-        res.json(funds);
-    }
-};
-
-var comments_controller = new class {
-
-    getComment(req, res) {
-        console.log(req.params);
-        res.json(comments);
-    }
-
-    getComments(req, res) {
-        console.log(req.params);
-        res.json(comments);
-    }
-};
-
-var organizations_controller = new class {
-
-    getOrganization(req, res) {
-        console.log(req.params);
-        res.json(organization$2);
-    }
-
-    getOrganizations(req, res) {
-        res.json(organizations$1);
-    }
-};
+// import * as controllers from '@controllers'
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
-function getUrl(path) {
-	return `${setup.BACKEND_URL}${path}`
-}
-
 express() // You can also use Polka
-	.get(getUrl(endpoints.FUND()), funds_controller.getFund)
-	.get(getUrl(endpoints.FUNDS()), funds_controller.getFunds)
-	.get(getUrl(endpoints.USER()), users_controller.getUser)
-	.get(getUrl(endpoints.USERS()), users_controller.getUsers)
-	.get(getUrl(endpoints.RECENT()), news_controller.getNews)
-	.get(getUrl(endpoints.RECENTS()), news_controller.getNewss)
-	.get(getUrl(endpoints.COMMENT()), comments_controller.getComment)
-	.get(getUrl(endpoints.COMMENTS()), comments_controller.getComments)
-	.get(getUrl(endpoints.ORGANIZATION()), organizations_controller.getOrganization)
-	.get(getUrl(endpoints.ORGANIZATIONS()), organizations_controller.getOrganizations)
+	// .get(getUrl(endpoints.FUND()), controllers.FundsController.getFund)
+	// .get(getUrl(endpoints.FUNDS()), controllers.FundsController.getFunds)
+	// .get(getUrl(endpoints.USER()), controllers.UsersController.getUser)
+	// .get(getUrl(endpoints.USERS()), controllers.UsersController.getUsers)
+	// .get(getUrl(endpoints.RECENT()), controllers.NewsController.getNews)
+	// .get(getUrl(endpoints.RECENTS()), controllers.NewsController.getNewss)
+	// .get(getUrl(endpoints.COMMENT()), controllers.CommentsController.getComment)
+	// .get(getUrl(endpoints.COMMENTS()), controllers.CommentsController.getComments)
+	// .get(getUrl(endpoints.ORGANIZATION()), controllers.OrganizationsController.getOrganization)
+	// .get(getUrl(endpoints.ORGANIZATIONS()), controllers.OrganizationsController.getOrganizations)
 	.use(
 		'/Charitify',
 		compression({ threshold: 0 }),
