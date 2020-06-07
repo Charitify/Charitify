@@ -23,6 +23,7 @@
     export let ref = null
     export let size = 'full'    // small/medium/big/full
     export let swipe = []       // up down left right all
+    export let title = 'Закрити'
     export let open = null
     export let startPosition = START_POSITION
     export let blockBody = true
@@ -175,8 +176,8 @@
 
                     xSwipe = 0
                     ySwipe = 0
-                    el.style.opacity = null
-                    refHeader.style.opacity = null
+                    el && (el.style.opacity = null)
+                    refHeader && (refHeader.style.opacity = null)
                 })
     }
 
@@ -261,7 +262,7 @@
                             bind:this={refHeader}
                             on:click={onCloseModal}
                         >
-                            <h2 style="padding: 15px 20px">Закрити</h2>
+                            <h2 style="padding: 15px">{ title }</h2>
                             <span class="close">
                                  <Icon type="close" size="big" is="light"/>
                             </span>
@@ -282,12 +283,11 @@
                     <slot name="header">
                         <button
                                 type="button"
-                                class={classnames('modal-header-relative', { active })}
+                                class={classnames('modal-header-relative active')}
                                 in:appear
-                                bind:this={refHeader}
                                 on:click={onCloseModal}
                         >
-                            <h2 style="padding: 15px 20px">Закрити</h2>
+                            <h2 style="padding: 15px">{ title }</h2>
                             <span class="close">
                                  <Icon type="close" size="big" is="light"/>
                             </span>
@@ -398,7 +398,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 60px;
+        width: 50px;
         height: 60px;
     }
 </style>   

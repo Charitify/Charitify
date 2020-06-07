@@ -50,11 +50,11 @@
     }
 
     async function onSubmit() {
+        submitting = true
         try {
-            submitting = true
             await submit(values)
-        } catch(e) {
-            console.warn('FormBuilder/submit error: ', e)
+        } catch(err) {
+            console.warn('FormBuilder/submit error: ', err)
         }
         submitting = false
     }

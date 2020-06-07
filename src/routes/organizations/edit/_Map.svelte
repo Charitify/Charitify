@@ -8,7 +8,7 @@
         {
             label: 'Адрес:',
             type: 'url',
-            name: 'location.address',
+            name: 'location.map',
             meta: {
                 placeholder: 'https://www.google.com.ua/maps/place/...',
             }
