@@ -41,8 +41,12 @@
     $: classProp = classnames('form-builder', { submitting })
     
     function onChange({ detail: { name, value } }) {
-        values = { ...values, [name]: value }
+        values = _.set(values, name, value)
         dispatch('change', values)
+    }
+
+    function getValue(values, name) {
+      return _.get(values, name) || ''
     }
 
     async function onSubmit() {
@@ -68,7 +72,7 @@
                     name={item.name}
                     type={item.type}
                     label={item.label}
-                    value={values[item.name]}
+                    value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:input={onChange}
                     on:change={onChange}
@@ -84,7 +88,7 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={values[item.name]}
+                    value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -95,7 +99,7 @@
                     name={item.name}
                     type={item.type}
                     label={item.label}
-                    value={values[item.name]}
+                    value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:change={onChange}
                 />
@@ -110,7 +114,7 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={values[item.name]}
+                    value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -119,7 +123,7 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={values[item.name]}
+                    value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -128,7 +132,7 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={values[item.name]}
+                    value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -137,7 +141,7 @@
                     {...item.meta}
                     name={item.name}
                     label={item.label}
-                    value={values[item.name]}
+                    value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:change={onChange}
             />
@@ -147,7 +151,7 @@
                     <ReadField
                         {...item.meta}
                         label={item.label}
-                        value={values[item.name]}
+                        value={getValue(values, item.name)}
                     />
                 {:else}
                     <div>

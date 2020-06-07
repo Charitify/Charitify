@@ -8,7 +8,7 @@
         {
             label: 'Як можна допомогти:',
             type: 'textarea',
-            name: 'howtohelp',
+            name: 'how_to_help',
             meta: {
                 placeholder: '· Привести корм',
                 rows: 6,

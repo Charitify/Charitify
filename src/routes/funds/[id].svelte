@@ -108,6 +108,7 @@
     })), [], true);
     $: howToHelp = safeGet(() => ({
         phone: charity.organization.phone,
+        how_to_help: charity.how_to_help,
     }));
     $: commentsData = {
         comments: safeGet(() => comments.map(c => ({
@@ -247,7 +248,7 @@
     <!-- Documents -->
     <LazyToggle active={isEdit.documents}>
         <DocumentsEdit
-            data={documents}
+            data={{ documents }}
             submit={onSubmit.bind(null, 'documents')}
             on:cancel={onCancel.bind(null, 'documents')} 
         />
@@ -265,7 +266,7 @@
     <!-- Videos -->
     <LazyToggle active={isEdit.videos}>
         <VideosEdit 
-            data={media}
+            data={{ videos: media }}
             submit={onSubmit.bind(null, 'videos')}
             on:cancel={onCancel.bind(null, 'videos')} 
         />

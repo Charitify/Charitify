@@ -1,33 +1,52 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
+    import { safeGet } from '@utils'
     import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
 
-    let formFields = [
-        {
-            label: 'Відео 1:',
-            type: 'url',
-            name: 'video[0]',
-            meta: {
-                placeholder: 'https://www.youtube.com/watch?v=oUcAUwptos4&t',
-            }
-        },
-        {
-            label: 'Відео 2:',
-            type: 'url',
-            name: 'video[1]',
-            meta: {
-                placeholder: 'https://www.youtube.com/watch?v=oUcAUwptos4&t',
-            }
-        },
-    ]
+    const dispatch = createEventDispatcher()
 
+    const defaultField = {
+        label: 'Відео 1:',
+        type: 'url',
+        name: 'videos[0].src',
+        meta: {
+            placeholder: 'https://www.youtube.com/watch?v=oUcAUwptos4&t',
+        }
+    }
+
+    $: currentValues = data || {}
     $: formValues = data || {}
     $: formErrors = {}
+    $: fieldsAmount = safeGet(() => currentValues.videos.filter(v => v.src).length, 0, true)
+    $: formFields = Array.from(new Array(Math.max(2, fieldsAmount + 1))).map((f, i) => ({
+        ...defaultField,
+        label: `Відео ${i + 1}:`,
+        name: `videos[${i}].src`,
+    }))
 
     async function onSubmit(e) {
         await submit(e)
+    }
+
+    function shiftValues(values) {
+      return {
+          ...values,
+          videos: safeGet(() => values.videos.filter(v => v.src), [])
+      }
+    }
+
+    function onChange({ detail }) {
+        currentValues = shiftValues(detail)
+        if (
+            safeGet(() => currentValues.videos.length) !==
+            safeGet(() => formValues.videos.length)
+        ) {
+            formValues = currentValues
+        }
+        dispatch('change', detail)
     }
 </script>
 
@@ -38,7 +57,7 @@
         data={formValues}
         errors={formErrors}
         submit={onSubmit}
-        on:change
+        on:change={onChange}
     />
 </EditCard>
 
