@@ -321,7 +321,7 @@
     <!-- Videos -->
     <LazyToggle active={isEdit.videos}>
         <VideosEdit 
-            data={{ media }}
+            data={{ videos: media }}
             submit={onSubmit.bind(null, 'videos')}
             on:cancel={onCancel.bind(null, 'videos')} 
         />
@@ -342,7 +342,7 @@
     <!-- Contacts -->
     <LazyToggle active={isEdit.contacts}>
         <ContactsEdit 
-            data={{ ...organization. contacts }}
+            data={{ ...organizationBlock, contacts }}
             submit={onSubmit.bind(null, 'contacts')} 
             on:cancel={onCancel.bind(null, 'contacts')} 
         />
@@ -363,7 +363,7 @@
     <!-- Map -->
     <LazyToggle active={isEdit.map}>
         <MapEdit 
-            data={location}
+            data={{ location }}
             submit={onSubmit.bind(null, 'map')} 
             on:cancel={onCancel.bind(null, 'map')} 
         />
