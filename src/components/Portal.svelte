@@ -1,24 +1,30 @@
 <script>
   import { onMount } from "svelte";
 
+  export let off
+
   let ref;
   let portal;
 
-  onMount(() => {
+  onMount(off ? (() => {}) : (() => {
     portal = document.createElement("div");
     portal.className = "portal";
     portal.appendChild(ref);
     document.body.appendChild(portal);
     return () => document.body.removeChild(portal)
-  });
+  }));
 
 </script>
 
-<div class="portal-clone">
-    <div bind:this={ref}>
-        <slot />
-    </div>
-</div>
+{#if off}
+  <slot />
+{:else}
+  <div class="portal-clone">
+      <div bind:this={ref}>
+          <slot />
+      </div>
+  </div>
+{/if}
 
 <style>
   .portal-clone {

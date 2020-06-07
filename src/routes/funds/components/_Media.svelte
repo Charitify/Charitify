@@ -7,5 +7,5 @@
 <h1>Відео про Волтера</h1>
 <Br size="20"/>
 <section class="flex" style="height: 280px">
-    <Carousel items={items}/>
+    <Carousel {items}/>
 </section>

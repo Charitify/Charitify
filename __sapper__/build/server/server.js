@@ -3,7 +3,7 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var sirv = _interopDefault(require('sirv'));
-var polka = _interopDefault(require('polka'));
+var express = _interopDefault(require('express'));
 var compression = _interopDefault(require('compression'));
 var fs = _interopDefault(require('fs'));
 var path = _interopDefault(require('path'));
@@ -1384,6 +1384,156 @@ function get(object, path, defaultValue) {
   return result === undefined ? defaultValue : result;
 }
 
+var defineProperty = (function() {
+  try {
+    var func = getNative(Object, 'defineProperty');
+    func({}, '', {});
+    return func;
+  } catch (e) {}
+}());
+
+/**
+ * The base implementation of `assignValue` and `assignMergeValue` without
+ * value checks.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function baseAssignValue(object, key, value) {
+  if (key == '__proto__' && defineProperty) {
+    defineProperty(object, key, {
+      'configurable': true,
+      'enumerable': true,
+      'value': value,
+      'writable': true
+    });
+  } else {
+    object[key] = value;
+  }
+}
+
+/** Used for built-in method references. */
+var objectProto$5 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
+
+/**
+ * Assigns `value` to `key` of `object` if the existing value is not equivalent
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function assignValue(object, key, value) {
+  var objValue = object[key];
+  if (!(hasOwnProperty$4.call(object, key) && eq(objValue, value)) ||
+      (value === undefined && !(key in object))) {
+    baseAssignValue(object, key, value);
+  }
+}
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  var type = typeof value;
+  length = length == null ? MAX_SAFE_INTEGER : length;
+
+  return !!length &&
+    (type == 'number' ||
+      (type != 'symbol' && reIsUint.test(value))) &&
+        (value > -1 && value % 1 == 0 && value < length);
+}
+
+/**
+ * The base implementation of `_.set`.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {Array|string} path The path of the property to set.
+ * @param {*} value The value to set.
+ * @param {Function} [customizer] The function to customize path creation.
+ * @returns {Object} Returns `object`.
+ */
+function baseSet(object, path, value, customizer) {
+  if (!isObject(object)) {
+    return object;
+  }
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      lastIndex = length - 1,
+      nested = object;
+
+  while (nested != null && ++index < length) {
+    var key = toKey(path[index]),
+        newValue = value;
+
+    if (index != lastIndex) {
+      var objValue = nested[key];
+      newValue = customizer ? customizer(objValue, key, nested) : undefined;
+      if (newValue === undefined) {
+        newValue = isObject(objValue)
+          ? objValue
+          : (isIndex(path[index + 1]) ? [] : {});
+      }
+    }
+    assignValue(nested, key, newValue);
+    nested = nested[key];
+  }
+  return object;
+}
+
+/**
+ * Sets the value at `path` of `object`. If a portion of `path` doesn't exist,
+ * it's created. Arrays are created for missing index properties while objects
+ * are created for all other missing properties. Use `_.setWith` to customize
+ * `path` creation.
+ *
+ * **Note:** This method mutates `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to modify.
+ * @param {Array|string} path The path of the property to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.set(object, 'a[0].b.c', 4);
+ * console.log(object.a[0].b.c);
+ * // => 4
+ *
+ * _.set(object, ['x', '0', 'y', 'z'], 5);
+ * console.log(object.x[0].y.z);
+ * // => 5
+ */
+function set(object, path, value) {
+  return object == null ? object : baseSet(object, path, value);
+}
+
 /**
  * Removes all key-value entries from the stack.
  *
@@ -1875,10 +2025,10 @@ function stubArray() {
 }
 
 /** Used for built-in method references. */
-var objectProto$5 = Object.prototype;
+var objectProto$6 = Object.prototype;
 
 /** Built-in value references. */
-var propertyIsEnumerable = objectProto$5.propertyIsEnumerable;
+var propertyIsEnumerable = objectProto$6.propertyIsEnumerable;
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeGetSymbols = Object.getOwnPropertySymbols;
@@ -1934,13 +2084,13 @@ function baseIsArguments(value) {
 }
 
 /** Used for built-in method references. */
-var objectProto$6 = Object.prototype;
+var objectProto$7 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$4 = objectProto$6.hasOwnProperty;
+var hasOwnProperty$5 = objectProto$7.hasOwnProperty;
 
 /** Built-in value references. */
-var propertyIsEnumerable$1 = objectProto$6.propertyIsEnumerable;
+var propertyIsEnumerable$1 = objectProto$7.propertyIsEnumerable;
 
 /**
  * Checks if `value` is likely an `arguments` object.
@@ -1961,7 +2111,7 @@ var propertyIsEnumerable$1 = objectProto$6.propertyIsEnumerable;
  * // => false
  */
 var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty$4.call(value, 'callee') &&
+  return isObjectLike(value) && hasOwnProperty$5.call(value, 'callee') &&
     !propertyIsEnumerable$1.call(value, 'callee');
 };
 
@@ -2015,30 +2165,6 @@ var nativeIsBuffer = Buffer$1 ? Buffer$1.isBuffer : undefined;
  * // => false
  */
 var isBuffer = nativeIsBuffer || stubFalse;
-
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  var type = typeof value;
-  length = length == null ? MAX_SAFE_INTEGER : length;
-
-  return !!length &&
-    (type == 'number' ||
-      (type != 'symbol' && reIsUint.test(value))) &&
-        (value > -1 && value % 1 == 0 && value < length);
-}
 
 /** Used as references for various `Number` constants. */
 var MAX_SAFE_INTEGER$1 = 9007199254740991;
@@ -2192,10 +2318,10 @@ var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
 var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
 
 /** Used for built-in method references. */
-var objectProto$7 = Object.prototype;
+var objectProto$8 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$5 = objectProto$7.hasOwnProperty;
+var hasOwnProperty$6 = objectProto$8.hasOwnProperty;
 
 /**
  * Creates an array of the enumerable property names of the array-like `value`.
@@ -2215,7 +2341,7 @@ function arrayLikeKeys(value, inherited) {
       length = result.length;
 
   for (var key in value) {
-    if ((inherited || hasOwnProperty$5.call(value, key)) &&
+    if ((inherited || hasOwnProperty$6.call(value, key)) &&
         !(skipIndexes && (
            // Safari 9 has enumerable `arguments.length` in strict mode.
            key == 'length' ||
@@ -2233,7 +2359,7 @@ function arrayLikeKeys(value, inherited) {
 }
 
 /** Used for built-in method references. */
-var objectProto$8 = Object.prototype;
+var objectProto$9 = Object.prototype;
 
 /**
  * Checks if `value` is likely a prototype object.
@@ -2244,7 +2370,7 @@ var objectProto$8 = Object.prototype;
  */
 function isPrototype(value) {
   var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$8;
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$9;
 
   return value === proto;
 }
@@ -2267,10 +2393,10 @@ function overArg(func, transform) {
 var nativeKeys = overArg(Object.keys, Object);
 
 /** Used for built-in method references. */
-var objectProto$9 = Object.prototype;
+var objectProto$a = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$6 = objectProto$9.hasOwnProperty;
+var hasOwnProperty$7 = objectProto$a.hasOwnProperty;
 
 /**
  * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
@@ -2285,7 +2411,7 @@ function baseKeys(object) {
   }
   var result = [];
   for (var key in Object(object)) {
-    if (hasOwnProperty$6.call(object, key) && key != 'constructor') {
+    if (hasOwnProperty$7.call(object, key) && key != 'constructor') {
       result.push(key);
     }
   }
@@ -2368,10 +2494,10 @@ function getAllKeys(object) {
 var COMPARE_PARTIAL_FLAG$2 = 1;
 
 /** Used for built-in method references. */
-var objectProto$a = Object.prototype;
+var objectProto$b = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$7 = objectProto$a.hasOwnProperty;
+var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
 
 /**
  * A specialized version of `baseIsEqualDeep` for objects with support for
@@ -2399,7 +2525,7 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
   var index = objLength;
   while (index--) {
     var key = objProps[index];
-    if (!(isPartial ? key in other : hasOwnProperty$7.call(other, key))) {
+    if (!(isPartial ? key in other : hasOwnProperty$8.call(other, key))) {
       return false;
     }
   }
@@ -2522,10 +2648,10 @@ var argsTag$2 = '[object Arguments]',
     objectTag$2 = '[object Object]';
 
 /** Used for built-in method references. */
-var objectProto$b = Object.prototype;
+var objectProto$c = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$8 = objectProto$b.hasOwnProperty;
+var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
 
 /**
  * A specialized version of `baseIsEqual` for arrays and objects which performs
@@ -2568,8 +2694,8 @@ function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
       : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
   }
   if (!(bitmask & COMPARE_PARTIAL_FLAG$3)) {
-    var objIsWrapped = objIsObj && hasOwnProperty$8.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty$8.call(other, '__wrapped__');
+    var objIsWrapped = objIsObj && hasOwnProperty$9.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty$9.call(other, '__wrapped__');
 
     if (objIsWrapped || othIsWrapped) {
       var objUnwrapped = objIsWrapped ? object.value() : object,
@@ -3199,10 +3325,10 @@ var mapTag$3 = '[object Map]',
     setTag$3 = '[object Set]';
 
 /** Used for built-in method references. */
-var objectProto$c = Object.prototype;
+var objectProto$d = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty$9 = objectProto$c.hasOwnProperty;
+var hasOwnProperty$a = objectProto$d.hasOwnProperty;
 
 /**
  * Checks if `value` is an empty object, collection, map, or set.
@@ -3254,7 +3380,7 @@ function isEmpty(value) {
     return !baseKeys(value).length;
   }
   for (var key in value) {
-    if (hasOwnProperty$9.call(value, key)) {
+    if (hasOwnProperty$a.call(value, key)) {
       return false;
     }
   }
@@ -3280,60 +3406,6 @@ function arrayEach(array, iteratee) {
     }
   }
   return array;
-}
-
-var defineProperty = (function() {
-  try {
-    var func = getNative(Object, 'defineProperty');
-    func({}, '', {});
-    return func;
-  } catch (e) {}
-}());
-
-/**
- * The base implementation of `assignValue` and `assignMergeValue` without
- * value checks.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function baseAssignValue(object, key, value) {
-  if (key == '__proto__' && defineProperty) {
-    defineProperty(object, key, {
-      'configurable': true,
-      'enumerable': true,
-      'value': value,
-      'writable': true
-    });
-  } else {
-    object[key] = value;
-  }
-}
-
-/** Used for built-in method references. */
-var objectProto$d = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty$a = objectProto$d.hasOwnProperty;
-
-/**
- * Assigns `value` to `key` of `object` if the existing value is not equivalent
- * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * for equality comparisons.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function assignValue(object, key, value) {
-  var objValue = object[key];
-  if (!(hasOwnProperty$a.call(object, key) && eq(objValue, value)) ||
-      (value === undefined && !(key in object))) {
-    baseAssignValue(object, key, value);
-  }
 }
 
 /**
@@ -4227,7 +4299,7 @@ function disableDoubleTapZoom(elements) {
 }
 
 var setup = {
-  BACKEND_URL: './mock', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
+  BACKEND_URL: 'mock', // '/Charitify/', // charitify-application.page.link/?link=https://charitify-application.firebaseio.com&apn=package_name
 
   MAPBOX_KEY: 'mapbox',
 };
@@ -4630,6 +4702,43 @@ var icons = {
     'cancel-circle': IoIosCloseCircleOutline,
 };
 
+/**
+ *
+ * @description API URLs builders.
+ */
+var endpoints = {
+    USER: (id) => `user.json`,
+    USERS: () => `users.json`,
+
+    RECENT: (id) => `recent.json`,
+    RECENTS: () => `recents.json`,
+
+    COMMENT: (id) => `comment.json`,
+    COMMENTS: () => `comments.json`,
+
+    FUND: (id) => `fund.json`,
+    FUNDS: () => `funds.json`,
+
+    ORGANIZATION: (id) => `organization.json`,
+    ORGANIZATIONS: () => `organizations.json`,
+};
+// export default {
+//     USER: (id) => `apiusers/${id || ':id'}`,
+//     USERS: () => `apiusers`,
+//
+//     RECENT: (id) => `apirecents/${id || ':id'}`,
+//     RECENTS: () => `apirecents`,
+//
+//     COMMENT: (id) => `apicomments/${id || ':id'}`,
+//     COMMENTS: () => `apicomments`,
+//
+//     FUND: (id) => `apifunds/${id || ':id'}`,
+//     FUNDS: () => `apifunds`,
+//
+//     ORGANIZATION: (id) => `apiorganizations/${id || ':id'}`,
+//     ORGANIZATIONS: () => `apiorganizations`,
+// }
+
 const vaccinations = [
     {
         text: 'Від кліщів',
@@ -4738,27 +4847,6 @@ const Card = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
     ${$$slots.default ? $$slots.default({}) : ``}
 </section>`;
 });
-
-/**
- *
- * @description API URLs builders.
- */
-const endpoints = {
-  USER: (id) => `user.json?id=${id}`,
-  USERS: () => `users.json`,
-
-  RECENT: (id) => `recent.json?id=${id}`,
-  RECENTS: () => `recents.json`,
-
-  COMMENT: (id) => `comment.json?id=${id}`,
-  COMMENTS: () => `comments.json`,
-
-  FUND: (id) => `fund.json?id=${id}`,
-  FUNDS: () => `funds.json`,
-
-  ORGANIZATION: (id) => `organization.json?id=${id}`,
-  ORGANIZATIONS: () => `organizations.json`,
-};
 
 class APIService {
   /**
@@ -5235,35 +5323,43 @@ const organizations = writable$1('organizations', null);
 
 const css$4 = {
 	code: ".portal-clone.svelte-qh8j7n{display:none}",
-	map: "{\"version\":3,\"file\":\"Portal.svelte\",\"sources\":[\"Portal.svelte\"],\"sourcesContent\":[\"<script>\\n  import { onMount } from \\\"svelte\\\";\\n\\n  let ref;\\n  let portal;\\n\\n  onMount(() => {\\n    portal = document.createElement(\\\"div\\\");\\n    portal.className = \\\"portal\\\";\\n    portal.appendChild(ref);\\n    document.body.appendChild(portal);\\n    return () => document.body.removeChild(portal)\\n  });\\n\\n</script>\\n\\n<div class=\\\"portal-clone\\\">\\n    <div bind:this={ref}>\\n        <slot />\\n    </div>\\n</div>\\n\\n<style>\\n  .portal-clone {\\n    display: none;\\n  }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtFQUNFO0lBQ0UsYUFBYTtFQUNmIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgLnBvcnRhbC1jbG9uZSB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAuBE,aAAa,cAAC,CAAC,AACb,OAAO,CAAE,IAAI,AACf,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"Portal.svelte\",\"sources\":[\"Portal.svelte\"],\"sourcesContent\":[\"<script>\\n  import { onMount } from \\\"svelte\\\";\\n\\n  export let off\\n\\n  let ref;\\n  let portal;\\n\\n  onMount(off ? (() => {}) : (() => {\\n    portal = document.createElement(\\\"div\\\");\\n    portal.className = \\\"portal\\\";\\n    portal.appendChild(ref);\\n    document.body.appendChild(portal);\\n    return () => document.body.removeChild(portal)\\n  }));\\n\\n</script>\\n\\n{#if off}\\n  <slot />\\n{:else}\\n  <div class=\\\"portal-clone\\\">\\n      <div bind:this={ref}>\\n          <slot />\\n      </div>\\n  </div>\\n{/if}\\n\\n<style>\\n  .portal-clone {\\n    display: none;\\n  }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtFQUNFO0lBQ0UsYUFBYTtFQUNmIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL1BvcnRhbC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgLnBvcnRhbC1jbG9uZSB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AA6BE,aAAa,cAAC,CAAC,AACb,OAAO,CAAE,IAAI,AACf,CAAC\"}"
 };
 
 const Portal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { off } = $$props;
 	let ref;
 	let portal;
 
-	onMount(() => {
-		portal = document.createElement("div");
-		portal.className = "portal";
-		portal.appendChild(ref);
-		document.body.appendChild(portal);
-		return () => document.body.removeChild(portal);
-	});
+	onMount(off
+	? () => {
+			
+		}
+	: () => {
+			portal = document.createElement("div");
+			portal.className = "portal";
+			portal.appendChild(ref);
+			document.body.appendChild(portal);
+			return () => document.body.removeChild(portal);
+		});
 
+	if ($$props.off === void 0 && $$bindings.off && off !== void 0) $$bindings.off(off);
 	$$result.css.add(css$4);
 
-	return `<div class="${"portal-clone svelte-qh8j7n"}">
-    <div${add_attribute("this", ref, 1)}>
-        ${$$slots.default ? $$slots.default({}) : ``}
-    </div>
-</div>`;
+	return `${off
+	? `${$$slots.default ? $$slots.default({}) : ``}`
+	: `<div class="${"portal-clone svelte-qh8j7n"}">
+      <div${add_attribute("this", ref, 1)}>
+          ${$$slots.default ? $$slots.default({}) : ``}
+      </div>
+  </div>`}`;
 });
 
 /* src/components/Modal.svelte generated by Svelte v3.18.1 */
 
 const css$5 = {
-	code: ".modal.svelte-1r5lpit.svelte-1r5lpit{z-index:8;position:fixed;top:0;left:0;width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;overflow-x:hidden;overflow-y:auto;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-ms-touch-action:manipulation;touch-action:manipulation;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-color:rgba(var(--color-black), .75);outline:150px solid rgba(var(--color-black), .75);-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;opacity:0;pointer-events:none}.modal.active.svelte-1r5lpit.svelte-1r5lpit,.modal-header.active.svelte-1r5lpit.svelte-1r5lpit{opacity:1;pointer-events:auto}.modal-inner.svelte-1r5lpit.svelte-1r5lpit{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch;overflow:hidden;background-color:rgba(var(--theme-color-primary))}.small.svelte-1r5lpit .modal-inner.svelte-1r5lpit{width:200px;border-radius:var(--border-radius-big)}.medium.svelte-1r5lpit .modal-inner.svelte-1r5lpit{width:calc(100vw - var(--screen-padding) * 2);border-radius:var(--border-radius-big)}.big.svelte-1r5lpit .modal-inner.svelte-1r5lpit{width:calc(100% - var(--screen-padding) * 2);height:calc(100% - var(--screen-padding) * 2);border-radius:var(--border-radius-big)}.full.svelte-1r5lpit.svelte-1r5lpit{-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.full.svelte-1r5lpit .modal-inner.svelte-1r5lpit{-webkit-box-flex:0;-ms-flex:none;flex:none;width:100%;min-height:100%;border-radius:0}.modal-header.svelte-1r5lpit.svelte-1r5lpit{-webkit-transform:translateZ(0);transform:translateZ(0);z-index:9;position:fixed;top:0;left:0;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;color:rgb(var(--color-white));background-color:rgb(var(--color-info));opacity:0;pointer-events:none;-webkit-transform-origin:50% 50vh;transform-origin:50% 50vh}.modal-header.svelte-1r5lpit .close.svelte-1r5lpit{font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:60px;height:60px}",
-	map: "{\"version\":3,\"file\":\"Modal.svelte\",\"sources\":[\"Modal.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, tick } from 'svelte'\\n    import { fly } from \\\"svelte/transition\\\";\\n    import { Swipe } from '@services'\\n    import { safeGet, classnames, delay, bodyScroll, stopPropagationInRanges } from \\\"@utils\\\";\\n    import { modals } from \\\"@store\\\";\\n    import Portal from \\\"./Portal.svelte\\\";\\n    import Br from \\\"./Br.svelte\\\";\\n    import Icon from \\\"./Icon.svelte\\\";\\n\\n    const dispatch = createEventDispatcher()\\n    \\n    const DURATION = 250\\n    const THRESHOLD = 50\\n    const SWIPE_SPEED = .5\\n    const THRESHOLD_RANGES = { x: [0, 100], y: [1, 99] }\\n    const START_POSITION = {\\n        x: 50,\\n        y: 0\\n    }\\n\\n    export let id\\n    export let ref = null\\n    export let size = 'full'    // small/medium/big/full\\n    export let swipe = []       // up down left right all\\n    export let open = null\\n    export let startPosition = START_POSITION\\n    export let blockBody = true\\n    export let withHeader = true\\n\\n    let active\\n    let refHeader\\n    let isBodyBlocked = false\\n    let isAllowed = {\\n        up: true,\\n        down: false,\\n        left: true,\\n        right: true,\\n    }\\n\\n    $: isSwipe = {\\n        up: safeGet(() => swipe.includes('up') || swipe.includes('all')),\\n        down: safeGet(() => swipe.includes('down') || swipe.includes('all')),\\n        left: safeGet(() => swipe.includes('left') || swipe.includes('all')),\\n        right: safeGet(() => swipe.includes('right') || swipe.includes('all')),\\n    }\\n    $: scrollY = ref && ref.scrollTop\\n    $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)\\n    $: classProp = classnames('modal', size, { active })\\n    $: onActiveChange(active)\\n    $: blockScroll(ref)\\n\\n    function blockScroll(modal) {\\n        if (blockBody && active && !isBodyBlocked) {\\n            bodyScroll.disableScroll(modal, { extraLock: size === 'full' });\\n            isBodyBlocked = true\\n            modal && (modal.scrollTop = 0)\\n            isAllowed = {\\n                up: true,\\n                down: false,\\n                left: true,\\n                right: true,\\n            }\\n        } else if (blockBody && !active && isBodyBlocked) {\\n            bodyScroll.enableScroll(modal, { extraLock: size === 'full' });\\n            isBodyBlocked = false\\n        }\\n    }\\n\\n    async function onActiveChange(active) {\\n        if (active) {\\n            setDuration(ref, DURATION)\\n            setDuration(refHeader, DURATION)\\n            setTimeout(() => setDuration(ref, 0), DURATION)\\n            setTimeout(() => setDuration(refHeader, 0), DURATION)\\n            drawTransform(ref, 0, 0)\\n            drawTransform(refHeader, 0, 0)\\n            drawOpacity(ref, 0, 0)\\n            drawOpacity(refHeader, 0, 0)\\n            blockScroll(ref)\\n            await tick()\\n            dispatch('open')\\n        } else {\\n            blockScroll(ref)\\n            await tick()\\n            dispatch('close')\\n        }\\n    }\\n\\n    function setActive(isActive) {\\n        if (open !== null) open = isActive\\n        modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))\\n    }\\n\\n    let xSwipe = 0\\n    let ySwipe = 0\\n\\n    function addSwipe(el) {\\n        stopPropagationInRanges(el, THRESHOLD_RANGES, ({ x, y }) => {\\n            isAllowed = {\\n                up: y <= THRESHOLD_RANGES.y[0],\\n                down: y >= THRESHOLD_RANGES.y[1],\\n                left: x <= THRESHOLD_RANGES.x[0] || x >= THRESHOLD_RANGES.x[1],\\n                right: x <= THRESHOLD_RANGES.x[0] || x >= THRESHOLD_RANGES.x[1],\\n            } \\n        })\\n\\n        new Swipe(el)\\n                .run()\\n                .onUp(isSwipe.up ? handleVerticalSwipe : null)\\n                .onDown(isSwipe.down ? handleVerticalSwipe : null)\\n                .onLeft(isSwipe.left ? handleHorizontalSwipe : null)\\n                .onRight(isSwipe.right ? handleHorizontalSwipe : null)\\n                .onTouchEnd(async () => {\\n                    const shift = 50\\n\\n                    if (xSwipe > THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe + shift, ySwipe)\\n                        drawOpacity(refHeader, xSwipe + shift, ySwipe)\\n                        drawTransform(el, xSwipe + shift, ySwipe)\\n                        drawTransform(refHeader, xSwipe + shift, ySwipe)\\n                        await delay(DURATION)\\n                    } else if (xSwipe < -THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe - shift, ySwipe)\\n                        drawOpacity(refHeader, xSwipe - shift, ySwipe)\\n                        drawTransform(el, xSwipe - shift, ySwipe)\\n                        drawTransform(refHeader, xSwipe - shift, ySwipe)\\n                        await delay(DURATION)\\n                    }\\n                    \\n                    if (ySwipe > THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe, ySwipe + shift)\\n                        drawOpacity(refHeader, xSwipe, ySwipe + shift)\\n                        drawTransform(el, xSwipe, ySwipe + shift)\\n                        drawTransform(refHeader, xSwipe, ySwipe + shift)\\n                        await delay(DURATION)\\n                    } else if (ySwipe < -THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe, ySwipe - shift)\\n                        drawOpacity(refHeader, xSwipe, ySwipe - shift)\\n                        drawTransform(el, xSwipe, ySwipe - shift)\\n                        drawTransform(refHeader, xSwipe, ySwipe - shift)\\n                        await delay(DURATION)\\n                    }\\n\\n                    if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        drawTransform(el, 0, 0)\\n                        drawTransform(refHeader, 0, 0)\\n                    } else {\\n                        setStartPosition()\\n                    }\\n\\n                    xSwipe = 0\\n                    ySwipe = 0\\n                    el.style.opacity = null\\n                    refHeader.style.opacity = null\\n                })\\n    }\\n\\n    function handleVerticalSwipe(yDown, yUp, evt, el) {\\n        const dir = yUp - yDown\\n        if (!isAllowed.up && dir > 0 || !isAllowed.down && dir < 0) return\\n        ySwipe = dir * SWIPE_SPEED\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawTransform(refHeader, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n        drawOpacity(refHeader, xSwipe, ySwipe)\\n    }\\n    function handleHorizontalSwipe(xDown, xUp, evt, el) {\\n        const dir = xUp - xDown\\n        if (!isAllowed.left && dir > 0 || !isAllowed.right && dir < 0) return\\n        xSwipe = dir * SWIPE_SPEED\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawTransform(refHeader, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n        drawOpacity(refHeader, xSwipe, ySwipe)\\n    }\\n\\n    function setStartPosition() {\\n        drawTransform(ref, startPosition.x, startPosition.y)\\n        drawTransform(refHeader, startPosition.x, startPosition.y)\\n    }\\n\\n    function drawTransform(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        let scale = 1 - Math.abs(delta / window.innerHeight)\\n        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${x}, ${y})`)\\n    }\\n     function setDuration(el, ms) {\\n        el && (el.style.transitionDuration = `${ms}ms`)\\n    }\\n    function drawOpacity(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))\\n    }\\n\\n    function appear(node, params) {\\n        if (!active) return\\n\\t\\tconst existingTransform = getComputedStyle(node).transform.replace('none', '');\\n        const getScale = t => .9 + .1 * t\\n        const getX = t => startPosition.x - startPosition.x * t\\n\\t\\treturn {\\n\\t\\t\\tduration: DURATION,\\n\\t\\t\\tcss: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`\\n\\t\\t};\\n    }\\n\\n    function onCloseModal() {\\n        setDuration(ref, DURATION)\\n        setDuration(refHeader, DURATION)\\n        setTimeout(() => setDuration(ref, 0), DURATION)\\n        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n        setStartPosition()\\n        drawOpacity(ref, startPosition.x * 2, startPosition.y)\\n        drawOpacity(refHeader, startPosition.x * 2, startPosition.y)\\n        setTimeout(() => setActive(false), DURATION)\\n    }\\n</script>\\n\\n{#if active !== null}\\n    <Portal>\\n        <div\\n            id={`modal-${id}`}\\n            bind:this={ref}\\n            aria-hidden=\\\"true\\\" \\n            class={classProp}\\n            use:addSwipe\\n            in:appear\\n            on:click={setActive.bind(null, false)}\\n        >\\n            {#if withHeader}\\n                <Portal>\\n                    <slot name=\\\"header\\\">\\n                        <button \\n                            type=\\\"button\\\"\\n                            class={classnames('modal-header', { active })}\\n                            in:appear\\n                            bind:this={refHeader}\\n                            on:click={onCloseModal}\\n                        >\\n                            <h2 style=\\\"padding: 15px 20px\\\">Закрити</h2>\\n                            <span class=\\\"close\\\">\\n                                 <Icon type=\\\"close\\\" size=\\\"big\\\" is=\\\"light\\\"/>\\n                            </span>\\n                        </button>\\n                    </slot>\\n                </Portal>   \\n                <Br size=\\\"60\\\"/>\\n            {/if}\\n            <div\\n                class=\\\"modal-inner\\\"\\n                tabindex=\\\"-1\\\"\\n                role=\\\"dialog\\\"\\n                aria-modal=\\\"true\\\"\\n                aria-labelledby=\\\"модальне вікно\\\"\\n                on:click={e => e.stopPropagation()}\\n            >\\n                <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>\\n            </div>\\n        </div>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .modal {\\n        z-index: 8;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-x: hidden;\\n        overflow-y: auto;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 150px solid rgba(var(--color-black), .75);\\n        -webkit-transition-timing-function: ease-out;\\n                transition-timing-function: ease-out;\\n        opacity: 0;\\n        pointer-events: none;\\n    }\\n\\n    .modal.active, .modal-header.active {\\n        opacity: 1;\\n        pointer-events: auto;\\n    }\\n\\n    .modal-inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n        overflow: hidden;\\n        background-color: rgba(var(--theme-color-primary));\\n    }\\n    .small .modal-inner {\\n        width: 200px;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .medium .modal-inner {\\n        width: calc(100vw - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n    .big .modal-inner {\\n        width: calc(100% - var(--screen-padding) * 2);\\n        height: calc(100% - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .full {\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .full .modal-inner {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 100%;\\n        min-height: 100%;\\n        border-radius: 0;\\n    }\\n\\n    .modal-header {\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n        z-index: 9;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: justify;\\n            -ms-flex-pack: justify;\\n                justify-content: space-between;\\n        color: rgb(var(--color-white));\\n        background-color: rgb(var(--color-info));\\n        opacity: 0;\\n        pointer-events: none;\\n        -webkit-transform-origin: 50% 50vh;\\n                transform-origin: 50% 50vh;\\n    }\\n\\n    .modal-header .close {\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 60px;\\n        height: 60px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxVQUFVO1FBQ1YsZUFBZTtRQUNmLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGtCQUFrQjtRQUNsQixnQkFBZ0I7UUFDaEIseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2Qiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLDhCQUEwQjtZQUExQiwwQkFBMEI7UUFDMUIseUJBQWlCO1dBQWpCLHNCQUFpQjtZQUFqQixxQkFBaUI7Z0JBQWpCLGlCQUFpQjtRQUNqQiwrQ0FBK0M7UUFDL0Msa0RBQWtEO1FBQ2xELDRDQUFvQztnQkFBcEMsb0NBQW9DO1FBQ3BDLFVBQVU7UUFDVixvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxVQUFVO1FBQ1Ysb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLDBCQUFvQjtZQUFwQix1QkFBb0I7Z0JBQXBCLG9CQUFvQjtRQUNwQix5QkFBd0I7WUFBeEIsc0JBQXdCO2dCQUF4Qix3QkFBd0I7UUFDeEIsZ0JBQWdCO1FBQ2hCLGtEQUFrRDtJQUN0RDtJQUNBO1FBQ0ksWUFBWTtRQUNaLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLDhDQUE4QztRQUM5Qyx1Q0FBdUM7SUFDM0M7SUFDQTtRQUNJLDZDQUE2QztRQUM3Qyw4Q0FBOEM7UUFDOUMsdUNBQXVDO0lBQzNDOztJQUVBO1FBQ0ksMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHlCQUF3QjtZQUF4QixzQkFBd0I7Z0JBQXhCLHdCQUF3QjtJQUM1Qjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLGdCQUFnQjtRQUNoQixnQkFBZ0I7SUFDcEI7O0lBRUE7UUFDSSxnQ0FBd0I7Z0JBQXhCLHdCQUF3QjtRQUN4QixVQUFVO1FBQ1YsZUFBZTtRQUNmLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHlCQUE4QjtZQUE5QixzQkFBOEI7Z0JBQTlCLDhCQUE4QjtRQUM5Qiw4QkFBOEI7UUFDOUIsd0NBQXdDO1FBQ3hDLFVBQVU7UUFDVixvQkFBb0I7UUFDcEIsa0NBQTBCO2dCQUExQiwwQkFBMEI7SUFDOUI7O0lBRUE7UUFDSSxlQUFlO1FBQ2Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLFdBQVc7UUFDWCxZQUFZO0lBQ2hCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5tb2RhbCB7XG4gICAgICAgIHotaW5kZXg6IDg7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBvdmVyZmxvdy14OiBoaWRkZW47XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgICAgICB0b3VjaC1hY3Rpb246IG1hbmlwdWxhdGlvbjtcbiAgICAgICAgdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAuNzUpO1xuICAgICAgICBvdXRsaW5lOiAxNTBweCBzb2xpZCByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgLjc1KTtcbiAgICAgICAgdHJhbnNpdGlvbi10aW1pbmctZnVuY3Rpb246IGVhc2Utb3V0O1xuICAgICAgICBvcGFjaXR5OiAwO1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICB9XG5cbiAgICAubW9kYWwuYWN0aXZlLCAubW9kYWwtaGVhZGVyLmFjdGl2ZSB7XG4gICAgICAgIG9wYWNpdHk6IDE7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBhdXRvO1xuICAgIH1cblxuICAgIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3ItcHJpbWFyeSkpO1xuICAgIH1cbiAgICAuc21hbGwgLm1vZGFsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDIwMHB4O1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLm1lZGl1bSAubW9kYWwtaW5uZXIge1xuICAgICAgICB3aWR0aDogY2FsYygxMDB2dyAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuICAgIC5iaWcgLm1vZGFsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IGNhbGMoMTAwJSAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLmZ1bGwge1xuICAgICAgICBhbGlnbi1pdGVtczogc3RyZXRjaDtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBzdHJldGNoO1xuICAgIH1cblxuICAgIC5mdWxsIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtaW4taGVpZ2h0OiAxMDAlO1xuICAgICAgICBib3JkZXItcmFkaXVzOiAwO1xuICAgIH1cblxuICAgIC5tb2RhbC1oZWFkZXIge1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgICAgIHotaW5kZXg6IDk7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLXdoaXRlKSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci1pbmZvKSk7XG4gICAgICAgIG9wYWNpdHk6IDA7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgICAgICB0cmFuc2Zvcm0tb3JpZ2luOiA1MCUgNTB2aDtcbiAgICB9XG5cbiAgICAubW9kYWwtaGVhZGVyIC5jbG9zZSB7XG4gICAgICAgIGZvbnQtc2l6ZTogMjRweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiA2MHB4O1xuICAgICAgICBoZWlnaHQ6IDYwcHg7XG4gICAgfVxuIl19 */</style>   \\n\"],\"names\":[],\"mappings\":\"AA+RI,MAAM,8BAAC,CAAC,AACJ,OAAO,CAAE,CAAC,CACV,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,IAAI,CAChB,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,mBAAmB,CAAE,IAAI,CACtB,gBAAgB,CAAE,IAAI,CACrB,eAAe,CAAE,IAAI,CACjB,WAAW,CAAE,IAAI,CACzB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAC/C,OAAO,CAAE,KAAK,CAAC,KAAK,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAClD,kCAAkC,CAAE,QAAQ,CACpC,0BAA0B,CAAE,QAAQ,CAC5C,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,qCAAO,CAAE,aAAa,OAAO,8BAAC,CAAC,AACjC,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,YAAY,8BAAC,CAAC,AACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,CAChC,QAAQ,CAAE,MAAM,CAChB,gBAAgB,CAAE,KAAK,IAAI,qBAAqB,CAAC,CAAC,AACtD,CAAC,AACD,qBAAM,CAAC,YAAY,eAAC,CAAC,AACjB,KAAK,CAAE,KAAK,CACZ,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,sBAAO,CAAC,YAAY,eAAC,CAAC,AAClB,KAAK,CAAE,KAAK,KAAK,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AACD,mBAAI,CAAC,YAAY,eAAC,CAAC,AACf,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7C,MAAM,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,KAAK,8BAAC,CAAC,AACH,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,oBAAK,CAAC,YAAY,eAAC,CAAC,AAChB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,UAAU,CAAE,IAAI,CAChB,aAAa,CAAE,CAAC,AACpB,CAAC,AAED,aAAa,8BAAC,CAAC,AACX,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,CAChC,OAAO,CAAE,CAAC,CACV,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,aAAa,CACtC,KAAK,CAAE,IAAI,IAAI,aAAa,CAAC,CAAC,CAC9B,gBAAgB,CAAE,IAAI,IAAI,YAAY,CAAC,CAAC,CACxC,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,CACpB,wBAAwB,CAAE,GAAG,CAAC,IAAI,CAC1B,gBAAgB,CAAE,GAAG,CAAC,IAAI,AACtC,CAAC,AAED,4BAAa,CAAC,MAAM,eAAC,CAAC,AAClB,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+	code: ".modal.svelte-7yn5no.svelte-7yn5no{z-index:8;position:fixed;top:0;left:0;width:100%;height:100%;display:-webkit-box;display:-ms-flexbox;display:flex;overflow-x:hidden;overflow-y:auto;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-ms-touch-action:manipulation;touch-action:manipulation;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-color:rgba(var(--color-black), .75);outline:150px solid rgba(var(--color-black), .75);-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;opacity:0;pointer-events:none}.modal.active.svelte-7yn5no.svelte-7yn5no,.modal-header.active.svelte-7yn5no.svelte-7yn5no{opacity:1;pointer-events:auto}.modal-inner.svelte-7yn5no.svelte-7yn5no{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch;overflow:hidden;background-color:rgba(var(--theme-color-primary))}.small.svelte-7yn5no .modal-inner.svelte-7yn5no{width:200px;border-radius:var(--border-radius-big)}.medium.svelte-7yn5no .modal-inner.svelte-7yn5no{width:calc(100vw - var(--screen-padding) * 2);border-radius:var(--border-radius-big)}.big.svelte-7yn5no .modal-inner.svelte-7yn5no{width:calc(100% - var(--screen-padding) * 2);height:calc(100% - var(--screen-padding) * 2);border-radius:var(--border-radius-big)}.full.svelte-7yn5no.svelte-7yn5no{-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:stretch;-ms-flex-pack:stretch;justify-content:stretch}.full.svelte-7yn5no .modal-inner.svelte-7yn5no{-webkit-box-flex:0;-ms-flex:none;flex:none;width:100%;min-height:100%;border-radius:0}.modal-header.svelte-7yn5no.svelte-7yn5no{-webkit-transform:translateZ(0);transform:translateZ(0);z-index:9;position:fixed;top:0;left:0;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;color:rgb(var(--color-white));background-color:rgb(var(--color-info));opacity:0;pointer-events:none;-webkit-transform-origin:50% 50vh;transform-origin:50% 50vh}.modal-header-relative.svelte-7yn5no.svelte-7yn5no{-webkit-transform:translateZ(0);transform:translateZ(0);z-index:9;position:relative;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;color:rgb(var(--color-white));background-color:rgb(var(--color-info))}.modal-header.svelte-7yn5no .close.svelte-7yn5no,.modal-header-relative.svelte-7yn5no .close.svelte-7yn5no{font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:60px;height:60px}",
+	map: "{\"version\":3,\"file\":\"Modal.svelte\",\"sources\":[\"Modal.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher, tick } from 'svelte'\\n    import { fly } from \\\"svelte/transition\\\";\\n    import { Swipe } from '@services'\\n    import { safeGet, classnames, delay, bodyScroll, stopPropagationInRanges } from \\\"@utils\\\";\\n    import { modals } from \\\"@store\\\";\\n    import Portal from \\\"./Portal.svelte\\\";\\n    import Br from \\\"./Br.svelte\\\";\\n    import Icon from \\\"./Icon.svelte\\\";\\n\\n    const dispatch = createEventDispatcher()\\n    \\n    const DURATION = 250\\n    const THRESHOLD = 50\\n    const SWIPE_SPEED = .5\\n    const THRESHOLD_RANGES = { x: [0, 100], y: [1, 99] }\\n    const START_POSITION = {\\n        x: 50,\\n        y: 0\\n    }\\n\\n    export let id\\n    export let ref = null\\n    export let size = 'full'    // small/medium/big/full\\n    export let swipe = []       // up down left right all\\n    export let open = null\\n    export let startPosition = START_POSITION\\n    export let blockBody = true\\n    export let withHeader = true\\n\\n    let active\\n    let refHeader\\n    let isBodyBlocked = false\\n    let isAllowed = {\\n        up: true,\\n        down: false,\\n        left: true,\\n        right: true,\\n    }\\n\\n    $: isSwipe = {\\n        up: safeGet(() => swipe.includes('up') || swipe.includes('all')),\\n        down: safeGet(() => swipe.includes('down') || swipe.includes('all')),\\n        left: safeGet(() => swipe.includes('left') || swipe.includes('all')),\\n        right: safeGet(() => swipe.includes('right') || swipe.includes('all')),\\n    }\\n    $: scrollY = ref && ref.scrollTop\\n    $: active = safeGet(() => open !== null ? open : $modals[`modal-${id}`].open, null)\\n    $: classProp = classnames('modal', size, { active })\\n    $: onActiveChange(active)\\n    $: blockScroll(ref)\\n\\n    function blockScroll(modal) {\\n        if (blockBody && active && !isBodyBlocked) {\\n            bodyScroll.disableScroll(modal, { extraLock: size === 'full' });\\n            isBodyBlocked = true\\n            modal && (modal.scrollTop = 0)\\n            isAllowed = {\\n                up: true,\\n                down: false,\\n                left: true,\\n                right: true,\\n            }\\n        } else if (blockBody && !active && isBodyBlocked) {\\n            bodyScroll.enableScroll(modal, { extraLock: size === 'full' });\\n            isBodyBlocked = false\\n        }\\n    }\\n\\n    async function onActiveChange(active) {\\n        if (active) {\\n            setDuration(ref, DURATION)\\n            setDuration(refHeader, DURATION)\\n            setTimeout(() => setDuration(ref, 0), DURATION)\\n            setTimeout(() => setDuration(refHeader, 0), DURATION)\\n            drawTransform(ref, 0, 0)\\n            drawTransform(refHeader, 0, 0)\\n            drawOpacity(ref, 0, 0)\\n            drawOpacity(refHeader, 0, 0)\\n            blockScroll(ref)\\n            await tick()\\n            dispatch('open')\\n        } else {\\n            blockScroll(ref)\\n            await tick()\\n            dispatch('close')\\n        }\\n    }\\n\\n    function setActive(isActive) {\\n        if (open !== null) open = isActive\\n        modals.update(s => ({ ...s, [`modal-${id}`]: { open: isActive } }))\\n    }\\n\\n    let xSwipe = 0\\n    let ySwipe = 0\\n\\n    function addSwipe(el) {\\n        stopPropagationInRanges(el, THRESHOLD_RANGES, ({ x, y }) => {\\n            isAllowed = {\\n                up: y <= THRESHOLD_RANGES.y[0],\\n                down: y >= THRESHOLD_RANGES.y[1],\\n                left: x <= THRESHOLD_RANGES.x[0] || x >= THRESHOLD_RANGES.x[1],\\n                right: x <= THRESHOLD_RANGES.x[0] || x >= THRESHOLD_RANGES.x[1],\\n            } \\n        })\\n\\n        new Swipe(el)\\n                .run()\\n                .onUp(isSwipe.up ? handleVerticalSwipe : null)\\n                .onDown(isSwipe.down ? handleVerticalSwipe : null)\\n                .onLeft(isSwipe.left ? handleHorizontalSwipe : null)\\n                .onRight(isSwipe.right ? handleHorizontalSwipe : null)\\n                .onTouchEnd(async () => {\\n                    const shift = 50\\n\\n                    if (xSwipe > THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe + shift, ySwipe)\\n                        drawOpacity(refHeader, xSwipe + shift, ySwipe)\\n                        drawTransform(el, xSwipe + shift, ySwipe)\\n                        drawTransform(refHeader, xSwipe + shift, ySwipe)\\n                        await delay(DURATION)\\n                    } else if (xSwipe < -THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe - shift, ySwipe)\\n                        drawOpacity(refHeader, xSwipe - shift, ySwipe)\\n                        drawTransform(el, xSwipe - shift, ySwipe)\\n                        drawTransform(refHeader, xSwipe - shift, ySwipe)\\n                        await delay(DURATION)\\n                    }\\n                    \\n                    if (ySwipe > THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe, ySwipe + shift)\\n                        drawOpacity(refHeader, xSwipe, ySwipe + shift)\\n                        drawTransform(el, xSwipe, ySwipe + shift)\\n                        drawTransform(refHeader, xSwipe, ySwipe + shift)\\n                        await delay(DURATION)\\n                    } else if (ySwipe < -THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        setActive(false)\\n                        drawOpacity(el, xSwipe, ySwipe - shift)\\n                        drawOpacity(refHeader, xSwipe, ySwipe - shift)\\n                        drawTransform(el, xSwipe, ySwipe - shift)\\n                        drawTransform(refHeader, xSwipe, ySwipe - shift)\\n                        await delay(DURATION)\\n                    }\\n\\n                    if (xSwipe <= THRESHOLD && xSwipe >= -THRESHOLD && ySwipe <= THRESHOLD && ySwipe >= -THRESHOLD) {\\n                        setDuration(el, DURATION)\\n                        setDuration(refHeader, DURATION)\\n                        setTimeout(() => setDuration(el, 0), DURATION)\\n                        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n                        drawTransform(el, 0, 0)\\n                        drawTransform(refHeader, 0, 0)\\n                    } else {\\n                        setStartPosition()\\n                    }\\n\\n                    xSwipe = 0\\n                    ySwipe = 0\\n                    el.style.opacity = null\\n                    refHeader.style.opacity = null\\n                })\\n    }\\n\\n    function handleVerticalSwipe(yDown, yUp, evt, el) {\\n        const dir = yUp - yDown\\n        if (!isAllowed.up && dir > 0 || !isAllowed.down && dir < 0) return\\n        ySwipe = dir * SWIPE_SPEED\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawTransform(refHeader, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n        drawOpacity(refHeader, xSwipe, ySwipe)\\n    }\\n    function handleHorizontalSwipe(xDown, xUp, evt, el) {\\n        const dir = xUp - xDown\\n        if (!isAllowed.left && dir > 0 || !isAllowed.right && dir < 0) return\\n        xSwipe = dir * SWIPE_SPEED\\n        drawTransform(el, xSwipe, ySwipe)\\n        drawTransform(refHeader, xSwipe, ySwipe)\\n        drawOpacity(el, xSwipe, ySwipe)\\n        drawOpacity(refHeader, xSwipe, ySwipe)\\n    }\\n\\n    function setStartPosition() {\\n        drawTransform(ref, startPosition.x, startPosition.y)\\n        drawTransform(refHeader, startPosition.x, startPosition.y)\\n    }\\n\\n    function drawTransform(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        let scale = 1 - Math.abs(delta / window.innerHeight)\\n        el && (el.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${x}, ${y})`)\\n    }\\n     function setDuration(el, ms) {\\n        el && (el.style.transitionDuration = `${ms}ms`)\\n    }\\n    function drawOpacity(el, x, y) {\\n        const delta = Math.abs(x) > Math.abs(y) ? x : y\\n        el && (el.style.opacity = 1 - Math.min(Math.abs(delta / (THRESHOLD * 1.5)), 1))\\n    }\\n\\n    function appear(node, params) {\\n        if (!active) return\\n\\t\\tconst existingTransform = getComputedStyle(node).transform.replace('none', '');\\n        const getScale = t => .9 + .1 * t\\n        const getX = t => startPosition.x - startPosition.x * t\\n\\t\\treturn {\\n\\t\\t\\tduration: DURATION,\\n\\t\\t\\tcss: (t) => `opacity: ${t}; transform: matrix(${getScale(t)}, 0, 0, ${getScale(t)}, ${getX(t)}, 0)`\\n\\t\\t};\\n    }\\n\\n    function onCloseModal() {\\n        setDuration(ref, DURATION)\\n        setDuration(refHeader, DURATION)\\n        setTimeout(() => setDuration(ref, 0), DURATION)\\n        setTimeout(() => setDuration(refHeader, 0), DURATION)\\n        setStartPosition()\\n        drawOpacity(ref, startPosition.x * 2, startPosition.y)\\n        drawOpacity(refHeader, startPosition.x * 2, startPosition.y)\\n        setTimeout(() => setActive(false), DURATION)\\n    }\\n</script>\\n\\n{#if active !== null}\\n    <Portal>\\n        <div\\n            id={`modal-${id}`}\\n            bind:this={ref}\\n            aria-hidden=\\\"true\\\" \\n            class={classProp}\\n            use:addSwipe\\n            in:appear\\n            on:click={setActive.bind(null, false)}\\n        >\\n            {#if withHeader && size === 'full'}\\n                <Portal>\\n                    <slot name=\\\"header\\\">\\n                        <button \\n                            type=\\\"button\\\"\\n                            class={classnames('modal-header', { active })}\\n                            in:appear\\n                            bind:this={refHeader}\\n                            on:click={onCloseModal}\\n                        >\\n                            <h2 style=\\\"padding: 15px 20px\\\">Закрити</h2>\\n                            <span class=\\\"close\\\">\\n                                 <Icon type=\\\"close\\\" size=\\\"big\\\" is=\\\"light\\\"/>\\n                            </span>\\n                        </button>\\n                    </slot>\\n                </Portal>   \\n                <Br size=\\\"60\\\"/>\\n            {/if}\\n            <div\\n                class=\\\"modal-inner\\\"\\n                tabindex=\\\"-1\\\"\\n                role=\\\"dialog\\\"\\n                aria-modal=\\\"true\\\"\\n                aria-labelledby=\\\"модальне вікно\\\"\\n                on:click={e => e.stopPropagation()}\\n            >\\n                {#if withHeader && size !== 'full'}\\n                    <slot name=\\\"header\\\">\\n                        <button\\n                                type=\\\"button\\\"\\n                                class={classnames('modal-header-relative', { active })}\\n                                in:appear\\n                                bind:this={refHeader}\\n                                on:click={onCloseModal}\\n                        >\\n                            <h2 style=\\\"padding: 15px 20px\\\">Закрити</h2>\\n                            <span class=\\\"close\\\">\\n                                 <Icon type=\\\"close\\\" size=\\\"big\\\" is=\\\"light\\\"/>\\n                            </span>\\n                        </button>\\n                    </slot>\\n                {/if}\\n                <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>\\n            </div>\\n        </div>\\n    </Portal>\\n{/if}\\n\\n<style>\\n    .modal {\\n        z-index: 8;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow-x: hidden;\\n        overflow-y: auto;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -ms-touch-action: manipulation;\\n            touch-action: manipulation;\\n        -webkit-user-select: none;\\n           -moz-user-select: none;\\n            -ms-user-select: none;\\n                user-select: none;\\n        background-color: rgba(var(--color-black), .75);\\n        outline: 150px solid rgba(var(--color-black), .75);\\n        -webkit-transition-timing-function: ease-out;\\n                transition-timing-function: ease-out;\\n        opacity: 0;\\n        pointer-events: none;\\n    }\\n\\n    .modal.active, .modal-header.active {\\n        opacity: 1;\\n        pointer-events: auto;\\n    }\\n\\n    .modal-inner {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-orient: vertical;\\n        -webkit-box-direction: normal;\\n            -ms-flex-direction: column;\\n                flex-direction: column;\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n        overflow: hidden;\\n        background-color: rgba(var(--theme-color-primary));\\n    }\\n    .small .modal-inner {\\n        width: 200px;\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .medium .modal-inner {\\n        width: calc(100vw - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n    .big .modal-inner {\\n        width: calc(100% - var(--screen-padding) * 2);\\n        height: calc(100% - var(--screen-padding) * 2);\\n        border-radius: var(--border-radius-big);\\n    }\\n\\n    .full {\\n        -webkit-box-align: stretch;\\n            -ms-flex-align: stretch;\\n                align-items: stretch;\\n        -webkit-box-pack: stretch;\\n            -ms-flex-pack: stretch;\\n                justify-content: stretch;\\n    }\\n\\n    .full .modal-inner {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        width: 100%;\\n        min-height: 100%;\\n        border-radius: 0;\\n    }\\n\\n    .modal-header {\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n        z-index: 9;\\n        position: fixed;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: justify;\\n            -ms-flex-pack: justify;\\n                justify-content: space-between;\\n        color: rgb(var(--color-white));\\n        background-color: rgb(var(--color-info));\\n        opacity: 0;\\n        pointer-events: none;\\n        -webkit-transform-origin: 50% 50vh;\\n                transform-origin: 50% 50vh;\\n    }\\n\\n    .modal-header-relative {\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n        z-index: 9;\\n        position: relative;\\n        width: 100%;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: justify;\\n            -ms-flex-pack: justify;\\n                justify-content: space-between;\\n        color: rgb(var(--color-white));\\n        background-color: rgb(var(--color-info));\\n    }\\n\\n    .modal-header .close,\\n    .modal-header-relative .close {\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 60px;\\n        height: 60px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxVQUFVO1FBQ1YsZUFBZTtRQUNmLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLGtCQUFrQjtRQUNsQixnQkFBZ0I7UUFDaEIseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHdCQUF1QjtZQUF2QixxQkFBdUI7Z0JBQXZCLHVCQUF1QjtRQUN2Qiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLDhCQUEwQjtZQUExQiwwQkFBMEI7UUFDMUIseUJBQWlCO1dBQWpCLHNCQUFpQjtZQUFqQixxQkFBaUI7Z0JBQWpCLGlCQUFpQjtRQUNqQiwrQ0FBK0M7UUFDL0Msa0RBQWtEO1FBQ2xELDRDQUFvQztnQkFBcEMsb0NBQW9DO1FBQ3BDLFVBQVU7UUFDVixvQkFBb0I7SUFDeEI7O0lBRUE7UUFDSSxVQUFVO1FBQ1Ysb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYiw0QkFBc0I7UUFBdEIsNkJBQXNCO1lBQXRCLDBCQUFzQjtnQkFBdEIsc0JBQXNCO1FBQ3RCLDBCQUFvQjtZQUFwQix1QkFBb0I7Z0JBQXBCLG9CQUFvQjtRQUNwQix5QkFBd0I7WUFBeEIsc0JBQXdCO2dCQUF4Qix3QkFBd0I7UUFDeEIsZ0JBQWdCO1FBQ2hCLGtEQUFrRDtJQUN0RDtJQUNBO1FBQ0ksWUFBWTtRQUNaLHVDQUF1QztJQUMzQzs7SUFFQTtRQUNJLDhDQUE4QztRQUM5Qyx1Q0FBdUM7SUFDM0M7SUFDQTtRQUNJLDZDQUE2QztRQUM3Qyw4Q0FBOEM7UUFDOUMsdUNBQXVDO0lBQzNDOztJQUVBO1FBQ0ksMEJBQW9CO1lBQXBCLHVCQUFvQjtnQkFBcEIsb0JBQW9CO1FBQ3BCLHlCQUF3QjtZQUF4QixzQkFBd0I7Z0JBQXhCLHdCQUF3QjtJQUM1Qjs7SUFFQTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsV0FBVztRQUNYLGdCQUFnQjtRQUNoQixnQkFBZ0I7SUFDcEI7O0lBRUE7UUFDSSxnQ0FBd0I7Z0JBQXhCLHdCQUF3QjtRQUN4QixVQUFVO1FBQ1YsZUFBZTtRQUNmLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLG9CQUFhO1FBQWIsb0JBQWE7UUFBYixhQUFhO1FBQ2IseUJBQW1CO1lBQW5CLHNCQUFtQjtnQkFBbkIsbUJBQW1CO1FBQ25CLHlCQUE4QjtZQUE5QixzQkFBOEI7Z0JBQTlCLDhCQUE4QjtRQUM5Qiw4QkFBOEI7UUFDOUIsd0NBQXdDO1FBQ3hDLFVBQVU7UUFDVixvQkFBb0I7UUFDcEIsa0NBQTBCO2dCQUExQiwwQkFBMEI7SUFDOUI7O0lBRUE7UUFDSSxnQ0FBd0I7Z0JBQXhCLHdCQUF3QjtRQUN4QixVQUFVO1FBQ1Ysa0JBQWtCO1FBQ2xCLFdBQVc7UUFDWCxvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix5QkFBOEI7WUFBOUIsc0JBQThCO2dCQUE5Qiw4QkFBOEI7UUFDOUIsOEJBQThCO1FBQzlCLHdDQUF3QztJQUM1Qzs7SUFFQTs7UUFFSSxlQUFlO1FBQ2Ysb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix5QkFBbUI7WUFBbkIsc0JBQW1CO2dCQUFuQixtQkFBbUI7UUFDbkIsd0JBQXVCO1lBQXZCLHFCQUF1QjtnQkFBdkIsdUJBQXVCO1FBQ3ZCLFdBQVc7UUFDWCxZQUFZO0lBQ2hCIiwiZmlsZSI6InNyYy9jb21wb25lbnRzL01vZGFsLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5tb2RhbCB7XG4gICAgICAgIHotaW5kZXg6IDg7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBvdmVyZmxvdy14OiBoaWRkZW47XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgICAgICB0b3VjaC1hY3Rpb246IG1hbmlwdWxhdGlvbjtcbiAgICAgICAgdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItYmxhY2spLCAuNzUpO1xuICAgICAgICBvdXRsaW5lOiAxNTBweCBzb2xpZCByZ2JhKHZhcigtLWNvbG9yLWJsYWNrKSwgLjc1KTtcbiAgICAgICAgdHJhbnNpdGlvbi10aW1pbmctZnVuY3Rpb246IGVhc2Utb3V0O1xuICAgICAgICBvcGFjaXR5OiAwO1xuICAgICAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICB9XG5cbiAgICAubW9kYWwuYWN0aXZlLCAubW9kYWwtaGVhZGVyLmFjdGl2ZSB7XG4gICAgICAgIG9wYWNpdHk6IDE7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBhdXRvO1xuICAgIH1cblxuICAgIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIGFsaWduLWl0ZW1zOiBzdHJldGNoO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHN0cmV0Y2g7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtY29sb3ItcHJpbWFyeSkpO1xuICAgIH1cbiAgICAuc21hbGwgLm1vZGFsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IDIwMHB4O1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLm1lZGl1bSAubW9kYWwtaW5uZXIge1xuICAgICAgICB3aWR0aDogY2FsYygxMDB2dyAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuICAgIC5iaWcgLm1vZGFsLWlubmVyIHtcbiAgICAgICAgd2lkdGg6IGNhbGMoMTAwJSAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIHZhcigtLXNjcmVlbi1wYWRkaW5nKSAqIDIpO1xuICAgICAgICBib3JkZXItcmFkaXVzOiB2YXIoLS1ib3JkZXItcmFkaXVzLWJpZyk7XG4gICAgfVxuXG4gICAgLmZ1bGwge1xuICAgICAgICBhbGlnbi1pdGVtczogc3RyZXRjaDtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBzdHJldGNoO1xuICAgIH1cblxuICAgIC5mdWxsIC5tb2RhbC1pbm5lciB7XG4gICAgICAgIGZsZXg6IG5vbmU7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtaW4taGVpZ2h0OiAxMDAlO1xuICAgICAgICBib3JkZXItcmFkaXVzOiAwO1xuICAgIH1cblxuICAgIC5tb2RhbC1oZWFkZXIge1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgICAgIHotaW5kZXg6IDk7XG4gICAgICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICAgICAgdG9wOiAwO1xuICAgICAgICBsZWZ0OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xuICAgICAgICBjb2xvcjogcmdiKHZhcigtLWNvbG9yLXdoaXRlKSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYih2YXIoLS1jb2xvci1pbmZvKSk7XG4gICAgICAgIG9wYWNpdHk6IDA7XG4gICAgICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgICAgICB0cmFuc2Zvcm0tb3JpZ2luOiA1MCUgNTB2aDtcbiAgICB9XG5cbiAgICAubW9kYWwtaGVhZGVyLXJlbGF0aXZlIHtcbiAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVaKDApO1xuICAgICAgICB6LWluZGV4OiA5O1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG4gICAgICAgIGNvbG9yOiByZ2IodmFyKC0tY29sb3Itd2hpdGUpKTtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiKHZhcigtLWNvbG9yLWluZm8pKTtcbiAgICB9XG5cbiAgICAubW9kYWwtaGVhZGVyIC5jbG9zZSxcbiAgICAubW9kYWwtaGVhZGVyLXJlbGF0aXZlIC5jbG9zZSB7XG4gICAgICAgIGZvbnQtc2l6ZTogMjRweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiA2MHB4O1xuICAgICAgICBoZWlnaHQ6IDYwcHg7XG4gICAgfVxuIl19 */</style>   \\n\"],\"names\":[],\"mappings\":\"AA+SI,MAAM,4BAAC,CAAC,AACJ,OAAO,CAAE,CAAC,CACV,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,MAAM,CAClB,UAAU,CAAE,IAAI,CAChB,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,gBAAgB,CAAE,YAAY,CAC1B,YAAY,CAAE,YAAY,CAC9B,mBAAmB,CAAE,IAAI,CACtB,gBAAgB,CAAE,IAAI,CACrB,eAAe,CAAE,IAAI,CACjB,WAAW,CAAE,IAAI,CACzB,gBAAgB,CAAE,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAC/C,OAAO,CAAE,KAAK,CAAC,KAAK,CAAC,KAAK,IAAI,aAAa,CAAC,CAAC,CAAC,GAAG,CAAC,CAClD,kCAAkC,CAAE,QAAQ,CACpC,0BAA0B,CAAE,QAAQ,CAC5C,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,mCAAO,CAAE,aAAa,OAAO,4BAAC,CAAC,AACjC,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,YAAY,4BAAC,CAAC,AACV,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,kBAAkB,CAAE,QAAQ,CAC5B,qBAAqB,CAAE,MAAM,CACzB,kBAAkB,CAAE,MAAM,CACtB,cAAc,CAAE,MAAM,CAC9B,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,CAChC,QAAQ,CAAE,MAAM,CAChB,gBAAgB,CAAE,KAAK,IAAI,qBAAqB,CAAC,CAAC,AACtD,CAAC,AACD,oBAAM,CAAC,YAAY,cAAC,CAAC,AACjB,KAAK,CAAE,KAAK,CACZ,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,qBAAO,CAAC,YAAY,cAAC,CAAC,AAClB,KAAK,CAAE,KAAK,KAAK,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AACD,kBAAI,CAAC,YAAY,cAAC,CAAC,AACf,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC7C,MAAM,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,gBAAgB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C,aAAa,CAAE,IAAI,mBAAmB,CAAC,AAC3C,CAAC,AAED,KAAK,4BAAC,CAAC,AACH,iBAAiB,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACnB,WAAW,CAAE,OAAO,CAC5B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,OAAO,AACpC,CAAC,AAED,mBAAK,CAAC,YAAY,cAAC,CAAC,AAChB,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,KAAK,CAAE,IAAI,CACX,UAAU,CAAE,IAAI,CAChB,aAAa,CAAE,CAAC,AACpB,CAAC,AAED,aAAa,4BAAC,CAAC,AACX,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,CAChC,OAAO,CAAE,CAAC,CACV,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,aAAa,CACtC,KAAK,CAAE,IAAI,IAAI,aAAa,CAAC,CAAC,CAC9B,gBAAgB,CAAE,IAAI,IAAI,YAAY,CAAC,CAAC,CACxC,OAAO,CAAE,CAAC,CACV,cAAc,CAAE,IAAI,CACpB,wBAAwB,CAAE,GAAG,CAAC,IAAI,CAC1B,gBAAgB,CAAE,GAAG,CAAC,IAAI,AACtC,CAAC,AAED,sBAAsB,4BAAC,CAAC,AACpB,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,CAChC,OAAO,CAAE,CAAC,CACV,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,OAAO,CACrB,aAAa,CAAE,OAAO,CAClB,eAAe,CAAE,aAAa,CACtC,KAAK,CAAE,IAAI,IAAI,aAAa,CAAC,CAAC,CAC9B,gBAAgB,CAAE,IAAI,IAAI,YAAY,CAAC,CAAC,AAC5C,CAAC,AAED,2BAAa,CAAC,oBAAM,CACpB,oCAAsB,CAAC,MAAM,cAAC,CAAC,AAC3B,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
 
 const DURATION$1 = 250;
@@ -5363,18 +5459,16 @@ const Modal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `${active !== null
 	? `${validate_component(Portal, "Portal").$$render($$result, {}, {}, {
 			default: () => `
-        <div${add_attribute("id", `modal-${id}`, 0)} aria-hidden="${"true"}" class="${escape(null_to_empty(classProp)) + " svelte-1r5lpit"}"${add_attribute("this", ref, 1)}>
-            ${withHeader
+        <div${add_attribute("id", `modal-${id}`, 0)} aria-hidden="${"true"}" class="${escape(null_to_empty(classProp)) + " svelte-7yn5no"}"${add_attribute("this", ref, 1)}>
+            ${withHeader && size === "full"
 			? `${validate_component(Portal, "Portal").$$render($$result, {}, {}, {
 					default: () => `
                     ${$$slots.header
-					? $$slots.header({
-							props: safeGet(() => $modals[`modal-${id}`], {}, true)
-						})
+					? $$slots.header({})
 					: `
-                        <button type="${"button"}" class="${escape(null_to_empty(classnames("modal-header", { active }))) + " svelte-1r5lpit"}"${add_attribute("this", refHeader, 1)}>
+                        <button type="${"button"}" class="${escape(null_to_empty(classnames("modal-header", { active }))) + " svelte-7yn5no"}"${add_attribute("this", refHeader, 1)}>
                             <h2 style="${"padding: 15px 20px"}">Закрити</h2>
-                            <span class="${"close svelte-1r5lpit"}">
+                            <span class="${"close svelte-7yn5no"}">
                                  ${validate_component(Icon, "Icon").$$render($$result, { type: "close", size: "big", is: "light" }, {}, {})}
                             </span>
                         </button>
@@ -5383,7 +5477,21 @@ const Modal = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 				})}   
                 ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}`
 			: ``}
-            <div class="${"modal-inner svelte-1r5lpit"}" tabindex="${"-1"}" role="${"dialog"}" aria-modal="${"true"}" aria-labelledby="${"модальне вікно"}">
+            <div class="${"modal-inner svelte-7yn5no"}" tabindex="${"-1"}" role="${"dialog"}" aria-modal="${"true"}" aria-labelledby="${"модальне вікно"}">
+                ${withHeader && size !== "full"
+			? `${$$slots.header
+				? $$slots.header({
+						props: safeGet(() => $modals[`modal-${id}`], {}, true)
+					})
+				: `
+                        <button type="${"button"}" class="${escape(null_to_empty(classnames("modal-header-relative", { active }))) + " svelte-7yn5no"}"${add_attribute("this", refHeader, 1)}>
+                            <h2 style="${"padding: 15px 20px"}">Закрити</h2>
+                            <span class="${"close svelte-7yn5no"}">
+                                 ${validate_component(Icon, "Icon").$$render($$result, { type: "close", size: "big", is: "light" }, {}, {})}
+                            </span>
+                        </button>
+                    `}`
+			: ``}
                 ${$$slots.default
 			? $$slots.default({
 					props: safeGet(() => $modals[`modal-${id}`], {}, true)
@@ -5788,6 +5896,62 @@ const EditArea = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
         ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}`
 	: ``}
 </section>`;
+});
+
+/* src/components/EditCard.svelte generated by Svelte v3.18.1 */
+
+const EditCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { form } = $$props;
+
+	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
+	let classProp = classnames("edit-area-container container", $$props.class);
+
+	return `${validate_component(Card, "Card").$$render($$result, { class: classProp }, {}, {
+		default: () => `
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+    ${$$slots.default ? $$slots.default({}) : ``}
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+    <section class="${"flex flex-align-center"}">
+        <div style="${"flex: 1 1 50%"}">
+            ${validate_component(Button, "Button").$$render($$result, { size: "small", is: "dark-border" }, {}, {
+			default: () => `
+                <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+                    Скасувати
+                </span>
+            `
+		})}
+        </div>
+        <s></s>
+        <s></s>
+        <s></s>
+        <div style="${"flex: 1 1 50%"}">
+            ${validate_component(Button, "Button").$$render(
+			$$result,
+			{
+				form,
+				size: "small",
+				type: "submit",
+				is: "info"
+			},
+			{},
+			{
+				default: () => `
+                <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+                    Зберегти
+                </span>
+            `
+			}
+		)}
+        </div>
+    </section>
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+`
+	})}`;
 });
 
 /* src/components/LazyToggle.svelte generated by Svelte v3.18.1 */
@@ -6306,7 +6470,7 @@ const RadioRect = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	let styleProp = toCSSString({ ...style, textAlign: align });
 	let classProp = classnames("radio-rect", $$props.class, { disabled, required, error });
 
-	return `<div${add_attribute("class", classProp, 0)}${add_attribute("style", styleProp, 0)}>
+	return `<div${add_attribute("id", idProp, 0)}${add_attribute("class", classProp, 0)}${add_attribute("style", styleProp, 0)}>
     ${label
 	? `<h2 class="${"text-left"}">
             ${escape(label)}
@@ -6374,9 +6538,266 @@ const RadioRect = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 </div>`;
 });
 
-/* src/components/fields/checkboxes/Checkbox.svelte generated by Svelte v3.18.1 */
+/* src/components/fields/uploadFiles/UploadBox.svelte generated by Svelte v3.18.1 */
 
 const css$j = {
+	code: ".inp-upload.svelte-1oa853p.svelte-1oa853p{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-item-align:stretch;align-self:stretch;justify-self:stretch;overflow:hidden;border-radius:var(--border-radius-medium);color:rgba(var(--theme-color-primary-opposite), .5);background-color:rgba(var(--theme-color-primary-opposite), .07);-webkit-transform:translateZ(0);transform:translateZ(0)}.inp-upload.preview.svelte-1oa853p .icon.svelte-1oa853p{opacity:.5}.inp-upload.svelte-1oa853p .icon.svelte-1oa853p{opacity:.7}.inp-upload.disabled.svelte-1oa853p.svelte-1oa853p{opacity:.5;pointer-events:none}.inp-upload.error.svelte-1oa853p.svelte-1oa853p,input:invalid+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-danger), .5);background-color:rgba(var(--color-danger), .07)}input:focus+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-info), .5);background-color:rgba(var(--color-info), .07)}",
+	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let round = undefined\\n    export let style = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    let validSrc\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: setValidSrc(src)\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n    $: styleProp = toCSSString({ ...style, borderRadius: round ? '50%' : null })\\n\\n    function setValidSrc(file) {\\n        try {\\n            if (typeof file === 'string') {\\n                validSrc = file\\n            } else if (file) {\\n                const f = Array.isArray(file) ? file[0] : file\\n                const reader = new FileReader();\\n                reader.onload = e => validSrc = e.target.result\\n                reader.readAsDataURL(f); // convert to base64 string\\n            } else if (!file) {\\n                validSrc = undefined\\n            }\\n        } catch(err) {\\n            console.log('UploadBox/getValidSrc error: ', err)\\n        }\\n    }\\n    \\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class} style={styleProp}>\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture src={validSrc} alt=\\\"Завантажене фото\\\"/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAoFI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
+};
+
+const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { id = undefined } = $$props;
+	let { src = undefined } = $$props;
+	let { name = undefined } = $$props;
+	let { icon = undefined } = $$props;
+	let { label = undefined } = $$props;
+	let { value = undefined } = $$props;
+	let { round = undefined } = $$props;
+	let { style = undefined } = $$props;
+	let { iconIs = undefined } = $$props;
+	let { errors = undefined } = $$props;
+	let { invalid = undefined } = $$props;
+	let { multiple = undefined } = $$props;
+	let { disabled = undefined } = $$props;
+	let { accept = "image/png, image/jpeg" } = $$props;
+	let validSrc;
+
+	function setValidSrc(file) {
+		try {
+			if (typeof file === "string") {
+				validSrc = file;
+			} else if (file) {
+				const f = Array.isArray(file) ? file[0] : file;
+				const reader = new FileReader();
+				reader.onload = e => validSrc = e.target.result;
+				reader.readAsDataURL(f); // convert to base64 string
+			} else if (!file) {
+				validSrc = undefined;
+			}
+		} catch(err) {
+			console.log("UploadBox/getValidSrc error: ", err);
+		}
+	}
+
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.icon === void 0 && $$bindings.icon && icon !== void 0) $$bindings.icon(icon);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.round === void 0 && $$bindings.round && round !== void 0) $$bindings.round(round);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.iconIs === void 0 && $$bindings.iconIs && iconIs !== void 0) $$bindings.iconIs(iconIs);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.multiple === void 0 && $$bindings.multiple && multiple !== void 0) $$bindings.multiple(multiple);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.accept === void 0 && $$bindings.accept && accept !== void 0) $$bindings.accept(accept);
+	$$result.css.add(css$j);
+
+	let error = invalid !== undefined
+	? invalid
+	: !!(errors || []).length;
+
+	let iconType = icon || "upload";
+	let idProp = id || name;
+
+	 {
+		setValidSrc(src);
+	}
+
+	let classProp = classnames("inp-upload", { error, disabled, preview: src });
+
+	let styleProp = toCSSString({
+		...style,
+		borderRadius: round ? "50%" : null
+	});
+
+	return `${label
+	? `<h2 class="${"text-left"}">${escape(label)}</h2>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+	: ``}
+${validate_component(Square, "Square").$$render($$result, { class: $$props.class, style: styleProp }, {}, {
+		default: () => `
+    <input${add_attribute("name", name, 0)}${add_attribute("accept", accept, 0)} ${multiple ? "multiple" : ""} hidden type="${"file"}"${add_attribute("id", idProp, 0)}>
+    <label${add_attribute("for", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-1oa853p"}">
+        <div class="${"flex full-absolute"}">
+            ${validate_component(Picture, "Picture").$$render($$result, { src: validSrc, alt: "Завантажене фото" }, {}, {})} 
+        </div>
+        <div class="${"icon flex relative svelte-1oa853p"}" style="${"flex: 0 0 75px"}">
+            ${validate_component(Icon, "Icon").$$render($$result, { type: iconType, is: iconIs }, {}, {})}
+        </div>
+    </label>
+`
+	})}`;
+});
+
+/* src/components/fields/uploadFiles/UploadBoxGroup.svelte generated by Svelte v3.18.1 */
+
+const css$k = {
+	code: "ul.svelte-azoem7{width:100%;display:grid;grid-template:auto / .5fr .5fr;grid-gap:var(--screen-padding)}ul.disabled.svelte-azoem7{opacity:.5;pointer-events:none}button.svelte-azoem7{position:absolute;top:0;right:0;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:40px;height:40px}",
+	map: "{\"version\":3,\"file\":\"UploadBoxGroup.svelte\",\"sources\":[\"UploadBoxGroup.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { _, classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import UploadBox from './UploadBox.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let id = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let accept = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let infoIndex = [0]\\n\\n    const BOX_AMOUNT = 4\\n\\n    $: values = value || []\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || name\\n    $: itemsList = getCells(values)\\n    $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })\\n\\n    function getCells(list) {\\n        const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined)\\n        const listArr = [].concat(list || [])\\n        const biggerList = listArr.length > defaultList.length ? listArr : defaultList\\n        biggerList.push(undefined)\\n        return biggerList.map(((_, i) => listArr[i] || defaultList[i]))\\n    }\\n\\n    function onChange(i, { detail: { e, value } }) {\\n        const val = [...values]\\n        val.splice(i, 0, ...value)\\n        values = val\\n        dispatch('change', { e, name, value: values })\\n    }\\n\\n    function onRemove(i, e) {\\n        values = [...values.filter((_, ind) => ind !== i)]\\n        dispatch('change', { e, name, value: values })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<ul id={idProp} class={classProp}>\\n    {#each itemsList as item, i}\\n        <li class=\\\"relative\\\">\\n            <UploadBox\\n                key={i}\\n                {accept}\\n                {invalid}\\n                {disabled}\\n                {multiple}\\n                bind:value\\n                name={`${name || ''}[${i}]`}\\n                src={(values[i] || {}).src || values[i]}\\n                errors={_.get(errors, i)}\\n                style={{ maxHeight: '160px' }}\\n                iconIs={infoIndex.includes(i) ? 'info' : undefined}\\n                on:change={onChange.bind(null, i)}\\n            />\\n\\n            {#if values[i]}\\n                <button type=\\\"button\\\" on:click={onRemove.bind(null, i)}>\\n                    <Icon size=\\\"big\\\" type=\\\"close\\\"/>    \\n                </button>\\n            {/if}\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: grid;\\n        grid-template: auto / .5fr .5fr;\\n        grid-gap: var(--screen-padding);\\n    }\\n\\n    ul.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 40px;\\n        height: 40px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYiwrQkFBK0I7UUFDL0IsK0JBQStCO0lBQ25DOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sUUFBUTtRQUNSLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL3VwbG9hZEZpbGVzL1VwbG9hZEJveEdyb3VwLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHVsIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGdyaWQ7XG4gICAgICAgIGdyaWQtdGVtcGxhdGU6IGF1dG8gLyAuNWZyIC41ZnI7XG4gICAgICAgIGdyaWQtZ2FwOiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgfVxuXG4gICAgdWwuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgYnV0dG9uIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNDBweDtcbiAgICAgICAgaGVpZ2h0OiA0MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAiFI,EAAE,cAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAC/B,QAAQ,CAAE,IAAI,gBAAgB,CAAC,AACnC,CAAC,AAED,EAAE,SAAS,cAAC,CAAC,AACT,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,cAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
+};
+
+const BOX_AMOUNT = 4;
+
+function getCells(list) {
+	const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined);
+	const listArr = [].concat(list || []);
+
+	const biggerList = listArr.length > defaultList.length
+	? listArr
+	: defaultList;
+
+	biggerList.push(undefined);
+	return biggerList.map((_, i) => listArr[i] || defaultList[i]);
+}
+
+const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { name } = $$props;
+	let { id = undefined } = $$props;
+	let { label = undefined } = $$props;
+	let { value = undefined } = $$props;
+	let { accept = undefined } = $$props;
+	let { errors = undefined } = $$props;
+	let { invalid = undefined } = $$props;
+	let { multiple = undefined } = $$props;
+	let { disabled = undefined } = $$props;
+	let { infoIndex = [0] } = $$props;
+
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.accept === void 0 && $$bindings.accept && accept !== void 0) $$bindings.accept(accept);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.multiple === void 0 && $$bindings.multiple && multiple !== void 0) $$bindings.multiple(multiple);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.infoIndex === void 0 && $$bindings.infoIndex && infoIndex !== void 0) $$bindings.infoIndex(infoIndex);
+	$$result.css.add(css$k);
+	let $$settled;
+	let $$rendered;
+
+	do {
+		$$settled = true;
+		let values = value || [];
+
+		let error = invalid !== undefined
+		? invalid
+		: !!(errors || []).length;
+
+		let idProp = id || name;
+		let itemsList = getCells(values);
+		let classProp = classnames("inp-upload-group", $$props.class, { error, disabled });
+
+		$$rendered = `${label
+		? `<h2 class="${"text-left"}">${escape(label)}</h2>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
+		: ``}
+<ul${add_attribute("id", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-azoem7"}">
+    ${each(itemsList, (item, i) => `<li class="${"relative"}">
+            ${validate_component(UploadBox, "UploadBox").$$render(
+			$$result,
+			{
+				key: i,
+				accept,
+				invalid,
+				disabled,
+				multiple,
+				name: `${name || ""}[${i}]`,
+				src: (values[i] || {}).src || values[i],
+				errors: get(errors, i),
+				style: { maxHeight: "160px" },
+				iconIs: infoIndex.includes(i) ? "info" : undefined,
+				value
+			},
+			{
+				value: $$value => {
+					value = $$value;
+					$$settled = false;
+				}
+			},
+			{}
+		)}
+
+            ${values[i]
+		? `<button type="${"button"}" class="${"svelte-azoem7"}">
+                    ${validate_component(Icon, "Icon").$$render($$result, { size: "big", type: "close" }, {}, {})}    
+                </button>`
+		: ``}
+        </li>`)}
+</ul>`;
+	} while (!$$settled);
+
+	return $$rendered;
+});
+
+/* src/components/fields/AvatarUpload.svelte generated by Svelte v3.18.1 */
+
+const AvatarUpload = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { name } = $$props;
+	let { style = {} } = $$props;
+	let { round = true } = $$props;
+	let { id = undefined } = $$props;
+	let { value = undefined } = $$props;
+	let { label = undefined } = $$props;
+	let { align = "center" } = $$props;
+	let { invalid = undefined } = $$props;
+	let { disabled = undefined } = $$props;
+	let { required = undefined } = $$props; // undefined|required
+	let { errors = undefined } = $$props;
+
+	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
+	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
+	if ($$props.round === void 0 && $$bindings.round && round !== void 0) $$bindings.round(round);
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
+	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
+	if ($$props.align === void 0 && $$bindings.align && align !== void 0) $$bindings.align(align);
+	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
+	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
+	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
+	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
+	let idProp = id || name;
+	let error = invalid || !!(errors || []).length;
+	let styleProp = { width: "145px", ...style };
+	let classProp = classnames("avatar-upload", $$props.class, `text-${align}`, { disabled, required, error });
+
+	return `<div${add_attribute("id", idProp, 0)}${add_attribute("class", classProp, 0)}>
+    ${label
+	? `<h2 class="${"text-left"}">
+            ${escape(label)}
+            ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+        </h2>`
+	: ``}
+
+    <section class="${"inline-flex flex-justify-center"}" style="${"padding: 10px 0"}">
+        ${validate_component(UploadBox, "UploadBox").$$render(
+		$$result,
+		{
+			name,
+			round,
+			src: value,
+			style: styleProp
+		},
+		{},
+		{}
+	)}  
+    </section>
+
+    <div class="${"text-center"}">
+        ${validate_component(FieldErrors, "FieldErrors").$$render($$result, { items: errors }, {}, {})}
+    </div>
+</div>`;
+});
+
+/* src/components/fields/checkboxes/Checkbox.svelte generated by Svelte v3.18.1 */
+
+const css$l = {
 	code: ".checkbox.svelte-e12p58.svelte-e12p58{display:block}.checkbox.svelte-e12p58 input.svelte-e12p58{-webkit-appearance:checkbox;-moz-appearance:checkbox;appearance:checkbox}.checkbox.svelte-e12p58 .inp-box-wrap.svelte-e12p58{position:relative;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex}.checkbox .inp-inner:checked+.inp-label.svelte-e12p58.svelte-e12p58 .checked{display:block}.checkbox.svelte-e12p58 .inp-label.svelte-e12p58{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start}.checkbox.svelte-e12p58 .inp-label.svelte-e12p58 .checked{display:none;position:absolute;top:0;left:0;width:100%;height:100%}",
 	map: "{\"version\":3,\"file\":\"Checkbox.svelte\",\"sources\":[\"Checkbox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import FieldErrors from '@components/FieldErrors.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let style = {}\\n    export let checked = undefined\\n    export let value = undefined\\n    export let id = undefined\\n    export let align = undefined\\n    export let disabled = false\\n    export let label = undefined\\n    export let text = undefined\\n    export let invalid = undefined\\n    export let form = undefined // Specifies the form the <input> element belongs to\\n    export let required = undefined // undefined|required\\n    export let errors = undefined\\n\\n    $: idProp = id || name || value\\n    $: error = invalid || !!(errors || []).length\\n    $: styleProp = toCSSString({ ...style, textAlign: align })\\n    $: classProp = classnames('checkbox', $$props.class, { disabled, required, error })\\n\\n    function onChange(e) {\\n        const value = getValue(e)\\n        dispatch('change', { e, name, value, checked: e.target.checked })\\n    }\\n\\n    function getValue(e) {\\n        return e.target.value\\n    }\\n</script>\\n\\n<div class={classProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">\\n            { label }\\n            <Br size=\\\"10\\\"/>\\n        </h2>\\n    {/if}\\n\\n    <input\\n            hidden\\n            type=\\\"checkbox\\\"\\n            id={idProp}\\n            {name}\\n            {form}\\n            {align}\\n            {value}\\n            {checked}\\n            {disabled}\\n            {required}\\n            class=\\\"inp-inner\\\"\\n            on:change={onChange}\\n    >\\n\\n    <label for={idProp} class=\\\"inp-label\\\">\\n        <span class=\\\"inp-box-wrap\\\">\\n            <Icon type=\\\"box\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"unchecked\\\"/>\\n            <Icon type=\\\"box-checked\\\" size=\\\"big\\\" is=\\\"info\\\" class=\\\"checked\\\"/>\\n        </span>\\n        {#if text}\\n            <s></s>\\n            <s></s>\\n            <h3 class=\\\"font-w-500 text-left\\\" style=\\\"padding-top: 4px\\\">{ text }</h3>\\n        {/if}\\n    </label>\\n\\n    <FieldErrors items={errors}>\\n        <div slot=\\\"before\\\">\\n            <Br size=\\\"5\\\"/>\\n        </div>\\n    </FieldErrors>\\n</div>\\n\\n<style>\\n    .checkbox {\\n        display: block;\\n    }\\n\\n    .checkbox input {\\n        -webkit-appearance: checkbox;\\n           -moz-appearance: checkbox;\\n                appearance: checkbox;\\n    }\\n\\n    .checkbox .inp-box-wrap {\\n        position: relative;\\n        display: -webkit-inline-box;\\n        display: -ms-inline-flexbox;\\n        display: inline-flex;\\n    }\\n    .checkbox .inp-inner:checked + .inp-label :global(.checked) {\\n        display: block;\\n    }\\n\\n    .checkbox .inp-label {\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: start;\\n            -ms-flex-align: start;\\n                align-items: flex-start;\\n    }\\n\\n    .checkbox .inp-label :global(.checked) {\\n        display: none;\\n        position: absolute;\\n        top: 0;\\n        left: 0;\\n        width: 100%;\\n        height: 100%;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy9jaGVja2JveGVzL0NoZWNrYm94LnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksNEJBQW9CO1dBQXBCLHlCQUFvQjtnQkFBcEIsb0JBQW9CO0lBQ3hCOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLDJCQUFvQjtRQUFwQiwyQkFBb0I7UUFBcEIsb0JBQW9CO0lBQ3hCO0lBQ0E7UUFDSSxjQUFjO0lBQ2xCOztJQUVBO1FBQ0ksb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7SUFDM0I7O0lBRUE7UUFDSSxhQUFhO1FBQ2Isa0JBQWtCO1FBQ2xCLE1BQU07UUFDTixPQUFPO1FBQ1AsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL2NoZWNrYm94ZXMvQ2hlY2tib3guc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLmNoZWNrYm94IHtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IGlucHV0IHtcbiAgICAgICAgYXBwZWFyYW5jZTogY2hlY2tib3g7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtYm94LXdyYXAge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgIH1cbiAgICAuY2hlY2tib3ggLmlucC1pbm5lcjpjaGVja2VkICsgLmlucC1sYWJlbCA6Z2xvYmFsKC5jaGVja2VkKSB7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIH1cblxuICAgIC5jaGVja2JveCAuaW5wLWxhYmVsIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGZsZXgtc3RhcnQ7XG4gICAgfVxuXG4gICAgLmNoZWNrYm94IC5pbnAtbGFiZWwgOmdsb2JhbCguY2hlY2tlZCkge1xuICAgICAgICBkaXNwbGF5OiBub25lO1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAiFI,SAAS,4BAAC,CAAC,AACP,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,uBAAS,CAAC,KAAK,cAAC,CAAC,AACb,kBAAkB,CAAE,QAAQ,CACzB,eAAe,CAAE,QAAQ,CACpB,UAAU,CAAE,QAAQ,AAChC,CAAC,AAED,uBAAS,CAAC,aAAa,cAAC,CAAC,AACrB,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,kBAAkB,CAC3B,OAAO,CAAE,WAAW,AACxB,CAAC,AACD,SAAS,CAAC,UAAU,QAAQ,CAAG,sCAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACzD,OAAO,CAAE,KAAK,AAClB,CAAC,AAED,uBAAS,CAAC,UAAU,cAAC,CAAC,AAClB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,KAAK,CACpB,cAAc,CAAE,KAAK,CACjB,WAAW,CAAE,UAAU,AACnC,CAAC,AAED,uBAAS,CAAC,wBAAU,CAAC,AAAQ,QAAQ,AAAE,CAAC,AACpC,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
 };
@@ -6410,7 +6831,7 @@ const Checkbox = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
 	if ($$props.required === void 0 && $$bindings.required && required !== void 0) $$bindings.required(required);
 	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
-	$$result.css.add(css$j);
+	$$result.css.add(css$l);
 	let idProp = id || name || value;
 	let error = invalid || !!(errors || []).length;
 	let styleProp = toCSSString({ ...style, textAlign: align });
@@ -6525,203 +6946,6 @@ const CheckboxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slo
 </div>`;
 });
 
-/* src/components/fields/uploadFiles/UploadBox.svelte generated by Svelte v3.18.1 */
-
-const css$k = {
-	code: ".inp-upload.svelte-1oa853p.svelte-1oa853p{width:100%;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-ms-flex-item-align:stretch;align-self:stretch;justify-self:stretch;overflow:hidden;border-radius:var(--border-radius-medium);color:rgba(var(--theme-color-primary-opposite), .5);background-color:rgba(var(--theme-color-primary-opposite), .07);-webkit-transform:translateZ(0);transform:translateZ(0)}.inp-upload.preview.svelte-1oa853p .icon.svelte-1oa853p{opacity:.5}.inp-upload.svelte-1oa853p .icon.svelte-1oa853p{opacity:.7}.inp-upload.disabled.svelte-1oa853p.svelte-1oa853p{opacity:.5;pointer-events:none}.inp-upload.error.svelte-1oa853p.svelte-1oa853p,input:invalid+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-danger), .5);background-color:rgba(var(--color-danger), .07)}input:focus+.inp-upload.svelte-1oa853p.svelte-1oa853p{color:rgba(var(--color-info), .5);background-color:rgba(var(--color-info), .07)}",
-	map: "{\"version\":3,\"file\":\"UploadBox.svelte\",\"sources\":[\"UploadBox.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Square from '@components/Square.svelte'\\n    import Picture from '@components/Picture.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let src = undefined\\n    export let name = undefined\\n    export let icon = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let round = undefined\\n    export let style = undefined\\n    export let iconIs = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let accept = \\\"image/png, image/jpeg\\\"\\n\\n    let validSrc\\n\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: iconType = icon || 'upload'\\n    $: idProp = id || name\\n    $: setValidSrc(src)\\n    $: classProp = classnames('inp-upload', { error, disabled, preview: src })\\n    $: styleProp = toCSSString({ ...style, borderRadius: round ? '50%' : null })\\n\\n    function setValidSrc(file) {\\n        try {\\n            if (typeof file === 'string') {\\n                validSrc = file\\n            } else if (file) {\\n                const f = Array.isArray(file) ? file[0] : file\\n                const reader = new FileReader();\\n                reader.onload = e => validSrc = e.target.result\\n                reader.readAsDataURL(f); // convert to base64 string\\n            } else if (!file) {\\n                validSrc = undefined\\n            }\\n        } catch(err) {\\n            console.log('UploadBox/getValidSrc error: ', err)\\n        }\\n    }\\n    \\n    function onChange(e) {\\n        const value = Array.from(e.target.files)\\n        if (!value || !value.length) return\\n        dispatch('change', { value, name, e })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<Square class={$$props.class} style={styleProp}>\\n    <input\\n        {name}\\n        {accept}\\n        {multiple}\\n        hidden \\n        type=\\\"file\\\" \\n        id={idProp}\\n        bind:value\\n        on:change={onChange}\\n    >\\n    <label for={idProp} class={classProp}>\\n        <div class=\\\"flex full-absolute\\\">\\n            <Picture src={validSrc} alt=\\\"Завантажене фото\\\"/> \\n        </div>\\n        <div class=\\\"icon flex relative\\\" style=\\\"flex: 0 0 75px\\\">\\n            <Icon type={iconType} is={iconIs}/>\\n        </div>\\n    </label>\\n</Square>\\n\\n<style>\\n    .inp-upload {\\n        width: 100%;\\n        -webkit-box-flex: 1;\\n            -ms-flex-positive: 1;\\n                flex-grow: 1;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        -ms-flex-item-align: stretch;\\n            align-self: stretch;\\n        justify-self: stretch;\\n        overflow: hidden;\\n        border-radius: var(--border-radius-medium);\\n        color: rgba(var(--theme-color-primary-opposite), .5);\\n        background-color: rgba(var(--theme-color-primary-opposite), .07);\\n        -webkit-transform: translateZ(0);\\n                transform: translateZ(0);\\n    }\\n\\n    .inp-upload.preview .icon {\\n        opacity: .5;\\n    }\\n\\n    .inp-upload .icon {\\n        opacity: .7;\\n    }\\n\\n    .inp-upload.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    .inp-upload.error,\\n    input:invalid + .inp-upload {\\n        color: rgba(var(--color-danger), .5);\\n        background-color: rgba(var(--color-danger), .07);\\n    }\\n\\n    input:focus + .inp-upload {\\n        color: rgba(var(--color-info), .5);\\n        background-color: rgba(var(--color-info), .07);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3guc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLFdBQVc7UUFDWCxtQkFBWTtZQUFaLG9CQUFZO2dCQUFaLFlBQVk7UUFDWixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsNEJBQW1CO1lBQW5CLG1CQUFtQjtRQUNuQixxQkFBcUI7UUFDckIsZ0JBQWdCO1FBQ2hCLDBDQUEwQztRQUMxQyxvREFBb0Q7UUFDcEQsZ0VBQWdFO1FBQ2hFLGdDQUF3QjtnQkFBeEIsd0JBQXdCO0lBQzVCOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztJQUNmOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTs7UUFFSSxvQ0FBb0M7UUFDcEMsZ0RBQWdEO0lBQ3BEOztJQUVBO1FBQ0ksa0NBQWtDO1FBQ2xDLDhDQUE4QztJQUNsRCIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9maWVsZHMvdXBsb2FkRmlsZXMvVXBsb2FkQm94LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGZsZXgtZ3JvdzogMTtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIGFsaWduLXNlbGY6IHN0cmV0Y2g7XG4gICAgICAgIGp1c3RpZnktc2VsZjogc3RyZXRjaDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogdmFyKC0tYm9yZGVyLXJhZGl1cy1tZWRpdW0pO1xuICAgICAgICBjb2xvcjogcmdiYSh2YXIoLS10aGVtZS1jb2xvci1wcmltYXJ5LW9wcG9zaXRlKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWNvbG9yLXByaW1hcnktb3Bwb3NpdGUpLCAuMDcpO1xuICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVooMCk7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQucHJldmlldyAuaWNvbiB7XG4gICAgICAgIG9wYWNpdHk6IC41O1xuICAgIH1cblxuICAgIC5pbnAtdXBsb2FkIC5pY29uIHtcbiAgICAgICAgb3BhY2l0eTogLjc7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgLmlucC11cGxvYWQuZXJyb3IsXG4gICAgaW5wdXQ6aW52YWxpZCArIC5pbnAtdXBsb2FkIHtcbiAgICAgICAgY29sb3I6IHJnYmEodmFyKC0tY29sb3ItZGFuZ2VyKSwgLjUpO1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWRhbmdlciksIC4wNyk7XG4gICAgfVxuXG4gICAgaW5wdXQ6Zm9jdXMgKyAuaW5wLXVwbG9hZCB7XG4gICAgICAgIGNvbG9yOiByZ2JhKHZhcigtLWNvbG9yLWluZm8pLCAuNSk7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tY29sb3ItaW5mbyksIC4wNyk7XG4gICAgfVxuIl19 */</style>\"],\"names\":[],\"mappings\":\"AAoFI,WAAW,8BAAC,CAAC,AACT,KAAK,CAAE,IAAI,CACX,gBAAgB,CAAE,CAAC,CACf,iBAAiB,CAAE,CAAC,CAChB,SAAS,CAAE,CAAC,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,mBAAmB,CAAE,OAAO,CACxB,UAAU,CAAE,OAAO,CACvB,YAAY,CAAE,OAAO,CACrB,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,IAAI,sBAAsB,CAAC,CAC1C,KAAK,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,EAAE,CAAC,CACpD,gBAAgB,CAAE,KAAK,IAAI,8BAA8B,CAAC,CAAC,CAAC,GAAG,CAAC,CAChE,iBAAiB,CAAE,WAAW,CAAC,CAAC,CACxB,SAAS,CAAE,WAAW,CAAC,CAAC,AACpC,CAAC,AAED,WAAW,uBAAQ,CAAC,KAAK,eAAC,CAAC,AACvB,OAAO,CAAE,EAAE,AACf,CAAC,AAED,0BAAW,CAAC,KAAK,eAAC,CAAC,AACf,OAAO,CAAE,EAAE,AACf,CAAC,AAED,WAAW,SAAS,8BAAC,CAAC,AAClB,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,WAAW,oCAAM,CACjB,KAAK,QAAQ,CAAG,WAAW,8BAAC,CAAC,AACzB,KAAK,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,CACpC,gBAAgB,CAAE,KAAK,IAAI,cAAc,CAAC,CAAC,CAAC,GAAG,CAAC,AACpD,CAAC,AAED,KAAK,MAAM,CAAG,WAAW,8BAAC,CAAC,AACvB,KAAK,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,EAAE,CAAC,CAClC,gBAAgB,CAAE,KAAK,IAAI,YAAY,CAAC,CAAC,CAAC,GAAG,CAAC,AAClD,CAAC\"}"
-};
-
-const UploadBox = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { id = undefined } = $$props;
-	let { src = undefined } = $$props;
-	let { name = undefined } = $$props;
-	let { icon = undefined } = $$props;
-	let { label = undefined } = $$props;
-	let { value = undefined } = $$props;
-	let { round = undefined } = $$props;
-	let { style = undefined } = $$props;
-	let { iconIs = undefined } = $$props;
-	let { errors = undefined } = $$props;
-	let { invalid = undefined } = $$props;
-	let { multiple = undefined } = $$props;
-	let { disabled = undefined } = $$props;
-	let { accept = "image/png, image/jpeg" } = $$props;
-	let validSrc;
-
-	function setValidSrc(file) {
-		try {
-			if (typeof file === "string") {
-				validSrc = file;
-			} else if (file) {
-				const f = Array.isArray(file) ? file[0] : file;
-				const reader = new FileReader();
-				reader.onload = e => validSrc = e.target.result;
-				reader.readAsDataURL(f); // convert to base64 string
-			} else if (!file) {
-				validSrc = undefined;
-			}
-		} catch(err) {
-			console.log("UploadBox/getValidSrc error: ", err);
-		}
-	}
-
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
-	if ($$props.icon === void 0 && $$bindings.icon && icon !== void 0) $$bindings.icon(icon);
-	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
-	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
-	if ($$props.round === void 0 && $$bindings.round && round !== void 0) $$bindings.round(round);
-	if ($$props.style === void 0 && $$bindings.style && style !== void 0) $$bindings.style(style);
-	if ($$props.iconIs === void 0 && $$bindings.iconIs && iconIs !== void 0) $$bindings.iconIs(iconIs);
-	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
-	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
-	if ($$props.multiple === void 0 && $$bindings.multiple && multiple !== void 0) $$bindings.multiple(multiple);
-	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
-	if ($$props.accept === void 0 && $$bindings.accept && accept !== void 0) $$bindings.accept(accept);
-	$$result.css.add(css$k);
-
-	let error = invalid !== undefined
-	? invalid
-	: !!(errors || []).length;
-
-	let iconType = icon || "upload";
-	let idProp = id || name;
-
-	 {
-		setValidSrc(src);
-	}
-
-	let classProp = classnames("inp-upload", { error, disabled, preview: src });
-
-	let styleProp = toCSSString({
-		...style,
-		borderRadius: round ? "50%" : null
-	});
-
-	return `${label
-	? `<h2 class="${"text-left"}">${escape(label)}</h2>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
-	: ``}
-${validate_component(Square, "Square").$$render($$result, { class: $$props.class, style: styleProp }, {}, {
-		default: () => `
-    <input${add_attribute("name", name, 0)}${add_attribute("accept", accept, 0)} ${multiple ? "multiple" : ""} hidden type="${"file"}"${add_attribute("id", idProp, 0)}>
-    <label${add_attribute("for", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-1oa853p"}">
-        <div class="${"flex full-absolute"}">
-            ${validate_component(Picture, "Picture").$$render($$result, { src: validSrc, alt: "Завантажене фото" }, {}, {})} 
-        </div>
-        <div class="${"icon flex relative svelte-1oa853p"}" style="${"flex: 0 0 75px"}">
-            ${validate_component(Icon, "Icon").$$render($$result, { type: iconType, is: iconIs }, {}, {})}
-        </div>
-    </label>
-`
-	})}`;
-});
-
-/* src/components/fields/uploadFiles/UploadBoxGroup.svelte generated by Svelte v3.18.1 */
-
-const css$l = {
-	code: "ul.svelte-azoem7{width:100%;display:grid;grid-template:auto / .5fr .5fr;grid-gap:var(--screen-padding)}ul.disabled.svelte-azoem7{opacity:.5;pointer-events:none}button.svelte-azoem7{position:absolute;top:0;right:0;font-size:24px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;width:40px;height:40px}",
-	map: "{\"version\":3,\"file\":\"UploadBoxGroup.svelte\",\"sources\":[\"UploadBoxGroup.svelte\"],\"sourcesContent\":[\"<script>\\n    import { createEventDispatcher } from 'svelte'\\n    import { _, classnames } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import UploadBox from './UploadBox.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let name\\n    export let id = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let accept = undefined\\n    export let errors = undefined\\n    export let invalid = undefined\\n    export let multiple = undefined\\n    export let disabled = undefined\\n    export let infoIndex = [0]\\n\\n    const BOX_AMOUNT = 4\\n\\n    $: values = value || []\\n    $: error = invalid !== undefined ? invalid : !!(errors || []).length\\n    $: idProp = id || name\\n    $: itemsList = getCells(values)\\n    $: classProp = classnames('inp-upload-group', $$props.class, { error, disabled })\\n\\n    function getCells(list) {\\n        const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined)\\n        const listArr = [].concat(list || [])\\n        const biggerList = listArr.length > defaultList.length ? listArr : defaultList\\n        biggerList.push(undefined)\\n        return biggerList.map(((_, i) => listArr[i] || defaultList[i]))\\n    }\\n\\n    function onChange(i, { detail: { e, value } }) {\\n        const val = [...values]\\n        val.splice(i, 0, ...value)\\n        values = val\\n        dispatch('change', { e, name, value: values })\\n    }\\n\\n    function onRemove(i, e) {\\n        values = [...values.filter((_, ind) => ind !== i)]\\n        dispatch('change', { e, name, value: values })\\n    }\\n</script>\\n\\n{#if label}\\n    <h2 class=\\\"text-left\\\">{label}</h2>\\n    <Br size=\\\"10\\\"/>\\n{/if}\\n<ul id={idProp} class={classProp}>\\n    {#each itemsList as item, i}\\n        <li class=\\\"relative\\\">\\n            <UploadBox\\n                key={i}\\n                {accept}\\n                {invalid}\\n                {disabled}\\n                {multiple}\\n                bind:value\\n                name={`${name || ''}[${i}]`}\\n                src={(values[i] || {}).src || values[i]}\\n                errors={_.get(errors, i)}\\n                style={{ maxHeight: '160px' }}\\n                iconIs={infoIndex.includes(i) ? 'info' : undefined}\\n                on:change={onChange.bind(null, i)}\\n            />\\n\\n            {#if values[i]}\\n                <button type=\\\"button\\\" on:click={onRemove.bind(null, i)}>\\n                    <Icon size=\\\"big\\\" type=\\\"close\\\"/>    \\n                </button>\\n            {/if}\\n        </li>\\n    {/each}\\n</ul>\\n\\n<style>\\n    ul {\\n        width: 100%;\\n        display: grid;\\n        grid-template: auto / .5fr .5fr;\\n        grid-gap: var(--screen-padding);\\n    }\\n\\n    ul.disabled {\\n        opacity: .5;\\n        pointer-events: none;\\n    }\\n\\n    button {\\n        position: absolute;\\n        top: 0;\\n        right: 0;\\n        font-size: 24px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        -webkit-box-align: center;\\n            -ms-flex-align: center;\\n                align-items: center;\\n        -webkit-box-pack: center;\\n            -ms-flex-pack: center;\\n                justify-content: center;\\n        width: 40px;\\n        height: 40px;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2ZpZWxkcy91cGxvYWRGaWxlcy9VcGxvYWRCb3hHcm91cC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksV0FBVztRQUNYLGFBQWE7UUFDYiwrQkFBK0I7UUFDL0IsK0JBQStCO0lBQ25DOztJQUVBO1FBQ0ksV0FBVztRQUNYLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGtCQUFrQjtRQUNsQixNQUFNO1FBQ04sUUFBUTtRQUNSLGVBQWU7UUFDZixvQkFBYTtRQUFiLG9CQUFhO1FBQWIsYUFBYTtRQUNiLHlCQUFtQjtZQUFuQixzQkFBbUI7Z0JBQW5CLG1CQUFtQjtRQUNuQix3QkFBdUI7WUFBdkIscUJBQXVCO2dCQUF2Qix1QkFBdUI7UUFDdkIsV0FBVztRQUNYLFlBQVk7SUFDaEIiLCJmaWxlIjoic3JjL2NvbXBvbmVudHMvZmllbGRzL3VwbG9hZEZpbGVzL1VwbG9hZEJveEdyb3VwLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHVsIHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGRpc3BsYXk6IGdyaWQ7XG4gICAgICAgIGdyaWQtdGVtcGxhdGU6IGF1dG8gLyAuNWZyIC41ZnI7XG4gICAgICAgIGdyaWQtZ2FwOiB2YXIoLS1zY3JlZW4tcGFkZGluZyk7XG4gICAgfVxuXG4gICAgdWwuZGlzYWJsZWQge1xuICAgICAgICBvcGFjaXR5OiAuNTtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgfVxuXG4gICAgYnV0dG9uIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDA7XG4gICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICBmb250LXNpemU6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogNDBweDtcbiAgICAgICAgaGVpZ2h0OiA0MHB4O1xuICAgIH1cbiJdfQ== */</style>\"],\"names\":[],\"mappings\":\"AAiFI,EAAE,cAAC,CAAC,AACA,KAAK,CAAE,IAAI,CACX,OAAO,CAAE,IAAI,CACb,aAAa,CAAE,IAAI,CAAC,CAAC,CAAC,IAAI,CAAC,IAAI,CAC/B,QAAQ,CAAE,IAAI,gBAAgB,CAAC,AACnC,CAAC,AAED,EAAE,SAAS,cAAC,CAAC,AACT,OAAO,CAAE,EAAE,CACX,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,MAAM,cAAC,CAAC,AACJ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,SAAS,CAAE,IAAI,CACf,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,iBAAiB,CAAE,MAAM,CACrB,cAAc,CAAE,MAAM,CAClB,WAAW,CAAE,MAAM,CAC3B,gBAAgB,CAAE,MAAM,CACpB,aAAa,CAAE,MAAM,CACjB,eAAe,CAAE,MAAM,CAC/B,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,AAChB,CAAC\"}"
-};
-
-const BOX_AMOUNT = 4;
-
-function getCells(list) {
-	const defaultList = new Array(BOX_AMOUNT - 1).fill(undefined);
-	const listArr = [].concat(list || []);
-
-	const biggerList = listArr.length > defaultList.length
-	? listArr
-	: defaultList;
-
-	biggerList.push(undefined);
-	return biggerList.map((_, i) => listArr[i] || defaultList[i]);
-}
-
-const UploadBoxGroup = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { name } = $$props;
-	let { id = undefined } = $$props;
-	let { label = undefined } = $$props;
-	let { value = undefined } = $$props;
-	let { accept = undefined } = $$props;
-	let { errors = undefined } = $$props;
-	let { invalid = undefined } = $$props;
-	let { multiple = undefined } = $$props;
-	let { disabled = undefined } = $$props;
-	let { infoIndex = [0] } = $$props;
-
-	if ($$props.name === void 0 && $$bindings.name && name !== void 0) $$bindings.name(name);
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.label === void 0 && $$bindings.label && label !== void 0) $$bindings.label(label);
-	if ($$props.value === void 0 && $$bindings.value && value !== void 0) $$bindings.value(value);
-	if ($$props.accept === void 0 && $$bindings.accept && accept !== void 0) $$bindings.accept(accept);
-	if ($$props.errors === void 0 && $$bindings.errors && errors !== void 0) $$bindings.errors(errors);
-	if ($$props.invalid === void 0 && $$bindings.invalid && invalid !== void 0) $$bindings.invalid(invalid);
-	if ($$props.multiple === void 0 && $$bindings.multiple && multiple !== void 0) $$bindings.multiple(multiple);
-	if ($$props.disabled === void 0 && $$bindings.disabled && disabled !== void 0) $$bindings.disabled(disabled);
-	if ($$props.infoIndex === void 0 && $$bindings.infoIndex && infoIndex !== void 0) $$bindings.infoIndex(infoIndex);
-	$$result.css.add(css$l);
-	let $$settled;
-	let $$rendered;
-
-	do {
-		$$settled = true;
-		let values = value || [];
-
-		let error = invalid !== undefined
-		? invalid
-		: !!(errors || []).length;
-
-		let idProp = id || name;
-		let itemsList = getCells(values);
-		let classProp = classnames("inp-upload-group", $$props.class, { error, disabled });
-
-		$$rendered = `${label
-		? `<h2 class="${"text-left"}">${escape(label)}</h2>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}`
-		: ``}
-<ul${add_attribute("id", idProp, 0)} class="${escape(null_to_empty(classProp)) + " svelte-azoem7"}">
-    ${each(itemsList, (item, i) => `<li class="${"relative"}">
-            ${validate_component(UploadBox, "UploadBox").$$render(
-			$$result,
-			{
-				key: i,
-				accept,
-				invalid,
-				disabled,
-				multiple,
-				name: `${name || ""}[${i}]`,
-				src: (values[i] || {}).src || values[i],
-				errors: get(errors, i),
-				style: { maxHeight: "160px" },
-				iconIs: infoIndex.includes(i) ? "info" : undefined,
-				value
-			},
-			{
-				value: $$value => {
-					value = $$value;
-					$$settled = false;
-				}
-			},
-			{}
-		)}
-
-            ${values[i]
-		? `<button type="${"button"}" class="${"svelte-azoem7"}">
-                    ${validate_component(Icon, "Icon").$$render($$result, { size: "big", type: "close" }, {}, {})}    
-                </button>`
-		: ``}
-        </li>`)}
-</ul>`;
-	} while (!$$settled);
-
-	return $$rendered;
-});
-
 /* src/components/FormBuilder.svelte generated by Svelte v3.18.1 */
 
 const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -6738,8 +6962,12 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	let submitting = false;
 
 	function onChange({ detail: { name, value } }) {
-		values = { ...values, [name]: value };
+		values = set(values, name, value);
 		dispatch("change", values);
+	}
+
+	function getValue(values, name) {
+		return get(values, name) || "";
 	}
 
 	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
@@ -6769,42 +6997,44 @@ const FormBuilder = create_ssr_component(($$result, $$props, $$bindings, $$slots
 			"time"
 		].includes(item.type)
 		? `${values[item.name] !== null
-			? `${validate_component(Input, "Input").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			? `${validate_component(Input, "Input").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 			: `<div>
                     ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                     ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
                 </div>`}`
 		: `${["checkbox"].includes(item.type)
-			? `${validate_component(CheckboxGroup, "CheckboxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+			? `${validate_component(CheckboxGroup, "CheckboxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 			: `${["select"].includes(item.type)
 				? `${values[item.name] !== null
-					? `${validate_component(Select, "Select").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					? `${validate_component(Select, "Select").$$render($$result, Object.assign(item.meta, { name: item.name }, { type: item.type }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 					: `<div>
                     ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                     ${validate_component(Loader, "Loader").$$render($$result, { height: "50" }, {}, {})}
                 </div>`}`
 				: `${["file"].includes(item.type)
-					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
+					? `${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
 					: `${["files"].includes(item.type)
-						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
-						: `${["radio-rect"].includes(item.type)
-							? `${validate_component(RadioRect, "RadioRect").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: values[item.name] }, { errors: errors[item.name] }), {}, {})}`
-							: `${$$slots.default
-								? $$slots.default({
-										item,
-										values,
-										errors,
-										onChange,
-										value: values[item.name]
-									})
-								: `
+						? `${validate_component(UploadBoxGroup, "UploadBoxGroup").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
+						: `${["avatar"].includes(item.type)
+							? `${validate_component(AvatarUpload, "AvatarUpload").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
+							: `${["radio-rect"].includes(item.type)
+								? `${validate_component(RadioRect, "RadioRect").$$render($$result, Object.assign(item.meta, { name: item.name }, { label: item.label }, { value: getValue(values, item.name) }, { errors: errors[item.name] }), {}, {})}`
+								: `${$$slots.default
+									? $$slots.default({
+											item,
+											values,
+											errors,
+											onChange,
+											value: values[item.name]
+										})
+									: `
                 ${values[item.name] !== null
-									? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: values[item.name] }), {}, {})}`
-									: `<div>
+										? `${validate_component(ReadField, "ReadField").$$render($$result, Object.assign(item.meta, { label: item.label }, { value: getValue(values, item.name) }), {}, {})}`
+										: `<div>
                         ${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}
                         ${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}
                     </div>`}
-            `}`}`}`}`}`}`}`)}
+            `}`}`}`}`}`}`}`}`)}
 `
 	})}`;
 });
@@ -7170,7 +7400,7 @@ const ListItems = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 
 const css$t = {
 	code: "table.svelte-1pgy3nj tr:not(:last-child) td.svelte-1pgy3nj{padding-bottom:16px}table.svelte-1pgy3nj td.svelte-1pgy3nj:last-child{font-weight:300}",
-	map: "{\"version\":3,\"file\":\"StoryList.svelte\",\"sources\":[\"StoryList.svelte\"],\"sourcesContent\":[\"<script>\\n\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Modal from '@components/Modal.svelte'\\n    import Loader from '@components/loader'\\n    import Button from '@components/Button.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let name = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let style = undefined\\n    export let readonly = undefined\\n\\n    let open = false\\n\\n    $: idProp = id || name\\n    $: classProp = classnames('story-list', $$props.class)\\n    $: styleProp = toCSSString({ ...style })\\n\\n    function onRemove({ index }, e) {\\n        const val = [...value.filter((_, ind) => ind !== index)]\\n        dispatch('change', { e, name, value: val })\\n    }\\n</script>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9TdG9yeUxpc3Quc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGdCQUFnQjtJQUNwQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvU3RvcnlMaXN0LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHRhYmxlIHRyOm5vdCg6bGFzdC1jaGlsZCkgdGQge1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMTZweDtcbiAgICB9XG5cbiAgICB0YWJsZSB0ZDpsYXN0LWNoaWxkIHtcbiAgICAgICAgZm9udC13ZWlnaHQ6IDMwMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<section id={idProp} class={classProp} style={styleProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">{label}</h2>\\n        <Br size=\\\"10\\\"/>\\n    {/if}\\n\\n    <table>\\n        <tbody>\\n            {#if value !== null && Array.isArray(value) && value.length}\\n                {#each value.filter(Boolean) as val, i}\\n                    <tr>\\n                        <td>{val.date}</td>\\n                        <td>—</td>\\n                        <td>{val.title}</td>\\n                        {#if !readonly}\\n                            <td>\\n                                <Button \\n                                    auto \\n                                    style=\\\"vertical-align: middle\\\"\\n                                    on:click={onRemove.bind(null, { id: val.id, index: i })}\\n                                >\\n                                    <Icon type=\\\"close\\\" size=\\\"medium\\\"/>\\n                                </Button>\\n                            </td>\\n                        {/if}\\n                    </tr>\\n                {/each}\\n            {:else if value === null}\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n            {/if}\\n        </tbody>\\n    </table>\\n\\n    {#if !readonly}\\n        <Br size=\\\"25\\\"/>\\n        <Button auto is=\\\"info\\\" on:click={() => open = true}>\\n            <h3 style=\\\"padding: 10px 25px\\\" class=\\\"font-w-500\\\">\\n                Додати подію\\n            </h3>\\n        </Button>\\n    {/if}\\n</section>\\n\\n<Modal \\n    {open}\\n    id=\\\"story-life-modal\\\"\\n    size=\\\"medium\\\"\\n    on:close={() => open = false}\\n>\\n    Something\\n</Modal>   \"],\"names\":[],\"mappings\":\"AAgCI,oBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,eAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,oBAAK,CAAC,iBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"StoryList.svelte\",\"sources\":[\"StoryList.svelte\"],\"sourcesContent\":[\"<script>\\n\\n    import { createEventDispatcher } from 'svelte'\\n    import { classnames, toCSSString } from '@utils'\\n    import Br from '@components/Br.svelte'\\n    import Icon from '@components/Icon.svelte'\\n    import Modal from '@components/Modal.svelte'\\n    import Loader from '@components/loader'\\n    import Button from '@components/Button.svelte'\\n\\n    const dispatch = createEventDispatcher()\\n\\n    export let id = undefined\\n    export let name = undefined\\n    export let label = undefined\\n    export let value = undefined\\n    export let style = undefined\\n    export let readonly = undefined\\n\\n    let open = false\\n\\n    $: idProp = id || name\\n    $: classProp = classnames('story-list', $$props.class)\\n    $: styleProp = toCSSString({ ...style })\\n\\n    function onRemove({ index }, e) {\\n        const val = [...value.filter((_, ind) => ind !== index)]\\n        dispatch('change', { e, name, value: val })\\n    }\\n</script>\\n\\n<style>\\n    table tr:not(:last-child) td {\\n        padding-bottom: 16px;\\n    }\\n\\n    table td:last-child {\\n        font-weight: 300;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9jb21wb25lbnRzL2FwcC9TdG9yeUxpc3Quc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG9CQUFvQjtJQUN4Qjs7SUFFQTtRQUNJLGdCQUFnQjtJQUNwQiIsImZpbGUiOiJzcmMvY29tcG9uZW50cy9hcHAvU3RvcnlMaXN0LnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIHRhYmxlIHRyOm5vdCg6bGFzdC1jaGlsZCkgdGQge1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMTZweDtcbiAgICB9XG5cbiAgICB0YWJsZSB0ZDpsYXN0LWNoaWxkIHtcbiAgICAgICAgZm9udC13ZWlnaHQ6IDMwMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<section id={idProp} class={classProp} style={styleProp}>\\n    {#if label}\\n        <h2 class=\\\"text-left\\\">{label}</h2>\\n        <Br size=\\\"10\\\"/>\\n    {/if}\\n\\n    <table>\\n        <tbody>\\n            {#if value !== null && Array.isArray(value) && value.length}\\n                {#each value.filter(Boolean) as val, i}\\n                    <tr>\\n                        <td>{val.date}</td>\\n                        <td>—</td>\\n                        <td>{val.title}</td>\\n                        {#if !readonly}\\n                            <td>\\n                                <Button \\n                                    auto \\n                                    style=\\\"vertical-align: middle\\\"\\n                                    on:click={onRemove.bind(null, { id: val.id, index: i })}\\n                                >\\n                                    <Icon type=\\\"close\\\" size=\\\"medium\\\"/>\\n                                </Button>\\n                            </td>\\n                        {/if}\\n                    </tr>\\n                {/each}\\n            {:else if value === null}\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td><Loader type=\\\"p\\\"/></td>\\n                    <td>—</td>\\n                    <td>\\n                        <Loader type=\\\"p\\\"/>\\n                        <Loader type=\\\"p\\\"/>\\n                    </td>\\n                </tr>\\n            {/if}\\n        </tbody>\\n    </table>\\n\\n    {#if !readonly}\\n        <Br size=\\\"25\\\"/>\\n        <Button auto is=\\\"info\\\" on:click={() => open = true}>\\n            <h3 style=\\\"padding: 10px 25px\\\" class=\\\"font-w-500\\\">\\n                Додати подію\\n            </h3>\\n        </Button>\\n    {/if}\\n</section>\\n\\n<Modal \\n    {open}\\n    id=\\\"story-life-modal\\\"\\n    size=\\\"medium\\\"\\n    on:close={() => open = false}\\n>\\n    <div class=\\\"scroll-y\\\">\\n        <p>Something</p>\\n        <p>Something</p>\\n        <p>Something</p>\\n        <p>Something</p>\\n        <p>Something</p>\\n        <p>Something</p>\\n        <p>Something</p>\\n    </div>\\n</Modal>\\n\"],\"names\":[],\"mappings\":\"AAgCI,oBAAK,CAAC,EAAE,KAAK,WAAW,CAAC,CAAC,EAAE,eAAC,CAAC,AAC1B,cAAc,CAAE,IAAI,AACxB,CAAC,AAED,oBAAK,CAAC,iBAAE,WAAW,AAAC,CAAC,AACjB,WAAW,CAAE,GAAG,AACpB,CAAC\"}"
 };
 
 const StoryList = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -7276,7 +7506,15 @@ ${validate_component(Modal, "Modal").$$render(
 		{},
 		{
 			default: () => `
-    Something
+    <div class="${"scroll-y"}">
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+    </div>
 `
 		}
 	)}`;
@@ -8187,6 +8425,1091 @@ const FundCards = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	})}`;
 });
 
+/* src/routes/organizations/components/_Trust.svelte generated by Svelte v3.18.1 */
+
+const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { active = false } = $$props;
+	if ($$props.active === void 0 && $$bindings.active && active !== void 0) $$bindings.active(active);
+
+	return `<section class="${"flex flex-column flex-align-center flex-justify-center"}">
+    <div style="${"width: 100px; max-width: 100%"}">
+        ${validate_component(TrustButton, "TrustButton").$$render($$result, { isActive: active }, {}, {})}
+    </div>
+    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+    <h2>Я довіряю</h2>
+</section>`;
+});
+
+/* src/routes/organizations/components/_Share.svelte generated by Svelte v3.18.1 */
+
+const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	return `<p class="${"flex"}">
+  ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+    ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "share",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+    <s></s>
+    <s></s>
+    <h3 class="${"font-w-500"}">Поділитись</h3>
+  `
+		}
+	)}
+  <s></s>
+  <s></s>
+  <s></s>
+  <s></s>
+  <s></s>
+  ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+    ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "link",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+    <s></s>
+    <s></s>
+    <h3 class="${"font-w-500"}">Скопіювати</h3>
+  `
+		}
+	)}
+</p>`;
+});
+
+/* src/routes/organizations/components/_Videos.svelte generated by Svelte v3.18.1 */
+
+const Videos = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Відео про нас</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<section class="${"flex"}" style="${"height: 240px"}">
+    ${validate_component(Carousel, "Carousel").$$render($$result, { items }, {}, {})}
+</section>`;
+});
+
+/* src/routes/organizations/components/_WeOnMap.svelte generated by Svelte v3.18.1 */
+
+const css$G = {
+	code: "div.svelte-1y40nlf{background-color:rgba(var(--theme-bg-color-opposite), .04)}",
+	map: "{\"version\":3,\"file\":\"_WeOnMap.svelte\",\"sources\":[\"_WeOnMap.svelte\"],\"sourcesContent\":[\"<script>\\n  import { Br } from \\\"@components\\\";\\n  \\n  export let src\\n</script>\\n\\n<h1>Ми на карті</h1>\\n<Br size=\\\"20\\\" />\\n<div class=\\\"full-container\\\">\\n  <iframe\\n    {src}\\n    title=\\\"Карта\\\"\\n    width=\\\"100%\\\"\\n    height=\\\"450\\\"\\n    frameborder=\\\"0\\\"\\n    style=\\\"border:0;\\\"\\n    allowfullscreen=\\\"\\\"\\n    aria-hidden=\\\"false\\\"\\n    tabindex=\\\"0\\\" ></iframe>\\n</div>\\n\\n<style>\\n    div {\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9jb21wb25lbnRzL19XZU9uTWFwLnN2ZWx0ZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0lBQ0k7UUFDSSwyREFBMkQ7SUFDL0QiLCJmaWxlIjoic3JjL3JvdXRlcy9vcmdhbml6YXRpb25zL2NvbXBvbmVudHMvX1dlT25NYXAuc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgZGl2IHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSh2YXIoLS10aGVtZS1iZy1jb2xvci1vcHBvc2l0ZSksIC4wNCk7XG4gICAgfVxuIl19 */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,CAAC,GAAG,CAAC,AAC/D,CAAC\"}"
+};
+
+const WeOnMap = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { src } = $$props;
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	$$result.css.add(css$G);
+
+	return `<h1>Ми на карті</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<div class="${"full-container svelte-1y40nlf"}">
+  <iframe${add_attribute("src", src, 0)} title="${"Карта"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
+</div>`;
+});
+
+/* src/routes/organizations/components/_Comments.svelte generated by Svelte v3.18.1 */
+
+const Comments_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Коментарі</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+  ${validate_component(Comments, "Comments").$$render($$result, { items }, {}, {})}
+</div>`;
+});
+
+/* src/routes/organizations/components/_Donators.svelte generated by Svelte v3.18.1 */
+
+const Donators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Наші піклувальники</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(DonatorsList, "DonatorsList").$$render($$result, { items }, {}, {})}
+</div>`;
+});
+
+/* src/routes/organizations/components/_FundList.svelte generated by Svelte v3.18.1 */
+
+const FundList = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { title } = $$props;
+	let { items } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>${escape(title)}</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(FundCards, "FundCards").$$render($$result, { items }, {}, {})}
+</div>`;
+});
+
+/* src/routes/organizations/components/_TopCarousel.svelte generated by Svelte v3.18.1 */
+
+const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items = [] } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<section class="${"flex"}" style="${"height: 240px"}">
+    ${validate_component(Carousel, "Carousel").$$render($$result, { items, dotsBelow: false }, {}, {})}
+</section>`;
+});
+
+/* src/routes/organizations/components/_DescriptionShort.svelte generated by Svelte v3.18.1 */
+
+const DescriptionShort = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { title } = $$props;
+	let { text } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
+
+	return `${title
+	? `<h2>${escape(title)}</h2>`
+	: `<div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}  </div>`}
+${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+
+${text
+	? `<pre class="${"font-w-300"}">
+    ${escape(text)}
+</pre>`
+	: `${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    <div style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}</div>`}`;
+});
+
+/* src/routes/organizations/components/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
+
+const InteractionIndicators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	const dispatch = createEventDispatcher();
+	let { likes = null } = $$props;
+	let { views = null } = $$props;
+	let { isLiked = false } = $$props;
+	if ($$props.likes === void 0 && $$bindings.likes && likes !== void 0) $$bindings.likes(likes);
+	if ($$props.views === void 0 && $$bindings.views && views !== void 0) $$bindings.views(views);
+	if ($$props.isLiked === void 0 && $$bindings.isLiked && isLiked !== void 0) $$bindings.isLiked(isLiked);
+
+	return `<p class="${"container flex flex-justify-between flex-align-center"}">
+  ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small",
+			style: `opacity: ${isLiked ? 1 : 0.5}`
+		},
+		{},
+		{
+			default: () => `
+    ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					is: "danger",
+					type: "heart",
+					size: "medium"
+				},
+				{},
+				{}
+			)}
+    <s></s>
+    <s></s>
+    ${likes !== null
+			? `<span class="${"font-secondary font-w-600 h3"}">${escape(likes)}</span>`
+			: `<span class="${"font-secondary font-w-600 h3 relative"}">
+        <span style="${"visibility: hidden"}">199</span>
+        ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+      </span>`}
+  `
+		}
+	)}
+
+  <span class="${"flex"}">
+    ${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			class: "flex flex-align-center",
+			auto: true,
+			size: "small"
+		},
+		{},
+		{
+			default: () => `
+      ${validate_component(Icon, "Icon").$$render(
+				$$result,
+				{
+					type: "share",
+					size: "medium",
+					class: "theme-svg-fill"
+				},
+				{},
+				{}
+			)}
+      <s></s>
+      <s></s>
+      <h3 class="${"font-w-600"}">Поділитись</h3>
+    `
+		}
+	)}
+  </span>
+  <span class="${"flex flex-align-center"}">
+    ${validate_component(Icon, "Icon").$$render(
+		$$result,
+		{
+			type: "eye",
+			size: "medium",
+			class: "theme-svg-fill"
+		},
+		{},
+		{}
+	)}
+    <s></s>
+    <s></s>
+    ${views !== null
+	? `<span class="${"font-secondary font-w-600 h3"}">${escape(views)}</span>`
+	: `<span class="${"font-secondary font-w-600 h3 relative"}">
+        <span style="${"visibility: hidden"}">199</span>
+        ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
+      </span>`}
+  </span>
+</p>`;
+});
+
+/* src/routes/organizations/components/_LastNews.svelte generated by Svelte v3.18.1 */
+
+const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	let { carousel = [] } = $$props;
+	let { iconsLine = {} } = $$props;
+	let { organization = {} } = $$props;
+	let { descriptionShort = {} } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	if ($$props.carousel === void 0 && $$bindings.carousel && carousel !== void 0) $$bindings.carousel(carousel);
+	if ($$props.iconsLine === void 0 && $$bindings.iconsLine && iconsLine !== void 0) $$bindings.iconsLine(iconsLine);
+	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
+	if ($$props.descriptionShort === void 0 && $$bindings.descriptionShort && descriptionShort !== void 0) $$bindings.descriptionShort(descriptionShort);
+
+	return `<h1>Останні новини</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+${validate_component(NewsList, "NewsList").$$render($$result, { items }, {}, {})}
+
+${validate_component(Modal, "Modal").$$render(
+		$$result,
+		{
+			id: "last-news",
+			size: "full",
+			swipe: "all"
+		},
+		{},
+		{
+			default: () => `
+    <section class="${"container flex flex-column relative"}">
+        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+
+        ${descriptionShort.name !== null
+			? `<h1>${escape(descriptionShort.name)}</h1>`
+			: `${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}`}
+        ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+        ${descriptionShort.name !== null
+			? `<p>${escape(descriptionShort.name)}</p>`
+			: `<div style="${"width: 40%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</div>`}
+        ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
+        
+        <section class="${"flex"}" style="${"height: 240px"}">
+            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, stopPropagation: true }, {}, {})}
+        </section>
+
+        ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
+        ${validate_component(DescriptionShort, "DescriptionShort").$$render(
+				$$result,
+				{
+					text: descriptionShort.text,
+					title: descriptionShort.name
+				},
+				{},
+				{}
+			)}
+        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+
+        ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+				$$result,
+				{
+					likes: iconsLine.likes,
+					views: iconsLine.views,
+					isLiked: organization.isLiked
+				},
+				{},
+				{}
+			)}
+        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
+
+        ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
+
+        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
+    </section>
+`
+		}
+	)}`;
+});
+
+/* src/routes/organizations/components/_Description.svelte generated by Svelte v3.18.1 */
+
+const Description = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { title = null } = $$props;
+	let { text = null } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
+
+	return `${title !== null
+	? `<h1>${escape(title)}</h1>`
+	: `<div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}  </div>`}
+${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
+
+${text !== null
+	? `<pre class="${"font-w-300"}">
+    ${escape(text)}
+</pre>`
+	: `${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
+    <div style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}</div>`}`;
+});
+
+/* src/routes/organizations/components/_VirtualTour.svelte generated by Svelte v3.18.1 */
+
+const css$H = {
+	code: "div.svelte-135aou9{background-color:rgba(var(--theme-bg-color-opposite), .04)}",
+	map: "{\"version\":3,\"file\":\"_VirtualTour.svelte\",\"sources\":[\"_VirtualTour.svelte\"],\"sourcesContent\":[\"<script>\\n  import { Br } from \\\"@components\\\";\\n\\n  export let src\\n</script>\\n\\n<h1>3D - Тур 360°</h1>\\n<Br size=\\\"20\\\" />\\n<div class=\\\"full-container\\\">\\n  <iframe\\n    {src}\\n    title=\\\"360 тур\\\"\\n    width=\\\"100%\\\"\\n    height=\\\"450\\\"\\n    frameborder=\\\"0\\\"\\n    style=\\\"border:0;\\\"\\n    allowfullscreen=\\\"\\\"\\n    aria-hidden=\\\"false\\\"\\n    tabindex=\\\"0\\\" ></iframe>\\n</div>\\n\\n<style>\\n    div {\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9jb21wb25lbnRzL19WaXJ0dWFsVG91ci5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksMkRBQTJEO0lBQy9EIiwiZmlsZSI6InNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9jb21wb25lbnRzL19WaXJ0dWFsVG91ci5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBkaXYge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWJnLWNvbG9yLW9wcG9zaXRlKSwgLjA0KTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,CAAC,GAAG,CAAC,AAC/D,CAAC\"}"
+};
+
+const VirtualTour = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { src } = $$props;
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	$$result.css.add(css$H);
+
+	return `<h1>3D - Тур 360°</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+<div class="${"full-container svelte-135aou9"}">
+  <iframe${add_attribute("src", src, 0)} title="${"360 тур"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
+</div>`;
+});
+
+/* src/routes/organizations/components/_Certificates.svelte generated by Svelte v3.18.1 */
+
+const Certificates = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+
+	return `<h1>Сертифікати</h1>
+${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+<div class="${"full-container"}">
+    ${validate_component(Documents, "Documents").$$render($$result, { items }, {}, {})}
+</div>`;
+});
+
+/* src/routes/organizations/components/_ContactsCard.svelte generated by Svelte v3.18.1 */
+
+const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items = null } = $$props;
+	let { orgName = null } = $$props;
+	let { avatar = null } = $$props;
+	let { avatarBig = null } = $$props;
+	const top = ["telegram", "facebook", "viber"];
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	if ($$props.orgName === void 0 && $$bindings.orgName && orgName !== void 0) $$bindings.orgName(orgName);
+	if ($$props.avatar === void 0 && $$bindings.avatar && avatar !== void 0) $$bindings.avatar(avatar);
+	if ($$props.avatarBig === void 0 && $$bindings.avatarBig && avatarBig !== void 0) $$bindings.avatarBig(avatarBig);
+
+	let topItems = items === null
+	? undefined
+	: items.filter(i => !top.includes(i.type));
+
+	let bottomItems = items === null
+	? undefined
+	: items.filter(i => top.includes(i.type));
+
+	return `${validate_component(Card, "Card").$$render($$result, {}, {}, {
+		default: () => `
+    <section style="${"padding: 0 20px"}">
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+        <div class="${"flex flex-column flex-align-center"}">
+            
+            <span>
+                ${validate_component(FancyBox, "FancyBox").$$render($$result, { class: "flex-justify-center" }, {}, {
+			box: () => `<section slot="${"box"}" class="${"flex full-width full-height"}" style="${"height: 100vw"}">
+                        <div class="${"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch"}" style="${"padding: var(--screen-padding) 0"}">
+                            ${validate_component(Avatar, "Avatar").$$render(
+				$$result,
+				{
+					src: avatar,
+					srcBig: avatarBig,
+					alt: "ava"
+				},
+				{},
+				{}
+			)}
+                        </div>
+                    </section>`,
+			default: () => `
+                    ${validate_component(Avatar, "Avatar").$$render(
+				$$result,
+				{
+					size: "big",
+					src: avatar,
+					alt: "Організація"
+				},
+				{},
+				{}
+			)}
+                    
+                `
+		})}
+            </span>
+
+            ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
+            <h2>Наші контакти</h2>
+            ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
+
+            ${orgName !== null
+		? `<p class="${"h3 font-secondary font-w-500"}" style="${"opacity: .7"}">
+                    ${escape(orgName)}
+                </p>`
+		: `<p style="${"width: 60%"}">
+                    ${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}
+                </p>`}
+        </div>
+
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+        ${validate_component(SocialsY, "SocialsY").$$render($$result, { items: topItems }, {}, {})}   
+
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+
+        ${validate_component(SocialsX, "SocialsX").$$render($$result, { items: bottomItems }, {}, {})}
+
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+    </section>
+`
+	})}`;
+});
+
+/* src/routes/organizations/components/_OrganizationButton.svelte generated by Svelte v3.18.1 */
+
+const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { id = null } = $$props;
+	let { src = null } = $$props;
+	let { title = null } = $$props;
+	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
+	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+
+	return `${validate_component(Button, "Button").$$render(
+		$$result,
+		{
+			rel: "prefetch",
+			href: id,
+			class: "white"
+		},
+		{},
+		{
+			default: () => `
+  <div class="${"flex flex-align-center flex-justify-between full-width"}">
+
+    <div class="${"flex flex-align-center"}">
+      <s></s>
+      <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
+        ${validate_component(Picture, "Picture").$$render(
+				$$result,
+				{
+					src,
+					size: "contain",
+					alt: "якесь фото організації"
+				},
+				{},
+				{}
+			)}
+      </div>
+      <s></s>
+      ${title !== null
+			? `<s></s>
+        <s></s>
+        <h3>${escape(title)}</h3>`
+			: `<span>${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</span>`}
+    </div>
+    
+  </div>
+`
+		}
+	)}`;
+});
+
+
+
+var route_0 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Trust: Trust,
+    Share: Share,
+    Videos: Videos,
+    WeOnMap: WeOnMap,
+    Comments: Comments_1,
+    Donators: Donators,
+    FundList: FundList,
+    LastNews: LastNews,
+    TopCarousel: TopCarousel,
+    Description: Description,
+    VirtualTour: VirtualTour,
+    Certificates: Certificates,
+    ContactsCard: ContactsCard,
+    DescriptionShort: DescriptionShort,
+    OrganizationButton: OrganizationButton,
+    InteractionIndicators: InteractionIndicators
+});
+
+/* src/routes/organizations/edit/_Map.svelte generated by Svelte v3.18.1 */
+
+const Map$3 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Адрес:",
+			type: "url",
+			name: "location.address",
+			meta: {
+				placeholder: "https://www.google.com.ua/maps/place/..."
+			}
+		},
+		{
+			label: "3D - Тур:",
+			type: "url",
+			name: "location.virtual_tour",
+			meta: {
+				placeholder: "https://www.google.com.ua/maps/@48.8994332,24.7567114..."
+			}
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "map-form" }, {}, {
+		default: () => `
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "map-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+`
+	})}`;
+});
+
+/* src/routes/organizations/edit/_About.svelte generated by Svelte v3.18.1 */
+
+const About = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Про нас:",
+			type: "textarea",
+			name: "description",
+			meta: {
+				rows: 6,
+				placeholder: "Ми піклуємось про...",
+				maxlength: 250
+			}
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "about-form" }, {}, {
+		default: () => `
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "about-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+`
+	})}`;
+});
+
+/* src/routes/organizations/edit/_Videos.svelte generated by Svelte v3.18.1 */
+
+const Videos$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Відео 1:",
+			type: "url",
+			name: "media[0]",
+			meta: {
+				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
+			}
+		},
+		{
+			label: "Відео 2:",
+			type: "url",
+			name: "media[1]",
+			meta: {
+				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
+			}
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "organization-form" }, {}, {
+		default: () => `
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "videos-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+`
+	})}`;
+});
+
+/* src/routes/organizations/edit/_Contacts.svelte generated by Svelte v3.18.1 */
+
+const Contacts = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			type: "avatar",
+			name: "avatar",
+			meta: { accept: "image/jpeg,image/png" }
+		},
+		{
+			label: "Телефон:",
+			type: "tel",
+			name: "phone",
+			meta: { placeholder: "+380974354532" }
+		},
+		{
+			label: "Email:",
+			type: "email",
+			name: "email",
+			meta: { placeholder: "mylovedmail@gmail.com" }
+		},
+		{
+			label: "Адреса:",
+			type: "search",
+			name: "address",
+			meta: {
+				placeholder: "Почніть вводити...",
+				maxlength: 50
+			}
+		},
+		{
+			label: "Соцмережі:",
+			type: "custom-socials",
+			name: "socials"
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "about-form" }, {}, {
+		default: () => `
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "contacts-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{
+				default: ({ item, value, onChange }) => `
+        ${item.type === "custom-socials" ? `Socials` : ``}
+    `
+			}
+		)}
+`
+	})}`;
+});
+
+/* src/routes/organizations/edit/_Documents.svelte generated by Svelte v3.18.1 */
+
+const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Сертифікати:",
+			type: "files",
+			name: "documents",
+			meta: {
+				multiple: true,
+				accept: "image/jpeg,image/png,application/pdf"
+			}
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "documents-form" }, {}, {
+		default: () => `
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "documents-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+`
+	})}`;
+});
+
+/* src/routes/organizations/edit/_Description.svelte generated by Svelte v3.18.1 */
+
+const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			label: "Фотогалерея:",
+			type: "files",
+			name: "avatars",
+			meta: { multiple: true }
+		},
+		{
+			label: "Назва організації:",
+			type: "text",
+			name: "name",
+			meta: { placeholder: "Назва...", maxlength: 20 }
+		},
+		{
+			label: "Мета організації:",
+			type: "textarea",
+			name: "subtitle",
+			meta: {
+				rows: 6,
+				placeholder: "Ми піклуємось про...",
+				maxlength: 250
+			}
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "description-form" }, {}, {
+		default: () => `
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "description-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+`
+	})}`;
+});
+
+/* src/routes/organizations/edit/_OrganizationButton.svelte generated by Svelte v3.18.1 */
+
+const OrganizationButton$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { data = undefined } = $$props;
+
+	let { submit = async () => {
+		
+	} } = $$props;
+
+	let formFields = [
+		{
+			type: "avatar",
+			name: "avatar",
+			meta: { accept: "image/jpeg,image/png" }
+		},
+		{
+			label: "Назва організації:",
+			type: "text",
+			name: "name",
+			meta: { placeholder: "Локі...", maxlength: 20 }
+		}
+	];
+
+	async function onSubmit(e) {
+		await submit(e);
+	}
+
+	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
+	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let formValues = data || {};
+	let formErrors = {};
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "organization-form" }, {}, {
+		default: () => `
+    ${validate_component(FormBuilder, "FormBuilder").$$render(
+			$$result,
+			{
+				id: "organization-form",
+				items: formFields,
+				data: formValues,
+				errors: formErrors,
+				submit: onSubmit
+			},
+			{},
+			{}
+		)}
+`
+	})}`;
+});
+
+
+
+var route_1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    MapEdit: Map$3,
+    AboutEdit: About,
+    VideosEdit: Videos$1,
+    ContactsEdit: Contacts,
+    DocumentsEdit: Documents$1,
+    DescriptionEdit: Description$1,
+    OrganizationButtonEdit: OrganizationButton$1
+});
+
+/* src/routes/organizations/view/_Map.svelte generated by Svelte v3.18.1 */
+
+const Map$4 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { location } = $$props;
+	if ($$props.location === void 0 && $$bindings.location && location !== void 0) $$bindings.location(location);
+
+	return `${validate_component(VirtualTour, "VirtualTour").$$render($$result, { src: location.virtual_tour }, {}, {})}
+${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+${validate_component(WeOnMap, "WeOnMap").$$render($$result, { src: location.map }, {}, {})}`;
+});
+
+/* src/routes/organizations/view/_About.svelte generated by Svelte v3.18.1 */
+
+const About$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { title = undefined } = $$props;
+	let { text = undefined } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
+	return `${validate_component(Description, "Description").$$render($$result, { title, text }, {}, {})}`;
+});
+
+/* src/routes/organizations/view/_Videos.svelte generated by Svelte v3.18.1 */
+
+const Videos_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	return `${validate_component(Videos, "Videos").$$render($$result, { items }, {}, {})}`;
+});
+
+/* src/routes/organizations/view/_Contacts.svelte generated by Svelte v3.18.1 */
+
+const Contacts$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { contacts } = $$props;
+	let { organization } = $$props;
+	if ($$props.contacts === void 0 && $$bindings.contacts && contacts !== void 0) $$bindings.contacts(contacts);
+	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
+
+	return `${validate_component(ContactsCard, "ContactsCard").$$render(
+		$$result,
+		{
+			items: contacts,
+			orgName: organization.title,
+			avatar: organization.avatar,
+			avatarBig: organization.avatarBig
+		},
+		{},
+		{}
+	)}`;
+});
+
+/* src/routes/organizations/view/_Documents.svelte generated by Svelte v3.18.1 */
+
+const Documents$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { items } = $$props;
+	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
+	return `${validate_component(Certificates, "Certificates").$$render($$result, { items }, {}, {})}`;
+});
+
+/* src/routes/organizations/view/_Description.svelte generated by Svelte v3.18.1 */
+
+const Description$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { title = undefined } = $$props;
+	let { text = undefined } = $$props;
+	let { carouselTop = undefined } = $$props;
+	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
+	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
+	if ($$props.carouselTop === void 0 && $$bindings.carouselTop && carouselTop !== void 0) $$bindings.carouselTop(carouselTop);
+
+	return `${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
+${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+${validate_component(DescriptionShort, "DescriptionShort").$$render($$result, { title, text }, {}, {})}`;
+});
+
+/* src/routes/organizations/view/_OrganizationButton.svelte generated by Svelte v3.18.1 */
+
+const OrganizationButton_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+	let { organization } = $$props;
+	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
+
+	return `${validate_component(OrganizationButton, "OrganizationButton").$$render(
+		$$result,
+		{
+			id: organization.id,
+			src: organization.avatar,
+			title: organization.name
+		},
+		{},
+		{}
+	)}`;
+});
+
+
+
+var route_2 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    MapView: Map$4,
+    AboutView: About$1,
+    VideosView: Videos_1,
+    ContactsView: Contacts$1,
+    DocumentsView: Documents$2,
+    DescriptionView: Description$2,
+    OrganizationButtonView: OrganizationButton_1
+});
+
 /* src/routes/funds/components/_Media.svelte generated by Svelte v3.18.1 */
 
 const Media = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -8202,7 +9525,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 
 /* src/routes/funds/components/_Share.svelte generated by Svelte v3.18.1 */
 
-const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Share$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	return `<p class="${"flex"}">
     ${validate_component(Button, "Button").$$render(
 		$$result,
@@ -8266,7 +9589,7 @@ const Share = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 /* src/routes/funds/components/_Trust.svelte generated by Svelte v3.18.1 */
 
-const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Trust$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	const dispatch = createEventDispatcher();
 	let { active = false } = $$props;
 	if ($$props.active === void 0 && $$bindings.active && active !== void 0) $$bindings.active(active);
@@ -8282,7 +9605,7 @@ const Trust = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 
 /* src/routes/funds/components/_Comments.svelte generated by Svelte v3.18.1 */
 
-const Comments_1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Comments_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
@@ -8295,7 +9618,7 @@ ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
 
 /* src/routes/funds/components/_Donators.svelte generated by Svelte v3.18.1 */
 
-const Donators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Donators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
@@ -8309,17 +9632,16 @@ ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
 /* src/routes/funds/components/_HowToHelp.svelte generated by Svelte v3.18.1 */
 
 const HowToHelp = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { data = { phone: null } } = $$props;
+	let { data = { phone: null, how_to_help: null } } = $$props;
 	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
 
 	return `<h1>Як допомогти</h1>
 ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
 <ul style="${"list-style: disc outside none; padding-left: var(--screen-padding)"}" class="${"h3 font-w-500 font-secondary"}">
-    ${data.phone !== null
-	? `<li style="${"padding-bottom: 5px"}">Ви пожете купити йому поїсти</li>
-        <li style="${"padding-bottom: 5px"}">Можете особисто відвідати його у нас</li>
-        <li style="${"padding-bottom: 5px"}">Купити вакцінацію для Волтера</li>
-        <li style="${"padding-bottom: 5px"}">Допомогти любим інщим способом</li>`
+    ${data.how_to_help !== null
+	? `${typeof data.how_to_help === "string"
+		? `${each(data.how_to_help.split(/\n?• /).filter(Boolean), line => `<li style="${"padding-bottom: 5px"}">${escape(line)}</li>`)}`
+		: ``}`
 	: `<li style="${"padding-bottom: 5px"}">
             <span class="${"font-secondary font-w-500 p relative"}">
                 <span style="${"visibility: hidden"}">Допомогти любим способом</span>
@@ -8597,7 +9919,7 @@ const AnimalCard = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 
 /* src/routes/funds/components/_Description.svelte generated by Svelte v3.18.1 */
 
-const Description = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Description$3 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { title = null } = $$props;
 	let { text = null } = $$props;
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
@@ -8627,7 +9949,7 @@ ${text !== null
 
 /* src/routes/funds/components/_TopCarousel.svelte generated by Svelte v3.18.1 */
 
-const TopCarousel = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const TopCarousel$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items = [] } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 
@@ -8692,7 +10014,7 @@ const QuickInfoCard = create_ssr_component(($$result, $$props, $$bindings, $$slo
 
 /* src/routes/funds/components/_OrganizationButton.svelte generated by Svelte v3.18.1 */
 
-const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const OrganizationButton$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { id = null } = $$props;
 	let { src = null } = $$props;
 	let { title = null } = $$props;
@@ -8752,7 +10074,7 @@ const OrganizationButton = create_ssr_component(($$result, $$props, $$bindings, 
 
 /* src/routes/funds/components/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
 
-const InteractionIndicators = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const InteractionIndicators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { likes = null } = $$props;
 	let { views = null } = $$props;
 	if ($$props.likes === void 0 && $$bindings.likes && likes !== void 0) $$bindings.likes(likes);
@@ -8804,50 +10126,42 @@ const InteractionIndicators = create_ssr_component(($$result, $$props, $$binding
 
 
 
-var route_0 = /*#__PURE__*/Object.freeze({
+var route_3 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     Media: Media,
-    Share: Share,
-    Trust: Trust,
-    Comments: Comments_1,
-    Donators: Donators,
+    Share: Share$1,
+    Trust: Trust$1,
+    Comments: Comments_1$1,
+    Donators: Donators$1,
     HowToHelp: HowToHelp,
     Documents: Documents_1,
     AnimalCard: AnimalCard,
-    Description: Description,
-    TopCarousel: TopCarousel,
+    Description: Description$3,
+    TopCarousel: TopCarousel$1,
     QuickInfoCard: QuickInfoCard,
-    OrganizationButton: OrganizationButton,
-    InteractionIndicators: InteractionIndicators
+    OrganizationButton: OrganizationButton$2,
+    InteractionIndicators: InteractionIndicators$1
 });
 
 /* src/routes/funds/edit/_Videos.svelte generated by Svelte v3.18.1 */
 
-const Videos = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Videos$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { data = undefined } = $$props;
 
 	let { submit = async () => {
 		
 	} } = $$props;
 
-	let formFields = [
-		{
-			label: "Відео 1:",
-			type: "url",
-			name: "video[0]",
-			meta: {
-				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
-			}
-		},
-		{
-			label: "Відео 2:",
-			type: "url",
-			name: "video[1]",
-			meta: {
-				placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
-			}
+	const dispatch = createEventDispatcher();
+
+	const defaultField = {
+		label: "Відео 1:",
+		type: "url",
+		name: "videos[0].src",
+		meta: {
+			placeholder: "https://www.youtube.com/watch?v=oUcAUwptos4&t"
 		}
-	];
+	};
 
 	async function onSubmit(e) {
 		await submit(e);
@@ -8855,13 +10169,19 @@ const Videos = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 
 	if ($$props.data === void 0 && $$bindings.data && data !== void 0) $$bindings.data(data);
 	if ($$props.submit === void 0 && $$bindings.submit && submit !== void 0) $$bindings.submit(submit);
+	let currentValues = data || {};
 	let formValues = data || {};
 	let formErrors = {};
+	let fieldsAmount = safeGet(() => currentValues.videos.filter(v => v.src).length, 0, true);
 
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+	let formFields = Array.from(new Array(Math.max(2, fieldsAmount + 1))).map((f, i) => ({
+		...defaultField,
+		label: `Відео ${i + 1}:`,
+		name: `videos[${i}].src`
+	}));
+
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "videos-form" }, {}, {
 		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
     ${validate_component(FormBuilder, "FormBuilder").$$render(
 			$$result,
 			{
@@ -8874,28 +10194,6 @@ const Videos = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 			{},
 			{}
 		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-
-    ${validate_component(Button, "Button").$$render(
-			$$result,
-			{
-				size: "small",
-				type: "submit",
-				form: "videos-form",
-				is: "info"
-			},
-			{},
-			{
-				default: () => `
-        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
-            Зберегти
-        </span>
-    `
-			}
-		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 `
 	})}`;
 });
@@ -8964,10 +10262,8 @@ const TopInfo = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 	let formValues = data || {};
 	let formErrors = {};
 
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "top-info-form" }, {}, {
 		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
     ${validate_component(FormBuilder, "FormBuilder").$$render(
 			$$result,
 			{
@@ -8980,35 +10276,13 @@ const TopInfo = create_ssr_component(($$result, $$props, $$bindings, $$slots) =>
 			{},
 			{}
 		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-
-    ${validate_component(Button, "Button").$$render(
-			$$result,
-			{
-				size: "small",
-				type: "submit",
-				form: "top-info-form",
-				is: "info"
-			},
-			{},
-			{
-				default: () => `
-        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
-            Зберегти
-        </span>
-    `
-			}
-		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 `
 	})}`;
 });
 
 /* src/routes/funds/edit/_Documents.svelte generated by Svelte v3.18.1 */
 
-const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Documents$3 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { data = undefined } = $$props;
 
 	let { submit = async () => {
@@ -9036,10 +10310,8 @@ const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	let formValues = data || {};
 	let formErrors = {};
 
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "documents-form" }, {}, {
 		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
     ${validate_component(FormBuilder, "FormBuilder").$$render(
 			$$result,
 			{
@@ -9052,28 +10324,6 @@ const Documents$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 			{},
 			{}
 		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-
-    ${validate_component(Button, "Button").$$render(
-			$$result,
-			{
-				size: "small",
-				type: "submit",
-				form: "documents-form",
-				is: "info"
-			},
-			{},
-			{
-				default: () => `
-        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
-            Зберегти
-        </span>
-    `
-			}
-		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 `
 	})}`;
 });
@@ -9091,7 +10341,7 @@ const HowToHelp$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 		{
 			label: "Як можна допомогти:",
 			type: "textarea",
-			name: "howtohelp",
+			name: "how_to_help",
 			meta: { placeholder: "· Привести корм", rows: 6 }
 		}
 	];
@@ -9105,10 +10355,8 @@ const HowToHelp$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 	let formValues = data || {};
 	let formErrors = {};
 
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "howtohelp-form" }, {}, {
 		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
     ${validate_component(FormBuilder, "FormBuilder").$$render(
 			$$result,
 			{
@@ -9121,28 +10369,6 @@ const HowToHelp$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots
 			{},
 			{}
 		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-
-    ${validate_component(Button, "Button").$$render(
-			$$result,
-			{
-				size: "small",
-				type: "submit",
-				form: "howtohelp-form",
-				is: "info"
-			},
-			{},
-			{
-				default: () => `
-        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
-            Зберегти
-        </span>
-    `
-			}
-		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 `
 	})}`;
 });
@@ -9158,8 +10384,7 @@ const AnimalCard$1 = create_ssr_component(($$result, $$props, $$bindings, $$slot
 
 	let formFields = [
 		{
-			label: "Аватар:",
-			type: "custom-avatar",
+			type: "avatar",
 			name: "avatar",
 			meta: { accept: "image/jpeg,image/png" }
 		},
@@ -9269,10 +10494,8 @@ const AnimalCard$1 = create_ssr_component(($$result, $$props, $$bindings, $$slot
 	let formValues = data || {};
 	let formErrors = {};
 
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "animal-form" }, {}, {
 		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
     ${validate_component(FormBuilder, "FormBuilder").$$render(
 			$$result,
 			{
@@ -9285,75 +10508,49 @@ const AnimalCard$1 = create_ssr_component(($$result, $$props, $$bindings, $$slot
 			{},
 			{
 				default: ({ item, value, onChange }) => `
-        ${item.type === "custom-avatar"
-				? `<section class="${"flex flex-justify-center"}" style="${"padding: 10px 0"}">
-                ${validate_component(UploadBox, "UploadBox").$$render($$result, Object.assign({ round: true }, { style: { width: "145px" } }, item.meta, { src: value }, { name: item.name }), {}, {})}  
-            </section>`
-				: `${item.type === "custom-character"
-					? `<section>
+        ${item.type === "custom-character"
+				? `<section>
                 <h2 class="${"text-left"}">
                     ${escape(item.label)}
                     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
                 </h2>
                 <div class="${"flex flex-justify-center"}">
                     ${validate_component(RadioRect, "RadioRect").$$render($$result, Object.assign(item.meta, { value }, { name: item.name }), {}, {
-							default: ({ item: radio }) => `
+						default: ({ item: radio }) => `
                         ${validate_component(Square, "Square").$$render(
-								$$result,
-								{
-									style: "width: calc(40px + (50 - 40) * ((100vw - 320px) / (375 - 320))); max-width: 50px",
-									class: "flex flex-align-center flex-justify-center"
-								},
-								{},
-								{
-									default: () => `
+							$$result,
+							{
+								style: "width: calc(40px + (50 - 40) * ((100vw - 320px) / (375 - 320))); max-width: 50px",
+								class: "flex flex-align-center flex-justify-center"
+							},
+							{},
+							{
+								default: () => `
                             <span class="${"h1 flex-1 flex flex-align-center flex-justify-center"}">
                                 ${escape(radio.label)}
                             </span>
                         `
-								}
-							)}
+							}
+						)}
                     `
-						})}
+					})}
                 </div>
             </section>`
-					: `${item.type === "custom-lifestory"
-						? `<section>
+				: `${item.type === "custom-lifestory"
+					? `<section>
                 ${validate_component(StoryList, "StoryList").$$render($$result, Object.assign(item.meta, { value }, { name: item.name }, { label: item.label }), {}, {})}
             </section>`
-						: ``}`}`}
+					: ``}`}
     `
 			}
 		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-
-    ${validate_component(Button, "Button").$$render(
-			$$result,
-			{
-				size: "small",
-				type: "submit",
-				form: "animal-form",
-				is: "info"
-			},
-			{},
-			{
-				default: () => `
-        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
-            Зберегти
-        </span>
-    `
-			}
-		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 `
 	})}`;
 });
 
 /* src/routes/funds/edit/_Description.svelte generated by Svelte v3.18.1 */
 
-const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Description$4 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { data = undefined } = $$props;
 
 	let { submit = async () => {
@@ -9392,10 +10589,8 @@ const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	let formValues = data || {};
 	let formErrors = {};
 
-	return `${validate_component(Card, "Card").$$render($$result, { class: "container" }, {}, {
+	return `${validate_component(EditCard, "EditCard").$$render($$result, { form: "description-form" }, {}, {
 		default: () => `
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
     ${validate_component(FormBuilder, "FormBuilder").$$render(
 			$$result,
 			{
@@ -9408,47 +10603,25 @@ const Description$1 = create_ssr_component(($$result, $$props, $$bindings, $$slo
 			{},
 			{}
 		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
-
-    ${validate_component(Button, "Button").$$render(
-			$$result,
-			{
-				size: "small",
-				type: "submit",
-				form: "description-form",
-				is: "info"
-			},
-			{},
-			{
-				default: () => `
-        <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
-            Зберегти
-        </span>
-    `
-			}
-		)}
-
-    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 `
 	})}`;
 });
 
 
 
-var route_1 = /*#__PURE__*/Object.freeze({
+var route_4 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    VideosEdit: Videos,
+    VideosEdit: Videos$2,
     TopInfoEdit: TopInfo,
-    DocumentsEdit: Documents$1,
+    DocumentsEdit: Documents$3,
     HowToHelpEdit: HowToHelp$1,
     AnimalCardEdit: AnimalCard$1,
-    DescriptionEdit: Description$1
+    DescriptionEdit: Description$4
 });
 
 /* src/routes/funds/view/_Videos.svelte generated by Svelte v3.18.1 */
 
-const Videos$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
+const Videos$3 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
 	let { items } = $$props;
 	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
 	return `${validate_component(Media, "Media").$$render($$result, { items }, {}, {})}`;
@@ -9464,10 +10637,10 @@ const TopInfo$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) 
 	if ($$props.carouselTop === void 0 && $$bindings.carouselTop && carouselTop !== void 0) $$bindings.carouselTop(carouselTop);
 	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
 
-	return `${validate_component(TopCarousel, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
+	return `${validate_component(TopCarousel$1, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
 ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
 
-${validate_component(OrganizationButton, "OrganizationButton").$$render(
+${validate_component(OrganizationButton$2, "OrganizationButton").$$render(
 		$$result,
 		{
 			id: organization.id,
@@ -9513,14 +10686,14 @@ const Description_1 = create_ssr_component(($$result, $$props, $$bindings, $$slo
 	let { text = undefined } = $$props;
 	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
 	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
-	return `${validate_component(Description, "Description").$$render($$result, { title, text }, {}, {})}`;
+	return `${validate_component(Description$3, "Description").$$render($$result, { title, text }, {}, {})}`;
 });
 
 
 
-var route_2 = /*#__PURE__*/Object.freeze({
+var route_5 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    VideosView: Videos$1,
+    VideosView: Videos$3,
     TopInfoView: TopInfo$1,
     DocumentsView: Documents_1$1,
     HowToHelpView: HowToHelp_1,
@@ -9530,13 +10703,13 @@ var route_2 = /*#__PURE__*/Object.freeze({
 
 /* src/routes/index.svelte generated by Svelte v3.18.1 */
 
-const css$G = {
+const css$I = {
 	code: ".top-pic.svelte-zj2ii1{-webkit-box-flex:0;-ms-flex:none;flex:none;z-index:0;width:100%;height:200px;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:hidden;border-radius:0}",
 	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<script>\\n    import {\\n        Br,\\n        Footer,\\n        Divider,\\n        Comments,\\n        Progress,\\n        Carousel,\\n        ContentHolder,\\n        TitleSubTitle,\\n        ListOfFeatures,\\n    } from '@components'\\n</script>\\n\\n<style>\\n    .top-pic {\\n        -webkit-box-flex: 0;\\n            -ms-flex: none;\\n                flex: none;\\n        z-index: 0;\\n        width: 100%;\\n        height: 200px;\\n        display: -webkit-box;\\n        display: -ms-flexbox;\\n        display: flex;\\n        overflow: hidden;\\n        border-radius: 0;\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvaW5kZXguc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLG1CQUFVO1lBQVYsY0FBVTtnQkFBVixVQUFVO1FBQ1YsVUFBVTtRQUNWLFdBQVc7UUFDWCxhQUFhO1FBQ2Isb0JBQWE7UUFBYixvQkFBYTtRQUFiLGFBQWE7UUFDYixnQkFBZ0I7UUFDaEIsZ0JBQWdCO0lBQ3BCIiwiZmlsZSI6InNyYy9yb3V0ZXMvaW5kZXguc3ZlbHRlIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgLnRvcC1waWMge1xuICAgICAgICBmbGV4OiBub25lO1xuICAgICAgICB6LWluZGV4OiAwO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiAyMDBweDtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogMDtcbiAgICB9XG4iXX0= */</style>\\n\\n<svelte:head>\\n    <title>Charitify - list of charities you can donate.</title>\\n</svelte:head>\\n\\n<section>\\n    <Br size=\\\"var(--header-height)\\\"/>\\n\\n    <div class=\\\"top-pic\\\">\\n        <Carousel/>\\n    </div>\\n\\n    <Progress borderRadius=\\\"0 0 8px 8px\\\" value=\\\"30\\\"/>\\n\\n    <p>These guys rise a pound of vegetables. They like vegetables and long text under photos.</p>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <section class=\\\"container\\\">\\n\\n        <TitleSubTitle\\n                title=\\\"Charitify\\\"\\n                subtitle=\\\"Charity application for helping those in need\\\"\\n        />\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n\\n        <ContentHolder/>\\n\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n        <br>\\n\\n        <Divider size=\\\"16\\\"/>\\n        <h3 class=\\\"h2 text-right\\\">Comments:</h3>\\n        <Divider size=\\\"20\\\"/>\\n\\n        <Comments withForm={false}/>\\n\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n\\n            <ContentHolder/>\\n\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n            <br>\\n\\n            <ListOfFeatures/>\\n    </section>\\n\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n    <br>\\n\\n    <Footer/>\\n\\n</section>\\n\"],\"names\":[],\"mappings\":\"AAeI,QAAQ,cAAC,CAAC,AACN,gBAAgB,CAAE,CAAC,CACf,QAAQ,CAAE,IAAI,CACV,IAAI,CAAE,IAAI,CAClB,OAAO,CAAE,CAAC,CACV,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,KAAK,CACb,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,WAAW,CACpB,OAAO,CAAE,IAAI,CACb,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,CAAC,AACpB,CAAC\"}"
 };
 
 const Routes = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	$$result.css.add(css$G);
+	$$result.css.add(css$I);
 
 	return `${($$result.head += `${($$result.title = `<title>Charitify - list of charities you can donate.</title>`, "")}`, "")}
 
@@ -9709,560 +10882,6 @@ stores.session.subscribe(async value => {
 
 const stores$1 = () => getContext(CONTEXT_KEY);
 
-/* src/routes/organizations/_OrganizationButton.svelte generated by Svelte v3.18.1 */
-
-const OrganizationButton$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { id = null } = $$props;
-	let { src = null } = $$props;
-	let { title = null } = $$props;
-	if ($$props.id === void 0 && $$bindings.id && id !== void 0) $$bindings.id(id);
-	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-
-	return `${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			rel: "prefetch",
-			href: id,
-			class: "white"
-		},
-		{},
-		{
-			default: () => `
-  <div class="${"flex flex-align-center flex-justify-between full-width"}">
-
-    <div class="${"flex flex-align-center"}">
-      <s></s>
-      <div class="${"flex"}" style="${"max-width: 45px; height: 40px; overflow: hidden"}">
-        ${validate_component(Picture, "Picture").$$render(
-				$$result,
-				{
-					src,
-					size: "contain",
-					alt: "якесь фото організації"
-				},
-				{},
-				{}
-			)}
-      </div>
-      <s></s>
-      ${title !== null
-			? `<s></s>
-        <s></s>
-        <h3>${escape(title)}</h3>`
-			: `<span>${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}</span>`}
-    </div>
-    
-  </div>
-`
-		}
-	)}`;
-});
-
-/* src/routes/organizations/_TopCarousel.svelte generated by Svelte v3.18.1 */
-
-const TopCarousel$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items = [] } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<section class="${"flex"}" style="${"height: 240px"}">
-    ${validate_component(Carousel, "Carousel").$$render($$result, { items, dotsBelow: false }, {}, {})}
-</section>`;
-});
-
-/* src/routes/organizations/_DescriptionShort.svelte generated by Svelte v3.18.1 */
-
-const DescriptionShort = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { title } = $$props;
-	let { text } = $$props;
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
-
-	return `${title
-	? `<h2>${escape(title)}</h2>`
-	: `<div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h2" }, {}, {})}  </div>`}
-${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-${text
-	? `<pre class="${"font-w-300"}">
-    ${escape(text)}
-</pre>`
-	: `${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    <div style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}</div>`}`;
-});
-
-/* src/routes/organizations/_InteractionIndicators.svelte generated by Svelte v3.18.1 */
-
-const InteractionIndicators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { likes = null } = $$props;
-	let { views = null } = $$props;
-	let { isLiked = false } = $$props;
-	if ($$props.likes === void 0 && $$bindings.likes && likes !== void 0) $$bindings.likes(likes);
-	if ($$props.views === void 0 && $$bindings.views && views !== void 0) $$bindings.views(views);
-	if ($$props.isLiked === void 0 && $$bindings.isLiked && isLiked !== void 0) $$bindings.isLiked(isLiked);
-
-	return `<p class="${"container flex flex-justify-between flex-align-center"}">
-  ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small",
-			style: `opacity: ${isLiked ? 1 : 0.5}`
-		},
-		{},
-		{
-			default: () => `
-    ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					is: "danger",
-					type: "heart",
-					size: "medium"
-				},
-				{},
-				{}
-			)}
-    <s></s>
-    <s></s>
-    ${likes !== null
-			? `<span class="${"font-secondary font-w-600 h3"}">${escape(likes)}</span>`
-			: `<span class="${"font-secondary font-w-600 h3 relative"}">
-        <span style="${"visibility: hidden"}">199</span>
-        ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-      </span>`}
-  `
-		}
-	)}
-
-  <span class="${"flex"}">
-    ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-      ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "share",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-      <s></s>
-      <s></s>
-      <h3 class="${"font-w-600"}">Поділитись</h3>
-    `
-		}
-	)}
-  </span>
-  <span class="${"flex flex-align-center"}">
-    ${validate_component(Icon, "Icon").$$render(
-		$$result,
-		{
-			type: "eye",
-			size: "medium",
-			class: "theme-svg-fill"
-		},
-		{},
-		{}
-	)}
-    <s></s>
-    <s></s>
-    ${views !== null
-	? `<span class="${"font-secondary font-w-600 h3"}">${escape(views)}</span>`
-	: `<span class="${"font-secondary font-w-600 h3 relative"}">
-        <span style="${"visibility: hidden"}">199</span>
-        ${validate_component(Loader, "Loader").$$render($$result, { type: "h3", absolute: true }, {}, {})}
-      </span>`}
-  </span>
-</p>`;
-});
-
-/* src/routes/organizations/_FundList.svelte generated by Svelte v3.18.1 */
-
-const FundList = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { title } = $$props;
-	let { items } = $$props;
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>${escape(title)}</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-<div class="${"full-container"}">
-    ${validate_component(FundCards, "FundCards").$$render($$result, { items }, {}, {})}
-</div>`;
-});
-
-/* src/routes/organizations/_Description.svelte generated by Svelte v3.18.1 */
-
-const Description$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { title = null } = $$props;
-	let { text = null } = $$props;
-	if ($$props.title === void 0 && $$bindings.title && title !== void 0) $$bindings.title(title);
-	if ($$props.text === void 0 && $$bindings.text && text !== void 0) $$bindings.text(text);
-
-	return `${title !== null
-	? `<h1>${escape(title)}</h1>`
-	: `<div style="${"width: 85%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}  </div>`}
-${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-${text !== null
-	? `<pre class="${"font-w-300"}">
-    ${escape(text)}
-</pre>`
-	: `${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    ${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}  
-    <div style="${"width: 60%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "pre" }, {}, {})}</div>`}`;
-});
-
-/* src/routes/organizations/_Share.svelte generated by Svelte v3.18.1 */
-
-const Share$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	return `<p class="${"flex"}">
-  ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-    ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "share",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-    <s></s>
-    <s></s>
-    <h3 class="${"font-w-500"}">Поділитись</h3>
-  `
-		}
-	)}
-  <s></s>
-  <s></s>
-  <s></s>
-  <s></s>
-  <s></s>
-  ${validate_component(Button, "Button").$$render(
-		$$result,
-		{
-			class: "flex flex-align-center",
-			auto: true,
-			size: "small"
-		},
-		{},
-		{
-			default: () => `
-    ${validate_component(Icon, "Icon").$$render(
-				$$result,
-				{
-					type: "link",
-					size: "medium",
-					class: "theme-svg-fill"
-				},
-				{},
-				{}
-			)}
-    <s></s>
-    <s></s>
-    <h3 class="${"font-w-500"}">Скопіювати</h3>
-  `
-		}
-	)}
-</p>`;
-});
-
-/* src/routes/organizations/_Trust.svelte generated by Svelte v3.18.1 */
-
-const Trust$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	const dispatch = createEventDispatcher();
-	let { active = false } = $$props;
-	if ($$props.active === void 0 && $$bindings.active && active !== void 0) $$bindings.active(active);
-
-	return `<section class="${"flex flex-column flex-align-center flex-justify-center"}">
-    <div style="${"width: 100px; max-width: 100%"}">
-        ${validate_component(TrustButton, "TrustButton").$$render($$result, { isActive: active }, {}, {})}
-    </div>
-    ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-    <h2>Я довіряю</h2>
-</section>`;
-});
-
-/* src/routes/organizations/_Donators.svelte generated by Svelte v3.18.1 */
-
-const Donators$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Наші піклувальники</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-<div class="${"full-container"}">
-    ${validate_component(DonatorsList, "DonatorsList").$$render($$result, { items }, {}, {})}
-</div>`;
-});
-
-/* src/routes/organizations/_LastNews.svelte generated by Svelte v3.18.1 */
-
-const LastNews = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	let { carousel = [] } = $$props;
-	let { iconsLine = {} } = $$props;
-	let { organization = {} } = $$props;
-	let { descriptionShort = {} } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	if ($$props.carousel === void 0 && $$bindings.carousel && carousel !== void 0) $$bindings.carousel(carousel);
-	if ($$props.iconsLine === void 0 && $$bindings.iconsLine && iconsLine !== void 0) $$bindings.iconsLine(iconsLine);
-	if ($$props.organization === void 0 && $$bindings.organization && organization !== void 0) $$bindings.organization(organization);
-	if ($$props.descriptionShort === void 0 && $$bindings.descriptionShort && descriptionShort !== void 0) $$bindings.descriptionShort(descriptionShort);
-
-	return `<h1>Останні новини</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-${validate_component(NewsList, "NewsList").$$render($$result, { items }, {}, {})}
-
-${validate_component(Modal, "Modal").$$render(
-		$$result,
-		{
-			id: "last-news",
-			size: "full",
-			swipe: "all"
-		},
-		{},
-		{
-			default: () => `
-    <section class="${"container flex flex-column relative"}">
-        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
-
-        ${descriptionShort.title !== null
-			? `<h1>${escape(descriptionShort.title)}</h1>`
-			: `${validate_component(Loader, "Loader").$$render($$result, { type: "h1" }, {}, {})}`}
-        ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-        ${descriptionShort.title !== null
-			? `<p>${escape(descriptionShort.title)}</p>`
-			: `<div style="${"width: 40%"}">${validate_component(Loader, "Loader").$$render($$result, { type: "p" }, {}, {})}</div>`}
-        ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
-        
-        <section class="${"flex"}" style="${"height: 240px"}">
-            ${validate_component(Carousel, "Carousel").$$render($$result, { items: carousel, stopPropagation: true }, {}, {})}
-        </section>
-
-        ${validate_component(Br, "Br").$$render($$result, { size: "25" }, {}, {})}
-        ${validate_component(DescriptionShort, "DescriptionShort").$$render(
-				$$result,
-				{
-					text: descriptionShort.text,
-					title: descriptionShort.title
-				},
-				{},
-				{}
-			)}
-        ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-        ${validate_component(InteractionIndicators$1, "InteractionIndicators").$$render(
-				$$result,
-				{
-					likes: iconsLine.likes,
-					views: iconsLine.views,
-					isLiked: organization.isLiked
-				},
-				{},
-				{}
-			)}
-        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
-
-        ${validate_component(Trust$1, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
-
-        ${validate_component(Br, "Br").$$render($$result, {}, {}, {})}
-    </section>
-`
-		}
-	)}`;
-});
-
-/* src/routes/organizations/_Certificates.svelte generated by Svelte v3.18.1 */
-
-const Certificates = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Сертифікати</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-<div class="${"full-container"}">
-    ${validate_component(Documents, "Documents").$$render($$result, { items }, {}, {})}
-</div>`;
-});
-
-/* src/routes/organizations/_Videos.svelte generated by Svelte v3.18.1 */
-
-const Videos$2 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Відео про нас</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-<section class="${"flex"}" style="${"height: 240px"}">
-    ${validate_component(Carousel, "Carousel").$$render($$result, { items }, {}, {})}
-</section>`;
-});
-
-/* src/routes/organizations/_ContactsCard.svelte generated by Svelte v3.18.1 */
-
-const ContactsCard = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items = null } = $$props;
-	let { orgName = null } = $$props;
-	let { avatar = null } = $$props;
-	let { avatarBig = null } = $$props;
-	const top = ["telegram", "facebook", "viber"];
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-	if ($$props.orgName === void 0 && $$bindings.orgName && orgName !== void 0) $$bindings.orgName(orgName);
-	if ($$props.avatar === void 0 && $$bindings.avatar && avatar !== void 0) $$bindings.avatar(avatar);
-	if ($$props.avatarBig === void 0 && $$bindings.avatarBig && avatarBig !== void 0) $$bindings.avatarBig(avatarBig);
-
-	let topItems = items === null
-	? undefined
-	: items.filter(i => !top.includes(i.type));
-
-	let bottomItems = items === null
-	? undefined
-	: items.filter(i => top.includes(i.type));
-
-	return `${validate_component(Card, "Card").$$render($$result, {}, {}, {
-		default: () => `
-    <section style="${"padding: 0 20px"}">
-        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
-        <div class="${"flex flex-column flex-align-center"}">
-            
-            <span>
-                ${validate_component(FancyBox, "FancyBox").$$render($$result, { class: "flex-justify-center" }, {}, {
-			box: () => `<section slot="${"box"}" class="${"flex full-width full-height"}" style="${"height: 100vw"}">
-                        <div class="${"flex flex-self-stretch flex-1 overflow-hidden flex-justify-stretch"}" style="${"padding: var(--screen-padding) 0"}">
-                            ${validate_component(Avatar, "Avatar").$$render(
-				$$result,
-				{
-					src: avatar,
-					srcBig: avatarBig,
-					alt: "ava"
-				},
-				{},
-				{}
-			)}
-                        </div>
-                    </section>`,
-			default: () => `
-                    ${validate_component(Avatar, "Avatar").$$render(
-				$$result,
-				{
-					size: "big",
-					src: avatar,
-					alt: "Організація"
-				},
-				{},
-				{}
-			)}
-                    
-                `
-		})}
-            </span>
-
-            ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-            <h2>Наші контакти</h2>
-            ${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-
-            ${orgName !== null
-		? `<p class="${"h3 font-secondary font-w-500"}" style="${"opacity: .7"}">
-                    ${escape(orgName)}
-                </p>`
-		: `<p style="${"width: 60%"}">
-                    ${validate_component(Loader, "Loader").$$render($$result, { type: "h3" }, {}, {})}
-                </p>`}
-        </div>
-
-        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
-        ${validate_component(SocialsY, "SocialsY").$$render($$result, { items: topItems }, {}, {})}   
-
-        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-
-        ${validate_component(SocialsX, "SocialsX").$$render($$result, { items: bottomItems }, {}, {})}
-
-        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-    </section>
-`
-	})}`;
-});
-
-/* src/routes/organizations/_VirtualTour.svelte generated by Svelte v3.18.1 */
-
-const css$H = {
-	code: "div.svelte-1ep59z6{background-color:rgba(var(--theme-bg-color-opposite), .04)}",
-	map: "{\"version\":3,\"file\":\"_VirtualTour.svelte\",\"sources\":[\"_VirtualTour.svelte\"],\"sourcesContent\":[\"<script>\\n  import { Br } from \\\"@components\\\";\\n\\n  export let src\\n</script>\\n\\n<h1>3D - Тур 360°</h1>\\n<Br size=\\\"20\\\" />\\n<div class=\\\"full-container\\\">\\n  <iframe\\n    {src}\\n    title=\\\"360 тур\\\"\\n    width=\\\"100%\\\"\\n    height=\\\"450\\\"\\n    frameborder=\\\"0\\\"\\n    style=\\\"border:0;\\\"\\n    allowfullscreen=\\\"\\\"\\n    aria-hidden=\\\"false\\\"\\n    tabindex=\\\"0\\\" ></iframe>\\n</div>\\n\\n<style>\\n    div {\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fVmlydHVhbFRvdXIuc3ZlbHRlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7SUFDSTtRQUNJLDJEQUEyRDtJQUMvRCIsImZpbGUiOiJzcmMvcm91dGVzL29yZ2FuaXphdGlvbnMvX1ZpcnR1YWxUb3VyLnN2ZWx0ZSIsInNvdXJjZXNDb250ZW50IjpbIlxuICAgIGRpdiB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tdGhlbWUtYmctY29sb3Itb3Bwb3NpdGUpLCAuMDQpO1xuICAgIH1cbiJdfQ== */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,CAAC,GAAG,CAAC,AAC/D,CAAC\"}"
-};
-
-const VirtualTour = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { src } = $$props;
-	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	$$result.css.add(css$H);
-
-	return `<h1>3D - Тур 360°</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-<div class="${"full-container svelte-1ep59z6"}">
-  <iframe${add_attribute("src", src, 0)} title="${"360 тур"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
-</div>`;
-});
-
-/* src/routes/organizations/_WeOnMap.svelte generated by Svelte v3.18.1 */
-
-const css$I = {
-	code: "div.svelte-151uyyh{background-color:rgba(var(--theme-bg-color-opposite), .04)}",
-	map: "{\"version\":3,\"file\":\"_WeOnMap.svelte\",\"sources\":[\"_WeOnMap.svelte\"],\"sourcesContent\":[\"<script>\\n  import { Br } from \\\"@components\\\";\\n  \\n  export let src\\n</script>\\n\\n<h1>Ми на карті</h1>\\n<Br size=\\\"20\\\" />\\n<div class=\\\"full-container\\\">\\n  <iframe\\n    {src}\\n    title=\\\"Карта\\\"\\n    width=\\\"100%\\\"\\n    height=\\\"450\\\"\\n    frameborder=\\\"0\\\"\\n    style=\\\"border:0;\\\"\\n    allowfullscreen=\\\"\\\"\\n    aria-hidden=\\\"false\\\"\\n    tabindex=\\\"0\\\" ></iframe>\\n</div>\\n\\n<style>\\n    div {\\n        background-color: rgba(var(--theme-bg-color-opposite), .04);\\n    }\\n\\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fV2VPbk1hcC5zdmVsdGUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtJQUNJO1FBQ0ksMkRBQTJEO0lBQy9EIiwiZmlsZSI6InNyYy9yb3V0ZXMvb3JnYW5pemF0aW9ucy9fV2VPbk1hcC5zdmVsdGUiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgICBkaXYge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKHZhcigtLXRoZW1lLWJnLWNvbG9yLW9wcG9zaXRlKSwgLjA0KTtcbiAgICB9XG4iXX0= */</style>\\n\"],\"names\":[],\"mappings\":\"AAsBI,GAAG,eAAC,CAAC,AACD,gBAAgB,CAAE,KAAK,IAAI,yBAAyB,CAAC,CAAC,CAAC,GAAG,CAAC,AAC/D,CAAC\"}"
-};
-
-const WeOnMap = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { src } = $$props;
-	if ($$props.src === void 0 && $$bindings.src && src !== void 0) $$bindings.src(src);
-	$$result.css.add(css$I);
-
-	return `<h1>Ми на карті</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-<div class="${"full-container svelte-151uyyh"}">
-  <iframe${add_attribute("src", src, 0)} title="${"Карта"}" width="${"100%"}" height="${"450"}" frameborder="${"0"}" style="${"border:0;"}" allowfullscreen="${""}" aria-hidden="${"false"}" tabindex="${"0"}"></iframe>
-</div>`;
-});
-
-/* src/routes/organizations/_Comments.svelte generated by Svelte v3.18.1 */
-
-const Comments_1$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
-	let { items } = $$props;
-	if ($$props.items === void 0 && $$bindings.items && items !== void 0) $$bindings.items(items);
-
-	return `<h1>Коментарі</h1>
-${validate_component(Br, "Br").$$render($$result, { size: "5" }, {}, {})}
-<div class="${"full-container"}">
-  ${validate_component(Comments, "Comments").$$render($$result, { items }, {}, {})}
-</div>`;
-});
-
 /* src/routes/organizations/[id].svelte generated by Svelte v3.18.1 */
 
 const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) => {
@@ -10273,6 +10892,18 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	// Organization
 	let organizationId = $page.params.id;
 
+	let isEditMode = false;
+
+	let isEdit = {
+		topInfo: false,
+		description: false,
+		about: false,
+		documents: false,
+		videos: false,
+		contacts: false,
+		map: false
+	};
+
 	// Entities
 	let organization = {};
 
@@ -10280,18 +10911,24 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	let funds;
 
 	onMount(async () => {
-		await delay(20000);
-		organization = await API.getOrganization(1);
+		await delay(7000);
+		organization = await API.getOrganization(organizationId);
 		comments = await API.getComments();
 		funds = await API.getFunds();
 	});
+
+	async function onSubmit(section, values) {
+		isEdit[section] = false;
+		console.log(values);
+	}
 
 	$page = get_store_value(page);
 
 	let organizationBlock = {
 		id: organization.id,
-		name: organization.title,
-		avatar: organization.avatar
+		name: organization.name,
+		avatar: organization.avatar,
+		avatarBig: organization.avatarBig
 	};
 
 	let carouselTop = (organization.avatars || []).map((a, i) => ({
@@ -10301,8 +10938,9 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 	}));
 
 	let descriptionShort = {
-		title: organization.title || null,
-		text: organization.subtitle || null
+		name: organization.name || null,
+		subtitle: organization.subtitle || null,
+		description: organization.description || null
 	};
 
 	let animalFunds = safeGet(() => funds.filter(f => f.type === "animal").reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
@@ -10405,126 +11043,368 @@ const U5Bidu5D = create_ssr_component(($$result, $$props, $$bindings, $$slots) =
 
 <section class="${"container theme-bg-color-secondary"}">
     ${validate_component(Br, "Br").$$render($$result, { size: "var(--header-height)" }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
 
-    ${validate_component(OrganizationButton$1, "OrganizationButton").$$render(
+    <div>
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+        ${validate_component(Button, "Button").$$render($$result, { size: "small", is: "info" }, {}, {
+		default: () => `
+            <span class="${"h3 font-secondary font-w-500 flex flex-align-center"}">
+                ${escape( "Редагувати")}
+                <s></s>
+                <s></s>
+                ${ `${validate_component(Icon, "Icon").$$render($$result, { type: "edit", size: "small", is: "light" }, {}, {})}`
+		}
+            </span>
+        `
+	})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+    </div>
+
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.topInfo }, {}, {
+		default: () => `
+        ${validate_component(OrganizationButton$1, "OrganizationButtonEdit").$$render(
+			$$result,
+			{
+				data: organizationBlock,
+				submit: onSubmit.bind(null, "topInfo")
+			},
+			{},
+			{}
+		)}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			id: organizationBlock.id,
-			src: organizationBlock.avatar,
-			title: organizationBlock.name
+			active: !isEdit.topInfo,
+			mounted: true,
+			class: "full-container"
 		},
 		{},
-		{}
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(OrganizationButton_1, "OrganizationButtonView").$$render($$result, { organization: organizationBlock }, {}, {})}
+        `
+			})}
+    `
+		}
 	)}
+    ${ ``}
+    
+
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
-
-    ${validate_component(TopCarousel$1, "TopCarousel").$$render($$result, { items: carouselTop }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
-
-    ${validate_component(DescriptionShort, "DescriptionShort").$$render(
+    
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.description }, {}, {
+		default: () => `
+        ${validate_component(Description$1, "DescriptionEdit").$$render(
+			$$result,
+			{
+				data: {
+					...descriptionShort,
+					avatars: carouselTop
+				},
+				submit: onSubmit.bind(null, "description")
+			},
+			{},
+			{}
+		)}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			title: descriptionShort.title,
-			text: descriptionShort.text
+			active: !isEdit.description,
+			mounted: true,
+			class: "full-container"
 		},
 		{},
-		{}
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `
+            ${ ``}  
+            ${validate_component(Description$2, "DescriptionView").$$render(
+					$$result,
+					{
+						carouselTop,
+						title: descriptionShort.name,
+						text: descriptionShort.subtitle
+					},
+					{},
+					{}
+				)}
+        `
+			})}
+    `
+		}
 	)}
+    ${ ``}
+    
+
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-    ${validate_component(InteractionIndicators$1, "InteractionIndicators").$$render(
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
+		default: () => `
+        ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+			$$result,
+			{
+				likes: iconsLine.likes,
+				views: iconsLine.views,
+				isLiked: organization.isLiked
+			},
+			{},
+			{}
+		)}
+        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
+        ${validate_component(FundList, "FundList").$$render(
+			$$result,
+			{
+				title: "Фонди тварин",
+				items: animalFunds
+			},
+			{},
+			{}
+		)}
+        ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
+        ${validate_component(FundList, "FundList").$$render($$result, { title: "Інші фонди", items: othersFunds }, {}, {})}
+    `
+	})}
+    ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+    
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.about }, {}, {
+		default: () => `
+        ${validate_component(About, "AboutEdit").$$render(
+			$$result,
+			{
+				data: descriptionShort,
+				submit: onSubmit.bind(null, "about")
+			},
+			{},
+			{}
+		)}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			likes: iconsLine.likes,
-			views: iconsLine.views,
-			isLiked: organization.isLiked
+			active: !isEdit.about,
+			mounted: true,
+			class: "full-container"
 		},
 		{},
-		{}
-	)}
-    ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
-
-    ${validate_component(FundList, "FundList").$$render(
-		$$result,
 		{
-			title: "Фонди тварин",
-			items: animalFunds
-		},
-		{},
-		{}
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(About$1, "AboutView").$$render(
+					$$result,
+					{
+						title: "Про нас",
+						text: descriptionShort.description
+					},
+					{},
+					{}
+				)}
+        `
+			})}
+    `
+		}
 	)}
-    ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
+    
 
-    ${validate_component(FundList, "FundList").$$render($$result, { title: "Інші фонди", items: othersFunds }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
-
-    ${validate_component(Description$2, "Description").$$render(
-		$$result,
-		{
-			title: descriptionBlock.title,
-			text: descriptionBlock.text
-		},
-		{},
-		{}
-	)}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
-
-    ${validate_component(Share$1, "Share").$$render($$result, {}, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
-
-    ${validate_component(Trust$1, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
-
-    ${validate_component(Donators$1, "Donators").$$render($$result, { items: donators }, {}, {})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
+		default: () => `
+        ${validate_component(Share, "Share").$$render($$result, {}, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
+        ${validate_component(Trust, "Trust").$$render($$result, { active: organization.isLiked }, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "50" }, {}, {})}
+        ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+        ${validate_component(LastNews, "LastNews").$$render(
+			$$result,
+			{
+				items: lastNews,
+				carousel: carouselTop,
+				iconsLine,
+				organization,
+				descriptionShort
+			},
+			{},
+			{}
+		)}
+    `
+	})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
 
-    ${validate_component(LastNews, "LastNews").$$render(
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.documents }, {}, {
+		default: () => `
+        ${validate_component(Documents$1, "DocumentsEdit").$$render(
+			$$result,
+			{
+				data: { documents },
+				submit: onSubmit.bind(null, "documents")
+			},
+			{},
+			{}
+		)}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
 		$$result,
 		{
-			items: lastNews,
-			carousel: carouselTop,
-			iconsLine,
-			organization,
-			descriptionShort
+			active: !isEdit.documents,
+			mounted: true,
+			class: "full-container"
 		},
 		{},
-		{}
-	)}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
-
-    ${validate_component(Certificates, "Certificates").$$render($$result, { items: documents }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
-
-    ${validate_component(Videos$2, "Videos").$$render($$result, { items: media }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "70" }, {}, {})}
-
-    ${validate_component(ContactsCard, "ContactsCard").$$render(
-		$$result,
 		{
-			items: contacts,
-			orgName: organization.title,
-			avatar: organization.avatar,
-			avatarBig: organization.avatarBig
-		},
-		{},
-		{}
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(Documents$2, "DocumentsView").$$render($$result, { items: documents }, {}, {})}
+        `
+			})}
+    `
+		}
 	)}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
-
-    ${validate_component(VirtualTour, "VirtualTour").$$render($$result, { src: location.virtual_tour }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
-
-    ${validate_component(WeOnMap, "WeOnMap").$$render($$result, { src: location.map }, {}, {})}
-    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
-
-    ${validate_component(Comments_1$1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
+    ${ ``}
+    
+    
     ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.videos }, {}, {
+		default: () => `
+        ${validate_component(Videos$1, "VideosEdit").$$render(
+			$$result,
+			{
+				data: { media },
+				submit: onSubmit.bind(null, "videos")
+			},
+			{},
+			{}
+		)}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
+		$$result,
+		{
+			active: !isEdit.videos,
+			mounted: true,
+			class: "full-container"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
+            ${validate_component(Videos_1, "VideosView").$$render($$result, { items: media }, {}, {})}
+        `
+			})}
+    `
+		}
+	)}
+    ${ ``}
+    
+    
+    ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.contacts }, {}, {
+		default: () => `
+        ${validate_component(Contacts, "ContactsEdit").$$render(
+			$$result,
+			{
+				data: { ...organization.contacts },
+				submit: onSubmit.bind(null, "contacts")
+			},
+			{},
+			{}
+		)}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
+		$$result,
+		{
+			active: !isEdit.contacts,
+			mounted: true,
+			class: "full-container"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
+            ${validate_component(Contacts$1, "ContactsView").$$render($$result, { contacts, organization }, {}, {})}
+        `
+			})}
+    `
+		}
+	)}
+    ${ ``}
+    
+
+    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+
+    
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.map }, {}, {
+		default: () => `
+        ${validate_component(Map$3, "MapEdit").$$render(
+			$$result,
+			{
+				data: location,
+				submit: onSubmit.bind(null, "map")
+			},
+			{},
+			{}
+		)}
+    `
+	})}
+    ${validate_component(LazyToggle, "LazyToggle").$$render(
+		$$result,
+		{
+			active: !isEdit.map,
+			mounted: true,
+			class: "full-container"
+		},
+		{},
+		{
+			default: () => `
+        ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
+				default: () => `    
+            ${validate_component(Br, "Br").$$render($$result, { size: "15" }, {}, {})}
+            ${validate_component(Map$4, "MapView").$$render($$result, { location }, {}, {})}
+        `
+			})}
+    `
+		}
+	)}
+    ${ ``}
+    
+    
+    ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
+
+    ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
+		default: () => `
+        ${validate_component(Comments_1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+    `
+	})}
 
     <div class="${"full-container"}">
         ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}
     </div>
-
 </section>`;
 });
 
@@ -10552,8 +11432,8 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 	let comments;
 
 	onMount(async () => {
-		await delay(15000);
-		charity = await API.getFund(1);
+		await delay(5000);
+		charity = await API.getFund(charityId);
 		comments = await API.getComments();
 	});
 
@@ -10636,7 +11516,10 @@ const U5Bidu5D$1 = create_ssr_component(($$result, $$props, $$bindings, $$slots)
 		true
 	);
 
-	let howToHelp = safeGet(() => ({ phone: charity.organization.phone }));
+	let howToHelp = safeGet(() => ({
+		phone: charity.organization.phone,
+		how_to_help: charity.how_to_help
+	}));
 
 	let commentsData = {
 		comments: safeGet(() => comments.map(c => ({
@@ -10670,7 +11553,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
             </span>
         `
 	})}
-        ${validate_component(Br, "Br").$$render($$result, { size: "40" }, {}, {})}
+        ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
     </div>
 
     
@@ -10680,12 +11563,12 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
         ${validate_component(TopInfo, "TopInfoEdit").$$render(
 			$$result,
 			{
-				submit: onSubmit.bind(null, "topInfo"),
 				data: {
 					...cardTop,
 					organization,
 					photos: carouselTop
-				}
+				},
+				submit: onSubmit.bind(null, "topInfo")
 			},
 			{},
 			{}
@@ -10716,7 +11599,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "20" }, {}, {})}
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
 		default: () => `
-        ${validate_component(InteractionIndicators, "InteractionIndicators").$$render(
+        ${validate_component(InteractionIndicators$1, "InteractionIndicators").$$render(
 			$$result,
 			{
 				likes: iconsLine.likes,
@@ -10732,11 +11615,11 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.description }, {}, {
 		default: () => `
-        ${validate_component(Description$1, "DescriptionEdit").$$render(
+        ${validate_component(Description$4, "DescriptionEdit").$$render(
 			$$result,
 			{
-				submit: onSubmit.bind(null, "description"),
-				data: descriptionBlock
+				data: descriptionBlock,
+				submit: onSubmit.bind(null, "description")
 			},
 			{},
 			{}
@@ -10775,9 +11658,9 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "10" }, {}, {})}
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
 		default: () => `
-        ${validate_component(Share, "Share").$$render($$result, {}, {}, {})}
+        ${validate_component(Share$1, "Share").$$render($$result, {}, {}, {})}
         ${validate_component(Br, "Br").$$render($$result, { size: "45" }, {}, {})}
-        ${validate_component(Trust, "Trust").$$render($$result, { active: trust.isLiked }, {}, {})}
+        ${validate_component(Trust$1, "Trust").$$render($$result, { active: trust.isLiked }, {}, {})}
     `
 	})}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
@@ -10788,8 +11671,8 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
         ${validate_component(AnimalCard$1, "AnimalCardEdit").$$render(
 			$$result,
 			{
-				submit: onSubmit.bind(null, "animalCard"),
-				data: animal
+				data: animal,
+				submit: onSubmit.bind(null, "animalCard")
 			},
 			{},
 			{}
@@ -10820,7 +11703,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
 		default: () => `
-        ${validate_component(Donators, "Donators").$$render($$result, { items: donators }, {}, {})}
+        ${validate_component(Donators$1, "Donators").$$render($$result, { items: donators }, {}, {})}
         ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
     `
 	})}
@@ -10828,11 +11711,11 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.documents }, {}, {
 		default: () => `
-        ${validate_component(Documents$1, "DocumentsEdit").$$render(
+        ${validate_component(Documents$3, "DocumentsEdit").$$render(
 			$$result,
 			{
-				submit: onSubmit.bind(null, "documents"),
-				data: documents
+				data: { documents },
+				submit: onSubmit.bind(null, "documents")
 			},
 			{},
 			{}
@@ -10865,11 +11748,11 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: isEdit.videos }, {}, {
 		default: () => `
-        ${validate_component(Videos, "VideosEdit").$$render(
+        ${validate_component(Videos$2, "VideosEdit").$$render(
 			$$result,
 			{
-				submit: onSubmit.bind(null, "videos"),
-				data: media
+				data: { videos: media },
+				submit: onSubmit.bind(null, "videos")
 			},
 			{},
 			{}
@@ -10889,7 +11772,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
         ${validate_component(EditArea, "EditArea").$$render($$result, { off: !isEditMode }, {}, {
 				default: () => `    
             ${validate_component(Br, "Br").$$render($$result, { size: "30" }, {}, {})}
-            ${validate_component(Videos$1, "VideosView").$$render($$result, { items: media }, {}, {})}
+            ${validate_component(Videos$3, "VideosView").$$render($$result, { items: media }, {}, {})}
         `
 			})}
     `
@@ -10905,8 +11788,8 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
         ${validate_component(HowToHelp$1, "HowToHelpEdit").$$render(
 			$$result,
 			{
-				submit: onSubmit.bind(null, "howToHelp"),
-				data: howToHelp
+				data: howToHelp,
+				submit: onSubmit.bind(null, "howToHelp")
 			},
 			{},
 			{}
@@ -10937,7 +11820,7 @@ ${validate_component(DonationButton, "DonationButton").$$render($$result, {}, {}
     ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
     ${validate_component(LazyToggle, "LazyToggle").$$render($$result, { active: !isEditMode, mounted: true }, {}, {
 		default: () => `
-        ${validate_component(Comments_1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
+        ${validate_component(Comments_1$1, "Comments").$$render($$result, { items: commentsData.comments }, {}, {})}
         ${validate_component(Br, "Br").$$render($$result, { size: "60" }, {}, {})}
     `
 	})}
@@ -11359,23 +12242,44 @@ const d = decodeURIComponent;
 const manifest = {
 	server_routes: [
 		{
+			// organizations/components/index.js
+			pattern: /^\/organizations\/components\/?$/,
+			handlers: route_0,
+			params: () => ({})
+		},
+
+		{
+			// organizations/edit/index.js
+			pattern: /^\/organizations\/edit\/?$/,
+			handlers: route_1,
+			params: () => ({})
+		},
+
+		{
+			// organizations/view/index.js
+			pattern: /^\/organizations\/view\/?$/,
+			handlers: route_2,
+			params: () => ({})
+		},
+
+		{
 			// funds/components/index.js
 			pattern: /^\/funds\/components\/?$/,
-			handlers: route_0,
+			handlers: route_3,
 			params: () => ({})
 		},
 
 		{
 			// funds/edit/index.js
 			pattern: /^\/funds\/edit\/?$/,
-			handlers: route_1,
+			handlers: route_4,
 			params: () => ({})
 		},
 
 		{
 			// funds/view/index.js
 			pattern: /^\/funds\/view\/?$/,
-			handlers: route_2,
+			handlers: route_5,
 			params: () => ({})
 		}
 	],
@@ -14179,10 +15083,22 @@ function serve({ prefix, pathname, cache_control }
 
 function noop$1(){}
 
+// import * as controllers from '@controllers'
+
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
-polka() // You can also use Express
+express() // You can also use Polka
+	// .get(getUrl(endpoints.FUND()), controllers.FundsController.getFund)
+	// .get(getUrl(endpoints.FUNDS()), controllers.FundsController.getFunds)
+	// .get(getUrl(endpoints.USER()), controllers.UsersController.getUser)
+	// .get(getUrl(endpoints.USERS()), controllers.UsersController.getUsers)
+	// .get(getUrl(endpoints.RECENT()), controllers.NewsController.getNews)
+	// .get(getUrl(endpoints.RECENTS()), controllers.NewsController.getNewss)
+	// .get(getUrl(endpoints.COMMENT()), controllers.CommentsController.getComment)
+	// .get(getUrl(endpoints.COMMENTS()), controllers.CommentsController.getComments)
+	// .get(getUrl(endpoints.ORGANIZATION()), controllers.OrganizationsController.getOrganization)
+	// .get(getUrl(endpoints.ORGANIZATIONS()), controllers.OrganizationsController.getOrganizations)
 	.use(
 		'/Charitify',
 		compression({ threshold: 0 }),

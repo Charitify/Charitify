@@ -1,26 +1,5 @@
 import zlFetch from 'zl-fetch' // See: https://github.com/zellwk/zl-fetch
-import { setup } from '@config'
-
-/**
- *
- * @description API URLs builders.
- */
-export const endpoints = {
-  USER: (id) => `user.json?id=${id}`,
-  USERS: () => `users.json`,
-
-  RECENT: (id) => `recent.json?id=${id}`,
-  RECENTS: () => `recents.json`,
-
-  COMMENT: (id) => `comment.json?id=${id}`,
-  COMMENTS: () => `comments.json`,
-
-  FUND: (id) => `fund.json?id=${id}`,
-  FUNDS: () => `funds.json`,
-
-  ORGANIZATION: (id) => `organization.json?id=${id}`,
-  ORGANIZATIONS: () => `organizations.json`,
-}
+import { setup, endpoints } from '@config'
 
 class APIService {
   /**

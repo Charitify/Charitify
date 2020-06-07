@@ -111,5 +111,13 @@
     size="medium"
     on:close={() => open = false}
 >
-    Something
-</Modal>   
+    <div class="scroll-y">
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+        <p>Something</p>
+    </div>
+</Modal>

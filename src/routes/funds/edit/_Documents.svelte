@@ -1,5 +1,5 @@
 <script>
-    import { Br, Button, Card, FormBuilder } from '@components'
+    import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
@@ -24,9 +24,7 @@
     }
 </script>
 
-<Card class="container">
-    <Br size="30"/>
-
+<EditCard form="documents-form" on:cancel>
     <FormBuilder 
         id="documents-form"
         items={formFields}
@@ -35,16 +33,6 @@
         submit={onSubmit}
         on:change
     />
-
-    <Br size="40"/>
-
-    <Button size="small" type="submit" form="documents-form" is="info">
-        <span class="h3 font-secondary font-w-500 flex flex-align-center">
-            Зберегти
-        </span>
-    </Button>
-
-    <Br size="40"/>
-</Card>    
+</EditCard> 
 
 

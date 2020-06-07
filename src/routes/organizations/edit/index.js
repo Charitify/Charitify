@@ -1,0 +1,7 @@
+export { default as MapEdit } from './_Map.svelte'
+export { default as AboutEdit } from './_About.svelte'
+export { default as VideosEdit } from './_Videos.svelte'
+export { default as ContactsEdit } from './_Contacts.svelte'
+export { default as DocumentsEdit } from './_Documents.svelte'
+export { default as DescriptionEdit } from './_Description.svelte'
+export { default as OrganizationButtonEdit } from './_OrganizationButton.svelte'

@@ -2,18 +2,20 @@
     import { Br, Icon, Loader } from '@components'
 
     export let data = {
-        phone: null
+        phone: null,
+        how_to_help: null,
     }
 </script>
 
 <h1>Як допомогти</h1>
 <Br size="15"/>
 <ul style="list-style: disc outside none; padding-left: var(--screen-padding)" class="h3 font-w-500 font-secondary">
-    {#if data.phone !== null}
-        <li style="padding-bottom: 5px">Ви пожете купити йому поїсти</li>
-        <li style="padding-bottom: 5px">Можете особисто відвідати його у нас</li>
-        <li style="padding-bottom: 5px">Купити вакцінацію для Волтера</li>
-        <li style="padding-bottom: 5px">Допомогти любим інщим способом</li>
+    {#if data.how_to_help !== null}
+        {#if typeof data.how_to_help === 'string'}
+            {#each data.how_to_help.split(/\n?• /).filter(Boolean) as line}
+                <li style="padding-bottom: 5px">{line}</li>
+            {/each}
+        {/if}
     {:else}
         <li style="padding-bottom: 5px">
             <span class="font-secondary font-w-500 p relative">

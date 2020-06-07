@@ -251,7 +251,7 @@
             in:appear
             on:click={setActive.bind(null, false)}
         >
-            {#if withHeader}
+            {#if withHeader && size === 'full'}
                 <Portal>
                     <slot name="header">
                         <button 
@@ -278,6 +278,22 @@
                 aria-labelledby="модальне вікно"
                 on:click={e => e.stopPropagation()}
             >
+                {#if withHeader && size !== 'full'}
+                    <slot name="header">
+                        <button
+                                type="button"
+                                class={classnames('modal-header-relative', { active })}
+                                in:appear
+                                bind:this={refHeader}
+                                on:click={onCloseModal}
+                        >
+                            <h2 style="padding: 15px 20px">Закрити</h2>
+                            <span class="close">
+                                 <Icon type="close" size="big" is="light"/>
+                            </span>
+                        </button>
+                    </slot>
+                {/if}
                 <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>
             </div>
         </div>
@@ -364,7 +380,20 @@
         transform-origin: 50% 50vh;
     }
 
-    .modal-header .close {
+    .modal-header-relative {
+        transform: translateZ(0);
+        z-index: 9;
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: rgb(var(--color-white));
+        background-color: rgb(var(--color-info));
+    }
+
+    .modal-header .close,
+    .modal-header-relative .close {
         font-size: 24px;
         display: flex;
         align-items: center;
