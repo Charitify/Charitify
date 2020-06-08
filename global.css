@@ -547,7 +547,14 @@ button:not([class]):focus {
 
 .full-container {
     width: var(--full-container);
-    margin-left: calc(50% - var(--full-container) / 2);
+    max-width: 100vw;
+    margin-left: calc(50% - 100vw / 2);
+}
+
+@media (min-width: 600px) {
+    .full-container {
+        margin-left: calc(50% - var(--full-container) / 2);
+    }
 }
 
 .full-width {
