@@ -848,3 +848,19 @@ button:not([class]):focus {
 .border-info {
     border-color: rgb(var(--color-info));
 }
+
+/* ----------=========( Border radius )=========----------- */
+.radius-small {
+    border-radius: var(--border-radius-small);
+    transform: translateZ(0);
+}
+
+.radius-medium {
+    border-radius: var(--border-radius-medium);
+    transform: translateZ(0);
+}
+
+.radius-big {
+    border-radius: var(--border-radius-big);
+    transform: translateZ(0);
+}
