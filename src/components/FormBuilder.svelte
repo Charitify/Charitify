@@ -34,6 +34,7 @@
     export let data = {}
     export let errors = {}
     export let submit = async () => {}
+    export let beforeChange = values => values
 
     let submitting = false
 
@@ -41,7 +42,7 @@
     $: classProp = classnames('form-builder', { submitting })
 
     function onChange({ detail: { name, value } }) {
-        values = _.set(values, name, value)
+        values = beforeChange(_.set(values, name, value))
         dispatch('change', values)
     }
 

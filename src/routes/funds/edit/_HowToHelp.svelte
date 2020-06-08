@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import { EditCard, FormBuilder } from '@components'
+    import { formatTextToBullets } from '@utils'
 
     export let data = undefined
     export let submit = async () => {}
@@ -30,6 +31,11 @@
         formValues = data
         dispatch('cancel')
     }
+
+    function beforeFormChange(values) {
+        values.how_to_help = formatTextToBullets(values.how_to_help)
+        return values
+    }
 </script>
 
 <EditCard form="howtohelp-form" on:cancel={onCancel}>
@@ -39,6 +45,7 @@
         data={formValues}
         errors={formErrors}
         submit={onSubmit}
+        beforeChange={beforeFormChange}
         on:change
     />
 </EditCard> 
