@@ -114,6 +114,7 @@
     /* -----------========( Other )=========----------- */
 
     --screen-padding: 15px;
+    --full-container: 600px;
 
     --min-interactive-size: 50px;
 
@@ -362,6 +363,19 @@ body {
     justify-content: stretch;
 }
 
+.pages {
+    max-width: var(--full-container);
+    width: 100%;
+    margin: auto;
+    overflow: hidden;
+    flex-grow: 1;
+    display: flex;
+    align-self: stretch;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
+}
+
 h1 {
     font-weight: 700;
     font-family: var(--font-family-secondary);
@@ -528,8 +542,8 @@ button:not([class]):focus {
 }
 
 .full-container {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    width: var(--full-container);
+    margin-left: calc(50% - var(--full-container) / 2);
 }
 
 .full-width {

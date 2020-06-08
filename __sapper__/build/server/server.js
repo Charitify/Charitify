@@ -10865,11 +10865,14 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, $$slots) => 
 	});
 
 	if ($$props.segment === void 0 && $$bindings.segment && segment !== void 0) $$bindings.segment(segment);
+	let classProp = classnames("theme-bg-color-secondary", theme);
 
-	return `<main id="${"main"}"${add_attribute("class", theme, 0)}>
+	return `<main id="${"main"}"${add_attribute("class", classProp, 0)}>
 	${validate_component(Header, "Header").$$render($$result, { segment }, {}, {})}
 
-	${$$slots.default ? $$slots.default({}) : ``}
+	<section class="${"pages"}">
+		${$$slots.default ? $$slots.default({}) : ``}
+	</section>
 
 	${validate_component(OfflineMessage, "OfflineMessage").$$render($$result, {}, {}, {})}
 </main>`;
