@@ -48,9 +48,15 @@
         }
         dispatch('change', detail)
     }
+
+    function onCancel() {
+        currentValues = data
+        formValues = data
+        dispatch('cancel')
+    }
 </script>
 
-<EditCard form="videos-form" on:cancel>
+<EditCard form="videos-form" on:cancel={onCancel}>
     <FormBuilder 
         id="videos-form"
         items={formFields}

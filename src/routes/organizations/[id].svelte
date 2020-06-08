@@ -151,7 +151,7 @@
     };
 
     onMount(async () => {
-        await delay(7000)
+        await delay(5000)
         organization = await API.getOrganization(organizationId);
         comments = await API.getComments()
         funds = await API.getFunds()
@@ -343,12 +343,12 @@
     <LazyToggle active={isEdit.contacts}>
         <ContactsEdit 
             data={{ ...organizationBlock, contacts }}
-            submit={onSubmit.bind(null, 'contacts')} 
-            on:cancel={onCancel.bind(null, 'contacts')} 
+            submit={onSubmit.bind(null, 'contacts')}
+            on:cancel={onCancel.bind(null, 'contacts')}
         />
     </LazyToggle>
     <LazyToggle active={!isEdit.contacts} mounted class="full-container">
-        <EditArea on:click={() => isEdit.contacts = !isEdit.contacts} off={!isEditMode}>    
+        <EditArea on:click={() => isEdit.contacts = !isEdit.contacts} off={!isEditMode}>
             <Br size="30"/>
             <ContactsView {contacts} {organization}/>
         </EditArea>
@@ -371,7 +371,7 @@
     <LazyToggle active={!isEdit.map} mounted class="full-container">
         <EditArea on:click={() => isEdit.map = !isEdit.map} off={!isEditMode}>    
             <Br size="15"/>
-            <MapView {location}/>
+            <MapView {location} preview={isEditMode}/>
         </EditArea>
     </LazyToggle>
     {#if isEditMode}

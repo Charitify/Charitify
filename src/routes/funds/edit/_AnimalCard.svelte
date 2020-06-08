@@ -1,9 +1,12 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
     import { options } from '@config'
     import { Br, Square, RadioRect, StoryList, EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
+
+    const dispatch = createEventDispatcher()
 
     let formFields = [
         {
@@ -141,9 +144,14 @@
     async function onSubmit(e) {
         await submit(e)
     }
+
+    function onCancel() {
+        formValues = data
+        dispatch('cancel')
+    }
 </script>
 
-<EditCard form="animal-form" on:cancel>
+<EditCard form="animal-form" on:cancel={onCancel}>
     <FormBuilder 
         id="animal-form"
         items={formFields}

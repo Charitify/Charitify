@@ -48,7 +48,7 @@
         flex: none;
         display: flex;
         align-self: stretch;
-        height: 470px;
+        height: 500px;
         width: 77vw;
         max-width: 350px;
         padding: 15px 5px;

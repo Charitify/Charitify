@@ -13,6 +13,7 @@
         position: relative;
         width: 100%;
         overflow: hidden;
+        transform: translateZ(0);
     }
 
     section:after {
