@@ -334,6 +334,7 @@
         align-items: stretch;
         justify-content: stretch;
         overflow: hidden;
+        transform: translateZ(0);
         background-color: rgba(var(--theme-color-primary));
     }
     .small .modal-inner {

@@ -371,7 +371,7 @@
     <LazyToggle active={!isEdit.map} mounted class="full-container">
         <EditArea on:click={() => isEdit.map = !isEdit.map} off={!isEditMode}>    
             <Br size="15"/>
-            <MapView {location}/>
+            <MapView {location} preview={isEditMode}/>
         </EditArea>
     </LazyToggle>
     {#if isEditMode}
