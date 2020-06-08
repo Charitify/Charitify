@@ -29,7 +29,6 @@
     export let blockBody = true
     export let withHeader = true
 
-    let active
     let refHeader
     let isBodyBlocked = false
     let isAllowed = {
@@ -241,8 +240,8 @@
     }
 </script>
 
-{#if active !== null}
-    <Portal>
+{#if active}
+    <Portal {id}>
         <div
             id={`modal-${id}`}
             bind:this={ref}
@@ -340,16 +339,19 @@
     .small .modal-inner {
         width: 200px;
         border-radius: var(--border-radius-big);
+        max-width: var(--full-container);
     }
 
     .medium .modal-inner {
         width: calc(100vw - var(--screen-padding) * 2);
         border-radius: var(--border-radius-big);
+        max-width: var(--full-container);
     }
     .big .modal-inner {
         width: calc(100% - var(--screen-padding) * 2);
         height: calc(100% - var(--screen-padding) * 2);
         border-radius: var(--border-radius-big);
+        max-width: var(--full-container);
     }
 
     .full {

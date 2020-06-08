@@ -458,6 +458,10 @@ b {
     font-weight: bold;
 }
 
+table {
+    width: 100%;
+}
+
 table td {
     vertical-align: baseline;
 }

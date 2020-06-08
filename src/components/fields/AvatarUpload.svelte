@@ -19,17 +19,16 @@
     export let required = undefined // undefined|required
     export let errors = undefined
 
-    $: idProp = id || name
     $: error = invalid || !!(errors || []).length
     $: styleProp = { width: '145px', ...style }
     $: classProp = classnames('avatar-upload', $$props.class, `text-${align}`,{ disabled, required, error })
 
-    function onChange(val, e) {
-        dispatch('change', { e, name, value: val })
+    function onChange({ detail }) {
+        dispatch('change', detail)
     }
 </script>
 
-<div id={idProp} class={classProp}>
+<div {id} class={classProp}>
     {#if label}
         <h2 class="text-left">
             { label }

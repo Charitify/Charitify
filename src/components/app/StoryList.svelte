@@ -49,8 +49,10 @@
         dispatch('change', { e, name, value: val })
     }
 
-    async function onSubmit(values) {
-        console.log(values)
+    async function onSubmit(values, e) {
+        const val = [...value, values]
+        dispatch('change', { e, name, value: val })
+        open = false
     }
 </script>
 
@@ -64,7 +66,7 @@
     }
 </style>
 
-<section id={idProp} class={classProp} style={styleProp}>
+<section class={classProp} style={styleProp}>
     {#if label}
         <h2 class="text-left">{label}</h2>
         <Br size="10"/>

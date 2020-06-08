@@ -39,23 +39,20 @@
 
     $: values = _.cloneDeep(data)
     $: classProp = classnames('form-builder', { submitting })
-    
+
     function onChange({ detail: { name, value } }) {
         values = _.set(values, name, value)
         dispatch('change', values)
     }
 
     function getValue(values, name) {
-      return _.get(values, name) || ''
+      const val = _.get(values, name)
+      return val === undefined ? '' : val
     }
 
     async function onSubmit() {
         submitting = true
-        try {
-            await submit(values)
-        } catch(err) {
-            console.warn('FormBuilder/submit error: ', err)
-        }
+        await submit(values).catch((err) => console.warn('FormBuilder/submit error: ', err))
         submitting = false
     }
 </script>

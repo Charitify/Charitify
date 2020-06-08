@@ -1,8 +1,11 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
     import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
+
+    const dispatch = createEventDispatcher()
 
     let formFields = [
         {
@@ -22,9 +25,14 @@
     async function onSubmit(e) {
         await submit(e)
     }
+
+    function onCancel() {
+        formValues = data
+        dispatch('cancel')
+    }
 </script>
 
-<EditCard form="documents-form" on:cancel>
+<EditCard form="documents-form" on:cancel={onCancel}>
     <FormBuilder 
         id="documents-form"
         items={formFields}
