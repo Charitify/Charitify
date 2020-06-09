@@ -19,7 +19,7 @@
         {
             label: 'Організація:',
             type: 'select',
-            name: 'organization',
+            name: 'organization.id',
             meta: {
                 placeholder: 'Вибрати...',
                 options: [
@@ -28,7 +28,7 @@
                         label: 'Організація 1',
                     },
                     {
-                        value: 'org2',
+                        value: 'id',
                         label: 'Організація 2',
                     },
                     {

@@ -45,7 +45,7 @@
         background-image: linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%),
                           linear-gradient(to right, var(--color-lines) 50%, rgba(var(--color-black), 0) 0%);
         background-color: var(--color-bg);
-        background-position: top, bottom;
+        background-position: calc(50% - 15px) top, calc(50% - 15px) bottom;
         background-size: 20px 1px;
         background-repeat: repeat-x;
     }

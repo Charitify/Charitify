@@ -38,15 +38,15 @@
       }
     }
 
-    function onChange({ detail }) {
-        currentValues = shiftValues(detail)
+    function onChange({ detail: { values } }) {
+        currentValues = shiftValues(values)
         if (
             safeGet(() => currentValues.videos.length) !==
             safeGet(() => formValues.videos.length)
         ) {
             formValues = currentValues
         }
-        dispatch('change', detail)
+        dispatch('change', values)
     }
 
     function onCancel() {

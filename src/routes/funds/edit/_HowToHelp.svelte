@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
-    import { EditCard, FormBuilder } from '@components'
     import { formatTextToBullets } from '@utils'
+    import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}

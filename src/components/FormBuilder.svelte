@@ -41,9 +41,9 @@
     $: values = _.cloneDeep(data)
     $: classProp = classnames('form-builder', { submitting })
 
-    function onChange({ detail: { name, value } }) {
+    function onChange({ detail: { e, name, value } }) {
         values = beforeChange(_.set(values, name, value))
-        dispatch('change', values)
+        dispatch('change', { e, name, value, values })
     }
 
     function getValue(values, name) {

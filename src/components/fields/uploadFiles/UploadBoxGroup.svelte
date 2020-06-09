@@ -60,7 +60,6 @@
                 {invalid}
                 {disabled}
                 {multiple}
-                bind:value
                 name={`${name || ''}[${i}]`}
                 src={(values[i] || {}).src || values[i]}
                 errors={_.get(errors, i)}
