@@ -181,7 +181,7 @@
                             style="width: calc(40px + (50 - 40) * ((100vw - 320px) / (375 - 320))); max-width: 50px"
                             class="flex flex-align-center flex-justify-center"
                         >
-                            <span class="h1 flex-1 flex flex-align-center flex-justify-center">
+                            <span class="max-full-height h1 flex-1 flex flex-align-center flex-justify-center">
                                 { radio.label }
                             </span>
                         </Square>

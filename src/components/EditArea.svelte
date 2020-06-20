@@ -48,6 +48,7 @@
         background-position: calc(50% - 15px) top, calc(50% - 15px) bottom;
         background-size: 20px 1px;
         background-repeat: repeat-x;
+        overflow: hidden;
     }
 
     .edit-area:not(.off) > :global(*) {

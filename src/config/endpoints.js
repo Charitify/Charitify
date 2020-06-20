@@ -18,6 +18,8 @@ export default {
 
     ORGANIZATION: (id) => `organization.json`,
     ORGANIZATIONS: () => `organizations.json`,
+
+    IMAGES_UPLOAD: () => `/images/upload`,
 }
 // export default {
 //     USER: (id) => `apiusers/${id || ':id'}`,

@@ -156,9 +156,10 @@
         width: 100%;
     }
 
-    .carousel-inner::-webkit-scrollbar {
-        display: none;
-    }
+    /* 3d out for good accessibility of desktop brows of desktop browsers */
+    /*.carousel-inner::-webkit-scrollbar {*/
+    /*    display: none;*/
+    /*}*/
 
     .carousel > .carousel-inner {
         width: 100%;

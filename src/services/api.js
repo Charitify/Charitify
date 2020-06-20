@@ -223,6 +223,14 @@ export class ApiClass extends APIService {
     return this.newRequest.delete(endpoints.ORGANIZATION(id), config)
   }
 
+  /**
+   *
+   * @description Media
+   */
+  uploadImage(body, config) {
+    return this.newRequest.post(endpoints.IMAGES_UPLOAD(), body, config)
+  }
+
 }
 
 /**

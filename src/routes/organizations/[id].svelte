@@ -189,7 +189,7 @@
 <section class="container theme-bg-color-secondary">
     <Br size="var(--header-height)"/>
 
-    <div>
+    <div class="overflow-hidden">
         <Br size="30"/>
         <Button size="small" is="info" on:click={onToggleMode}>
             <span class="h3 font-secondary font-w-500 flex flex-align-center">

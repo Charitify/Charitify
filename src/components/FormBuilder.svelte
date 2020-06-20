@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
+    import { API } from '@services'
     import { classnames, _ } from '@utils'
     import Br from '@components/Br.svelte'
     import Form from '@components/Form.svelte'
@@ -46,6 +47,24 @@
         dispatch('change', { e, name, value, values })
     }
 
+    async function onDefaultImageChange({ detail: { e, name, value: rawValue } }) {
+        const value = []
+        const imgMapper = img => img instanceof File ? API.uploadImage(img).catch(() => null) : Promise.resolve(img)
+        const imgPromises = rawValue.map(imgMapper)
+        for await (const image of imgPromises) image && value.push(image)
+        values = beforeChange(_.set(values, name, value))
+        dispatch('change', { e, name, value, values, rawValue })
+    }
+
+    function getOnChange(item) {
+        switch (true) {
+            case ['file', 'files', 'avatar'].includes(item.type):
+                return onDefaultImageChange
+            default:
+                return onChange
+        }
+    }
+
     function getValue(values, name) {
       const val = _.get(values, name)
       return val === undefined ? '' : val
@@ -73,7 +92,7 @@
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:input={onChange}
-                    on:change={onChange}
+                    on:change={getOnChange(item)}
                 />
             {:else}
                 <div>
@@ -88,7 +107,7 @@
                     label={item.label}
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
-                    on:change={onChange}
+                    on:change={getOnChange(item)}
             />
         {:else if ['select'].includes(item.type)}
             {#if values[item.name] !== null}
@@ -99,7 +118,7 @@
                     label={item.label}
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
-                    on:change={onChange}
+                    on:change={getOnChange(item)}
                 />
             {:else}
                 <div>
@@ -114,7 +133,7 @@
                     label={item.label}
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
-                    on:change={onChange}
+                    on:change={getOnChange(item)}
             />
         {:else if ['files'].includes(item.type)}
             <UploadBoxGroup
@@ -123,7 +142,7 @@
                     label={item.label}
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
-                    on:change={onChange}
+                    on:change={getOnChange(item)}
             />
         {:else if ['avatar'].includes(item.type)}
             <AvatarUpload
@@ -132,7 +151,7 @@
                     label={item.label}
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
-                    on:change={onChange}
+                    on:change={getOnChange(item)}
             />
         {:else if ['radio-rect'].includes(item.type)}
             <RadioRect
@@ -141,7 +160,7 @@
                     label={item.label}
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
-                    on:change={onChange}
+                    on:change={getOnChange(item)}
             />
         {:else}
             <slot {item} {values} {errors} {onChange} value={values[item.name]}>
