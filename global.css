@@ -55,7 +55,7 @@
     --shadow-primary: 0px 0px 10px rgba(var(--color-black), 0.25);
     --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.1);
     --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.04);
-    --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.17);
+    --shadow-field-inset: inset 3px 3px 10px rgba(var(--color-black), 0.17);
 
 
     /* -----------========( Breakpoints )=========----------- */
@@ -561,8 +561,16 @@ button:not([class]):focus {
     width: 100%;
 }
 
+.max-full-width {
+    max-width: 100%;
+}
+
 .full-height {
     height: 100%;
+}
+
+.max-full-height {
+    max-height: 100%;
 }
 
 /* ----------=========( Visibility )=========----------- */
