@@ -37,7 +37,7 @@ const aliases = alias({
 		{ find: '@shared', replacement: `${__dirname}/src/shared` },
 		{ find: '@services', replacement: `${__dirname}/src/services` },
 		{ find: '@components', replacement: `${__dirname}/src/components` },
-		{ find: '@controllers', replacement: `${__dirname}/src/controllers` },
+		{ find: '@logger', replacement: `${__dirname}/src/server/utils/logger.js` },
 	]
 })
 
