@@ -1,11 +1,8 @@
-<svelte:head>
-    <title>Charitify - is the application for helping those in need.</title>
-</svelte:head>
 
 <script>
     import { onMount } from 'svelte'
     import { API } from '@services'
-    import { Br, ListItems, ListsLayout } from '@components'
+    import { Br, ListItems } from '@components'
 
     let organizations = []
 
@@ -16,10 +13,10 @@
     })
 </script>
 
-<Br size="50"/>
-<ListsLayout>
-    <ListItems items={organizations} basePath="organizations"/>
-</ListsLayout>
+<svelte:head>
+    <title>Charitify - is the application for helping those in need.</title>
+</svelte:head>
 
-<style>
-</style>
+<Br size="50"/>
+<ListItems items={organizations} basePath="organizations"/>
+<ListItems items={organizations} basePath="organizations"/>

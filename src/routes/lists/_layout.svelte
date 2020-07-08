@@ -1,18 +1,17 @@
-<svelte:head>
-    <title>Charitify - is the application for helping those in need.</title>
-</svelte:head>
-
 <script>
-    import Footer from './Footer.svelte'
-    import SearchLine from './SearchLine.svelte'
+    import { Br, Footer, SearchLine } from '@components'
 
     export let segment
 </script>
 
-<div class="search theme-bg container">
-    <br>
+<main class="layout list-layout theme-bg-color-secondary">
+    <section class="theme-bg container shadow-secondary">
+        <Br size="var(--header-height)"/>
 
-    <SearchLine/>
+        <div class="overflow-hidden"><Br size="20"/></div>
+        <SearchLine/>
+        <div class="overflow-hidden"><Br size="20"/></div>
+    </section>
 
     <nav>
         <ul>
@@ -20,32 +19,25 @@
             <li><a rel=prefetch href='lists/organizations' class:selected='{segment === "organizations"}'>organizations</a></li>
         </ul>
     </nav>
-</div>
 
-<div class="list-wrap">
-    <br>
+    <div class="list-wrap">
+        <br>
 
-    <slot></slot>
+        <slot></slot>
 
-    <br>
-    <br>
-</div>
+        <br>
+        <br>
+    </div>
 
-<Footer/>
+    <Footer/>
+</main>
 
 <style>
-    .search {
-        flex: none;
-        position: relative;
-        box-shadow: var(--shadow-primary);
-    }
-
     .list-wrap {
         flex: 1 1 0;
         overflow-x: hidden;
         overflow-y: auto;
         padding: 0 var(--screen-padding);
-        box-shadow: inset 0 -100px 2000px rgba(var(--color-black), .5);
     }
 
     nav ul, nav li {
