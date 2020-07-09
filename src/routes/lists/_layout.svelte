@@ -13,12 +13,15 @@
         <div class="overflow-hidden"><Br size="20"/></div>
     </section>
 
-    <nav>
-        <ul>
-            <li><a rel=prefetch href='lists/funds' class:selected='{segment === "charities"}'>funds</a></li>
-            <li><a rel=prefetch href='lists/organizations' class:selected='{segment === "organizations"}'>organizations</a></li>
-        </ul>
-    </nav>
+    <section class="container">
+        <div class="overflow-hidden"><Br size="30"/></div>
+        <nav>
+            <ul>
+                <li><a rel=prefetch href='lists/funds' class:selected='{segment === "charities"}'>Фонди</a></li>
+                <li><a rel=prefetch href='lists/organizations' class:selected='{segment === "organizations"}'>Оргранізації</a></li>
+            </ul>
+        </nav>
+    </section>
 
     <div class="list-wrap">
         <br>
