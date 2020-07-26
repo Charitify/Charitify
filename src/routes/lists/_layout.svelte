@@ -17,7 +17,15 @@
     <section class="container">
         <Br size="30"/>
         <ListNavigation {segment}/>
+
+        <section>
+            <Br size="30"/>
+
+        </section>
     </section>
+
+    <Br size="60"/>
+    <h2>Мої фонди</h2>
 
     <div class="list-wrap">
         <br>

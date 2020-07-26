@@ -20,15 +20,11 @@
 <nav>
     <ul>
         {#each nav as navItem}
-            <li>
-                <a
-                        rel=prefetch
-                        href={navItem.href}
-                        class:selected='{segment === navItem.segment}'
-                >
+            <li class="radius-big overflow-hidden">
+                <a rel=prefetch href={navItem.href}>
                     <ListNavigationItem
-                            active='{segment === navItem.segment}'
-                            value={navItem.label}
+                        active='{segment === navItem.segment}'
+                        value={navItem.label}
                     />
                 </a>
             </li>
@@ -37,28 +33,26 @@
 </nav>
 
 <style>
-    nav ul, nav li {
-        display: flex;
-        align-self: stretch;
+    nav ul {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        grid-template-rows: 155px;
+        grid-gap: 10px;
         align-items: stretch;
         justify-content: stretch;
     }
 
-    li {
-        flex: 1 1 0;
-    }
-
-    li a {
-        flex: 1 1 0;
-        align-self: stretch;
+    nav li, nav li a {
+        flex-grow: 1;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 20px 10px;
+        align-self: stretch;
+        align-items: stretch;
+        justify-content: stretch;
+        overflow: hidden;
     }
 
-    li a:hover, li a.selected {
+    li a:hover {
         background-color: rgba(var(--color-black), .1);
     }
 </style>
