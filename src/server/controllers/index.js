@@ -1,1 +1,3 @@
-export { default as NewsController } from './user'
+import UserController from "./user";
+
+export { UserController };
