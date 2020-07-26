@@ -1,5 +1,6 @@
 <script>
     import { Br, Footer, SearchLine } from '@components'
+    import { ListNavigation } from './components'
 
     export let segment
 </script>
@@ -8,19 +9,14 @@
     <section class="theme-bg container shadow-secondary">
         <Br size="var(--header-height)"/>
 
-        <div class="overflow-hidden"><Br size="20"/></div>
+        <Br size="20"/>
         <SearchLine/>
-        <div class="overflow-hidden"><Br size="20"/></div>
+        <Br size="20"/>
     </section>
 
     <section class="container">
-        <div class="overflow-hidden"><Br size="30"/></div>
-        <nav>
-            <ul>
-                <li><a rel=prefetch href='lists/funds' class:selected='{segment === "charities"}'>Фонди</a></li>
-                <li><a rel=prefetch href='lists/organizations' class:selected='{segment === "organizations"}'>Оргранізації</a></li>
-            </ul>
-        </nav>
+        <Br size="30"/>
+        <ListNavigation {segment}/>
     </section>
 
     <div class="list-wrap">
@@ -41,30 +37,5 @@
         overflow-x: hidden;
         overflow-y: auto;
         padding: 0 var(--screen-padding);
-    }
-
-    nav ul, nav li {
-        display: flex;
-        align-self: stretch;
-        align-items: stretch;
-        justify-content: stretch;
-    }
-
-    li {
-        flex: 1 1 0;
-    }
-
-    li a {
-        flex: 1 1 0;
-        align-self: stretch;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 20px 10px;
-    }
-
-    li a:hover, li a.selected {
-        background-color: rgba(var(--color-black), .1);
     }
 </style>

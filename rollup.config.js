@@ -25,7 +25,12 @@ const preprocess = sveltePreprocess({
 	},
 	postcss: {
 		plugins: [require('autoprefixer')()]
-	}
+	},
+	script: ({ content }) => {
+		return require("@babel/core").transform(content, {
+			plugins: ["@babel/plugin-proposal-optional-chaining"],
+		});
+	},
 })
 
 const aliases = alias({
@@ -83,7 +88,8 @@ export default {
 						{
 							useESModules: true
 						}
-					]
+					],
+					["@babel/plugin-proposal-optional-chaining", { loose: false }]
 				]
 			}),
 			
