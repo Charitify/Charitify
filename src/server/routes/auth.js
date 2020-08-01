@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { UserController } from "../controllers";
-import { isAuthed } from "../middlewares/auth";
+import { AuthController } from "../controllers";
 const router = Router();
 
-router.get("/", isAuthed, async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
-    const data = await UserController.getUsers();
+    const data = await AuthController.register(req.body);
     return res.send({
       err: false,
       data,
@@ -16,9 +15,9 @@ router.get("/", isAuthed, async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
-    const data = await UserController.createUser(req.body);
+    const data = await AuthController.login(req.body);
     return res.send({
       err: false,
       data,

@@ -5,10 +5,11 @@ import sirv from "sirv";
 import express from "express";
 import compression from "compression";
 import * as sapper from "@sapper/server";
-import session from "express-session";
 import router from "./server/routes";
 import morgan from "morgan";
 import Logger from "@logger";
+import passport from "passport";
+import passportSetup from "./server/utils/passport";
 import bodyParser from "body-parser";
 
 const logger = Logger.child({ namespace: "server" });
@@ -17,6 +18,11 @@ const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
 
 const app = express();
+
+passportSetup(passport);
+
+// This will initialize the passport object on every request
+app.use(passport.initialize());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -28,15 +34,10 @@ app.use(
   "/",
   compression({ threshold: 0 }),
   sirv("static", { dev }),
-  sapper.middleware(),
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true },
-  })
+  sapper.middleware()
 );
 
 app.listen(PORT, (err) => {
-  if (err) console.log("error", err);
+  logger.info(`Server is sunning on ${PORT} port!`);
+  if (err) logger.err("error", err);
 });
