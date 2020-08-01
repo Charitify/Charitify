@@ -3,7 +3,7 @@
 </script>
 
 <section class="search">
-    <Input/>
+    <Input type="search"/>
 </section>
 
 <style>

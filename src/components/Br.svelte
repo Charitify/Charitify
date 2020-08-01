@@ -4,7 +4,9 @@
   $: foramttedSize = Number.isFinite(+size) ? `${size}px` : typeof size === 'string' ? size : null
 </script>
 
-<br style={`margin-top: ${foramttedSize}`} class={$$props.class}/>
+<div class="overflow-hidden">
+  <br style={`margin-top: ${foramttedSize}`} class={$$props.class}/>
+</div>
 
 <style>
   :global(br) {
