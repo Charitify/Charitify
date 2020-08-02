@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { AuthController } from "../controllers";
+import passport from "passport";
+
 const router = Router();
 
 router.post("/register", async (req, res) => {
@@ -27,5 +29,15 @@ router.post("/login", async (req, res) => {
     res.status(400).json({ error: true, data: error.message });
   }
 });
+
+router.get("/facebook", passport.authenticate("facebook"));
+
+router.get(
+  "/facebook/callback",
+  passport.authenticate("facebook", { failureRedirect: "/login" }),
+  function (req, res) {
+    res.redirect(301, "/");
+  }
+);
 
 export default router;

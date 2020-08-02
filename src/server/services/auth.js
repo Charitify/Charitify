@@ -36,6 +36,9 @@ const register = async (user) => {
   } = user;
   const { salt, hash } = genPassword(password);
 
+  const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+  if (existingUser) throw new Error("Wrong");
+
   const userObj = new User({
     username,
     fullname,
@@ -117,7 +120,22 @@ function issueJWT(user) {
   };
 }
 
+const loginWithFacebook = async (token, profile) => {
+  const { id, displayName, photos } = profile;
+
+  const dbUser = await User.findOne({ "facebook.id": id });
+  if (dbUser) return dbUser.toJSON();
+  const newUser = new User({
+    fullname: displayName,
+    facebook: { id: profile.id, token, photos },
+    role: userRoles.user,
+  });
+  const savedUser = await newUser.save();
+  return savedUser;
+};
+
 export default {
   login,
   register,
+  loginWithFacebook,
 };
