@@ -33,11 +33,24 @@ router.post("/login", async (req, res) => {
 router.get("/facebook", passport.authenticate("facebook"));
 
 router.get(
-  "/facebook/callback",
-  passport.authenticate("facebook", { failureRedirect: "/login" }),
-  function (req, res) {
-    res.redirect(301, "/");
+  "/facebook/login",
+  passport.authenticate("facebook", { failureRedirect: "/login-failure" }),
+  async (req, res) => {
+    try {
+      console.log(req.user);
+      const data = AuthController.loginWithFacebook(req.user);
+
+      return res.status(200).json({
+        error: null,
+        data,
+      });
+    } catch (err) {
+      console.error(error);
+      res.status(400).json({ error: true, data: error.message });
+    }
   }
 );
+
+router.get("/logout", (req, res) => {});
 
 export default router;

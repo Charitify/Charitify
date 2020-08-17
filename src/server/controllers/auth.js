@@ -8,4 +8,8 @@ const register = async (data) => {
   return AuthService.register(data);
 };
 
-export default { login, register };
+const loginWithFacebook = (data) => {
+  return AuthService.loginWithFacebook(data);
+};
+
+export default { login, register, loginWithFacebook };

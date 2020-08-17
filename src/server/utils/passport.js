@@ -38,7 +38,7 @@ export default function (passport) {
       {
         clientID: process.env.FACEBOOK_APP_ID,
         clientSecret: process.env.FACEBOOK_APP_SECRET,
-        callbackURL: "http://localhost:3000/api/auth/facebook/callback",
+        callbackURL: "http://localhost:3000/login/facebook",
         profileFields: [
           "id",
           "displayName",
@@ -51,7 +51,7 @@ export default function (passport) {
       },
       async (accessToken, _, profile, done) => {
         try {
-          const user = await AuthService.loginWithFacebook(
+          const user = await AuthService.registerWithFacebook(
             accessToken,
             profile
           );
