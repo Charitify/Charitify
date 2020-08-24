@@ -67,7 +67,9 @@ function issueJWT(user) {
 
 const login = async (user) => {
   const { username, password } = user;
-  const dbUser = await User.findOne({ username }).select("hash salt username");
+  const dbUser = await User.findOne({ username }).select(
+    "+hash +salt +username"
+  );
 
   if (!dbUser) throw new Error("Wrong username!");
 
@@ -77,10 +79,15 @@ const login = async (user) => {
 
   const { token, expiresIn } = issueJWT(dbUser);
 
+  const formatedUser = dbUser.toJSON();
+
+  delete formatedUser.hash;
+  delete formatedUser.salt;
+
   return {
     token,
     expiresIn,
-    user,
+    user: formatedUser,
   };
 };
 
