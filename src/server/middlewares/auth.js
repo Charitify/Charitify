@@ -13,8 +13,6 @@ const isAuthed = (req, res, next) =>
       res.status(401).json({ error: true, data: "Token expired!" });
     }
 
-    console.log({ isExpired, token });
-
     req.token = token;
     return next();
   })(req, res);

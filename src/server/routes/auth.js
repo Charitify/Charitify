@@ -53,8 +53,7 @@ router.get(
 
 router.get("/logout", isAuthed, async (req, res) => {
   try {
-    const r = await AuthController.logout(req.token);
-    console.log(r);
+    await AuthController.logout(req.token);
     return res.status(200).json({
       error: null,
       data: true,
