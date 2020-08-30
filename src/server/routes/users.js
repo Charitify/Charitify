@@ -16,7 +16,7 @@ router.get("/", isAuthed, async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", isAuthed, async (req, res) => {
   try {
     const data = await UserController.createUser(req.body);
     return res.send({

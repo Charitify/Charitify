@@ -3,12 +3,6 @@ import { Strategy as FacebookStrategy } from "passport-facebook";
 import AuthService from "../services/auth";
 import { User } from "../models";
 
-// At a minimum, you must pass the `jwtFromRequest` and `secretOrKey` properties
-const options = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.SECRET,
-};
-
 // app.js will pass the global passport object here, and this function will configure it
 export default function (passport) {
   // The JWT payload is passed into the verify callback
@@ -22,15 +16,26 @@ export default function (passport) {
   });
 
   passport.use(
-    new JwtStrategy(options, async (jwt_payload, done) => {
-      try {
-        const user = await User.findOne({ _id: jwt_payload.sub });
-        if (user) return done(null, user);
-        return done(null, false);
-      } catch (error) {
-        return done(error, false);
+    new JwtStrategy(
+      {
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: process.env.SECRET,
+        ignoreExpiration: false,
+        jsonWebTokenOptions: {
+          maxAge: process.env.TOKEN_EXPIRATION_PERIOD,
+          ignoreExpiration: false,
+        },
+      },
+      async (jwt_payload, done) => {
+        try {
+          const user = await User.findOne({ _id: jwt_payload.sub });
+          if (user) return done(null, { ...user, token: jwt_payload });
+          return done(null, false);
+        } catch (error) {
+          return done(error, false);
+        }
       }
-    })
+    )
   );
 
   passport.use(
@@ -55,8 +60,7 @@ export default function (passport) {
             accessToken,
             profile
           );
-          console.log({ user });
-          if (user) return done(null, user);
+          if (user) return done(null, { ...user, token: jwt_payload });
           return done(null, false);
         } catch (error) {
           return done(error, false);

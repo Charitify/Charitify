@@ -2,7 +2,7 @@ import crypto from "crypto";
 import moment from "moment";
 import jsonwebtoken from "jsonwebtoken";
 
-import { User } from "../models";
+import { User, ExpiredToken } from "../models";
 import { userRoles } from "../config";
 
 /**
@@ -52,7 +52,7 @@ function issueJWT(user) {
 
   const payload = {
     sub: _id,
-    iat: Date.now(),
+    iat: Math.floor(Date.now / 1000),
   };
 
   const signedToken = jsonwebtoken.sign(payload, process.env.SECRET, {
@@ -61,7 +61,7 @@ function issueJWT(user) {
 
   return {
     token: "Bearer " + signedToken,
-    expiresIn: +expiresIn,
+    expiresIn,
   };
 }
 
@@ -148,8 +148,15 @@ const loginWithFacebook = (user) => {
   return { token, expiresIn, user };
 };
 
+const logout = async (token) => {
+  return ExpiredToken.create({
+    token,
+  });
+};
+
 export default {
   login,
+  logout,
   register,
   registerWithFacebook,
   loginWithFacebook,
