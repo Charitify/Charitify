@@ -21,9 +21,7 @@ fi
 if pm2 start  __sapper__/build/index.js --name charitify ; then
     echo "Finish"
 else
-
-    if pm2 restart charitify --update-env; then exit 1
-
+    pm2 restart charitify --update-env
     echo "Finish"
 fi
 
