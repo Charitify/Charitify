@@ -15,7 +15,7 @@ before_install:
   - ssh-add ./charitify-travis-ci_rsa
 
 script:
-  - ssh -i ./charitify-travis-ci_rsa root$SERVER_IP_ADDRESS < ./deploy.sh
+  - ssh -i ./charitify-travis-ci_rsa root@$SERVER_IP_ADDRESS < ./deploy.sh
 
 notifications:
   email: false
