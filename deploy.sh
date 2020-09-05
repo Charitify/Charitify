@@ -4,7 +4,7 @@ git checkout maser
 git pull
 
 echo "Installing packages"
-sudo npm install
+npm install
 
 echo "Exporting static files"
 npm run export
