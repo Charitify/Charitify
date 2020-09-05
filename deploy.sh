@@ -1,7 +1,7 @@
 cd /home/Charitify
 rm -rf ./__sapper__
 git pull
-npm run i
+npm i
 npm run export
 npm run build
 
