@@ -3,14 +3,14 @@ rm -rf ./__sapper__
 git checkout maser
 git pull
 
-echo "Installing packages"
-npm install
+# echo "Installing packages"
+# npm install
 
-echo "Exporting static files"
-npm run export
+# echo "Exporting static files"
+# npm run export
 
-echo "Building production code"
-npm run build
+# echo "Building production code"
+# npm run build
 
 if pm2 -v; then
     echo "pm2 is insalled"
@@ -22,9 +22,7 @@ if pm2 start  __sapper__/build/index.js --name charitify ; then
     echo "Finish"
 else
 
-    if pm2 restart charitify --update-env; then
-        echo 'Failed!'
-        exit 1
+    if pm2 restart charitify --update-env; then exit 1
 
     echo "Finish"
 fi
