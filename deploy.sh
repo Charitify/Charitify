@@ -3,14 +3,14 @@ rm -rf ./__sapper__
 git checkout maser
 git pull
 
+echo "Installing packages"
 npm install
-echo "installing packages"
 
+echo "Exporting static files"
 npm run export
-echo "exporting static files"
 
+echo "Building production code"
 npm run build
-echo "building production code"
 
 if pm2 -v; then
     echo "pm2 is insalled"
