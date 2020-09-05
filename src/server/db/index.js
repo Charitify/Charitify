@@ -10,7 +10,7 @@ export default mongoose.createConnection(
     if (err) {
       logger.error("Mongoose connection failed: ", err);
     }
-    logger.info("Connected to Mondo DB");
+    logger.info("Connected to Mongo DB");
     return true;
   }
 );

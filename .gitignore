@@ -6,9 +6,6 @@ yarn-error.log
 /cypress/screenshots/
 /__sapper__/
 
-.env
-.env.dev
-.env.prod
-.env.example
+/environments
 charititfy_rsa
 charititfy_rsa.pub

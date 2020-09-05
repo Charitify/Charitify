@@ -14,17 +14,8 @@ before_install:
   - sudo echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - ssh-add ./charitify-travis-ci_rsa
 
-install:
-  - npm install
-
 script:
-  - npm run export __sapper__/export/index.html
-
-after_success:
-  - rsync
-    -e "ssh -i ~/.ssh/charitify-travis-ci_rsa"
-    -zarvh $TRAVIS_BUILD_DIR/__sapper__/
-          root@$SERVER_IP_ADDRESS:/home/Charitify/__sapper__
+  - ssh -i ./charitify-travis-ci_rsa root$SERVER_IP_ADDRESS < ./deploy.sh
 
 notifications:
   email: false
