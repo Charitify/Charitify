@@ -4,7 +4,7 @@ git checkout maser
 git pull
 
 echo "Installing packages"
-npm install
+sudo npm install
 
 echo "Exporting static files"
 npm run export
@@ -14,6 +14,10 @@ npm run build
 
 echo "Checking pm2 version: "
 if !pm2 -v; then npm install pm2 -g
+    fi
+
+echo "Checking sapper version: "
+if !sapper -v; then npm install sapper -g
     fi
 
 if pm2 start  __sapper__/build/index.js --name charitify ; then
