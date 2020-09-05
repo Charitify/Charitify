@@ -29,13 +29,15 @@
     --color-danger: 226, 43, 43;            /* #e22b2b - errors */
     --color-info: 56, 151, 240;             /* #3897f0 - accent */
 
+    /* Inputs */
+
+    --color-input-bg: 238, 247, 255;          /* #EEF7FF */
+    --color-input-bg-opposite: 15, 37, 65;    /* #0f2541 */
+
     /* Font */
 
     --color-font-light: var(--color-white);
     --color-font-dark: var(--color-black);
-
-
-
 
     /* -----------========( Current Theme )=========----------- */
 
@@ -47,6 +49,8 @@
     --theme-bg-color: var(--color-light);
     --theme-bg-color-opposite: var(--color-dark);
 
+    --theme-input-bg-color: var(--color-input-bg);
+
     --theme-svg-fill: var(--color-black);
     --theme-svg-fill-opposite: var(--color-white);
 
@@ -57,7 +61,7 @@
     --shadow-primary: 0px 0px 10px rgba(var(--color-black), 0.25);
     --shadow-secondary: 0px 2px 18px rgba(var(--color-black), 0.1);
     --shadow-secondary-inset: inset 3px 3px 5px rgba(var(--color-black), 0.04);
-    --shadow-field-inset:  inset 3px 3px 10px rgba(var(--color-black), 0.17);
+    --shadow-field-inset: inset 3px 3px 10px rgba(var(--color-black), 0.17);
 
 
     /* -----------========( Breakpoints )=========----------- */
@@ -73,7 +77,6 @@
 
     --screen-desktop-start: 1441px;
     --screen-desktop-end: 1920px;
-
 
 
     /* -----------========( Shadows )=========----------- */
@@ -117,6 +120,7 @@
     /* -----------========( Other )=========----------- */
 
     --screen-padding: 15px;
+    --full-container: 600px;
 
     --min-interactive-size: 50px;
 
@@ -133,6 +137,8 @@
 
         --theme-bg-color: var(--color-dark);
         --theme-bg-color-opposite: var(--color-light);
+
+        --theme-input-bg-color: var(--color-input-bg-opposite);
 
         --theme-svg-fill: var(--color-white);
         --theme-svg-fill-opposite: var(--color-black);
@@ -281,7 +287,6 @@ input::-webkit-inner-spin-button {
 }
 
 
-
 /* ---------------------===================( Settings )===================--------------------- */
 
 .theme-light {
@@ -291,6 +296,8 @@ input::-webkit-inner-spin-button {
 
     --theme-bg-color: var(--color-light);
     --theme-bg-color-opposite: var(--color-dark);
+
+    --theme-input-bg-color: var(--color-input-bg);
 
     --theme-svg-fill: var(--color-black);
     --theme-svg-fill-opposite: var(--color-white);
@@ -311,6 +318,8 @@ input::-webkit-inner-spin-button {
 
     --theme-bg-color: var(--color-dark);
     --theme-bg-color-opposite: var(--color-light);
+
+    --theme-input-bg-color: var(--color-input-bg-opposite);
 
     --theme-svg-fill: var(--color-white);
     --theme-svg-fill-opposite: var(--color-black);
@@ -361,6 +370,19 @@ body {
     min-height: 100vh;
     flex: none;
     display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: stretch;
+}
+
+.pages {
+    max-width: var(--full-container);
+    width: 100%;
+    margin: auto;
+    overflow: hidden;
+    flex-grow: 1;
+    display: flex;
+    align-self: stretch;
     flex-direction: column;
     align-content: stretch;
     justify-content: stretch;
@@ -448,6 +470,10 @@ b {
     font-weight: bold;
 }
 
+table {
+    width: 100%;
+}
+
 table td {
     vertical-align: baseline;
 }
@@ -478,7 +504,6 @@ table td {
     fill: var(--theme-svg-fill-opposite);
     stroke: var(--theme-svg-fill-opposite);
 }
-
 
 
 /* ---------------------===================( Focus styles )===================--------------------- */
@@ -527,22 +552,43 @@ button:not([class]):focus {
 }
 
 /* ----------=========( Containers )=========----------- */
+.layout {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .container {
     padding-left: var(--screen-padding);
     padding-right: var(--screen-padding);
 }
 
 .full-container {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    width: var(--full-container);
+    max-width: 100vw;
+    margin-left: calc(50% - 100vw / 2);
+}
+
+@media (min-width: 600px) {
+    .full-container {
+        margin-left: calc(50% - var(--full-container) / 2);
+    }
 }
 
 .full-width {
     width: 100%;
 }
 
+.max-full-width {
+    max-width: 100%;
+}
+
 .full-height {
     height: 100%;
+}
+
+.max-full-height {
+    max-height: 100%;
 }
 
 /* ----------=========( Visibility )=========----------- */
@@ -587,6 +633,23 @@ button:not([class]):focus {
     transform: translate(-50%, -50%);
 }
 
+
+/* ----------=========( Shadows )=========----------- */
+.shadow-primary {
+    box-shadow: var(--shadow-primary);
+}
+
+.shadow-secondary {
+    box-shadow: var(--shadow-secondary);
+}
+
+.shadow-secondary-inset {
+    box-shadow: var(--shadow-secondary-inset);
+}
+
+.shadow-field-inset {
+    box-shadow: var(--shadow-field-inset);
+}
 
 /* ----------=========( Displaying )=========----------- */
 .flex {
@@ -695,7 +758,6 @@ button:not([class]):focus {
 }
 
 /* ----------=========( Flex )=========----------- */
-
 .flex-1 {
     flex: 1;
 }
@@ -853,4 +915,20 @@ button:not([class]):focus {
 
 .border-info {
     border-color: rgb(var(--color-info));
+}
+
+/* ----------=========( Border radius )=========----------- */
+.radius-small {
+    border-radius: var(--border-radius-small);
+    transform: translateZ(0);
+}
+
+.radius-medium {
+    border-radius: var(--border-radius-medium);
+    transform: translateZ(0);
+}
+
+.radius-big {
+    border-radius: var(--border-radius-big);
+    transform: translateZ(0);
 }

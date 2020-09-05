@@ -1,8 +1,11 @@
 <script>
-    import { Br, Button, Card, FormBuilder } from '@components'
+    import { createEventDispatcher } from 'svelte'
+    import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
+
+    const dispatch = createEventDispatcher()
 
     let formFields = [
         {
@@ -33,11 +36,14 @@
     async function onSubmit(e) {
         await submit(e)
     }
+
+    function onCancel() {
+        formValues = data
+        dispatch('cancel')
+    }
 </script>
 
-<Card class="container">
-    <Br size="30"/>
-
+<EditCard form="description-form" on:cancel={onCancel}>
     <FormBuilder 
         id="description-form"
         items={formFields}
@@ -46,16 +52,6 @@
         submit={onSubmit}
         on:change
     />
-
-    <Br size="40"/>
-
-    <Button size="small" type="submit" form="description-form" is="info">
-        <span class="h3 font-secondary font-w-500 flex flex-align-center">
-            Зберегти
-        </span>
-    </Button>
-
-    <Br size="40"/>
-</Card>    
+</EditCard>  
 
 

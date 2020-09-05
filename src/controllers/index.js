@@ -1,0 +1,5 @@
+export { default as NewsController } from './news.controller'
+export { default as UsersController } from './users.controller'
+export { default as FundsController } from './funds.controller'
+export { default as CommentsController } from './comments.controller'
+export { default as OrganizationsController } from './organizations.controller'

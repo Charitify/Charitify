@@ -23,12 +23,12 @@
     export let ref = null
     export let size = 'full'    // small/medium/big/full
     export let swipe = []       // up down left right all
+    export let title = 'Закрити'
     export let open = null
     export let startPosition = START_POSITION
     export let blockBody = true
     export let withHeader = true
 
-    let active
     let refHeader
     let isBodyBlocked = false
     let isAllowed = {
@@ -175,8 +175,8 @@
 
                     xSwipe = 0
                     ySwipe = 0
-                    el.style.opacity = null
-                    refHeader.style.opacity = null
+                    el && (el.style.opacity = null)
+                    refHeader && (refHeader.style.opacity = null)
                 })
     }
 
@@ -240,8 +240,8 @@
     }
 </script>
 
-{#if active !== null}
-    <Portal>
+{#if active}
+    <Portal {id}>
         <div
             id={`modal-${id}`}
             bind:this={ref}
@@ -251,7 +251,7 @@
             in:appear
             on:click={setActive.bind(null, false)}
         >
-            {#if withHeader}
+            {#if withHeader && size === 'full'}
                 <Portal>
                     <slot name="header">
                         <button 
@@ -261,7 +261,7 @@
                             bind:this={refHeader}
                             on:click={onCloseModal}
                         >
-                            <h2 style="padding: 15px 20px">Закрити</h2>
+                            <h2 style="padding: 15px">{ title }</h2>
                             <span class="close">
                                  <Icon type="close" size="big" is="light"/>
                             </span>
@@ -278,6 +278,21 @@
                 aria-labelledby="модальне вікно"
                 on:click={e => e.stopPropagation()}
             >
+                {#if withHeader && size !== 'full'}
+                    <slot name="header">
+                        <button
+                                type="button"
+                                class={classnames('modal-header-relative active')}
+                                in:appear
+                                on:click={onCloseModal}
+                        >
+                            <h2 style="padding: 15px">{ title }</h2>
+                            <span class="close">
+                                 <Icon type="close" size="big" is="light"/>
+                            </span>
+                        </button>
+                    </slot>
+                {/if}
                 <slot props={safeGet(() => $modals[`modal-${id}`], {}, true)}/>
             </div>
         </div>
@@ -318,21 +333,25 @@
         align-items: stretch;
         justify-content: stretch;
         overflow: hidden;
+        transform: translateZ(0);
         background-color: rgba(var(--theme-color-primary));
     }
     .small .modal-inner {
         width: 200px;
         border-radius: var(--border-radius-big);
+        max-width: var(--full-container);
     }
 
     .medium .modal-inner {
         width: calc(100vw - var(--screen-padding) * 2);
         border-radius: var(--border-radius-big);
+        max-width: var(--full-container);
     }
     .big .modal-inner {
         width: calc(100% - var(--screen-padding) * 2);
         height: calc(100% - var(--screen-padding) * 2);
         border-radius: var(--border-radius-big);
+        max-width: var(--full-container);
     }
 
     .full {
@@ -364,12 +383,25 @@
         transform-origin: 50% 50vh;
     }
 
-    .modal-header .close {
+    .modal-header-relative {
+        transform: translateZ(0);
+        z-index: 9;
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: rgb(var(--color-white));
+        background-color: rgb(var(--color-info));
+    }
+
+    .modal-header .close,
+    .modal-header-relative .close {
         font-size: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 60px;
+        width: 50px;
         height: 60px;
     }
 </style>   

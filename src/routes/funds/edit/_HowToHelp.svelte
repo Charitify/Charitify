@@ -1,14 +1,18 @@
 <script>
-    import { Br, Button, Card, FormBuilder } from '@components'
+    import { createEventDispatcher } from 'svelte'
+    import { formatTextToBullets } from '@utils'
+    import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
     export let submit = async () => {}
+
+    const dispatch = createEventDispatcher()
 
     let formFields = [
         {
             label: 'Як можна допомогти:',
             type: 'textarea',
-            name: 'howtohelp',
+            name: 'how_to_help',
             meta: {
                 placeholder: '· Привести корм',
                 rows: 6,
@@ -22,29 +26,28 @@
     async function onSubmit(e) {
         await submit(e)
     }
+
+    function onCancel() {
+        formValues = data
+        dispatch('cancel')
+    }
+
+    function beforeFormChange(values) {
+        values.how_to_help = formatTextToBullets(values.how_to_help)
+        return values
+    }
 </script>
 
-<Card class="container">
-    <Br size="30"/>
-
+<EditCard form="howtohelp-form" on:cancel={onCancel}>
     <FormBuilder 
         id="howtohelp-form"
         items={formFields}
         data={formValues}
         errors={formErrors}
         submit={onSubmit}
+        beforeChange={beforeFormChange}
         on:change
     />
-
-    <Br size="40"/>
-
-    <Button size="small" type="submit" form="howtohelp-form" is="info">
-        <span class="h3 font-secondary font-w-500 flex flex-align-center">
-            Зберегти
-        </span>
-    </Button>
-
-    <Br size="40"/>
-</Card>    
+</EditCard> 
 
 

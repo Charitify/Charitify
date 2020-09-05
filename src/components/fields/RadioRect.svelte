@@ -31,7 +31,7 @@
     }
 </script>
 
-<div class={classProp} style={styleProp}>
+<div id={idProp} class={classProp} style={styleProp}>
     {#if label}
         <h2 class="text-left">
             { label }

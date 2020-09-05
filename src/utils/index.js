@@ -9,6 +9,7 @@ export { default as classnames } from 'classnames'
 export { default as toCSSString } from './toCSSString'
 export { default as getScrollPercent } from './getScrollPercent'
 export { default as disablePinchZoom } from './disablePinchZoom'
+export { default as formatTextToBullets } from './formatTextToBullets'
 export { default as disableDoubleTapZoom } from './disableDoubleTapZoom'
 export { default as stopPropagationInRanges } from './stopPropagationInRanges'
 

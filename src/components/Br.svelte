@@ -4,7 +4,9 @@
   $: foramttedSize = Number.isFinite(+size) ? `${size}px` : typeof size === 'string' ? size : null
 </script>
 
-<br style={`padding-bottom: ${foramttedSize}`} class={$$props.class}/>
+<div class="overflow-hidden">
+  <br style={`margin-top: ${foramttedSize}`} class={$$props.class}/>
+</div>
 
 <style>
   :global(br) {
@@ -15,19 +17,19 @@
   }
 
   :global(br.tiny) {
-    padding-bottom: calc(1em * 0.29); /* 4px */
+    margin-top: calc(1em * 0.29); /* 4px */
   }
 
   :global(br.small) {
-    padding-bottom: calc(1em * 0.57); /* 8px */
+    margin-top: calc(1em * 0.57); /* 8px */
   }
 
   :global(br.medium),
   :global(br) {
-    padding-bottom: calc(1em * 1.14); /* 16px */
+    margin-top: calc(1em * 1.14); /* 16px */
   }
 
   :global(br.big) {
-    padding-bottom: calc(1em * 2.28); /* 32px */
+    margin-top: calc(1em * 2.28); /* 32px */
   }
 </style>

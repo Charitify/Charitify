@@ -1,12 +1,12 @@
 <script>
-
     import { createEventDispatcher } from 'svelte'
     import { classnames, toCSSString } from '@utils'
     import Br from '@components/Br.svelte'
     import Icon from '@components/Icon.svelte'
     import Modal from '@components/Modal.svelte'
-    import Loader from '@components/Loader'
+    import Loader from '@components/loader'
     import Button from '@components/Button.svelte'
+    import FormBuilder from '@components/FormBuilder.svelte'
 
     const dispatch = createEventDispatcher()
 
@@ -18,6 +18,27 @@
     export let readonly = undefined
 
     let open = false
+    let formErrors = []
+    let formFields = [
+        {
+            label: 'Дата:',
+            type: 'date',
+            name: 'date',
+            meta: {
+                placeholder: '18.03.2019...',
+            },
+        },
+        {
+            label: 'Добавте назву події:',
+            type: 'textarea',
+            name: 'title',
+            meta: {
+                placeholder: 'Забрали в притулок...',
+                rows: 3,
+                maxlength: 75
+            },
+        },
+    ]
 
     $: idProp = id || name
     $: classProp = classnames('story-list', $$props.class)
@@ -26,6 +47,12 @@
     function onRemove({ index }, e) {
         const val = [...value.filter((_, ind) => ind !== index)]
         dispatch('change', { e, name, value: val })
+    }
+
+    async function onSubmit(values, e) {
+        const val = [...value, values]
+        dispatch('change', { e, name, value: val })
+        open = false
     }
 </script>
 
@@ -39,7 +66,7 @@
     }
 </style>
 
-<section id={idProp} class={classProp} style={styleProp}>
+<section class={classProp} style={styleProp}>
     {#if label}
         <h2 class="text-left">{label}</h2>
         <Br size="10"/>
@@ -107,9 +134,30 @@
 
 <Modal 
     {open}
+    swipe="all"
     id="story-life-modal"
     size="medium"
+    title="Створення події"
     on:close={() => open = false}
 >
-    Something
-</Modal>   
+    <div class="container">
+        <Br size="20"/>
+        <FormBuilder
+                id="story-form"
+                items={formFields}
+                errors={formErrors}
+                submit={onSubmit}
+        />
+        <Br size="40"/>
+        <Button
+                is="info"
+                size="medium"
+                type="submit"
+                form="story-form"
+                class="full-width"
+        >
+            <h3>Зберегти</h3>
+        </Button>
+        <Br size="20"/>
+    </div>
+</Modal>
