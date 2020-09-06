@@ -4,7 +4,7 @@
     export let enabled = false
 </script>
 
-<section>
+<section style={$$props.style}>
     <button type="button" on:click={() => enabled = false} class:active={!enabled}>
         Усі
     </button>

@@ -43,8 +43,8 @@
         <Br size="var(--screen-padding)"/>
         <ListNavigation {segment}/>
         <Br size="var(--screen-padding)"/>
-        <div style="padding: 0 30px">
-            <OwnSwitcher bind:enabled={isOwnList}/>
+        <div class="flex flex-justify-center">
+            <OwnSwitcher bind:enabled={isOwnList} style="width: 250px"/>
         </div>
         <Br size="var(--screen-padding)"/>
     </section>
