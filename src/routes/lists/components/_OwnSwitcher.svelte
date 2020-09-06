@@ -1,0 +1,36 @@
+<script>
+    import ListNavigationItem from './_ListNavigationItem.svelte'
+
+    export let enabled = false
+</script>
+
+<section>
+    <button type="button" on:click={() => enabled = false} class:active={!enabled}>
+        Усі
+    </button>
+    <button type="button" on:click={() => enabled = true} class:active={enabled}>
+        Лише мої
+    </button>
+</section>
+
+<style>
+    section {
+        display: flex;
+        height: 40px;
+        overflow: hidden;
+        border-radius: 9999px;
+        background-color: rgba(var(--theme-bg-color));
+    }
+
+    button {
+        flex: 1 0 0;
+        border-radius: 9999px;
+        color: rgba(var(--theme-font-color));
+        background-color: rgba(var(--theme-color-primary));
+    }
+
+    button.active {
+        color: rgba(var(--theme-font-color-opposite));
+        background-color: rgba(var(--color-info));
+    }
+</style>

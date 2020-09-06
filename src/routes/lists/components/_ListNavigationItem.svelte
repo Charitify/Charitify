@@ -6,53 +6,35 @@
 </script>
 
 <section class:active={active} class="radius-big">
-    <div>
-        <span>
-            <Icon type="check-flag" is="primary"/>    
-        </span>
-    </div>
     <h3>{value}</h3>
 </section>
 
 <style>
     section {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         width: 100%;
         overflow: hidden;
-        border: 3px solid transparent;
-        background-color: rgba(var(--theme-input-bg-color));
+        border: 3px solid rgba(var(--theme-color-primary));
+        background-color: rgba(var(--color-black), .4);
     }
 
     section.active {
-        border-color: rgba(var(--color-white));
+        border-color: rgba(var(--color-info));
     }
 
-    section.active > div {
-        visibility: visible;
+    section.active h3 {
+        opacity: 1;
     }
-
-    div {
-        visibility: hidden;
-        display: flex;
+    
+    h3 {
+        opacity: .5;
         flex: 1 1 auto;
+        display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    div span {
-        display: flex;
-        width: 50px;
-        height: 50px;
-    }
-
-    h3 {
-        flex: none;
-        width: 100%;
-        padding: 8px 5px 16px;
         text-align: center;
         font-weight: normal;
         color: rgba(var(--color-white));
-        background-color: rgba(var(--color-black), .5);
     }
 </style>
