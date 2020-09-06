@@ -20,11 +20,12 @@ echo "Checking sapper version: "
 if !sapper -v; then npm install sapper -g
     fi
 
-if pm2 start  __sapper__/build/index.js --name charitify ; then
-    echo "Finish"
-else
+if !pm2 start  __sapper__/build/index.js --name charitify ; then
     pm2 restart charitify --update-env
     echo "Finish"
 fi
+
+# If nginx config was changed use this command to restart hte server
+systemctl restart nginx
 
 exit 0
