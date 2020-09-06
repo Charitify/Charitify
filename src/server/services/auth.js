@@ -2,63 +2,8 @@ import crypto from "crypto";
 import moment from "moment";
 import jsonwebtoken from "jsonwebtoken";
 
-import { User } from "../models";
+import { User, ExpiredToken } from "../models";
 import { userRoles } from "../config";
-
-const login = async (user) => {
-  const { username, password } = user;
-  const dbUser = await User.findOne({ username }).select("hash salt username");
-
-  if (!dbUser) throw new Error("Wrong username!");
-
-  const isValid = validPassword(password, dbUser.hash, dbUser.salt);
-
-  if (!isValid) throw new Error("Wrong password!");
-
-  const { token, expiresIn } = issueJWT(dbUser);
-
-  return {
-    token,
-    expiresIn,
-  };
-};
-
-const register = async (user) => {
-  const {
-    username,
-    fullname,
-    sex,
-    birthDate,
-    email,
-    tel,
-    location,
-    password,
-  } = user;
-  const { salt, hash } = genPassword(password);
-
-  const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-  if (existingUser) throw new Error("Wrong");
-
-  const userObj = new User({
-    username,
-    fullname,
-    sex,
-    birthDate: moment(birthDate),
-    email,
-    tel,
-    location,
-    role: userRoles.user,
-    hash: hash,
-    salt: salt,
-  });
-  let savedUser = await userObj.save();
-
-  savedUser = savedUser.toJSON();
-  delete savedUser.hash;
-  delete savedUser.salt;
-
-  return savedUser;
-};
 
 /**
  *
@@ -101,13 +46,13 @@ function validPassword(password, hash, salt) {
  * @param {*} user - The user object.  We need this to set the JWT `sub` payload property to the MongoDB user ID
  */
 function issueJWT(user) {
-  const _id = user._id;
+  const { _id } = user;
 
-  const expiresIn = "1d";
+  const expiresIn = process.env.TOKEN_EXPIRATION_PERIOD;
 
   const payload = {
     sub: _id,
-    iat: Date.now(),
+    iat: Math.floor(Date.now / 1000),
   };
 
   const signedToken = jsonwebtoken.sign(payload, process.env.SECRET, {
@@ -116,11 +61,74 @@ function issueJWT(user) {
 
   return {
     token: "Bearer " + signedToken,
-    expires: expiresIn,
+    expiresIn,
   };
 }
 
-const loginWithFacebook = async (token, profile) => {
+const login = async (user) => {
+  const { username, password } = user;
+  const dbUser = await User.findOne({ username }).select(
+    "+hash +salt +username"
+  );
+
+  if (!dbUser) throw new Error("Wrong username!");
+
+  const isValid = validPassword(password, dbUser.hash, dbUser.salt);
+
+  if (!isValid) throw new Error("Wrong password!");
+
+  const { token, expiresIn } = issueJWT(dbUser);
+
+  const formatedUser = dbUser.toJSON();
+
+  delete formatedUser.hash;
+  delete formatedUser.salt;
+
+  return {
+    token,
+    expiresIn,
+    user: formatedUser,
+  };
+};
+
+const register = async (user) => {
+  const {
+    username,
+    fullname,
+    sex,
+    birthDate,
+    email,
+    tel,
+    location,
+    password,
+  } = user;
+  const { salt, hash } = genPassword(password);
+
+  const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+  if (existingUser) throw new Error("Wrong");
+
+  const userObj = new User({
+    username,
+    fullname,
+    sex,
+    birthDate: moment(birthDate),
+    email,
+    tel,
+    location,
+    role: userRoles.user,
+    hash: hash,
+    salt: salt,
+  });
+  let savedUser = await userObj.save();
+
+  savedUser = savedUser.toJSON();
+  delete savedUser.hash;
+  delete savedUser.salt;
+
+  return savedUser;
+};
+
+const registerWithFacebook = async (token, profile) => {
   const { id, displayName, photos } = profile;
 
   const dbUser = await User.findOne({ "facebook.id": id });
@@ -134,8 +142,22 @@ const loginWithFacebook = async (token, profile) => {
   return savedUser;
 };
 
+const loginWithFacebook = (user) => {
+  const { token, expiresIn } = issueJWT(user);
+
+  return { token, expiresIn, user };
+};
+
+const logout = async (token) => {
+  return ExpiredToken.create({
+    token,
+  });
+};
+
 export default {
   login,
+  logout,
   register,
+  registerWithFacebook,
   loginWithFacebook,
 };

@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import sirv from "sirv";
 import express from "express";
 import compression from "compression";
@@ -14,7 +11,7 @@ import bodyParser from "body-parser";
 
 const logger = Logger.child({ namespace: "server" });
 
-const { PORT, NODE_ENV } = process.env;
+const { PORT, NODE_ENV, ENV } = process.env;
 const dev = NODE_ENV === "development";
 
 const app = express();
@@ -38,6 +35,6 @@ app.use(
 );
 
 app.listen(PORT, (err) => {
-  logger.info(`Server is sunning on ${PORT} port!`);
+  logger.info(`Server is sunning on ${PORT} port in ${ENV} mode!`);
   if (err) logger.err("error", err);
 });

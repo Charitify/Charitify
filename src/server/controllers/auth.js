@@ -8,4 +8,12 @@ const register = async (data) => {
   return AuthService.register(data);
 };
 
-export default { login, register };
+const loginWithFacebook = (data) => {
+  return AuthService.loginWithFacebook(data);
+};
+
+const logout = (data) => {
+  return AuthService.logout(data);
+};
+
+export default { login, logout, register, loginWithFacebook };
