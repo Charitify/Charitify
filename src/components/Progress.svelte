@@ -24,7 +24,6 @@
     }
 </script>
 
-
 <div
         {id}
         class={classProp}

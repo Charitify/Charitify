@@ -379,7 +379,6 @@ body {
     max-width: var(--full-container);
     width: 100%;
     margin: auto;
-    overflow: hidden;
     flex-grow: 1;
     display: flex;
     align-self: stretch;

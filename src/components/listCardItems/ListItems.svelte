@@ -1,21 +1,16 @@
 <script>
-    import AvatarAndName from './AvatarAndName.svelte'
+    import Br from '../Br.svelte'
+    import ListItem from './ListItem.svelte'
 
     export let items = []
     export let basePath = ''
+
+    $: console.log(items)
 </script>
 
 {#each items as item}
-    <a class="item container" href={`${basePath}/${item.id}`}>
-        <br>
-        <AvatarAndName
-                src={item.org_head_avatar}
-                title={item.org_head}
-                subtitle={item.organization}
-        />
-        <br>
-    </a>
-    <br>
+    <ListItem {basePath} {item} />
+    <Br size="20"/>
 {:else}
     <section class="item container">
         <p class="text-center">No organizations</p>
@@ -26,8 +21,9 @@
     .item {
         display: block;
         flex: 1 1 auto;
+        padding: 20px;
         box-shadow: var(--shadow-primary);
-        border-radius: var(--border-radius-small);
+        border-radius: var(--border-radius-big);
         background-color: rgba(var(--theme-bg-color));
     }
 </style>
