@@ -19,7 +19,7 @@
         height: 40px;
         overflow: hidden;
         border-radius: 9999px;
-        background-color: rgba(var(--theme-bg-color));
+        background-color: rgba(var(--theme-color-primary));
     }
 
     button {
