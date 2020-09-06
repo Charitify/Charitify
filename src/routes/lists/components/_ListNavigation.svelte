@@ -37,10 +37,11 @@
         display: grid;
         grid-auto-flow: column;
         grid-auto-columns: 1fr;
-        grid-template-rows: 155px;
+        grid-template-rows: 1fr;
         grid-gap: 10px;
         align-items: stretch;
         justify-content: stretch;
+        height: 40px;
     }
 
     nav li, nav li a {

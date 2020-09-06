@@ -58,7 +58,7 @@
     $: cardTop = safeGet(() => ({
         title: charity.title,
         subtitle: charity.subtitle,
-        current_sum: charity.curremt_sum,
+        current_sum: charity.current_sum,
         need_sum: charity.need_sum,
         currency: charity.currency,
     }));

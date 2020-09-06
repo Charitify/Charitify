@@ -8,7 +8,7 @@
     onMount(async () => {
         // await new Promise(r => setTimeout(r, 1000))
         const chars = await API.getFunds()
-        chariries = new Array(5).fill(chars).reduce((a, o) => a.concat(...o), [])
+        chariries = new Array(15).fill(chars).reduce((a, o) => a.concat(...o), [])
     })
 </script>
 
@@ -16,5 +16,4 @@
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-<Br size="50"/>
 <ListItems items={chariries} basePath="funds"/>

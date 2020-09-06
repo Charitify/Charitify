@@ -1,33 +1,38 @@
 <script>
+    import { onMount } from 'svelte'
+    import { classnames } from '@utils'
     import { Br, Footer, SearchLine } from '@components'
-    import { ListNavigation } from './components'
+    import { ListNavigation, OwnSwitcher } from './components'
 
     export let segment
+
+    const titleByParam = {
+        funds: 'Фонди',
+        organizations: 'Організації',
+    }
+
+    let isOwnList = false
+
+    $: console.log(isOwnList)
 </script>
 
-<main class="layout list-layout theme-bg-color-secondary">
-    <section class="theme-bg container shadow-secondary">
+<main class="theme-bg-color-secondary">
+    <section class="filters theme-bg container shadow-secondary relative">
         <Br size="var(--header-height)"/>
-
         <Br size="20"/>
         <SearchLine/>
-        <Br size="20"/>
-    </section>
-
-    <section class="container">
-        <Br size="30"/>
+        <Br size="var(--screen-padding)"/>
         <ListNavigation {segment}/>
-
-        <section>
-            <Br size="30"/>
-
-        </section>
+        <Br size="var(--screen-padding)"/>
+        <div class="flex flex-justify-center">
+            <OwnSwitcher bind:enabled={isOwnList} style="width: 250px"/>
+        </div>
+        <Br size="var(--screen-padding)"/>
     </section>
 
-    <Br size="60"/>
-    <h2>Мої фонди</h2>
-
-    <div class="list-wrap">
+    <div class="container">
+        <Br size="var(--screen-padding)"/>
+        <h2>Мої {titleByParam[segment]}</h2>
         <br>
 
         <slot></slot>
@@ -35,15 +40,19 @@
         <br>
         <br>
     </div>
-
-    <Footer/>
 </main>
 
 <style>
-    .list-wrap {
-        flex: 1 1 0;
-        overflow-x: hidden;
-        overflow-y: auto;
-        padding: 0 var(--screen-padding);
+    .filters {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        transition: .2s ease-in-out;
+        transform: none;
     }
+
+    :global(body.header-inactive) .filters {
+        transform: translateY(calc(var(--header-height) * -1));
+    }
+
 </style>

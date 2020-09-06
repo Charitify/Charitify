@@ -20,10 +20,16 @@
             const currentY = window.pageYOffset;
             const direction = currentY - lastY
             if (direction < -gap || currentY < 50) { // up (50 - max scrollTop for displaying header)
-                if (!isHeaderVisible) isHeaderVisible = true
+                if (!isHeaderVisible) {
+                    isHeaderVisible = true
+                    document.body.classList.remove('header-inactive')
+                }
                 lastY = currentY + gap;
             } else if (direction > gap) { // down
-                if (isHeaderVisible) isHeaderVisible = false
+                if (isHeaderVisible) {
+                    isHeaderVisible = false
+                    document.body.classList.add('header-inactive')
+                }
                 lastY = currentY - gap;
             }
         })

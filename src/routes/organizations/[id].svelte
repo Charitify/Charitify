@@ -77,7 +77,7 @@
         type: f.type,
         title: f.title,
         total: f.need_sum,
-        current: f.curremt_sum,
+        current: f.current_sum,
         currency: f.currency,
         city: f.location.city,
     })))
@@ -87,7 +87,7 @@
         type: f.type,
         title: f.title,
         total: f.need_sum,
-        current: f.curremt_sum,
+        current: f.current_sum,
         currency: f.currency,
         city: f.location.city,
     })))
