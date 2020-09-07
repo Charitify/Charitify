@@ -1,6 +1,6 @@
 cd /home/Charitify
 rm -rf ./__sapper__
-git checkout maser
+git checkout master
 git pull
 
 echo "Installing packages"
