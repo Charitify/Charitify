@@ -5,6 +5,7 @@
 yarn-error.log
 /cypress/screenshots/
 /__sapper__/
+stats.html
 
 /environments
 charititfy_rsa
