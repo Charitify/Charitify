@@ -16,4 +16,4 @@
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-<ListItems items={chariries} basePath="funds"/>
+<ListItems items={chariries} basePath="funds" type="fund"/>
