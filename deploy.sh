@@ -1,13 +1,16 @@
+
 cd /home/Charitify
+
 rm -rf ./__sapper__
+
 git checkout master
-git pull
+
+if ! git pull ; then
+    exit 1
+fi
 
 echo "Installing packages"
 npm install
-
-echo "Exporting static files"
-npm run export
 
 echo "Building production code"
 npm run build
@@ -30,4 +33,4 @@ fi
 # If nginx config was changed use this command to restart hte server
 # systemctl restart nginx
 
-# exit 0
+exit 0
