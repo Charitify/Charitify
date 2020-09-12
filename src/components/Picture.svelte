@@ -6,6 +6,7 @@
 
     export let src
     export let alt
+    export let bg = true
     export let size = 'cover'
     export let srcBig = undefined
     export let id = undefined
@@ -17,7 +18,7 @@
     let isErrorSmall = false
     let isErrorBig = false
 
-    $: wrapClassProp = classnames('picture', $$props.class, size, { loadingSrcSmall, loadingSrcBig, isErrorSmall, isErrorBig })
+    $: wrapClassProp = classnames('picture', $$props.class, size, { bg, loadingSrcSmall, loadingSrcBig, isErrorSmall, isErrorBig })
 
     function imgService(node, postFix) {
         if (node.complete) {
@@ -106,6 +107,9 @@
         flex-direction: column;
         align-items: stretch;
         justify-content: stretch;
+    }
+
+    .picture.bg {
         background-color: rgba(var(--theme-bg-color-opposite), .04);
     }
 

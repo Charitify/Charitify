@@ -1,28 +1,27 @@
 <script>
+	import { Br, StatusCard, Button } from '@components' 
+
 	export let status;
 	export let error;
 
-	const dev = process.env.NODE_ENV === 'development';
+	console.warn(`There was an error with status ${status}: `, error);
 </script>
-
-<style>
-</style>
 
 <svelte:head>
 	<title>Error: {status}</title>
 </svelte:head>
 
-<br>
-<br>
-<br>
-<br>
-<div class="text-center">
-	<h1>ой 🙃</h1>
-</div>
-<div hidden class="text-center">
-	<h1>Error: {status}</h1>
-	<br>
-	<p>Reason: {error.message}</p>
-</div>
-<br>
-<br>
+<section class="container">	
+	<Br size="var(--header-height)"/>
+	<Br size="40"/>
+	<StatusCard 
+		{status}
+		src="/assets/notFoundIllustration.svg"
+	 	text="Упс... Щось пішло не так"
+	>
+		<Button href="/" type="primary" is="info" style="max-width: 300px">
+			<span class="h3 font-secondary font-w-500">До головної сторінки</span>
+		</Button>
+	</StatusCard>
+	<Br size="40"/>
+</section>
