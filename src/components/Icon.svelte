@@ -74,6 +74,13 @@
         align-self: auto;
     }
 
+    .huge {
+        width: 55px;
+        height: 55px;
+        flex: none;
+        align-self: auto;
+    }
+
     /* ------------=========( Color )=========------------ */
     .ico.primary {
         color: rgb(var(--color-success));

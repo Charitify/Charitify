@@ -97,19 +97,19 @@
     }
 
     :global(.btn.small) {
-        padding: 5px;
+        padding: 5px !important;
         min-width: calc(var(--min-interactive-size) / 1.3);
         min-height: calc(var(--min-interactive-size) / 1.3);
     }
 
     :global(.btn.medium) {
-        padding: 5px 10px;
+        padding: 5px 10px !important;
         min-width: var(--min-interactive-size);
         min-height: var(--min-interactive-size);
     }
 
     :global(.btn.big) {
-        padding: 5px 15px;
+        padding: 5px 15px !important;
         min-width: calc(var(--min-interactive-size) * 1.3);
         min-height: calc(var(--min-interactive-size) * 1.3);
     }

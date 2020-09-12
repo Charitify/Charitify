@@ -14,12 +14,14 @@
         width: 100%;
         overflow: hidden;
         transform: translateZ(0);
+
+        --proportion: 100%;
     }
 
     section:after {
         content: "";
         display: block;
-        padding-top: 100%;
+        padding-top: var(--proportion);
     }
 
     div {
