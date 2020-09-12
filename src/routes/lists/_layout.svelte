@@ -6,14 +6,17 @@
 
     export let segment
 
-    const titleByParam = {
+    const title1ByParam = {
+        true: 'Мої',
+        false: 'Всі',
+    }
+
+    const title2ByParam = {
         funds: 'Фонди',
         organizations: 'Організації',
     }
 
     let isOwnList = false
-
-    $: console.log(isOwnList)
 </script>
 
 <main class="theme-bg-color-secondary">
@@ -32,7 +35,7 @@
 
     <div class="container">
         <Br size="var(--screen-padding)"/>
-        <h2>Мої {titleByParam[segment]}</h2>
+        <h2>{title1ByParam[isOwnList.toString()]} {title2ByParam[segment]}</h2>
         <br>
 
         <slot></slot>

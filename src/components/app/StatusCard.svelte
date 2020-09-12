@@ -2,6 +2,7 @@
     import Br from '../Br.svelte'
     import Card from '../Card.svelte'
     import Button from '../Button.svelte'
+    import Square from '../Square.svelte'
     import Picture from '../Picture.svelte'
 
     export let src
@@ -12,7 +13,9 @@
 <Card class="container flex flex-column flex-align-center text-center">
     <Br size="20"/>
     {#if src}
-        <Picture {src} alt="Illustration" size="contain" bg={false}/>
+        <Square style="--proportion: 71.15%">
+            <Picture {src} alt="Illustration" size="contain" bg={false}/>
+        </Square>
         <Br size="40"/>
     {/if}
     {#if status}

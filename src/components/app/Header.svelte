@@ -56,55 +56,64 @@
 </script>
 
 <svelte:window on:scroll={onScroll}/>
-<nav class={classProp}>
-    <ul class="nav-pages flex">
-        <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
-        <li><a rel=prefetch href='lists/funds' class:selected='{segment === "lists"}'>lists</a></li>
-        <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
-    </ul>
+<section class={classProp}>
+    <nav>
+        <ul class="nav-pages flex">
+            <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
+            <li><a rel=prefetch href='lists/funds' class:selected='{segment === "lists"}'>lists</a></li>
+            <li><a href='map' class:selected='{segment === "map"}'>map</a></li>
+        </ul>
 
-    <ul class="nav-actions">
-        <li>
-            <select {value} name="lang" id="lang" class="btn small lang-select">
-                <option value="ua">Ua</option>
-                <option value="ru">Ru</option>
-                <option value="en">En</option>
-            </select>
-        </li>
+        <ul class="nav-actions">
+            <li>
+                <select {value} name="lang" id="lang" class="btn small lang-select">
+                    <option value="ua">Ua</option>
+                    <option value="ru">Ru</option>
+                    <option value="en">En</option>
+                </select>
+            </li>
 
-        <li>
-            <Button on:click={() => changeTheme(themeName === 'theme-light' ? 'theme-dark' : 'theme-light')} auto size="small">
-                <Icon type="moon" size="medium" class="theme-svg-fill-opposite" is="light"/>
-            </Button>
-        </li>
+            <li>
+                <Button on:click={() => changeTheme(themeName === 'theme-light' ? 'theme-dark' : 'theme-light')} auto size="small">
+                    <Icon type="moon" size="medium" class="theme-svg-fill-opposite" is="light"/>
+                </Button>
+            </li>
 
-        <li>
-            <a class="btn small" href="users/me">
-                <Avatar size="small" src="https://placeimg.com/30/30/people" alt="avatar"/>
-            </a>
-        </li>
-    </ul>
-</nav>
+            <li>
+                <a class="btn small" href="users/me">
+                    <Avatar size="small" src="https://placeimg.com/30/30/people" alt="avatar"/>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</section>
 
 <style>
-    nav {
+    section {
         position: fixed;
         top: 0;
         width: 100%;
-        height: var(--header-height);
         z-index: 7;
         display: flex;
         align-items: center;
-        transform: translateY(-100%);
-        transition: .2s ease-in-out;
-        color: rgba(var(--color-font-light));
-        justify-content: space-between;
+        height: var(--header-height);
         box-shadow: var(--shadow-secondary);
         background-color: rgba(var(--color-dark-second));
+        transition: .2s ease-in-out;
+        transform: translateY(-100%);
     }
-
-    nav.active {
+    section.active {
         transform: none
+    }
+    nav {
+        width: 100%;
+        margin: auto;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        color: rgba(var(--color-font-light));
+        justify-content: space-between;
+        max-width: var(--full-container);
     }
 
     .selected {
