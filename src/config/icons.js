@@ -12,6 +12,7 @@ import IoMdSend from 'svelte-icons/io/IoMdSend.svelte'
 import GoSearch from 'svelte-icons/go/GoSearch.svelte'
 import IoMdClose from 'svelte-icons/io/IoMdClose.svelte'
 import FaPhoneAlt from 'svelte-icons/fa/FaPhoneAlt.svelte'
+import IoIosTrash from 'svelte-icons/io/IoIosTrash.svelte'
 import FaFacebookF from 'svelte-icons/fa/FaFacebookF.svelte'
 import FaRegSquare from 'svelte-icons/fa/FaRegSquare.svelte'
 import TiStarburst from 'svelte-icons/ti/TiStarburst.svelte'
@@ -32,7 +33,6 @@ import MdKeyboardArrowDown from 'svelte-icons/md/MdKeyboardArrowDown.svelte'
 import MdKeyboardArrowRight from 'svelte-icons/md/MdKeyboardArrowRight.svelte'
 import IoIosCheckmarkCircle from 'svelte-icons/io/IoIosCheckmarkCircle.svelte'
 import IoIosCloseCircleOutline from 'svelte-icons/io/IoIosCloseCircleOutline.svelte'
-
 export default {
     email: FaAt,
     edit: MdEdit,
@@ -48,6 +48,7 @@ export default {
     search: GoSearch,
     female: GiFemale,
     phone: FaPhoneAlt,
+    trash: IoIosTrash,
     coin: FaDollarSign,
     eye: MdRemoveRedEye,
     polygon: TiStarburst,

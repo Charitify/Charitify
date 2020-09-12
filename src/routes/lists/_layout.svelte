@@ -33,7 +33,7 @@
         <Br size="var(--screen-padding)"/>
     </section>
 
-    <div class="container">
+    <div class="container overflow-hidden">
         <Br size="var(--screen-padding)"/>
         <h2>{title1ByParam[isOwnList.toString()]} {title2ByParam[segment]}</h2>
         <br>

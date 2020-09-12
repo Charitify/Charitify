@@ -1,6 +1,5 @@
 <script>
     import { createEventDispatcher, tick } from 'svelte'
-    import { fly } from 'svelte/transition'
     import { Swipe } from '@services'
     import { classnames, delay, bodyScroll, safeGet } from '@utils'
     import Icon from '@components/Icon.svelte';
@@ -204,7 +203,6 @@
         padding: 0 var(--screen-padding);
         transform: translate3d(0,30px,0);
         pointer-events: none;
-        will-change: transform, opacity;
     }
 
     .fancy-box-ghost > * {
