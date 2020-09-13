@@ -30,44 +30,57 @@
     }
 
     function onAction(action) {
-        return function () {
+        return function (evt) {
             console.log(action)
-            lastPosition = startPosition.x
-            drawTransform(ref, startPosition.x, startPosition.y)
+            const swipeEl = getSwipeItem(evt)
+            if (!swipeEl) return
+            setActive(swipeEl, false)
+            drawTransform(swipeEl, startPosition.x, startPosition.y)
         }
     }
 
     let ref = null
     let xSwipe = 0
     let ySwipe = 0
-    let lastPosition = 0
     let startPosition = START_POSITION
 
     function addSwipe(el) {
         new Swipe(el)
                 .run()
-                .onLeft(handleHorizontalSwipe)
+                .onLeft(handleLeftSwipe)
                 .onRight(handleRightSwipe)
-                .onTouchEnd(async () => {
-                    setDuration(ref, DURATION)
-                    setTimeout(() => setDuration(ref, 0), DURATION)
+                .onTouchEnd(async (_, __, evt) => {
+                    const swipeEl = getSwipeItem(evt)
+                    if (!swipeEl) return
+                    setDuration(swipeEl, DURATION)
+                    setTimeout(() => setDuration(swipeEl, 0), DURATION)
                     if (xSwipe > -THRESHOLD) {
-                        lastPosition = startPosition.x
-                        drawTransform(el, startPosition.x, startPosition.y)
+                        setActive(swipeEl, false)
+                        drawTransform(swipeEl, startPosition.x, startPosition.y)
                     } else {
-                        lastPosition = -BOUNDRY
-                        drawTransform(el, lastPosition, ySwipe)
+                        setActive(swipeEl, true)
+                        drawTransform(swipeEl, -BOUNDRY, ySwipe)
                     }
                 })
     }
 
-    function handleRightSwipe(xDown, xUp, evt, el) {
-        xSwipe = Math.min(0, lastPosition + (xUp - xDown) * SWIPE_SPEED)
-        drawTransform(el, xSwipe, ySwipe)
+    function setActive(el, isActive) {
+        if (isActive) el && el.classList.add('active')
+        else el && el.classList.remove('active')
     }
-    function handleHorizontalSwipe(xDown, xUp, evt, el) {
-        xSwipe = lastPosition + (xUp - xDown) * SWIPE_SPEED
-        drawTransform(el, xSwipe, ySwipe)
+    function handleLeftSwipe(xDown, xUp, evt, el) {
+        const swipeEl = getSwipeItem(evt)
+        if (!swipeEl) return
+        const lastPosition = getLastPossition(swipeEl)
+        xSwipe = Math.max(-BOUNDRY, lastPosition + (xUp - xDown) * SWIPE_SPEED)
+        drawTransform(swipeEl, xSwipe, ySwipe)
+    }
+    function handleRightSwipe(xDown, xUp, evt, el) {
+        const swipeEl = getSwipeItem(evt)
+        if (!swipeEl) return
+        const lastPosition = getLastPossition(swipeEl)
+        xSwipe = Math.min(startPosition.x, lastPosition + (xUp - xDown) * SWIPE_SPEED)
+        drawTransform(swipeEl, xSwipe, ySwipe)
     }
     function setDuration(el, ms) {
         el && (el.style.transitionDuration = `${ms}ms`)
@@ -75,11 +88,18 @@
     function drawTransform(el, x, y) {
         el && (el.style.transform = `matrix(1, 0, 0, 1, ${x}, ${y})`)
     }
+    function getLastPossition(el) {
+        return el.classList.contains('active') ? -BOUNDRY : startPosition.x
+    }
+    function getSwipeItem(evt) {
+        return safeGet(() => evt.target.closest('.swipe-item')) 
+        || safeGet(() => evt.detail.target.closest('.swipe-item'))
+    }
 </script>
 
 <section use:addSwipe bind:this={ref}>
     {#each items as item}
-        <div class="relative">
+        <div class="relative swipe-item">
             <a href={`${basePath}/${item.id}`} class="block">
                 <ListItem {basePath} item={getItem(item)}>
                     <div slot="bottom-left" class="flex flex-align-baseline">
