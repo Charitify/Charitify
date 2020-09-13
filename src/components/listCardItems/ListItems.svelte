@@ -55,14 +55,14 @@
                     if (!swipeEl) return
                     setDuration(swipeEl, DURATION)
                     setTimeout(() => setDuration(swipeEl, 0), DURATION)
-                    if (xSwipe > -THRESHOLD) {
-                        setActive(swipeEl, false)
-                        setCanBeActive(swipeEl, false)
-                        drawTransform(swipeEl, START_POSITION.x, START_POSITION.y)
-                    } else {
+                    if (xSwipe <= -THRESHOLD || (xSwipe >= THRESHOLD && !isElActive(swipeEl))) {
                         setActive(swipeEl, true)
                         setCanBeActive(swipeEl, true)
                         drawTransform(swipeEl, -BOUNDRY, ySwipe)
+                    } else {
+                        setActive(swipeEl, false)
+                        setCanBeActive(swipeEl, false)
+                        drawTransform(swipeEl, START_POSITION.x, START_POSITION.y)
                     }
                 })
     }
@@ -85,7 +85,7 @@
         const swipeEl = getSwipeItem(evt)
         if (!swipeEl) return
         const lastPosition = getLastPossition(swipeEl)
-        xSwipe = Math.min(START_POSITION.x, lastPosition + (xUp - xDown) * SWIPE_SPEED)
+        xSwipe = Math.min(THRESHOLD, lastPosition + (xUp - xDown) * SWIPE_SPEED)
         checkElCanBeActive(swipeEl, xSwipe)
         drawTransform(swipeEl, xSwipe, ySwipe)
     }
