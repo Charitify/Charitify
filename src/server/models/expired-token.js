@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import connection from "../db";
+import connection from "./connection";
 
 const userSchema = new Schema(
   {
