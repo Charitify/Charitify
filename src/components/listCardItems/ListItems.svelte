@@ -36,18 +36,18 @@
             if (!swipeEl) return
             setActive(swipeEl, false)
             setCanBeActive(swipeEl, false)
-            drawTransform(swipeEl, startPosition.x, startPosition.y)
+            drawTransform(swipeEl, START_POSITION.x, START_POSITION.y)
         }
     }
 
-    let ref = null
     let xSwipe = 0
     let ySwipe = 0
-    let startPosition = START_POSITION
 
     function addSwipe(el) {
         new Swipe(el)
                 .run()
+                .onUp(handleVerticalSwipe)
+                .onDown(handleVerticalSwipe)
                 .onLeft(handleLeftSwipe)
                 .onRight(handleRightSwipe)
                 .onTouchEnd(async (_, __, evt) => {
@@ -58,13 +58,19 @@
                     if (xSwipe > -THRESHOLD) {
                         setActive(swipeEl, false)
                         setCanBeActive(swipeEl, false)
-                        drawTransform(swipeEl, startPosition.x, startPosition.y)
+                        drawTransform(swipeEl, START_POSITION.x, START_POSITION.y)
                     } else {
                         setActive(swipeEl, true)
                         setCanBeActive(swipeEl, true)
                         drawTransform(swipeEl, -BOUNDRY, ySwipe)
                     }
                 })
+    }
+
+    function handleVerticalSwipe(yDown, yUp, evt) {
+        const swipeEl = getSwipeItem(evt)
+        if (!swipeEl) return
+        xSwipe = getLastPossition(swipeEl)
     }
 
     function handleLeftSwipe(xDown, xUp, evt, el) {
@@ -79,7 +85,7 @@
         const swipeEl = getSwipeItem(evt)
         if (!swipeEl) return
         const lastPosition = getLastPossition(swipeEl)
-        xSwipe = Math.min(startPosition.x, lastPosition + (xUp - xDown) * SWIPE_SPEED)
+        xSwipe = Math.min(START_POSITION.x, lastPosition + (xUp - xDown) * SWIPE_SPEED)
         checkElCanBeActive(swipeEl, xSwipe)
         drawTransform(swipeEl, xSwipe, ySwipe)
     }
@@ -116,7 +122,7 @@
     }
 
     function getLastPossition(el) {
-        return isElActive(el) ? -BOUNDRY : startPosition.x
+        return isElActive(el) ? -BOUNDRY : START_POSITION.x
     }
     function getSwipeItem(evt) {
         return safeGet(() => evt.target.closest('.swipe-item')) 
@@ -124,11 +130,11 @@
     }
 </script>
 
-<section use:addSwipe bind:this={ref}>
+<section use:addSwipe>
     {#each items as item}
         <div class="relative swipe-item">
             <a href={`${basePath}/${item.id}`} class="block">
-                <ListItem {basePath} item={getItem(item)}>
+                <ListItem item={getItem(item)}>
                     <div slot="bottom-left" class="flex flex-align-baseline">
                         {#if type === 'fund'}
                             <span class="h2 font-secondary">{item.current_sum}{item.currency || ''} /<s/></span>
