@@ -2,10 +2,8 @@
     import { onMount } from 'svelte'
     import { API } from '@services'
     import { delay, safeGet } from '@utils'
-    import { Br, Icon, Card, Avatar, Button, FundCards, EditArea } from '@components'
+    import { Br, Icon, Card, Avatar, Button, FundCards } from '@components'
     import Usercard from './_Usercard.svelte'
-
-    let href = '.'
 
     // Entities
     let organization = {}
@@ -61,44 +59,13 @@
 
     <Br size="15" />
 
-    <div class="full-container">
-        <EditArea>
-            <Br size="40" />
-            <h1>Мої організації</h1>
-            <Br size="5" />
-            <div class="full-container">
-                <FundCards items={animalFunds}>
-                    <div slot="button" let:id={id}>
-                        <Button size="small" is="info" href={id}>
-                            <span class="h3 font-secondary font-w-500 flex flex-align-center">
-                                Редагувати
-                                <s></s>
-                                <s></s>
-                                <Icon type="edit" size="small" is="light"/>
-                            </span>
-                        </Button>
-                    </div>
-                </FundCards>
-            </div>
-
-            <Br size="35" />
-            <Button size="big" is="success" href={href}>
-                <span class="h2 font-secondary font-w-600">
-                    Додати
-                </span>
-            </Button>
-            <Br size="40" />
-        </EditArea>
-    </div>
-
-    <Br size="15" />
-
-    <h1>Мої фонди</h1>
+    <Br size="40" />
+    <h1>Мої організації</h1>
     <Br size="5" />
     <div class="full-container">
-        <FundCards items={othersFunds}>
-            <div slot="button" let:id={id}>
-                <Button size="small" is="info" href={id}>
+        <FundCards items={animalFunds}>
+            <div slot="button" let:item={item}>
+                <Button size="small" is="info" href={`/organizations/${item.id}`}>
                     <span class="h3 font-secondary font-w-500 flex flex-align-center">
                         Редагувати
                         <s></s>
@@ -111,11 +78,40 @@
     </div>
 
     <Br size="35" />
-    <Button size="big" is="success" href={href}>
+    <Button size="big" is="success" href="/organizations/new">
         <span class="h2 font-secondary font-w-600">
             Додати
         </span>
     </Button>
+    <Br size="5" />
+
+    <Br size="15" />
+    
+    <Br size="40" />
+    <h1>Мої фонди</h1>
+    <Br size="5" />
+    <div class="full-container">
+        <FundCards items={othersFunds}>
+            <div slot="button" let:item={item}>
+                <Button size="small" is="info" href={`/funds/${item.id}`}>
+                    <span class="h3 font-secondary font-w-500 flex flex-align-center">
+                        Редагувати
+                        <s></s>
+                        <s></s>
+                        <Icon type="edit" size="small" is="light"/>
+                    </span>
+                </Button>
+            </div>
+        </FundCards>
+    </div>
+
+    <Br size="35" />
+    <Button size="big" is="success" href="/funds/new">
+        <span class="h2 font-secondary font-w-600">
+            Додати
+        </span>
+    </Button>
+    <Br size="5" />
 
     <Br size="125" />
 </section>

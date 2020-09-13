@@ -65,13 +65,13 @@
         </ul>
 
         <ul class="nav-actions">
-            <li>
+            <!-- <li>
                 <select {value} name="lang" id="lang" class="btn small lang-select">
                     <option value="ua">Ua</option>
                     <option value="ru">Ru</option>
                     <option value="en">En</option>
                 </select>
-            </li>
+            </li> -->
 
             <li>
                 <Button on:click={() => changeTheme(themeName === 'theme-light' ? 'theme-dark' : 'theme-light')} auto size="small">

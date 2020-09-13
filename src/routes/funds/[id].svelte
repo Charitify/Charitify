@@ -39,7 +39,9 @@
     const { page } = stores()
 
     let charityId = $page.params.id
-    let isEditMode = false
+    let isNew = charityId === 'new'
+
+    let isEditMode = isNew
     let isEdit = {
         topInfo: false,
         description: false,
@@ -123,6 +125,7 @@
     };
 
     onMount(async () => {
+        if (isNew) return
         await delay(5000)
         charity = await API.getFund(charityId)
         comments = await API.getComments()

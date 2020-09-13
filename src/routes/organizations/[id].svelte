@@ -43,7 +43,9 @@
 
     // Organization
     let organizationId = $page.params.id;
-    let isEditMode = false
+    let isNew = organizationId === 'new'
+
+    let isEditMode = isNew
     let isEdit = {
         topInfo: false,
         description: false,
@@ -151,6 +153,7 @@
     };
 
     onMount(async () => {
+        if (isNew) return
         await delay(5000)
         organization = await API.getOrganization(organizationId);
         comments = await API.getComments()

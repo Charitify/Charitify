@@ -5,7 +5,7 @@
 	import { safeGet, disableDoubleTapZoom, classnames } from '@utils'
 
 	export let segment;
-
+	
 	let theme = safeGet(() => Storages.cookieStorage.get('theme') || Storages.localStorage.get('theme'))
 
 	$: classProp = classnames('theme-bg-color-secondary', theme)

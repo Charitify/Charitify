@@ -27,9 +27,9 @@
             city={item.city}
             title={item.title}
         >
-            <span slot="button" let:id={id}>
-                <slot name="button">
-                    <Button size="big" is="success" href={id}>
+            <span slot="button">
+                <slot name="button" {item}>
+                    <Button size="big" is="success" href={`/funds/${item.id}`}>
                         <span class="h2 font-secondary font-w-600">
                             Допомогти
                         </span>
