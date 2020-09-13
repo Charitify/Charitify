@@ -13,7 +13,7 @@
     const DURATION = 250
     const THRESHOLD = 100
     const BOUNDRY = 200
-    const SWIPE_SPEED = 2
+    const SWIPE_SPEED = 1
     const START_POSITION = {
         x: 0,
         y: 0
@@ -47,7 +47,7 @@
         new Swipe(el)
                 .run()
                 .onLeft(handleHorizontalSwipe)
-                .onRight(handleHorizontalSwipe)
+                .onRight(handleRightSwipe)
                 .onTouchEnd(async () => {
                     setDuration(ref, DURATION)
                     setTimeout(() => setDuration(ref, 0), DURATION)
@@ -61,6 +61,10 @@
                 })
     }
 
+    function handleRightSwipe(xDown, xUp, evt, el) {
+        xSwipe = Math.min(0, lastPosition + (xUp - xDown) * SWIPE_SPEED)
+        drawTransform(el, xSwipe, ySwipe)
+    }
     function handleHorizontalSwipe(xDown, xUp, evt, el) {
         xSwipe = lastPosition + (xUp - xDown) * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
