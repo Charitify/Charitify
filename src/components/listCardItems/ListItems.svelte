@@ -10,6 +10,7 @@
     export let items = []
     export let basePath = ''
 
+    const DURATION = 250
     const THRESHOLD = 100
     const BOUNDRY = 200
     const SWIPE_SPEED = 2
@@ -48,6 +49,8 @@
                 .onLeft(handleHorizontalSwipe)
                 .onRight(handleHorizontalSwipe)
                 .onTouchEnd(async () => {
+                    setDuration(ref, DURATION)
+                    setTimeout(() => setDuration(ref, 0), DURATION)
                     if (xSwipe > -THRESHOLD) {
                         lastPosition = startPosition.x
                         drawTransform(el, startPosition.x, startPosition.y)
@@ -62,7 +65,9 @@
         xSwipe = lastPosition + (xUp - xDown) * SWIPE_SPEED
         drawTransform(el, xSwipe, ySwipe)
     }
-
+    function setDuration(el, ms) {
+        el && (el.style.transitionDuration = `${ms}ms`)
+    }
     function drawTransform(el, x, y) {
         el && (el.style.transform = `matrix(1, 0, 0, 1, ${x}, ${y})`)
     }
@@ -95,7 +100,7 @@
 
 <style>
     section {
-        transition: .2s ease-in-out;
+        transition-timing-function: linear;
     }
 
     ul {
