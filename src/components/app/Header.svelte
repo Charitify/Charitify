@@ -57,7 +57,7 @@
 
 <svelte:window on:scroll={onScroll}/>
 <section class={classProp}>
-    <nav>
+    <nav class="full-height">
         <ul class="nav-pages flex">
             <li><a rel=prefetch href='.' class:selected='{segment === undefined}'>home</a></li>
             <li><a rel=prefetch href='lists/funds' class:selected='{segment === "lists"}'>lists</a></li>

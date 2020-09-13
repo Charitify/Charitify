@@ -146,9 +146,9 @@
                 </ListItem>
             </a>
             <ul>
-                <li><Button on:click={onAction('delete')} size="small"><Icon type="trash" is="dark" size="huge"/></Button></li>
-                <li><Button on:click={onAction('copy')} size="small"><Icon type="link" is="dark" size="huge"/></Button></li>
-                <li><Button on:click={onAction('edit')} size="small"><Icon type="edit" is="dark" size="huge"/></Button></li>
+                <li><Button on:click={onAction('delete')} size="small"><Icon type="trash" size="huge"/></Button></li>
+                <li><Button on:click={onAction('copy')} size="small"><Icon type="link" size="huge"/></Button></li>
+                <li><Button on:click={onAction('edit')} size="small"><Icon type="edit" size="huge"/></Button></li>
             </ul>
         </div>
         <Br size="20"/>
