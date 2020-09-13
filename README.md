@@ -1,30 +1,29 @@
 
 # Charitify - app for helping those in need.
 
-## Table of contents:
-
-- [Server structure](#server-structure)
-  * [🛤 Routes](#---routes)
-  * [🖇 Middlewares](#---middlewares)
-  * [🕹️ Controllers](#----controllers)
-  * [⚙️ Services](#---services)
-  * [🗄️ Models](#----models)
-  * [📋 Config](#---config)
-  * [🛠 Utils](#---utils)
-- [🧰 Project installation](#-🧰-project-installation)
-- [🏃 Run the project](#-🏃-run-the-project)
-  * [Run app in a dev mode](#run-app-in-a-dev-mode)
-  * [Run an app with production config](#run-an-app-with-production-config-)
-  * [Build app ready for production](#build-app-ready-for-production)
-  * [Run production build](#run-production-build)
-- [📤 Deployment](#-📤-deployment)
-  * [Simplified deploy steps](#simplified-deploy-steps)
-- [👨‍💻 Monitoring](#-👨‍💻-monitoring)
-- [🛡 Security](#-🛡-security)
+* [Table of contents:](#table-of-contents-)
+  * [🗃 Server structure](#---server-structure)
+    + [🛤 Routes](#---routes)
+    + [🖇 Middlewares](#---middlewares)
+    + [🕹️ Controllers](#----controllers)
+    + [⚙️ Services](#---services)
+    + [🗄️ Models](#----models)
+    + [📋 Config](#---config)
+    + [🛠 Utils](#---utils)
+  * [🧰 Project installation](#---project-installation)
+  * [🏃 Run the project](#---run-the-project)
+    + [Run app in a dev mode](#run-app-in-a-dev-mode)
+    + [Run an app with production config](#run-an-app-with-production-config)
+    + [Build app ready for production](#build-app-ready-for-production)
+    + [Run production build](#run-production-build)
+  * [📤 Deployment](#---deployment)
+    + [Simplified deploy steps](#simplified-deploy-steps)
+  * [👨‍💻 Monitoring](#------monitoring)
+  * [🛡 Security](#---security)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
-## Server structure
+## 🗃 Server structure
 Server executing sarts with `src/server.js` file. Here we launch express and initialize all needed utils. The rest 'trinkets' are inside `/src/server` folder. Directories there are structured in this way:
 ### 🛤 Routes
 Here are stored routes of the app that may use middlewares to validate session, or payload and controllers to process request.
