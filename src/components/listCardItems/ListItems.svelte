@@ -35,6 +35,7 @@
             const swipeEl = getSwipeItem(evt)
             if (!swipeEl) return
             setActive(swipeEl, false)
+            setCanBeActive(swipeEl, false)
             drawTransform(swipeEl, startPosition.x, startPosition.y)
         }
     }
@@ -56,23 +57,22 @@
                     setTimeout(() => setDuration(swipeEl, 0), DURATION)
                     if (xSwipe > -THRESHOLD) {
                         setActive(swipeEl, false)
+                        setCanBeActive(swipeEl, false)
                         drawTransform(swipeEl, startPosition.x, startPosition.y)
                     } else {
                         setActive(swipeEl, true)
+                        setCanBeActive(swipeEl, true)
                         drawTransform(swipeEl, -BOUNDRY, ySwipe)
                     }
                 })
     }
 
-    function setActive(el, isActive) {
-        if (isActive) el && el.classList.add('active')
-        else el && el.classList.remove('active')
-    }
     function handleLeftSwipe(xDown, xUp, evt, el) {
         const swipeEl = getSwipeItem(evt)
         if (!swipeEl) return
         const lastPosition = getLastPossition(swipeEl)
         xSwipe = Math.max(-BOUNDRY, lastPosition + (xUp - xDown) * SWIPE_SPEED)
+        checkElCanBeActive(swipeEl, xSwipe)
         drawTransform(swipeEl, xSwipe, ySwipe)
     }
     function handleRightSwipe(xDown, xUp, evt, el) {
@@ -80,16 +80,43 @@
         if (!swipeEl) return
         const lastPosition = getLastPossition(swipeEl)
         xSwipe = Math.min(startPosition.x, lastPosition + (xUp - xDown) * SWIPE_SPEED)
+        checkElCanBeActive(swipeEl, xSwipe)
         drawTransform(swipeEl, xSwipe, ySwipe)
     }
+
+    function checkElCanBeActive(swipeEl, xSwipe) {
+        if (xSwipe > -THRESHOLD && isElCanBeElActive(swipeEl)) {
+            setCanBeActive(swipeEl, false)
+        } else if (xSwipe <= -THRESHOLD  && !isElCanBeElActive(swipeEl)) {
+            setCanBeActive(swipeEl, true)
+        }
+    }
+    
     function setDuration(el, ms) {
         el && (el.style.transitionDuration = `${ms}ms`)
     }
     function drawTransform(el, x, y) {
         el && (el.style.transform = `matrix(1, 0, 0, 1, ${x}, ${y})`)
     }
+
+    function setCanBeActive(el, isActive) {
+        if (isActive) el && el.classList.add('can-be-active')
+        else el && el.classList.remove('can-be-active')
+    }
+    function isElCanBeElActive(el) {
+        return el.classList.contains('can-be-active')
+    }
+
+    function setActive(el, isActive) {
+        if (isActive) el && el.classList.add('active')
+        else el && el.classList.remove('active')
+    }
+    function isElActive(el) {
+        return el.classList.contains('active')
+    }
+
     function getLastPossition(el) {
-        return el.classList.contains('active') ? -BOUNDRY : startPosition.x
+        return isElActive(el) ? -BOUNDRY : startPosition.x
     }
     function getSwipeItem(evt) {
         return safeGet(() => evt.target.closest('.swipe-item')) 
@@ -123,10 +150,6 @@
 </section>
 
 <style>
-    section {
-        transition-timing-function: linear;
-    }
-
     ul {
         position: absolute;
         top: 0;
@@ -136,5 +159,28 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    ul li {
+        transition: .3s ease-in-out;
+        opacity: 0;
+        transform: scale(.5) translateX(100px);
+    }
+
+    ul li:nth-child(1) {
+        transition-delay: 0ms;
+    }
+
+    ul li:nth-child(2) {
+        transition-delay: 100ms;
+    }
+
+    ul li:nth-child(3) {
+        transition-delay: 200ms;
+    }
+
+    .swipe-item.can-be-active ul li {
+        opacity: 1;
+        transform: none;
     }
 </style>
