@@ -2,12 +2,14 @@
     import { onMount } from 'svelte'
     import { API } from '@services'
     import { delay, safeGet } from '@utils'
+    import { organization as orgMock, fund as fundMock, user as userMock } from '@mock'
     import { Br, Icon, Card, Avatar, Button, FundCards } from '@components'
     import Usercard from './_Usercard.svelte'
 
     // Entities
     let organization = {}
     let funds
+    let user
 
     $: contacts = safeGet(() => organization.contacts.map(c => ({
         title: c.title,
@@ -36,10 +38,13 @@
     })), null)
 
     onMount(async () => {
-        await delay(7000)
-        organization = await API.getOrganization(1);
-        funds = await API.getFunds()
+        await delay(3000)
+        user = await API.getUser('me').catch(() => userMock)
+        organization = await API.getOrganization(1).catch(() => orgMock)
+        funds = await API.getFunds().catch(() => new Array(10).fill(fundMock))
     });
+
+    $: console.log(user)
 </script>
 
 <section class="container theme-bg-color-secondary">
@@ -115,6 +120,3 @@
 
     <Br size="125" />
 </section>
-
-<style>
-</style>

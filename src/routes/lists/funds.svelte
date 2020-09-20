@@ -1,9 +1,10 @@
 <script>
     import { onMount } from 'svelte'
     import { API } from '@services'
+    import { fund } from '@mock'
     import { Br, ListItems, StatusCard, Button, Loader } from '@components'
 
-    let chariries = []
+    let funds = []
     let loading = true
 
     onMount(loadEntity)
@@ -11,8 +12,7 @@
     async function loadEntity() {
         loading = true
         await new Promise(r => setTimeout(r, 1000))
-        const chars = await API.getFunds()
-        chariries = new Array(10).fill(chars).reduce((a, o) => a.concat(...o), [])
+        funds = await API.getFunds().catch(() => new Array(10).fill(fund))
         loading = false
     }
 </script>
@@ -21,7 +21,7 @@
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-{#if !chariries.length && !loading}
+{#if !funds.length && !loading}
     <Br size="10"/>
     <StatusCard 
         status="Упс"
@@ -33,8 +33,8 @@
         </Button>
     </StatusCard>
     <Br size="40"/>
-{:else if !chariries.length && loading}
+{:else if !funds.length && loading}
     <Loader />
-{:else if chariries.length}
-    <ListItems items={chariries} basePath="funds" type="fund"/>
+{:else if funds.length}
+    <ListItems items={funds} basePath="funds" type="fund"/>
 {/if}

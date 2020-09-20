@@ -2,6 +2,7 @@
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
     import { API } from '@services'
+    import { fund as fundMock, comments as commentsMock } from '@mock'
     import { delay, safeGet, _ } from '@utils'
     import { 
         Br, 
@@ -127,8 +128,8 @@
     onMount(async () => {
         if (isNew) return
         await delay(5000)
-        charity = await API.getFund(charityId)
-        comments = await API.getComments()
+        charity = await API.getFund(charityId).catch(() => fundMock)
+        comments = await API.getComments().catch(() => commentsMock)
     })
 
     async function onSubmit(section, values) {

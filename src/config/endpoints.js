@@ -4,36 +4,26 @@
  * @description API URLs builders.
  */
 export default {
-    USER: (id) => `user.json`,
-    USERS: () => `users.json`,
+    LOGIN: () => `login`,
+    LOGOUT: () => `logout`,
+    REGISTER: () => `register`,
+    FACEBOOK: () => `facebook`,
+    FACEBOOK_LOGIN: () => `facebook/login`,
 
-    RECENT: (id) => `recent.json`,
-    RECENTS: () => `recents.json`,
+    USER: (id) => `users/${id}`,
+    USERS: () => `users`,
 
-    COMMENT: (id) => `comment.json`,
-    COMMENTS: () => `comments.json`,
+    RECENT: (id) => `recent/${id}`,
+    RECENTS: () => `recent`,
 
-    FUND: (id) => `fund.json`,
-    FUNDS: () => `funds.json`,
+    COMMENT: (id) => `comments/${id}`,
+    COMMENTS: () => `comments`,
 
-    ORGANIZATION: (id) => `organization.json`,
-    ORGANIZATIONS: () => `organizations.json`,
+    FUND: (id) => `funds/${id}`,
+    FUNDS: () => `funds`,
 
-    IMAGES_UPLOAD: () => `/images/upload`,
+    ORGANIZATION: (id) => `organizations/${id}`,
+    ORGANIZATIONS: () => `organizations`,
+
+    IMAGES_UPLOAD: () => `images/upload`,
 }
-// export default {
-//     USER: (id) => `apiusers/${id || ':id'}`,
-//     USERS: () => `apiusers`,
-//
-//     RECENT: (id) => `apirecents/${id || ':id'}`,
-//     RECENTS: () => `apirecents`,
-//
-//     COMMENT: (id) => `apicomments/${id || ':id'}`,
-//     COMMENTS: () => `apicomments`,
-//
-//     FUND: (id) => `apifunds/${id || ':id'}`,
-//     FUNDS: () => `apifunds`,
-//
-//     ORGANIZATION: (id) => `apiorganizations/${id || ':id'}`,
-//     ORGANIZATIONS: () => `apiorganizations`,
-// }

@@ -43,6 +43,7 @@ const preprocess = sveltePreprocess({
 const aliases = alias({
   resolve: [".js", ".svelte"],
   entries: [
+    { find: "@mock", replacement: `${__dirname}/src/mock` },
     { find: "@utils", replacement: `${__dirname}/src/utils` },
     { find: "@store", replacement: `${__dirname}/src/store` },
     { find: "@config", replacement: `${__dirname}/src/config` },

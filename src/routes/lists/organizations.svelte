@@ -2,6 +2,7 @@
 <script>
     import { onMount } from 'svelte'
     import { API } from '@services'
+    import { organizations as orgsMock } from '@mock'
     import { Br, Loader, ListItems, Button, StatusCard } from '@components'
 
     let organizations = []
@@ -12,8 +13,7 @@
     async function loadEntity() {
         loading = true
         await new Promise(r => setTimeout(r, 1000))
-        const orgs = await API.getOrganizations()
-        organizations = new Array(15).fill(orgs).reduce((a, o) => a.concat(...o), [])
+        organizations = await API.getOrganizations().catch(() => orgsMock)
         loading = false
     }
 </script>
