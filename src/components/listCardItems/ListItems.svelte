@@ -9,6 +9,13 @@
     export let type // fund / organization
     export let items = []
     export let basePath = ''
+    export let getItem = () => ({
+        src: null,
+        title: null,
+        subtitle: null,
+        progress: null,
+        liked: null,
+    })
 
     const DURATION = 250
     const THRESHOLD = 100
@@ -17,16 +24,6 @@
     const START_POSITION = {
         x: 0,
         y: 0
-    }
-
-    function getItem(item) {
-        return {
-            src: safeGet(() => type === 'fund' ? item.avatars[0].src : item.avatars[0]),
-            title: item.title,
-            subtitle: type === 'fund' ? item.subtitle : item.description,
-            progress: type === 'fund' ? +(item.current_sum / item.need_sum * 100).toFixed(2) : item.percent,
-            liked: item.is_liked,
-        }
     }
 
     function onAction(action) {
@@ -137,8 +134,8 @@
                 <ListItem item={getItem(item)}>
                     <div slot="bottom-left" class="flex flex-align-baseline">
                         {#if type === 'fund'}
-                            <span class="h2 font-secondary">{item.current_sum}{item.currency || ''} /<s/></span>
-                            <span class="h4 font-secondary">{item.need_sum}{item.currency || ''}</span>
+                            <span class="h2 font-secondary">{item.current_sum || 0}{item.currency || ''} /<s/></span>
+                            <span class="h4 font-secondary">{item.need_sum || 0}{item.currency || ''}</span>
                         {:else if type === 'organization'}
                             <span class="h2 font-secondary">{getItem(item).progress || '0'}%</span>
                         {/if}

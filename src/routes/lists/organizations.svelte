@@ -2,6 +2,7 @@
 <script>
     import { onMount } from 'svelte'
     import { API } from '@services'
+    import { safeGet } from '@utils'
     import { organizations as orgsMock } from '@mock'
     import { Br, Loader, ListItems, Button, StatusCard } from '@components'
 
@@ -15,6 +16,16 @@
         await new Promise(r => setTimeout(r, 1000))
         organizations = await API.getOrganizations().catch(() => orgsMock)
         loading = false
+    }
+
+    function getItem(item) {
+        return {
+            src: safeGet(() => item.avatars[0]),
+            title: item.title,
+            subtitle: item.description,
+            progress: item.percent,
+            liked: item.is_liked,
+        }
     }
 </script>
 
@@ -37,5 +48,5 @@
 {:else if !organizations.length && loading}
     <Loader />
 {:else if organizations.length}
-    <ListItems items={organizations} basePath="organizations" type="organization"/>
+    <ListItems items={organizations} basePath="organizations" type="organization" {getItem}/>
 {/if}
