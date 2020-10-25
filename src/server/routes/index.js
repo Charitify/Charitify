@@ -1,12 +1,14 @@
 import { Router } from "express";
-const router = Router();
+import AuthRouter from "./auth";
 import UserRouter from "./users";
 import OrganizationRouter from "./organizations";
-import AuthRouter from "./auth";
+import FundRouter from "./funds";
 
-router.use("/users", UserRouter);
+const router = Router();
+
 router.use("/auth", AuthRouter);
-router.use("/funds", UserRouter);
+router.use("/users", UserRouter);
+router.use("/funds", FundRouter);
 router.use("/organizations", OrganizationRouter);
 router.use("/media", UserRouter);
 router.use("/donator", UserRouter);

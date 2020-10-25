@@ -10,6 +10,7 @@
     export let items = []
     export let basePath = ''
     export let getItem = () => ({
+        id: null,
         src: null,
         title: null,
         subtitle: null,

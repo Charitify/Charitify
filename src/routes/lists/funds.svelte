@@ -18,9 +18,12 @@
 
     function getItem(item) {
         return {
-            src: safeGet(() => item.avatars[0].src),
+            id: item._id,
+            src: safeGet(() => item.avatar),
             title: item.title,
             subtitle: item.subtitle,
+            current_sum: item.current_sum,
+            need_sum: item.need_sum,
             progress: +(item.current_sum / item.need_sum * 100).toFixed(2),
             liked: item.is_liked,
         }
