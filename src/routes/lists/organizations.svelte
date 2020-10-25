@@ -13,17 +13,18 @@
 
     async function loadEntity() {
         loading = true
-        await new Promise(r => setTimeout(r, 1000))
         organizations = await API.getOrganizations().catch(() => orgsMock)
         loading = false
     }
 
     function getItem(item) {
         return {
-            src: safeGet(() => item.avatars[0]),
+            ...item,
+            id: item._id,
+            src: safeGet(() => item.avatar),
             title: item.title,
             subtitle: item.description,
-            progress: item.percent,
+            progress: item.current_sum / item.need_sum * 100,
             liked: item.is_liked,
         }
     }

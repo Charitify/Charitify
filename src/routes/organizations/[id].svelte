@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import { API } from "@services";
     import { organization as orgMock, fund as fundMock, comments as commentsMock } from '@mock'
-    import { delay, safeGet } from "@utils";
+    import { safeGet } from "@utils";
     import { 
         Br, 
         Icon, 
@@ -84,7 +84,7 @@
         currency: f.currency,
         city: f.location.city,
     })))
-    $: othersFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
+    $: othersFunds = safeGet(() => funds.filter(f => f.type !== 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
         id: f.id,
         src: f.avatars[0].src,
         type: f.type,
@@ -155,7 +155,6 @@
 
     onMount(async () => {
         if (isNew) return
-        await delay(3000)
         organization = await API.getOrganization(organizationId).catch(() => orgMock)
         comments = await API.getComments().catch(() => commentsMock)
         funds = await API.getFunds().catch(() => new Array(10).fill(fundMock))

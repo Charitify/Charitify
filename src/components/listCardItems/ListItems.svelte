@@ -17,6 +17,8 @@
         liked: null,
     })
 
+    $: innerItems = items.map(getItem)
+
     const DURATION = 250
     const THRESHOLD = 100
     const BOUNDRY = 200
@@ -128,10 +130,10 @@
 </script>
 
 <section use:addSwipe>
-    {#each items as item}
+    {#each innerItems as item}
         <div class="relative swipe-item">
             <a href={`${basePath}/${item.id}`} class="block">
-                <ListItem item={getItem(item)}>
+                <ListItem {item}>
                     <div slot="bottom-left" class="flex flex-align-baseline">
                         {#if type === 'fund'}
                             <span class="h2 font-secondary">{item.current_sum || 0}{item.currency || ''} /<s/></span>

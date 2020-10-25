@@ -82,7 +82,7 @@ class APIService {
   }
 
   async handleResponse(response) {
-    return response.body
+    return response.body.data
   }
 
   async handleReject(reject) {

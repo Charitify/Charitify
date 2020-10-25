@@ -12,7 +12,6 @@
 
     async function loadEntity() {
         loading = true
-        await new Promise(r => setTimeout(r, 1000))
         funds = await API.getFunds().catch(() => new Array(10).fill(fund))
         loading = false
     }

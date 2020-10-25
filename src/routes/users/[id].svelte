@@ -2,9 +2,9 @@
     import { onMount } from 'svelte'
     import { stores } from '@sapper/app'
     import { API } from '@services'
-    import { delay, safeGet } from '@utils'
+    import { safeGet } from '@utils'
     import { organization as orgMock, fund as fundMock, user as userMock } from '@mock'
-    import { Br, Icon, Card, Avatar, Button, FundCards } from '@components'
+    import { Br, Icon, Button, FundCards } from '@components'
     import Usercard from './_Usercard.svelte'
 
     const { page } = stores()
@@ -43,7 +43,6 @@
     })), null)
 
     onMount(async () => {
-        await delay(3000)
         user = await API.getUser(userId).catch(() => userMock)
         organization = await API.getOrganization(1).catch(() => orgMock)
         funds = await API.getFunds().catch(() => new Array(10).fill(fundMock))

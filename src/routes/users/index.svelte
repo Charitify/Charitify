@@ -18,12 +18,28 @@
     }
 
     function getItem(item) {
+        /*
+            birthDate: "2001-06-07T21:00:00.000Z"
+            checked: false
+            createdAt: "2020-08-24T16:23:22.571Z"
+            email: "harazdovskyi@gmail.com"
+            facebook: {photos: []}
+            fullname: "Dmytro Harazdovskyi"
+            location: {coordinates: []}
+            role: "user"
+            sex: "male"
+            tel: "+3809109158"
+            updatedAt: "2020-08-24T16:23:22.571Z"
+            username: "Dimon"
+            __v: 0
+            _id: "5f43e97af3c5b413ebd3e580"
+        */
         return {
-            src: 'https://www.stevensegallery.com/60/60',
-            title: item.full_name,
+            src: safeGet(() => item.facebook.photos[0]) || 'https://www.stevensegallery.com/60/60',
+            title: item.fullname,
             subtitle: item.email,
-            progress: 100,
-            liked: item.is_liked,
+            // progress: 100,
+            // liked: item.is_liked,
         }
     }
 </script>

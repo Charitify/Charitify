@@ -3,7 +3,7 @@
     import { onMount } from 'svelte'
     import { API } from '@services'
     import { fund as fundMock, comments as commentsMock } from '@mock'
-    import { delay, safeGet, _ } from '@utils'
+    import { safeGet, _ } from '@utils'
     import { 
         Br, 
         Icon, 
@@ -127,7 +127,6 @@
 
     onMount(async () => {
         if (isNew) return
-        await delay(5000)
         charity = await API.getFund(charityId).catch(() => fundMock)
         comments = await API.getComments().catch(() => commentsMock)
     })
