@@ -13,8 +13,8 @@ export default {
     USER: (id) => `users/${id}`,
     USERS: () => `users`,
 
-    ARTICLE: (id) => `news/${id}`,
-    ARTICLES: () => `news`,
+    ARTICLE: (id) => `articles/${id}`,
+    ARTICLES: () => `articles`,
 
     COMMENT: (id) => `comments/${id}`,
     COMMENTS: () => `comments`,
