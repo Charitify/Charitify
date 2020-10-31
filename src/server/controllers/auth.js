@@ -16,4 +16,9 @@ const logout = (data) => {
   return AuthService.logout(data);
 };
 
-export default { login, logout, register, loginWithFacebook };
+export default {
+  login,
+  logout,
+  register,
+  loginWithFacebook,
+};

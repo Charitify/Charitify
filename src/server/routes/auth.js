@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthController } from "../controllers";
 import { isAuthed } from "../middlewares/auth";
-import errorResponse from "../utils/errorResponse";
+import { response, defaultCatch } from "../utils";
 import passport from "passport";
 
 const router = Router();
@@ -9,26 +9,18 @@ const router = Router();
 router.post("/register", async (req, res) => {
   try {
     const data = await AuthController.register(req.body);
-    return res.send({
-      err: false,
-      data,
-    });
+    return res.send(response.data(data));
   } catch (error) {
-    console.error(error);
-    res.status(400).json(errorResponse(error));
+    defaultCatch(error, res);
   }
 });
 
 router.post("/login", async (req, res) => {
   try {
     const data = await AuthController.login(req.body);
-    return res.send({
-      err: false,
-      data,
-    });
+    return res.send(response.data(data));
   } catch (error) {
-    console.error(error);
-    res.status(400).json(errorResponse(error));
+    defaultCatch(error, res);
   }
 });
 
@@ -40,14 +32,9 @@ router.get(
   async (req, res) => {
     try {
       const data = AuthController.loginWithFacebook(req.user);
-
-      return res.status(200).json({
-        error: null,
-        data,
-      });
+      return res.status(200).json(response.data(data));
     } catch (error) {
-      console.error(error);
-      res.status(400).json(errorResponse(error));
+      defaultCatch(error, res);
     }
   }
 );
@@ -55,13 +42,9 @@ router.get(
 router.get("/logout", isAuthed, async (req, res) => {
   try {
     await AuthController.logout(req.token);
-    return res.status(200).json({
-      error: null,
-      data: true,
-    });
+    return res.status(200).json(response.data(data));
   } catch (error) {
-    console.error(error);
-    res.status(400).json(errorResponse(error));
+    defaultCatch(error, res);
   }
 });
 

@@ -1,32 +1,56 @@
 import { Router } from "express";
 import { UserController } from "../controllers";
 import { isAuthed } from "../middlewares/auth";
-import errorResponse from "../utils/errorResponse";
+import { response, defaultCatch } from "../utils";
+
 const router = Router();
+
+router.get("/:id", isAuthed, async (req, res) => {
+  try {
+    const { params: { id } } = req
+    const data = await UserController.getUser(id);
+    return res.send(response.data(data));
+  } catch (error) {
+    defaultCatch(error, res)
+  }
+});
+
+router.put("/:id", isAuthed, async (req, res) => {
+  try {
+    const { body, params: { id } } = req
+    const data = await UserController.updateUser(id, body);
+    return res.send(response.data(data));
+  } catch (error) {
+    defaultCatch(error, res)
+  }
+});
+
+router.delete("/:id", isAuthed, async (req, res) => {
+  try {
+    const { params: { id } } = req
+    const data = await UserController.removeUser(id);
+    return res.send(response.data(data));
+  } catch (error) {
+    defaultCatch(error, res)
+  }
+});
 
 router.get("/", isAuthed, async (req, res) => {
   try {
     const data = await UserController.getUsers();
-    return res.send({
-      err: false,
-      data,
-    });
+    return res.send(response.data(data));
   } catch (error) {
-    console.error(error);
-    res.status(400).json(errorResponse(error));
+    defaultCatch(error, res)
   }
 });
 
 router.post("/", isAuthed, async (req, res) => {
   try {
-    const data = await UserController.createUser(req.body);
-    return res.send({
-      err: false,
-      data,
-    });
+    const { body } = req
+    const data = await UserController.createUser(body);
+    return res.send(response.data(data));
   } catch (error) {
-    console.error(error);
-    res.status(400).json(errorResponse(error));
+    defaultCatch(error, res)
   }
 });
 

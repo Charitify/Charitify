@@ -3,6 +3,9 @@ import AuthRouter from "./auth";
 import UserRouter from "./users";
 import OrganizationRouter from "./organizations";
 import FundRouter from "./funds";
+import DonatorRouter from "./donators";
+import PetRouter from "./pets";
+import ArticleRouter from "./articles";
 
 const router = Router();
 
@@ -10,9 +13,9 @@ router.use("/auth", AuthRouter);
 router.use("/users", UserRouter);
 router.use("/funds", FundRouter);
 router.use("/organizations", OrganizationRouter);
-router.use("/media", UserRouter);
-router.use("/donator", UserRouter);
-router.use("/news", UserRouter);
-router.use("/comment", UserRouter);
+router.use("/donators", DonatorRouter);
+router.use("/pets", PetRouter);
+router.use("/articles", ArticleRouter);
+router.use("/comments", UserRouter);
 
 export default router;
