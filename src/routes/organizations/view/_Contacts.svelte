@@ -1,4 +1,5 @@
 <script>
+    import { safeGet } from "@utils";
     import { ContactsCard } from '../components'
 
     export let contacts
@@ -7,8 +8,8 @@
 
 <ContactsCard 
     items={contacts}
-    orgName={organization.title}
-    avatar={organization.avatar}
-    avatarBig={organization.avatarBig}
+    orgName={safeGet(() => organization.title)}
+    avatar={safeGet(() => organization.avatar)}
+    avatarBig={safeGet(() => organization.avatarBig)}
 />
 

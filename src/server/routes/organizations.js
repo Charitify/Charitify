@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { OrganizationController } from "../controllers";
 import { isAuthed } from "../middlewares/auth";
+import errorResponse from "../utils/errorResponse";
 const router = Router();
 
 router.get("/", isAuthed, async (req, res) => {
@@ -12,7 +13,7 @@ router.get("/", isAuthed, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: true, data: error.message });
+    res.status(400).json(errorResponse(error));
   }
 });
 
@@ -25,7 +26,7 @@ router.post("/", isAuthed, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: true, data: error.message });
+    res.status(400).json(errorResponse(error));
   }
 });
 

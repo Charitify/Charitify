@@ -2,7 +2,6 @@
     import { stores } from '@sapper/app'
     import { onMount } from 'svelte'
     import { API } from '@services'
-    import { fund as fundMock, comments as commentsMock } from '@mock'
     import { safeGet, _ } from '@utils'
     import { 
         Br, 
@@ -39,8 +38,8 @@
 
     const { page } = stores()
 
-    let charityId = $page.params.id
-    let isNew = charityId === 'new'
+    let fundId = $page.params.id
+    let isNew = fundId === 'new'
 
     let isEditMode = isNew
     let isEdit = {
@@ -53,82 +52,76 @@
     }
 
     // Entities
-    let charity
+    let fund
+    let animal
     let comments
-    
-    $: carouselTop = safeGet(() => charity.avatars.map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title })));
-    $: organization = safeGet(() => charity.organization, {});
+    let donators
+    let organization
+
+    $: carouselTop = safeGet(() => fund.photos.map(p => ({ src: p, alt: 'Фото фонду' })));
+    $: organizationData = organization || {};
     $: cardTop = safeGet(() => ({
-        title: charity.title,
-        subtitle: charity.subtitle,
-        current_sum: charity.current_sum,
-        need_sum: charity.need_sum,
-        currency: charity.currency,
+        title: fund.title,
+        subtitle: fund.subtitle,
+        current_sum: fund.current_sum,
+        need_sum: fund.need_sum,
+        currency: fund.currency,
     }));
     $: iconsLine = {
-        likes: safeGet(() => charity.likes),
-        views: safeGet(() => charity.views),
+        likes: safeGet(() => fund.likes),
+        views: safeGet(() => fund.views),
     };
     $: trust = {
-        isLiked: safeGet(() => charity.is_liked),
+        isLiked: safeGet(() => fund.is_liked),
     };
     $: descriptionBlock = {
-        title: safeGet(() => charity.title),
-        description: safeGet(() => charity.description),
+        title: safeGet(() => fund.title),
+        description: safeGet(() => fund.description),
     };
-    $: animal = safeGet(() => ({
-        avatar: charity.animal.avatars[0].src,
-        name: charity.animal.name,
-        breed: charity.animal.breed,
-        birth: charity.animal.birth,
-        age: (new Date().getFullYear()) - (new Date(charity.animal.birth).getFullYear()),
-        sex: charity.animal.sex,
-        sterilization: charity.animal.sterilization,
-        character: charity.animal.character,
-        character_short: charity.animal.character_short,
-        lifestory: charity.animal.lifestory.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() })),
-        vaccination: charity.animal.vaccination,
-    }));
-    $: donators = safeGet(() => charity.donators.map(d => ({
+    $: animalData = {
+        id: safeGet(() => animal._id),
+        avatar: safeGet(() => animal.avatar),
+        name: safeGet(() => animal.name),
+        breed: safeGet(() => animal.breed),
+        birth: safeGet(() => animal.birth),
+        age: safeGet(() => (new Date().getFullYear()) - (new Date(animal.birth).getFullYear())),
+        sex: safeGet(() => nimal.sex),
+        sterilization: safeGet(() => animal.sterilization),
+        character: safeGet(() => animal.character),
+        lifestory: safeGet(() => animal.story.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() }))),
+        vaccination: safeGet(() => animal.vaccines),
+    };
+    $: donatorsData = safeGet(() => donators.map(d => ({
         id: d.id,
-        title: `${d.currency} ${d.amount}`,
-        subtitle: d.name,
         src: d.avatar,
-        src2x: d.avatar2x,
+        subtitle: d.name,
+        title: `${d.amount} грн`,
     })));
-    $: documents = safeGet(() => charity.documents.map(d => ({
-        id: d.id,
-        title: d.title,
-        src: d.src,
-        src2x: d.src2x,
-    })));
-    $: media = safeGet(() => charity.media.map(d => ({
-        id: d.id,
-        alt: d.title,
-        src: d.src,
-        srcBig: d.src2x,
-        description: d.description,
-    })), [], true);
+    $: documents = safeGet(() => fund.documents.map(d => ({ src: d, title: 'Докуменди фонду' })));
+    $: media = safeGet(() => fund.videos.map(v => ({ src: v, alt: 'Відео фонду' })), [], true);
     $: howToHelp = safeGet(() => ({
-        phone: charity.organization.phone,
-        how_to_help: charity.how_to_help,
+        phone: fund.phone,
+        how_to_help: fund.how_to_help,
     }));
     $: commentsData = {
         comments: safeGet(() => comments.map(c => ({
+            id: c._id,
             likes: c.likes,
-            avatar: c['author.avatar'],
-            author: c['author.name'],
-            comment: c.comment,
-            checked: c.checked,
-            reply_to: c.reply_to,
+            avatar: c.avatar,
+            author: c.name,
+            comment: c.content,
+            checked: c.is_liked,
             created_at: c.created_at,
         }))),
     };
 
     onMount(async () => {
         if (isNew) return
-        charity = await API.getFund(charityId).catch(() => fundMock)
-        comments = await API.getComments().catch(() => commentsMock)
+        fund = await API.getFund(fundId).catch(() => null)
+        animal = await API.getPetsByFund(fundId).catch(() => null)
+        donators = await API.getDonatorsByFund(fundId).catch(() => null)
+        comments = await API.getCommentsByFund(fundId).catch(() => null)
+        organization = await API.getOrganizationByFund(fundId).catch(() => null)
     })
 
     async function onSubmit(section, values) {
@@ -183,7 +176,7 @@
     <LazyToggle active={isEdit.topInfo}>
         <Br size="30"/>
         <TopInfoEdit 
-            data={{ ...cardTop, organization, photos: carouselTop }}
+            data={{ ...cardTop, organization: organizationData, photos: carouselTop }}
             submit={onSubmit.bind(null, 'topInfo')} 
             on:cancel={onCancel.bind(null, 'topInfo')} 
         />
@@ -191,7 +184,7 @@
     <LazyToggle active={!isEdit.topInfo} mounted class="full-container">
         <EditArea on:click={() => isEdit.topInfo = !isEdit.topInfo} off={!isEditMode}>    
             <Br size="30"/>
-            <TopInfoView {cardTop} {carouselTop} {organization}/>
+            <TopInfoView {cardTop} {carouselTop} organization={organizationData}/>
         </EditArea>
     </LazyToggle>
     <!-- END: Top info -->
@@ -229,7 +222,7 @@
     <!-- Animal -->
     <LazyToggle active={isEdit.animalCard}>
         <AnimalCardEdit
-            data={animal}
+            data={animalData}
             submit={onSubmit.bind(null, 'animalCard')}
             on:cancel={onCancel.bind(null, 'animalCard')} 
         />
@@ -237,14 +230,14 @@
     <LazyToggle active={!isEdit.animalCard} mounted class="full-container">
         <EditArea on:click={() => isEdit.animalCard = !isEdit.animalCard} off={!isEditMode}>    
             <Br size="30"/>
-            <AnimalCardView {animal}/>
+            <AnimalCardView animal={animalData}/>
         </EditArea>
     </LazyToggle>
     <!-- END: Animal -->
 
     <Br size="60"/>
     <LazyToggle active={!isEditMode} mounted>
-        <Donators items={donators}/>
+        <Donators items={donatorsData}/>
         <Br size="60"/>
     </LazyToggle>
 

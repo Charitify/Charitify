@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthController } from "../controllers";
 import { isAuthed } from "../middlewares/auth";
+import errorResponse from "../utils/errorResponse";
 import passport from "passport";
 
 const router = Router();
@@ -14,7 +15,7 @@ router.post("/register", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: true, data: error.message });
+    res.status(400).json(errorResponse(error));
   }
 });
 
@@ -27,7 +28,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: true, data: error.message });
+    res.status(400).json(errorResponse(error));
   }
 });
 
@@ -46,7 +47,7 @@ router.get(
       });
     } catch (error) {
       console.error(error);
-      res.status(400).json({ error: true, data: error.message });
+      res.status(400).json(errorResponse(error));
     }
   }
 );
@@ -60,7 +61,7 @@ router.get("/logout", isAuthed, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(400).json({ error: true, data: error.message });
+    res.status(400).json(errorResponse(error));
   }
 });
 

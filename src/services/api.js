@@ -59,7 +59,11 @@ class APIService {
     const newArgs1 = await this.requestInterceptor(...args)
     const newArgs2 = await this._requestInterceptor(...newArgs1)
 
-    return caller(...newArgs2)
+    const path = newArgs2[0]
+    const queries = newArgs2[1]
+    const config = { ...newArgs2[2], queries }
+
+    return caller(path, config)
       .then(async (response) => {
         const newResponse = await this._responseInterceptor(response)
         return await this.handleResponse(newResponse)
@@ -129,26 +133,74 @@ export class ApiClass extends APIService {
 
   /**
    *
-   * @description Recent
+   * @description News
    */
-  getRecent(id, params, config) {
-    return this.newRequest.get(endpoints.RECENT(id), params, config)
+  getArticle(id, params, config) {
+    return this.newRequest.get(endpoints.ARTICLE(id), params, config)
   }
 
-  getRecents(params, config) {
-    return this.newRequest.get(endpoints.RECENTS(), params, config)
+  getArticles(params, config) {
+    return this.newRequest.get(endpoints.ARTICLES(), params, config)
   }
 
-  postRecent(id, body, config) {
-    return this.newRequest.post(endpoints.RECENT(id), body, config)
+  getArticlesByFund(fundId, params, config) {
+    return this.newRequest.get(endpoints.ARTICLES(), { ...params, fundId }, config)
   }
 
-  putRecent(id, body, config) {
-    return this.newRequest.put(endpoints.RECENT(id), body, config)
+  getArticlesByOrg(organizationId, params, config) {
+    return this.newRequest.get(endpoints.ARTICLES(), { ...params, organizationId }, config)
   }
 
-  deleteRecent(id, config) {
-    return this.newRequest.delete(endpoints.RECENT(id), config)
+  postArticle(id, body, config) {
+    return this.newRequest.post(endpoints.ARTICLE(id), body, config)
+  }
+
+  putArticle(id, body, config) {
+    return this.newRequest.put(endpoints.ARTICLE(id), body, config)
+  }
+
+  deleteArticle(id, config) {
+    return this.newRequest.delete(endpoints.ARTICLE(id), config)
+  }
+
+  /**
+   *
+   * @description Pet
+   */
+  getPet(id, params, config) {
+    return this.newRequest.get(endpoints.PET(id), params, config)
+  }
+
+  getPetsByFund(fundId, params, config) {
+    return this.newRequest.get(endpoints.PETS(), { ...params, fundId }, config)
+  }
+
+  getPetsByOrg(organizationId, params, config) {
+    return this.newRequest.get(endpoints.PETS(), { ...params, organizationId }, config)
+  }
+
+  postPet(id, body, config) {
+    return this.newRequest.post(endpoints.PETS(id), body, config)
+  }
+
+  putPet(id, body, config) {
+    return this.newRequest.put(endpoints.PETS(id), body, config)
+  }
+
+  deletePet(id, config) {
+    return this.newRequest.delete(endpoints.PETS(id), config)
+  }
+
+  /**
+   *
+   * @description Donators
+   */
+  getDonatorsByFund(fundId, params, config) {
+    return this.newRequest.get(endpoints.DONATORS(), { ...params, fundId }, config)
+  }
+
+  getDonatorsByOrg(organizationId, params, config) {
+    return this.newRequest.get(endpoints.DONATORS(), { ...params, organizationId }, config)
   }
 
   /**
@@ -159,8 +211,12 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.COMMENT(id), params, config)
   }
 
-  getComments(params, config) {
-    return this.newRequest.get(endpoints.COMMENTS(), params, config)
+  getCommentsByFund(fundId, params, config) {
+    return this.newRequest.get(endpoints.COMMENTS(), { ...params, fundId }, config)
+  }
+
+  getCommentsByOrg(organizationId, params, config) {
+    return this.newRequest.get(endpoints.COMMENTS(), { ...params, organizationId }, config)
   }
 
   postComment(id, body, config) {
@@ -183,8 +239,12 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.FUND(id), params, config)
   }
 
-  getFunds(params, config) {
+  getFunds(id, params, config) {
     return this.newRequest.get(endpoints.FUNDS(), params, config)
+  }
+
+  getFundsByOrg(organizationId, params, config) {
+    return this.newRequest.get(endpoints.FUNDS(), { ...params, organizationId }, config)
   }
 
   postFund(id, body, config) {
@@ -205,6 +265,14 @@ export class ApiClass extends APIService {
    */
   getOrganization(id, params, config) {
     return this.newRequest.get(endpoints.ORGANIZATION(id), params, config)
+  }
+
+  getOrganizations(id, params, config) {
+    return this.newRequest.get(endpoints.ORGANIZATIONS(), params, config)
+  }
+
+  getOrganizationByFund(fundId, params, config) {
+    return this.newRequest.get(endpoints.ORGANIZATIONS(), { ...params, fundId }, config)
   }
 
   getOrganizations(params, config) {

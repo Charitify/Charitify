@@ -2,7 +2,6 @@
     import { stores } from "@sapper/app";
     import { onMount } from "svelte";
     import { API } from "@services";
-    import { organization as orgMock, fund as fundMock, comments as commentsMock } from '@mock'
     import { safeGet } from "@utils";
     import { 
         Br, 
@@ -58,65 +57,62 @@
     }
 
     // Entities
-    let organization = {};
-    let comments
     let funds
+    let articles
+    let donators
+    let comments
+    let organization
     
     $: organizationBlock = {
-        id: organization.id,
-        name: organization.name,
-        avatar: organization.avatar,
-        avatarBig: organization.avatarBig,
+        id: safeGet(() => organization._id),
+        name: safeGet(() => organization.name),
+        avatar: safeGet(() => organization.avatar),
     };
-    $: carouselTop = (organization.avatars || []).map((a, i) => ({ src: a.src, srcBig: a.src2x, alt: a.title }));
+    $: carouselTop = safeGet(() => organization.photos.map(p => ({ src: p, alt: 'Фото організації' })));
     $: descriptionShort = {
-        name: organization.name || null,
-        subtitle: organization.subtitle || null,
-        description: organization.description || null,
+        name: safeGet(() => organization.name) || null,
+        subtitle: safeGet(() => organization.description) || null,
+        description: safeGet(() => organization.content) || null,
     };
     $: animalFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
-        id: f.id,
-        src: f.avatars[0].src,
-        type: f.type,
+        id: f._id,
+        src: f.avatar,
         title: f.title,
-        total: f.need_sum,
+        total: f.needed_sum,
         current: f.current_sum,
-        currency: f.currency,
         city: f.location.city,
     })))
     $: othersFunds = safeGet(() => funds.filter(f => f.type !== 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
-        id: f.id,
-        src: f.avatars[0].src,
-        type: f.type,
+        id: f._id,
+        src: f.avatar,
         title: f.title,
-        total: f.need_sum,
+        total: f.needed_sum,
         current: f.current_sum,
-        currency: f.currency,
         city: f.location.city,
     })))
     $: iconsLine = {
-        likes: organization.likes,
-        isLiked: organization.is_liked,
-        views: organization.views,
+        likes: safeGet(() => organization.likes),
+        isLiked: safeGet(() => organization.is_liked),
+        views: safeGet(() => organization.views),
     };
     $: descriptionBlock = {
-        title: organization.title,
-        text: organization.description,
+        title: safeGet(() => organization.description),
+        text: safeGet(() => organization.content),
     };
     $: contacts = safeGet(() => organization.contacts.map(c => ({
         title: c.title,
         href: c.value,
         type: c.type,
     })), []. true)
-    $: donators = safeGet(() => organization.donators.map(d => ({
-        id: d.id,
+    $: donatorsData = safeGet(() => donators.map(d => ({
+        id: d._id,
         src: d.avatar,
-        title: `${d.currency} ${d.amount}`,
         subtitle: d.name,
+        title: `${d.amount} грн`,
         checked: d.checked,
     })));
-    $: lastNews = safeGet(() => organization.news.map(n => ({
-        id: n.id,
+    $: lastNews = safeGet(() => articles.map(n => ({
+        id: n._id,
         src: n.src,
         likes: n.likes,
         isLiked: n.is_liked,
@@ -124,40 +120,29 @@
         subtitle: n.subtitle,
         created_at: n.created_at,
     })).slice(0, 3));
-    $: documents = safeGet(() => organization.documents.map(d => ({
-        id: d.id,
-        alt: d.title,
-        src: d.src,
-        src2x: d.src2x,
-    })));
-    $: media = safeGet(() => organization.media.map(d => ({
-        id: d.id,
-        alt: d.title,
-        src: d.src,
-        srcBig: d.src2x,
-        description: d.description,
-    })), [], true);
+    $: documents = safeGet(() => organization.documents.map(d => ({ src: d, alt: 'Документи організації' })));
+    $: media = safeGet(() => organization.videos.map(d => ({ src: d, alt: 'Відео організації' })), [], true);
     $: location = {
         map: safeGet(() => organization.location.map),
-        virtual_tour: safeGet(() => organization.location.virtual_tour),
+        virtual_tour: safeGet(() => organization.tour),
     };
     $: commentsData = {
         comments: safeGet(() => comments.map(c => ({
             likes: c.likes,
-            avatar: c['author.avatar'],
-            author: c['author.name'],
-            comment: c.comment,
+            avatar: c.avatar,
+            author: c.name,
+            comment: c.content,
             checked: c.checked,
-            reply_to: c.reply_to,
             created_at: c.created_at,
         }))),
     };
 
     onMount(async () => {
         if (isNew) return
-        organization = await API.getOrganization(organizationId).catch(() => orgMock)
-        comments = await API.getComments().catch(() => commentsMock)
-        funds = await API.getFunds().catch(() => new Array(10).fill(fundMock))
+        organization = await API.getOrganization(organizationId).catch(() => null)
+        donators = await API.getDonatorsByOrg(organizationId).catch(() => null)
+        comments = await API.getCommentsByOrg(organizationId).catch(() => null)
+        funds = await API.getFundsByOrg(organizationId).catch(() => null)
     });
 
     async function onSubmit(section, values) {
@@ -255,7 +240,11 @@
 
     <Br size="10" />
     <LazyToggle active={!isEditMode} mounted>
-        <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views} isLiked={organization.isLiked}/>
+        <InteractionIndicators 
+            likes={iconsLine.likes} 
+            views={iconsLine.views} 
+            isLiked={iconsLine.isLiked}
+        />
         <Br size="50"/>
         <FundList title="Фонди тварин" items={animalFunds}/>
         <Br size="45" />
@@ -286,9 +275,9 @@
     <LazyToggle active={!isEditMode} mounted>
         <Share />
         <Br size="50" />
-        <Trust active={organization.isLiked}/>
+        <Trust active={iconsLine.isLiked}/>
         <Br size="50" />
-        <Donators items={donators}/>
+        <Donators items={donatorsData}/>
         <Br size="60" />
         <LastNews 
             items={lastNews} 
