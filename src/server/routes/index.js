@@ -6,6 +6,7 @@ import FundRouter from "./funds";
 import DonatorRouter from "./donators";
 import PetRouter from "./pets";
 import ArticleRouter from "./articles";
+import CommentRouter from "./comments";
 
 const router = Router();
 
@@ -16,6 +17,6 @@ router.use("/organizations", OrganizationRouter);
 router.use("/donators", DonatorRouter);
 router.use("/pets", PetRouter);
 router.use("/articles", ArticleRouter);
-router.use("/comments", UserRouter);
+router.use("/comments", CommentRouter);
 
 export default router;

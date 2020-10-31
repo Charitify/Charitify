@@ -5,3 +5,4 @@ export { default as FundController } from "./fund";
 export { default as DonatorController } from "./donator";
 export { default as PetController } from "./pet";
 export { default as ArticleController } from "./article";
+export { default as CommentController } from "./comment";
