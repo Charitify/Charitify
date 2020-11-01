@@ -34,7 +34,7 @@
 
             {#if title !== null}
                 <h2 class="text-ellipsis-multiline" style="--max-lines: 2">
-                    {title}
+                    {title || ''}
                 </h2>
             {:else}
                 <Loader type="h2" />
@@ -47,7 +47,7 @@
                 <p class="flex flex-align-center font-secondary font-w-500" style="opacity: .7; margin-left: -2px">
                     <Icon type="location" size="small"/>
                     <s></s>
-                    <span>{city}</span>
+                    <span>{city || ''}</span>
                 </p>
                 <Br size="10"/>     
             {:else}
@@ -56,18 +56,18 @@
         </div>
 
         <div>
-            <p class="font-secondary flex flex-wrap flex-align-end" style="letter-spacing: -0.5px">
+            <p class="font-secondary flex flex-wrap flex-align-baseline" style="letter-spacing: -0.5px">
                 {#if current !== null && total !== null}
-                    <span class="h1 font-w-500">{currency} {current}</span>
+                    <span class="h1 font-w-500">{current || 0} {currency || 'грн'}</span>
                     <s></s>
-                    <span class="h4">/ {currency} {total}</span>
+                    <span class="h4">/ {total || 0} {currency || 'грн'}</span>
                 {:else}
                     <div style="width: 80%; flex: none"><Loader type="h1" /></div>
                 {/if}
             </p>
 
             <Br size="20"/>  
-            <Progress value={Math.floor(current / total * 100)}/>
+            <Progress value={Math.floor((current || 0) / (total || 0) * 100)}/>
             <Br size="40"/>  
 
             <slot name="button"></slot>

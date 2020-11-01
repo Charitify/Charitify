@@ -24,7 +24,7 @@
     <Br size="20"/>
     {#if title !== undefined}
     {#if title !== null}
-        <h2>{title}</h2>
+        <h2>{title || ''}</h2>
     {:else}
         <div style="width: 200px"><Loader type="h2"/></div>
     {/if}
@@ -32,7 +32,7 @@
     <Br size="4"/>
     {#if title !== undefined}
     {#if title !== null}
-        <p>{subtitle}</p>
+        <p>{subtitle || ''}</p>
     {:else}
         <div style="width: 100px"><Loader type="p"/></div>
     {/if}

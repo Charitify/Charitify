@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+    import { API } from '@services'
+    import { root, organization } from '../store';
 	import { Header, OfflineMessage } from '@components';
 	import { Storages } from '@services'
 	import { safeGet, disableDoubleTapZoom, classnames } from '@utils'
@@ -10,8 +12,11 @@
 
 	$: classProp = classnames('theme-bg-color-secondary', theme)
 
-	onMount(() => {
+	onMount(async () => {
 		disableDoubleTapZoom([document])
+
+		root.set(await API.getUser('me').catch(() => null))
+		organization.set(await API.getOrganization($root.organization_id).catch(() => null))
 	})
 </script>
 

@@ -4,6 +4,7 @@ import { userSexEnum, userRolesEnum } from "../config";
 
 const userSchema = new Schema(
   {
+    avatar: { type: String, trim: true },
     username: { type: String, trim: true, unique: true },
     fullname: { type: String, trim: true, required: true },
     sex: { type: String, trim: true, enum: userSexEnum },

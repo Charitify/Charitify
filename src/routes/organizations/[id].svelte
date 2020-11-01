@@ -139,10 +139,10 @@
 
     onMount(async () => {
         if (isNew) return
-        organization = await API.getOrganization(organizationId).catch(() => null)
         donators = await API.getDonatorsByOrg(organizationId).catch(() => null)
         comments = await API.getCommentsByOrg(organizationId).catch(() => null)
         funds = await API.getFundsByOrg(organizationId).catch(() => null)
+        organization = await API.getOrganization(organizationId).catch(() => null)
     });
 
     async function onSubmit(section, values) {
