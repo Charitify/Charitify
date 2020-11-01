@@ -197,7 +197,6 @@
     </LazyToggle>
     <!-- END: Top info -->
 
-    <Br size="20"/>
     <LazyToggle active={!isEditMode} mounted>
         <InteractionIndicators likes={iconsLine.likes} views={iconsLine.views}/>
     </LazyToggle>

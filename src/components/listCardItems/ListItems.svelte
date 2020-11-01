@@ -137,10 +137,10 @@
                 <ListItem {item}>
                     <div slot="bottom-left" class="flex flex-align-baseline">
                         {#if type === 'fund'}
-                            <span class="h2 font-secondary">{item.current_sum || 0}{item.currency || ''} /<s/></span>
-                            <span class="h4 font-secondary">{item.need_sum || 0}{item.currency || ''}</span>
+                            <span class="h2 font-secondary">{item.current_sum || 0} /<s/></span>
+                            <span class="h4 font-secondary">{item.need_sum || 0}{item.currency || ' грн'}</span>
                         {:else if type === 'organization'}
-                            <span class="h2 font-secondary">{getItem(item).progress || '0'}%</span>
+                            <span class="h2 font-secondary">{item.progress || '0'}%</span>
                         {/if}
                     </div>
                 </ListItem>

@@ -1,6 +1,6 @@
 <script>
     import { stores } from '@sapper/app'
-    import { root, user, organization, funds } from '../../store';
+    import { root, user, organization, funds } from '@store';
     import { API } from '@services'
     import { safeGet } from '@utils'
     import { Br, Icon, Button, FundCards } from '@components'

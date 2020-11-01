@@ -52,6 +52,7 @@
         z-index: 2;
         transition: .2s ease-in-out;
         transform: none;
+        border-radius: var(--border-radius-big) var(--border-radius-big);
     }
 
     :global(body.header-inactive) .filters {

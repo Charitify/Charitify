@@ -204,14 +204,13 @@
         <EditArea on:click={() => isEdit.topInfo = !isEdit.topInfo} off={!isEditMode}>    
             <Br size="30"/>
             <OrganizationButtonView organization={organizationBlock}/>
+            <Br size="20" />
         </EditArea>
     </LazyToggle>
     {#if isEditMode}
         <Br size="50" />
     {/if}
     <!-- END: Top organization info -->
-
-    <Br size="20" />
     
     <!-- Description -->
     <LazyToggle active={isEdit.description}>

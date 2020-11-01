@@ -2,18 +2,16 @@
 <script>
     import { onMount } from 'svelte'
     import { API } from '@services'
-    import { safeGet } from '@utils'
-    import { organizations as orgsMock } from '@mock'
+    import { organizations } from '@store'
     import { Br, Loader, ListItems, Button, StatusCard } from '@components'
 
-    let organizations = []
     let loading = true
 
     onMount(loadEntity)
 
     async function loadEntity() {
         loading = true
-        organizations = await API.getOrganizations().catch(() => orgsMock)
+        organizations.set(await API.getOrganizations().catch(() => null))
         loading = false
     }
 
@@ -21,10 +19,10 @@
         return {
             ...item,
             id: item._id,
-            src: safeGet(() => item.avatar),
-            title: item.title,
+            src: item.logo,
+            title: item.name,
             subtitle: item.description,
-            progress: item.current_sum / item.need_sum * 100,
+            progress: +Math.min(100, Number.isFinite(item.progress) ? item.progress * 100 : item.current_sum / item.needed_sum * 100).toFixed(2),
             liked: item.is_liked,
         }
     }
@@ -34,7 +32,7 @@
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-{#if !organizations.length && !loading}
+{#if (!$organizations || !$organizations.length) && !loading}
     <Br size="10"/>
     <StatusCard 
         status="Упс"
@@ -46,8 +44,8 @@
         </Button>
     </StatusCard>
     <Br size="40"/>
-{:else if !organizations.length && loading}
+{:else if (!$organizations || !$organizations.length) && loading}
     <Loader />
-{:else if organizations.length}
-    <ListItems items={organizations} basePath="organizations" type="organization" {getItem}/>
+{:else if $organizations && $organizations.length}
+    <ListItems items={$organizations} basePath="organizations" type="organization" {getItem}/>
 {/if}

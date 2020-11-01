@@ -18,3 +18,4 @@
 <Br size="20"/>
 
 <QuickInfoCard {cardTop}/>
+<Br size="20"/>

@@ -1,30 +1,28 @@
 <script>
     import { onMount } from 'svelte'
     import { API } from '@services'
-    import { safeGet } from '@utils'
-    import { fund } from '@mock'
+    import { funds } from '@store'
     import { Br, ListItems, StatusCard, Button, Loader } from '@components'
 
-    let funds = []
     let loading = true
 
     onMount(loadEntity)
 
     async function loadEntity() {
         loading = true
-        funds = await API.getFunds().catch(() => new Array(10).fill(fund))
+        funds.set(await API.getFunds().catch(() => null))
         loading = false
     }
 
     function getItem(item) {
         return {
             id: item._id,
-            src: safeGet(() => item.avatar),
+            src: item.logo,
             title: item.title,
-            subtitle: item.subtitle,
+            subtitle: item.description,
             current_sum: item.current_sum,
-            need_sum: item.need_sum,
-            progress: +(item.current_sum / item.need_sum * 100).toFixed(2),
+            need_sum: item.needed_sum,
+            progress: +Math.min(100, Number.isFinite(item.progress) ? item.progress * 100 : item.current_sum / item.needed_sum * 100).toFixed(2),
             liked: item.is_liked,
         }
     }
@@ -34,7 +32,7 @@
     <title>Charitify - is the application for helping those in need.</title>
 </svelte:head>
 
-{#if !funds.length && !loading}
+{#if (!$funds || !$funds.length) && !loading}
     <Br size="10"/>
     <StatusCard 
         status="Упс"
@@ -46,8 +44,8 @@
         </Button>
     </StatusCard>
     <Br size="40"/>
-{:else if !funds.length && loading}
+{:else if (!$funds || !$funds.length) && loading}
     <Loader />
-{:else if funds.length}
-    <ListItems items={funds} basePath="funds" type="fund" {getItem}/>
+{:else if ($funds && $funds.length)}
+    <ListItems items={$funds} basePath="funds" type="fund" {getItem}/>
 {/if}
