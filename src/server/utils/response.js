@@ -1,16 +1,32 @@
-export default {
+import APIError from './errorAPI'
+
+export default class ResponseHandler {
     
-    data(data) {
+    static data(data) {
         return {
-            error: false,
+            error: null,
             data,
         }
-    },
+    }
 
-    error(error) {
+    static error(error) {
         return {
-            error: true,
-            data: error.message
+            error,
+            data: null
         }
+    }
+
+    static modifyResponseData(req, res, next) {
+        const jsonRaw = res.json
+        res.jsonRaw = jsonRaw
+        res.json = function (data) {
+            if (!APIError.isTrustedError(data)) {
+                arguments[0] = ResponseHandler.data(arguments[0])
+            } else {
+                arguments[0] = ResponseHandler.error(arguments[0])
+            }
+            jsonRaw.apply(res, arguments)
+        }
+        next()
     }
 }

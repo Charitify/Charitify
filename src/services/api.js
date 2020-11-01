@@ -90,7 +90,7 @@ class APIService {
   }
 
   async handleReject(reject) {
-    throw reject
+    throw (reject || {}).error || reject
   }
 }
 

@@ -8,6 +8,7 @@ import Logger from "@logger";
 import passport from "passport";
 import passportSetup from "./server/utils/passport";
 import bodyParser from "body-parser";
+import { APIError, response } from "./server/utils";
 
 const logger = Logger.child({ namespace: "server" });
 
@@ -23,9 +24,12 @@ app.use(passport.initialize());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(response.modifyResponseData);
+
+app.use("/api", router);
 
 app.use(morgan("tiny", { stream: logger.winstonStream }));
-app.use("/api", router);
+app.use(APIError.clientErrorHandler);
 
 app.use(
   "/",
@@ -33,7 +37,7 @@ app.use(
   sirv("static", { dev }),
   sapper.middleware()
 );
-
+  
 app.listen(PORT, (err) => {
   logger.info(`Server is sunning on ${PORT} port in ${ENV} mode!`);
   if (err) logger.err("error", err);

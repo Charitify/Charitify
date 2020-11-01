@@ -9,7 +9,7 @@
 <section class="flex" style="height: 280px">
     <Carousel {items} let:item={item}>
         <iframe 
-            src={item}
+            src={item.src}
             title="media"
             width="100%" 
             height="100%" 

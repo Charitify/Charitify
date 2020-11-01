@@ -117,11 +117,19 @@
 
     onMount(async () => {
         if (isNew) return
-        fund = await API.getFund(fundId).catch(() => null)
-        animal = await API.getPetsByFund(fundId).catch(() => null)
-        donators = await API.getDonatorsByFund(fundId).catch(() => null)
-        comments = await API.getCommentsByFund(fundId).catch(() => null)
-        organization = await API.getOrganizationByFund(fundId).catch(() => null)
+        Promise.all([
+            API.getFund(fundId).catch(() => null),
+            API.getPetsByFund(fundId).catch(() => null),
+            API.getDonatorsByFund(fundId).catch(() => null),
+            API.getCommentsByFund(fundId).catch(() => null),
+            API.getOrganizationByFund(fundId).catch(() => null),
+        ]).then(res => {
+            fund = res[0]
+            animal = safeGet(() => res[1][0])
+            donators = res[2]
+            comments = res[3]
+            organization = res[4]
+        })
     })
 
     async function onSubmit(section, values) {

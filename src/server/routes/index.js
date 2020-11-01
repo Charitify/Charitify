@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { APIError } from "../utils";
 import AuthRouter from "./auth";
 import UserRouter from "./users";
 import OrganizationRouter from "./organizations";
@@ -18,5 +19,7 @@ router.use("/donators", DonatorRouter);
 router.use("/pets", PetRouter);
 router.use("/articles", ArticleRouter);
 router.use("/comments", CommentRouter);
+
+router.get("*", (req, res) => res.status(APIError.statusCodes.NOT_FOUND).send(APIError.NOT_FOUND()));
 
 export default router;
