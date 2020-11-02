@@ -14,7 +14,7 @@
 <TopCarousel items={carouselTop}/>
 <Br size="40"/>
 
-<OrganizationButton id={organization.id} src={organization.logo} title={organization.name}/>
+<OrganizationButton id={organization._id} src={organization.logo} title={organization.name}/>
 <Br size="20"/>
 
 <QuickInfoCard {cardTop}/>

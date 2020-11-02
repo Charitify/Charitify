@@ -129,7 +129,7 @@
         align-self: stretch;
         box-shadow: var(--shadow-field-inset);
         border-radius: var(--border-radius-small);
-        background-color: rgba(var(--theme-bg-color));
+        background-color: rgba(var(--theme-input-bg-color));
     }
 
     .select .inp-inner {

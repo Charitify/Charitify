@@ -23,7 +23,7 @@
 </style>
 
 <section class={classnames({ preview })}>
-    <VirtualTour src={location.virtual_tour}/>
+    <VirtualTour src={location.tour}/>
     <Br size={preview ? 20 : 60} />
     <WeOnMap src={location.map}/>
 </section>

@@ -19,7 +19,7 @@
         {
             label: 'Організація:',
             type: 'select',
-            name: 'organization.id',
+            name: 'organization._id',
             meta: {
                 placeholder: 'Вибрати...',
                 options: [
@@ -28,7 +28,7 @@
                         label: 'Організація 1',
                     },
                     {
-                        value: 'id',
+                        value: '5f9576ac5b14e833e00305ce',
                         label: 'Організація 2',
                     },
                     {
@@ -41,7 +41,7 @@
         {
             label: 'Назва фонду:',
             type: 'text',
-            name: 'title',
+            name: 'name',
             meta: {
                 placeholder: 'Врятуємо її...',
                 maxlength: 20,
@@ -50,7 +50,7 @@
         {
             label: 'Ціль фонду:',
             type: 'text',
-            name: 'subtitle',
+            name: 'description',
             meta: {
                 placeholder: 'Тільки спільними силами...',
                 maxlength: 25,
@@ -59,7 +59,7 @@
         {
             label: 'Потрібно зібрати:',
             type: 'number',
-            name: 'need_sum',
+            name: 'needed_sum',
             meta: {
                 placeholder: 10,
                 min: 10,

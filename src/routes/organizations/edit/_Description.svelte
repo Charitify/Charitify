@@ -11,7 +11,7 @@
         {
             label: 'Фотогалерея:',
             type: 'files',
-            name: 'avatars',
+            name: 'photos',
             meta: {
                 multiple: true,
             }
@@ -21,6 +21,7 @@
             type: 'text',
             name: 'name',
             meta: {
+                disabled: true,
                 placeholder: 'Назва...',
                 maxlength: 20,
             },
@@ -28,7 +29,7 @@
         {
             label: 'Мета організації:',
             type: 'textarea',
-            name: 'subtitle',
+            name: 'description',
             meta: {
                 rows: 6,
                 placeholder: 'Ми піклуємось про...',

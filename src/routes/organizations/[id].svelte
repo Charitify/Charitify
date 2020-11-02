@@ -65,13 +65,13 @@
     $: organizationBlock = {
         id: safeGet(() => $organization._id),
         name: safeGet(() => $organization.name),
-        avatar: safeGet(() => $organization.logo),
+        logo: safeGet(() => $organization.logo),
     };
     $: carouselTop = safeGet(() => $organization.photos.map(p => ({ src: p, alt: 'Фото організації' })));
     $: descriptionShort = {
         name: safeGet(() => $organization.name) || null,
-        subtitle: safeGet(() => $organization.description) || null,
-        description: safeGet(() => $organization.content) || null,
+        description: safeGet(() => $organization.description) || null,
+        content: safeGet(() => $organization.content) || null,
     };
     $: animalFunds = safeGet(() => $funds.map(f => ({
         id: f._id,
@@ -123,7 +123,7 @@
     $: media = safeGet(() => $organization.videos.map(d => ({ src: d, alt: 'Відео організації' })), [], true);
     $: location = {
         map: safeGet(() => $organization.location.map),
-        virtual_tour: safeGet(() => $organization.tour),
+        tour: safeGet(() => $organization.location.tour),
     };
     $: commentsData = {
         comments: safeGet(() => $comments.map(c => ({
@@ -222,7 +222,7 @@
     <!-- Description -->
     <LazyToggle active={isEdit.description}>
         <DescriptionEdit 
-            data={{ ...descriptionShort, avatars: carouselTop }}
+            data={{ ...descriptionShort, photos: carouselTop }}
             submit={onSubmit.bind(null, 'description')} 
             on:cancel={onCancel.bind(null, 'description')} 
         />
@@ -235,7 +235,7 @@
             <DescriptionView 
                 {carouselTop}
                 title={descriptionShort.name} 
-                text={descriptionShort.subtitle}
+                text={descriptionShort.description}
             />
         </EditArea>
     </LazyToggle>
@@ -340,7 +340,7 @@
     <!-- Contacts -->
     <LazyToggle active={isEdit.contacts}>
         <ContactsEdit 
-            data={{ ...organizationBlock, contacts }}
+            data={{ ...organizationBlock, ...$organization }}
             submit={onSubmit.bind(null, 'contacts')}
             on:cancel={onCancel.bind(null, 'contacts')}
         />
@@ -349,14 +349,15 @@
         <EditArea on:click={() => isEdit.contacts = !isEdit.contacts} off={!isEditMode}>
             <Br size="30"/>
             <ContactsView {contacts} organization={$organization}/>
+            <Br size="20" />
         </EditArea>
     </LazyToggle>
     {#if isEditMode}
-        <Br size="10" />
+        <Br size="30" />
     {/if}
     <!-- END: Contacts -->
 
-    <Br size="60" />
+    <Br size="40" />
 
     <!-- Map -->
     <LazyToggle active={isEdit.map}>
@@ -385,7 +386,7 @@
         <Br size="40" />
     </LazyToggle>
     -->
-    
+
     <div class="full-container">
         <Footer />
     </div>

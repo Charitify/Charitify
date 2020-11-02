@@ -4,4 +4,4 @@
     export let organization
 </script>
 
-<OrganizationButton id={organization.id} src={organization.avatar} title={organization.name}/>
+<OrganizationButton id={organization.id} src={organization.logo} title={organization.name}/>

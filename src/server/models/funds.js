@@ -22,6 +22,7 @@ const fundSchema = new Schema(
       city: String,
       country: String,
       address: String,
+      map: String,
     },
     telegram: { type: String, trim: true },
     facebook: { type: String, trim: true },

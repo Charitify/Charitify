@@ -11,7 +11,7 @@
     let formFields = [
         {
             type: 'avatar',
-            name: 'avatar',
+            name: 'logo',
             meta: {
                 accept: 'image/jpeg,image/png',
             }
@@ -36,7 +36,7 @@
         {
             label: 'Адреса:',
             type: 'search',
-            name: 'address',
+            name: 'location.address',
             meta: {
                 placeholder: 'Почніть вводити...',
                 maxlength: 50,

@@ -60,10 +60,10 @@
     $: carouselTop = safeGet(() => $fund.photos.map(p => ({ src: p, alt: 'Фото фонду' })));
     $: organizationData = $organization || {};
     $: cardTop = safeGet(() => ({
-        title: $fund.title,
-        subtitle: $fund.description,
+        name: $fund.name,
+        description: $fund.description,
         current_sum: $fund.current_sum,
-        need_sum: $fund.needed_sum,
+        needed_sum: $fund.needed_sum,
     }));
     $: iconsLine = {
         likes: safeGet(() => $fund.likes),
@@ -125,7 +125,7 @@
             pet.set(safeGet(() => res[1][0]) || null)
             donators.set(res[2] || null)
             comments.set(res[3] || null)
-            organization.set(res[4] || null)
+            organization.set(safeGet(() => res[4][0]) || null)
         })
     }
 
@@ -305,7 +305,7 @@
         <Br size="60"/>
     </LazyToggle>
     -->
-    
+
     <div class="full-container">
         <Footer/>
     </div>

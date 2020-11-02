@@ -19,7 +19,7 @@
         {
             label: '3D - Тур:',
             type: 'url',
-            name: 'location.virtual_tour',
+            name: 'location.tour',
             meta: {
                 placeholder: 'https://www.google.com.ua/maps/@48.8994332,24.7567114...',
             }

@@ -10,7 +10,7 @@
     let formFields = [
         {
             type: 'avatar',
-            name: 'avatar',
+            name: 'logo',
             meta: {
                 accept: 'image/jpeg,image/png',
             }
