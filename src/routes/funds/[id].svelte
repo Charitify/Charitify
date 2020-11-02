@@ -1,7 +1,8 @@
 <script>
+    import { onMount } from "svelte";
     import { stores } from '@sapper/app'
-    import { onMount } from 'svelte'
     import { API } from '@services'
+    import { organization, fund, pet, donators, comments } from '@store'
     import { safeGet, _ } from '@utils'
     import { 
         Br, 
@@ -38,10 +39,15 @@
 
     const { page } = stores()
 
-    let fundId = $page.params.id
-    let isNew = fundId === 'new'
+    let mounted = false
+    onMount(() => mounted = true)
+    
+    $: fundId = $page.params.id
+    $: isNew = fundId === 'new'
 
-    let isEditMode = isNew
+    $: if (!isNew && mounted) fetchData(fundId)
+
+    $: isEditMode = isNew
     let isEdit = {
         topInfo: false,
         description: false,
@@ -51,60 +57,52 @@
         animalCard: false,
     }
 
-    // Entities
-    let fund
-    let animal
-    let comments
-    let donators
-    let organization
-
-    $: carouselTop = safeGet(() => fund.photos.map(p => ({ src: p, alt: 'Фото фонду' })));
-    $: organizationData = organization || {};
+    $: carouselTop = safeGet(() => $fund.photos.map(p => ({ src: p, alt: 'Фото фонду' })));
+    $: organizationData = $organization || {};
     $: cardTop = safeGet(() => ({
-        title: fund.title,
-        subtitle: fund.subtitle,
-        current_sum: fund.current_sum,
-        need_sum: fund.need_sum,
-        currency: fund.currency,
+        title: $fund.title,
+        subtitle: $fund.description,
+        current_sum: $fund.current_sum,
+        need_sum: $fund.needed_sum,
     }));
     $: iconsLine = {
-        likes: safeGet(() => fund.likes),
-        views: safeGet(() => fund.views),
+        likes: safeGet(() => $fund.likes),
+        views: safeGet(() => $fund.views),
     };
     $: trust = {
-        isLiked: safeGet(() => fund.is_liked),
+        isLiked: safeGet(() => $fund.is_liked),
     };
     $: descriptionBlock = {
-        title: safeGet(() => fund.title),
-        description: safeGet(() => fund.description),
+        title: safeGet(() => $fund.name),
+        description: safeGet(() => $fund.content),
     };
     $: animalData = {
-        id: safeGet(() => animal._id),
-        avatar: safeGet(() => animal.avatar),
-        name: safeGet(() => animal.name),
-        breed: safeGet(() => animal.breed),
-        birth: safeGet(() => animal.birth),
-        age: safeGet(() => (new Date().getFullYear()) - (new Date(animal.birth).getFullYear())),
-        sex: safeGet(() => nimal.sex),
-        sterilization: safeGet(() => animal.sterilization),
-        character: safeGet(() => animal.character),
-        lifestory: safeGet(() => animal.story.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() }))),
-        vaccination: safeGet(() => animal.vaccines),
+        id: safeGet(() => $pet._id),
+        avatar: safeGet(() => $pet.avatar),
+        name: safeGet(() => $pet.name),
+        breed: safeGet(() => $pet.breed),
+        birth: safeGet(() => $pet.birth),
+        age: safeGet(() => (new Date().getFullYear()) - (new Date($pet.birth).getFullYear())),
+        sex: safeGet(() => $pet.sex),
+        sterilization: safeGet(() => $pet.sterilization),
+        character: safeGet(() => $pet.character),
+        lifestory: safeGet(() => $pet.story.map(l => ({ ...l, date: new Date(l.date).toLocaleDateString() }))),
+        vaccination: safeGet(() => $pet.vaccines),
     };
-    $: donatorsData = safeGet(() => donators.map(d => ({
-        id: d.id,
+    $: donatorsData = safeGet(() => $donators.map(d => ({
+        id: d._id,
         src: d.avatar,
         subtitle: d.name,
         title: `${d.amount} грн`,
     })));
-    $: documents = safeGet(() => fund.documents.map(d => ({ src: d, title: 'Докуменди фонду' })));
-    $: media = safeGet(() => fund.videos.map(v => ({ src: v, alt: 'Відео фонду' })), [], true);
+    $: documents = safeGet(() => $fund.documents.map(d => ({ src: d, title: 'Докуменди фонду' })));
+    $: media = safeGet(() => $fund.videos.map(v => ({ src: v, alt: 'Відео фонду' })), [], true);
     $: howToHelp = safeGet(() => ({
-        phone: fund.phone,
-        how_to_help: fund.how_to_help,
+        phone: $fund.phone,
+        how_to_help: $fund.how_to_help,
     }));
     $: commentsData = {
-        comments: safeGet(() => comments.map(c => ({
+        comments: safeGet(() => $comments.map(c => ({
             id: c._id,
             likes: c.likes,
             avatar: c.avatar,
@@ -115,8 +113,7 @@
         }))),
     };
 
-    onMount(async () => {
-        if (isNew) return
+    async function fetchData () {
         Promise.all([
             API.getFund(fundId).catch(() => null),
             API.getPetsByFund(fundId).catch(() => null),
@@ -124,13 +121,13 @@
             API.getCommentsByFund(fundId).catch(() => null),
             API.getOrganizationByFund(fundId).catch(() => null),
         ]).then(res => {
-            fund = res[0]
-            animal = safeGet(() => res[1][0])
-            donators = res[2]
-            comments = res[3]
-            organization = res[4]
+            fund.set(res[0] || null)
+            pet.set(safeGet(() => res[1][0]) || null)
+            donators.set(res[2] || null)
+            comments.set(res[3] || null)
+            organization.set(res[4] || null)
         })
-    })
+    }
 
     async function onSubmit(section, values) {
         isEdit[section] = false
@@ -301,11 +298,14 @@
     <!-- END: How to help -->
 
     <Br size="60"/>
+
+    <!--
     <LazyToggle active={!isEditMode} mounted>
         <Comments items={commentsData.comments}/>
         <Br size="60"/>
     </LazyToggle>
-
+    -->
+    
     <div class="full-container">
         <Footer/>
     </div>

@@ -6,8 +6,8 @@
     /**
      * @type {{
      *  id: string,
-     *  src: string,
      *  total: number,
+     *  photos: string,
      *  current: number,
      *  currency: string,
      *  city: string,
@@ -20,12 +20,12 @@
 <Carousel {items} size="auto" let:index={index} let:item={item} class="charities">
     <div class={!index ? 'start' : index === items.length - 1 ? 'end' : ''} key={item.id}>
         <FundCard
-            src={item.src}
             total={item.total}
             current={item.current}
             currency={item.currency}
             city={item.city}
             title={item.title}
+            photos={item.photos}
         >
             <span slot="button">
                 <slot name="button" {item}>

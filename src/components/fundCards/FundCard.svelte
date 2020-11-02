@@ -8,10 +8,10 @@
     import FancyBox from '@components/FancyBox.svelte'
     import Carousel from '@components/Carousel.svelte'
 
-    export let src = null
     export let city = null
     export let title = null
     export let total = null
+    export let photos = null
     export let current = null
     export let currency = null
 </script>
@@ -20,7 +20,7 @@
     
     <div style="height: 160px" class="flex flex-none">
         <Carousel 
-            items={[{ src, alt: title }, { src, alt: title }, { src, alt: title }]}
+            items={photos}
             disableFancy={true}
             dotsBelow={false}
             rounded={false}
@@ -56,17 +56,20 @@
         </div>
 
         <div>
-            <p class="font-secondary flex flex-wrap flex-align-baseline" style="letter-spacing: -0.5px">
+            <Br size="10"/>  
+            <p class="font-secondary flex flex-wrap flex-align-end" style="letter-spacing: -0.5px">
                 {#if current !== null && total !== null}
-                    <span class="h1 font-w-500">{current || 0} {currency || 'грн'}</span>
-                    <s></s>
-                    <span class="h4">/ {total || 0} {currency || 'грн'}</span>
+                    <span class="flex flex-wrap flex-align-baseline">
+                        <span class="h1 font-w-500">{current || 0}</span>
+                        <s></s>
+                        <span class="h4">/ {total || 0} {currency || 'грн'}</span>
+                    </span>
                 {:else}
                     <div style="width: 80%; flex: none"><Loader type="h1" /></div>
                 {/if}
             </p>
 
-            <Br size="20"/>  
+            <Br size="10"/>  
             <Progress value={Math.floor((current || 0) / (total || 0) * 100)}/>
             <Br size="40"/>  
 

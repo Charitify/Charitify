@@ -21,7 +21,7 @@
       {#if title !== null}
         <s />
         <s />
-        <h3>{title}</h3>
+        <h3>{title || 0}</h3>
       {:else}
         <span><Loader type="h3"/></span>
       {/if}

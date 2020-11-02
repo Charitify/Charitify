@@ -1,23 +1,23 @@
 import { ArticleService } from "../services";
 
 const getArticle = async (id) => {
-  return ArticleService.getPet(id);
+  return ArticleService.getArticle(id);
 };
 
 const getArticles = async () => {
-  return ArticleService.getPets();
+  return ArticleService.getArticles();
 };
 
 const createArticle = async (data) => {
-  return ArticleService.createPet(data);
+  return ArticleService.createArticle(data);
 };
 
 const updateArticle = async (id, data) => {
-  return ArticleService.updatePet(id, data);
+  return ArticleService.updateArticle(id, data);
 };
 
 const removeArticle = async (id) => {
-  return ArticleService.removePet(id);
+  return ArticleService.removeArticle(id);
 };
 
 export default {

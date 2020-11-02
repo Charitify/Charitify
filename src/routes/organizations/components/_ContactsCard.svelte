@@ -34,8 +34,8 @@
             <Br size="5" />
 
             {#if orgName !== null}
-                <p class="h3 font-secondary font-w-500" style="opacity: .7">
-                    {orgName}
+                <p class="h3 font-secondary font-w-500 text-center" style="opacity: .7">
+                    {orgName || ''}
                 </p>
             {:else}
                 <p style="width: 60%">

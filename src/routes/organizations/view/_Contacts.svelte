@@ -8,8 +8,7 @@
 
 <ContactsCard 
     items={contacts}
-    orgName={safeGet(() => organization.title)}
-    avatar={safeGet(() => organization.avatar)}
-    avatarBig={safeGet(() => organization.avatarBig)}
+    orgName={safeGet(() => organization.name)}
+    avatar={safeGet(() => organization.logo)}
 />
 

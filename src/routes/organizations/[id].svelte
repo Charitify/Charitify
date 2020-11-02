@@ -1,7 +1,8 @@
 <script>
-    import { stores } from "@sapper/app";
     import { onMount } from "svelte";
+    import { stores } from "@sapper/app";
     import { API } from "@services";
+    import { organization, funds, donators, comments, articles } from '@store'
     import { safeGet } from "@utils";
     import { 
         Br, 
@@ -41,11 +42,16 @@
 
     const { page } = stores();
 
-    // Organization
-    let organizationId = $page.params.id;
-    let isNew = organizationId === 'new'
+    let mounted = false
+    onMount(() => mounted = true)
 
-    let isEditMode = isNew
+    // Organization
+    $: organizationId = $page.params.id;
+    $: isNew = organizationId === 'new'
+
+    $: if (!isNew && mounted) fetchData(organizationId)
+
+    $: isEditMode = isNew
     let isEdit = {
         topInfo: false,
         description: false,
@@ -56,62 +62,55 @@
         map: false,
     }
 
-    // Entities
-    let funds
-    let articles
-    let donators
-    let comments
-    let organization
-    
     $: organizationBlock = {
-        id: safeGet(() => organization._id),
-        name: safeGet(() => organization.name),
-        avatar: safeGet(() => organization.avatar),
+        id: safeGet(() => $organization._id),
+        name: safeGet(() => $organization.name),
+        avatar: safeGet(() => $organization.logo),
     };
-    $: carouselTop = safeGet(() => organization.photos.map(p => ({ src: p, alt: 'Фото організації' })));
+    $: carouselTop = safeGet(() => $organization.photos.map(p => ({ src: p, alt: 'Фото організації' })));
     $: descriptionShort = {
-        name: safeGet(() => organization.name) || null,
-        subtitle: safeGet(() => organization.description) || null,
-        description: safeGet(() => organization.content) || null,
+        name: safeGet(() => $organization.name) || null,
+        subtitle: safeGet(() => $organization.description) || null,
+        description: safeGet(() => $organization.content) || null,
     };
-    $: animalFunds = safeGet(() => funds.filter(f => f.type === 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
+    $: animalFunds = safeGet(() => $funds.map(f => ({
         id: f._id,
-        src: f.avatar,
         title: f.title,
         total: f.needed_sum,
         current: f.current_sum,
-        city: f.location.city,
+        city: safeGet(() => f.location.city),
+        photos: safeGet(() => f.photos.map(p => ({ src: p, alt: 'Фото фонду' })), [], true),
     })))
-    $: othersFunds = safeGet(() => funds.filter(f => f.type !== 'animal').reduce((acc, f) => acc.concat(f, f, f), []).map(f => ({
+    $: othersFunds = safeGet(() => $funds.map(f => ({
         id: f._id,
-        src: f.avatar,
         title: f.title,
         total: f.needed_sum,
         current: f.current_sum,
-        city: f.location.city,
+        city: safeGet(() => f.location.city),
+        photos: safeGet(() => f.photos.map(p => ({ src: p, alt: 'Фото фонду' })), [], true),
     })))
     $: iconsLine = {
-        likes: safeGet(() => organization.likes),
-        isLiked: safeGet(() => organization.is_liked),
-        views: safeGet(() => organization.views),
+        likes: safeGet(() => $organization.likes),
+        isLiked: safeGet(() => $organization.is_liked),
+        views: safeGet(() => $organization.views),
     };
     $: descriptionBlock = {
-        title: safeGet(() => organization.description),
-        text: safeGet(() => organization.content),
+        title: safeGet(() => $organization.description),
+        text: safeGet(() => $organization.content),
     };
-    $: contacts = safeGet(() => organization.contacts.map(c => ({
-        title: c.title,
-        href: c.value,
-        type: c.type,
-    })), []. true)
-    $: donatorsData = safeGet(() => donators.map(d => ({
+    $: contacts = safeGet(() => ['phone', 'email', 'telegram', 'facebook', 'viber'].map(k => ({
+        title: k,
+        type: k,
+        href: $organization[k],
+    })), [], true)
+    $: donatorsData = safeGet(() => $donators.map(d => ({
         id: d._id,
         src: d.avatar,
         subtitle: d.name,
         title: `${d.amount} грн`,
         checked: d.checked,
     })));
-    $: lastNews = safeGet(() => articles.map(n => ({
+    $: lastNews = safeGet(() => $articles.map(n => ({
         id: n._id,
         src: n.src,
         likes: n.likes,
@@ -120,14 +119,14 @@
         subtitle: n.subtitle,
         created_at: n.created_at,
     })).slice(0, 3));
-    $: documents = safeGet(() => organization.documents.map(d => ({ src: d, alt: 'Документи організації' })));
-    $: media = safeGet(() => organization.videos.map(d => ({ src: d, alt: 'Відео організації' })), [], true);
+    $: documents = safeGet(() => $organization.documents.map(d => ({ src: d, alt: 'Документи організації' })));
+    $: media = safeGet(() => $organization.videos.map(d => ({ src: d, alt: 'Відео організації' })), [], true);
     $: location = {
-        map: safeGet(() => organization.location.map),
-        virtual_tour: safeGet(() => organization.tour),
+        map: safeGet(() => $organization.location.map),
+        virtual_tour: safeGet(() => $organization.tour),
     };
     $: commentsData = {
-        comments: safeGet(() => comments.map(c => ({
+        comments: safeGet(() => $comments.map(c => ({
             likes: c.likes,
             avatar: c.avatar,
             author: c.name,
@@ -137,13 +136,21 @@
         }))),
     };
 
-    onMount(async () => {
-        if (isNew) return
-        donators = await API.getDonatorsByOrg(organizationId).catch(() => null)
-        comments = await API.getCommentsByOrg(organizationId).catch(() => null)
-        funds = await API.getFundsByOrg(organizationId).catch(() => null)
-        organization = await API.getOrganization(organizationId).catch(() => null)
-    });
+    async function fetchData () {
+        Promise.all([
+            API.getOrganization(organizationId).catch(() => null),
+            API.getFundsByOrg(organizationId).catch(() => null),
+            API.getDonatorsByOrg(organizationId).catch(() => null),
+            API.getArticlesByOrg(organizationId).catch(() => null),
+            API.getCommentsByOrg(organizationId).catch(() => null),
+        ]).then(res => {
+            organization.set(res[0] || null)
+            funds.set(res[1] || null)
+            donators.set(res[2] || null)
+            articles.set(res[3] || null)
+            comments.set(res[4] || null)
+        })
+    }
 
     async function onSubmit(section, values) {
         isEdit[section] = false
@@ -341,7 +348,7 @@
     <LazyToggle active={!isEdit.contacts} mounted class="full-container">
         <EditArea on:click={() => isEdit.contacts = !isEdit.contacts} off={!isEditMode}>
             <Br size="30"/>
-            <ContactsView {contacts} {organization}/>
+            <ContactsView {contacts} organization={$organization}/>
         </EditArea>
     </LazyToggle>
     {#if isEditMode}
@@ -372,11 +379,13 @@
     
     <Br size="60" />
 
+    <!--
     <LazyToggle active={!isEditMode} mounted>
         <Comments items={commentsData.comments}/>
         <Br size="40" />
     </LazyToggle>
-
+    -->
+    
     <div class="full-container">
         <Footer />
     </div>
