@@ -9,6 +9,7 @@ const petSchema = new Schema(
     birth: { type: Date },
     sex: { type: String, trim: true },
     character: { type: String, trim: true },
+    character_short: { type: String, trim: true },
     sterelization: { type: Boolean },
     photos: { type: [String] },
     story: [{
