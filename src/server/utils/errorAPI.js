@@ -10,16 +10,16 @@ const statusCodes = {
 
 class BaseError extends Error {
     constructor(name, httpCode, description, isOperational, data) {
-        super(description);
-        Object.setPrototypeOf(this, new.target.prototype);
+        super(description)
+        Object.setPrototypeOf(this, new.target.prototype)
 
-        this.name = name;
-        this.description = description;
-        this.httpCode = httpCode;
-        this.isOperational = isOperational;
-        this.data = data;
+        this.name = name
+        this.description = description
+        this.httpCode = httpCode
+        this.isOperational = isOperational
+        this.data = data
 
-        Error.captureStackTrace(this);
+        Error.captureStackTrace(this)
     }
 }
 
@@ -32,7 +32,7 @@ export default class APIError extends BaseError {
         description,
         data
     ) {
-        super(name, httpCode, description, isOperational, data);
+        super(name, httpCode, description, isOperational, data)
     }
 
     static get statusCodes() {
@@ -70,8 +70,8 @@ export default class APIError extends BaseError {
     }
     static isTrustedError(error) {
         if (error instanceof BaseError) {
-            return error.isOperational;
+            return error.isOperational
         }
-        return false;
+        return false
     }
 }

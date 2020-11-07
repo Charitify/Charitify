@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import connection from "./connection";
+import { Schema } from "mongoose"
+import connection from "./connection"
 
 const articleSchema = new Schema(
   {
@@ -17,8 +17,8 @@ const articleSchema = new Schema(
     timestamps: true,
     strict: true,
   }
-);
+)
 
-articleSchema.index({ title: true });
+articleSchema.index({ title: true })
 
-export default connection.model("Article", articleSchema);
+export default connection.model("Article", articleSchema)

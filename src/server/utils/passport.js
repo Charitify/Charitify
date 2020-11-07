@@ -1,19 +1,19 @@
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import { Strategy as FacebookStrategy } from "passport-facebook";
-import AuthService from "../services/auth";
-import { User } from "../models";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt"
+import { Strategy as FacebookStrategy } from "passport-facebook"
+import AuthService from "../services/auth"
+import { User } from "../models"
 
 // app.js will pass the global passport object here, and this function will configure it
 export default function (passport) {
   // The JWT payload is passed into the verify callback
 
   passport.serializeUser(function (user, done) {
-    done(null, user);
-  });
+    done(null, user)
+  })
 
   passport.deserializeUser(function (user, done) {
-    done(null, user);
-  });
+    done(null, user)
+  })
 
   passport.use(
     new JwtStrategy(
@@ -28,15 +28,15 @@ export default function (passport) {
       },
       async (jwt_payload, done) => {
         try {
-          const user = await User.findOne({ _id: jwt_payload.sub });
-          if (user) return done(null, { ...user, token: jwt_payload });
-          return done(null, false);
+          const user = await User.findOne({ _id: jwt_payload.sub })
+          if (user) return done(null, { ...user, token: jwt_payload })
+          return done(null, false)
         } catch (error) {
-          return done(error, false);
+          return done(error, false)
         }
       }
     )
-  );
+  )
 
   passport.use(
     new FacebookStrategy(
@@ -59,13 +59,13 @@ export default function (passport) {
           const user = await AuthService.registerWithFacebook(
             accessToken,
             profile
-          );
-          if (user) return done(null, { ...user, token: jwt_payload });
-          return done(null, false);
+          )
+          if (user) return done(null, { ...user, token: jwt_payload })
+          return done(null, false)
         } catch (error) {
-          return done(error, false);
+          return done(error, false)
         }
       }
     )
-  );
+  )
 }

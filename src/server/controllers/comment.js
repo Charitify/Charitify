@@ -1,24 +1,24 @@
-import { CommentService } from "../services";
+import { CommentService } from "../services"
 
 const getComment = async (id) => {
-  return CommentService.getComment(id);
-};
+  return CommentService.getComment(id)
+}
 
 const getComments = async (options) => {
-  return CommentService.getComments(options);
-};
+  return CommentService.getComments(options)
+}
 
 const createComment = async (data) => {
-  return CommentService.createComment(data);
-};
+  return CommentService.createComment(data)
+}
 
 const updateComment = async (id, data) => {
-  return CommentService.updateComment(id, data);
-};
+  return CommentService.updateComment(id, data)
+}
 
 const removeComment = async (id) => {
-  return CommentService.removeComment(id);
-};
+  return CommentService.removeComment(id)
+}
 
 export default {
   getComment,
@@ -26,4 +26,4 @@ export default {
   createComment,
   updateComment,
   removeComment,
-};
+}

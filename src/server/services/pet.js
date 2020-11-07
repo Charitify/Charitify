@@ -1,29 +1,29 @@
-import mongoose from "mongoose";
-import { Pet } from "../models";
+import mongoose from "mongoose"
+import { Pet } from "../models"
 
 const getPets = async ({ query } = {}) => {
   const { fund_id } = query || {}
   if (fund_id) {
     return Pet.find({ fund_id: new mongoose.Types.ObjectId(fund_id) })
   }
-  return Pet.find();
-};
+  return Pet.find()
+}
 
 const getPet = async (id) => {
-  return Pet.findById(id);
-};
+  return Pet.findById(id)
+}
 
 const createPet = async (data) => {
-  return Pet.create(data);
-};
+  return Pet.create(data)
+}
 
 const updatePet = async (id, data) => {
-  return Pet.findByIdAndUpdate(id, data);
-};
+  return Pet.findByIdAndUpdate(id, data)
+}
 
 const removePet = async (id) => {
-  return Pet.findByIdAndRemove(id);
-};
+  return Pet.findByIdAndRemove(id)
+}
 
 export default {
   getPets,
@@ -31,4 +31,4 @@ export default {
   createPet,
   updatePet,
   removePet,
-};
+}

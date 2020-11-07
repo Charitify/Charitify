@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import connection from "./connection";
+import { Schema } from "mongoose"
+import connection from "./connection"
 
 const fundSchema = new Schema(
   {
@@ -42,8 +42,8 @@ const fundSchema = new Schema(
     timestamps: true,
     strict: true,
   }
-);
+)
 
-fundSchema.index({ name: true });
+fundSchema.index({ name: true })
 
-export default connection.model("Fund", fundSchema);
+export default connection.model("Fund", fundSchema)

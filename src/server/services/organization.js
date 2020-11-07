@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { Organization } from "../models";
+import mongoose from "mongoose"
+import { Organization } from "../models"
 
 const getOrganizations = async ({ query } = {}) => {
   const { user_id, fund_id } = query || {}
@@ -9,24 +9,24 @@ const getOrganizations = async ({ query } = {}) => {
   if (fund_id) {
     return Organization.findOne().where('funds_id').in([new mongoose.Types.ObjectId(fund_id)])
   }
-  return Organization.find();
-};
+  return Organization.find()
+}
 
 const getOrganization = async (id) => {
-  return Organization.findById(id);
-};
+  return Organization.findById(id)
+}
 
 const createOrganization = async (data) => {
-  return Organization.create(data);
-};
+  return Organization.create(data)
+}
 
 const updateOrganization = async (id, data) => {
-  return Organization.findByIdAndUpdate(id, data);
-};
+  return Organization.findByIdAndUpdate(id, data)
+}
 
 const removeOrganization = async (id) => {
-  return Organization.findByIdAndRemove(id);
-};
+  return Organization.findByIdAndRemove(id)
+}
 
 export default {
   getOrganizations,
@@ -34,4 +34,4 @@ export default {
   createOrganization,
   updateOrganization,
   removeOrganization,
-};
+}

@@ -1,11 +1,11 @@
-import { createLogger, format, transports } from "winston";
-const { combine, timestamp, printf, colorize } = format;
+import { createLogger, format, transports } from "winston"
+const { combine, timestamp, printf, colorize } = format
 
 const myFormat = printf(({ level, message, timestamp, stack, namespace }) => {
   return `${timestamp} ${namespace || "none"} - [${level}] : ${message} ${
     stack || ""
-  }`;
-});
+  }`
+})
 
 const logger = createLogger({
   format: combine(colorize(), timestamp(), myFormat),
@@ -14,16 +14,16 @@ const logger = createLogger({
       silent: process.env.ENV === "test",
     }),
   ],
-});
+})
 
 const formatMessage = (text) => {
-  return text.substring(0, text.lastIndexOf("\n"));
-};
+  return text.substring(0, text.lastIndexOf("\n"))
+}
 
 logger.winstonStream = {
   write: function (message, encoding) {
-    logger.child({ namespace: "api" }).info(formatMessage(message));
+    logger.child({ namespace: "api" }).info(formatMessage(message))
   },
-};
+}
 
-export default logger;
+export default logger

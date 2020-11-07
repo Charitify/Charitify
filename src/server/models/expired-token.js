@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import connection from "./connection";
+import { Schema } from "mongoose"
+import connection from "./connection"
 
 const userSchema = new Schema(
   {
@@ -14,6 +14,6 @@ const userSchema = new Schema(
     collection: "expired-tokens",
     strict: true,
   }
-);
+)
 
-export default connection.model("ExpiredTokens", userSchema);
+export default connection.model("ExpiredTokens", userSchema)

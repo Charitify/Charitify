@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
-import connection from "./connection";
-import { userSexEnum, userRolesEnum } from "../config";
+import { Schema } from "mongoose"
+import connection from "./connection"
+import { userSexEnum, userRolesEnum } from "../config"
 
 const userSchema = new Schema(
   {
@@ -34,9 +34,9 @@ const userSchema = new Schema(
     timestamps: true,
     strict: true,
   }
-);
+)
 
-userSchema.index({ email: true });
-userSchema.index({ username: true });
+userSchema.index({ email: true })
+userSchema.index({ username: true })
 
-export default connection.model("User", userSchema);
+export default connection.model("User", userSchema)

@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { Comment } from "../models";
+import mongoose from "mongoose"
+import { Comment } from "../models"
 
 const getComments = async ({ query } = {}) => {
   const { organization_id, fund_id } = query || {}
@@ -9,24 +9,24 @@ const getComments = async ({ query } = {}) => {
   if (fund_id) {
     return Comment.find({ fund_id: new mongoose.Types.ObjectId(fund_id) })
   }
-  return Comment.find();
-};
+  return Comment.find()
+}
 
 const getComment = async (id) => {
-  return Comment.findById(id);
-};
+  return Comment.findById(id)
+}
 
 const createComment = async (data) => {
-  return Comment.create(data);
-};
+  return Comment.create(data)
+}
 
 const updateComment = async (id, data) => {
-  return Comment.findByIdAndUpdate(id, data);
-};
+  return Comment.findByIdAndUpdate(id, data)
+}
 
 const removeComment = async (id) => {
-  return Comment.findByIdAndRemove(id);
-};
+  return Comment.findByIdAndRemove(id)
+}
 
 export default {
   getComments,
@@ -34,4 +34,4 @@ export default {
   createComment,
   updateComment,
   removeComment,
-};
+}

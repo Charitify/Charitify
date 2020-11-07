@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import connection from "./connection";
+import { Schema } from "mongoose"
+import connection from "./connection"
 
 const petSchema = new Schema(
   {
@@ -26,8 +26,8 @@ const petSchema = new Schema(
     timestamps: true,
     strict: true,
   }
-);
+)
 
-petSchema.index({ name: true });
+petSchema.index({ name: true })
 
-export default connection.model("Pet", petSchema);
+export default connection.model("Pet", petSchema)
