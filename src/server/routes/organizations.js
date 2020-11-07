@@ -30,7 +30,8 @@ router.delete("/:id", isAuthed, async (req, res) => {
 
 router.get("/", isAuthed, async (req, res) => {
   try {
-    const data = await OrganizationController.getOrganizations();
+    const { query } = req
+    const data = await OrganizationController.getOrganizations({ query });
     return res.send(data);
   } catch (err) { next(err) }
 });

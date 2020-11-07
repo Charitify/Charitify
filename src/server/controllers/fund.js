@@ -4,8 +4,8 @@ const getFund = async (id) => {
   return FundService.getFund(id);
 };
 
-const getFunds = async () => {
-  return FundService.getFunds();
+const getFunds = async (options) => {
+  return FundService.getFunds(options);
 };
 
 const createFund = async (data) => {

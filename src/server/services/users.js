@@ -1,11 +1,12 @@
+import mongoose from "mongoose";
 import { User } from "../models";
+
+const getUsers = async () => {
+  return User.find();
+};
 
 const getUser = async (id) => {
   return User.findById(id);
-};
-
-const getUsers = async () => {
-  return User.find({});
 };
 
 const createUser = async (data) => {
@@ -21,8 +22,8 @@ const removeUser = async (id) => {
 };
 
 export default {
-  getUser,
   getUsers,
+  getUser,
   createUser,
   updateUser,
   removeUser,

@@ -4,8 +4,8 @@ const getUser = async (id) => {
   return UserService.getUser(id);
 };
 
-const getUsers = async () => {
-  return UserService.getUsers();
+const getUsers = async (options) => {
+  return UserService.getUsers(options);
 };
 
 const createUser = async (data) => {

@@ -1,11 +1,19 @@
+import mongoose from "mongoose";
 import { Donator } from "../models";
+
+const getDonators = async ({ query } = {}) => {
+  const { organization_id, fund_id } = query || {}
+  if (organization_id) {
+    return Donator.find().where('organizations_id').in([new mongoose.Types.ObjectId(organization_id)])
+  }
+  if (fund_id) {
+    return Donator.find().where('funds_id').in([new mongoose.Types.ObjectId(fund_id)])
+  }
+  return Donator.find();
+};
 
 const getDonator = async (id) => {
   return Donator.findById(id);
-};
-
-const getDonators = async () => {
-  return Donator.find({});
 };
 
 const createDonator = async (data) => {
@@ -21,8 +29,8 @@ const removeDonator = async (id) => {
 };
 
 export default {
-  getDonator,
   getDonators,
+  getDonator,
   createDonator,
   updateDonator,
   removeDonator,

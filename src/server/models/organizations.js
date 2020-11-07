@@ -2,8 +2,12 @@ import { Schema } from "mongoose";
 import connection from "./connection";
 
 const organizationSchema = new Schema(
-  
   {
+    user_id: { type: Schema.Types.ObjectId },
+    funds_id: { type: [Schema.Types.ObjectId] },
+    articles_id: { type: [Schema.Types.ObjectId] },
+    donators_id: { type: [Schema.Types.ObjectId] },
+    comments_id: { type: [Schema.Types.ObjectId] },
     name: { type: String, trim: true },
     logo: { type: String, trim: true },
     description: { type: String, trim: true },
@@ -31,7 +35,7 @@ const organizationSchema = new Schema(
     tour: { type: String, trim: true },
     progress: { type: Number },
     created_at: { type: Date },
-    updated_at: { type: Date },
+    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "organizations",

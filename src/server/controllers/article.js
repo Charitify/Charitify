@@ -4,8 +4,8 @@ const getArticle = async (id) => {
   return ArticleService.getArticle(id);
 };
 
-const getArticles = async () => {
-  return ArticleService.getArticles();
+const getArticles = async (options) => {
+  return ArticleService.getArticles(options);
 };
 
 const createArticle = async (data) => {

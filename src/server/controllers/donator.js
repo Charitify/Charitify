@@ -4,8 +4,8 @@ const getDonator = async (id) => {
   return DonatorService.getDonator(id);
 };
 
-const getDonators = async () => {
-  return DonatorService.getDonators();
+const getDonators = async (options) => {
+  return DonatorService.getDonators(options);
 };
 
 const createDonator = async (data) => {

@@ -42,10 +42,10 @@
     let mounted = false
     onMount(() => mounted = true)
     
-    $: fundId = $page.params.id
-    $: isNew = fundId === 'new'
+    $: fund_id = $page.params.id
+    $: isNew = fund_id === 'new'
 
-    $: if (!isNew && mounted) fetchData(fundId)
+    $: if (!isNew && mounted) fetchData(fund_id)
 
     $: isEditMode = isNew
     let isEdit = {
@@ -115,17 +115,17 @@
 
     async function fetchData () {
         Promise.all([
-            API.getFund(fundId).catch(() => null),
-            API.getPetsByFund(fundId).catch(() => null),
-            API.getDonatorsByFund(fundId).catch(() => null),
-            API.getCommentsByFund(fundId).catch(() => null),
-            API.getOrganizationByFund(fundId).catch(() => null),
+            API.getFund(fund_id).catch(() => null),
+            API.getPetsByFund(fund_id).catch(() => null),
+            API.getDonatorsByFund(fund_id).catch(() => null),
+            API.getCommentsByFund(fund_id).catch(() => null),
+            API.getOrganizationByFund(fund_id).catch(() => null),
         ]).then(res => {
             fund.set(res[0] || null)
             pet.set(safeGet(() => res[1][0]) || null)
             donators.set(res[2] || null)
             comments.set(res[3] || null)
-            organization.set(safeGet(() => res[4][0]) || null)
+            organization.set(res[4] || null)
         })
     }
 

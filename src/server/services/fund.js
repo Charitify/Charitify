@@ -1,11 +1,16 @@
+import mongoose from "mongoose";
 import { Fund } from "../models";
+
+const getFunds = async ({ query } = {}) => {
+  const { organization_id } = query || {}
+  if (organization_id) {
+    return Fund.find({ organization_id: new mongoose.Types.ObjectId(organization_id) })
+  }
+  return Fund.find();
+};
 
 const getFund = async (id) => {
   return Fund.findById(id);
-};
-
-const getFunds = async () => {
-  return Fund.find({});
 };
 
 const createFund = async (data) => {
@@ -21,8 +26,8 @@ const removeFund = async (id) => {
 };
 
 export default {
-  getFund,
   getFunds,
+  getFund,
   createFund,
   updateFund,
   removeFund,

@@ -4,8 +4,8 @@ const getOrganization = async (id) => {
   return OrganizationService.getOrganization(id);
 };
 
-const getOrganizations = async () => {
-  return OrganizationService.getOrganizations();
+const getOrganizations = async (options) => {
+  return OrganizationService.getOrganizations(options);
 };
 
 const createOrganization = async (data) => {

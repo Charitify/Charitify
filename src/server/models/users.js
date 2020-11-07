@@ -4,6 +4,7 @@ import { userSexEnum, userRolesEnum } from "../config";
 
 const userSchema = new Schema(
   {
+    organization_id: { type: Schema.Types.ObjectId },
     avatar: { type: String, trim: true },
     username: { type: String, trim: true, unique: true },
     fullname: { type: String, trim: true, required: true },
@@ -25,6 +26,8 @@ const userSchema = new Schema(
     },
     hash: { type: String, select: false },
     salt: { type: String, select: false },
+    created_at: { type: Date },
+    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "users",

@@ -4,8 +4,8 @@ const getComment = async (id) => {
   return CommentService.getComment(id);
 };
 
-const getComments = async () => {
-  return CommentService.getComments();
+const getComments = async (options) => {
+  return CommentService.getComments(options);
 };
 
 const createComment = async (data) => {

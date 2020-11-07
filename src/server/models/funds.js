@@ -3,6 +3,10 @@ import connection from "./connection";
 
 const fundSchema = new Schema(
   {
+    organization_id: { type: Schema.Types.ObjectId },
+    pet_id: { type: Schema.Types.ObjectId },
+    donators_id: { type: [Schema.Types.ObjectId] },
+    comments_id: { type: [Schema.Types.ObjectId] },
     name: { type: String, trim: true },
     logo: { type: String, trim: true },
     title: { type: String, trim: true },
@@ -31,7 +35,7 @@ const fundSchema = new Schema(
     current_sum: { type: Number },
     needed_sum: { type: Number },
     created_at: { type: Date },
-    updated_at: { type: Date },
+    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "funds",

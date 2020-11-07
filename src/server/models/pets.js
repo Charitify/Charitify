@@ -3,6 +3,7 @@ import connection from "./connection";
 
 const petSchema = new Schema(
   {
+    fund_id: { type: Schema.Types.ObjectId },
     name: { type: String, trim: true },
     avatar: { type: String, trim: true },
     breed: { type: String, trim: true },
@@ -18,7 +19,7 @@ const petSchema = new Schema(
     }],
     vaccines: [String],
     created_at: { type: Date },
-    updated_at: { type: Date },
+    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "pets",

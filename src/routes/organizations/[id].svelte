@@ -46,10 +46,10 @@
     onMount(() => mounted = true)
 
     // Organization
-    $: organizationId = $page.params.id;
-    $: isNew = organizationId === 'new'
+    $: organization_id = $page.params.id;
+    $: isNew = organization_id === 'new'
 
-    $: if (!isNew && mounted) fetchData(organizationId)
+    $: if (!isNew && mounted) fetchData(organization_id)
 
     $: isEditMode = isNew
     let isEdit = {
@@ -112,11 +112,11 @@
     })));
     $: lastNews = safeGet(() => $articles.map(n => ({
         id: n._id,
-        src: n.src,
+        src: safeGet(() => n.photos[0]),
         likes: n.likes,
         isLiked: n.is_liked,
         title: n.title,
-        subtitle: n.subtitle,
+        subtitle: n.content,
         created_at: n.created_at,
     })).slice(0, 3));
     $: documents = safeGet(() => $organization.documents.map(d => ({ src: d, alt: 'Документи організації' })));
@@ -138,11 +138,11 @@
 
     async function fetchData () {
         Promise.all([
-            API.getOrganization(organizationId).catch(() => null),
-            API.getFundsByOrg(organizationId).catch(() => null),
-            API.getDonatorsByOrg(organizationId).catch(() => null),
-            API.getArticlesByOrg(organizationId).catch(() => null),
-            API.getCommentsByOrg(organizationId).catch(() => null),
+            API.getOrganization(organization_id).catch(() => null),
+            API.getFundsByOrg(organization_id).catch(() => null),
+            API.getDonatorsByOrg(organization_id).catch(() => null),
+            API.getArticlesByOrg(organization_id).catch(() => null),
+            API.getCommentsByOrg(organization_id).catch(() => null),
         ]).then(res => {
             organization.set(res[0] || null)
             funds.set(res[1] || null)

@@ -1,11 +1,16 @@
+import mongoose from "mongoose";
 import { Article } from "../models";
+
+const getArticles = async ({ query } = {}) => {
+  const { organization_id } = query || {}
+  if (organization_id) {
+    return Article.find({ organization_id: new mongoose.Types.ObjectId(organization_id) })
+  }
+  return Article.find();
+};
 
 const getArticle = async (id) => {
   return Article.findById(id);
-};
-
-const getArticles = async () => {
-  return Article.find({});
 };
 
 const createArticle = async (data) => {
@@ -21,8 +26,8 @@ const removeArticle = async (id) => {
 };
 
 export default {
-  getArticle,
   getArticles,
+  getArticle,
   createArticle,
   updateArticle,
   removeArticle,

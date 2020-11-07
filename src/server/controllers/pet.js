@@ -4,8 +4,8 @@ const getPet = async (id) => {
   return PetService.getPet(id);
 };
 
-const getPets = async () => {
-  return PetService.getPets();
+const getPets = async (options) => {
+  return PetService.getPets(options);
 };
 
 const createPet = async (data) => {

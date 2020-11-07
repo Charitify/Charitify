@@ -30,7 +30,8 @@ router.delete("/:id", isAuthed, async (req, res, next) => {
 
 router.get("/", isAuthed, async (req, res, next) => {
   try {
-    const data = await ArticleController.getArticles();
+    const { query } = req
+    const data = await ArticleController.getArticles({ query });
     return res.send(data);
   } catch (err) { next(err) }
 });
