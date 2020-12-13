@@ -51,28 +51,30 @@
 
     $: if (!isNew && mounted) fetchData(organization_id)
 
+    let allValues = {}
+
     $: isEditMode = isNew
-    let isEdit = {
-        topInfo: false,
-        description: false,
-        about: false,
-        documents: false,
-        videos: false,
-        contacts: false,
-        map: false,
+    $: isEdit = {
+        topInfo: isNew,
+        description: isNew,
+        about: isNew,
+        documents: isNew,
+        videos: isNew,
+        contacts: isNew,
+        map: isNew,
     }
 
     $: organizationBlock = {
-        id: safeGet(() => $organization._id),
         name: safeGet(() => $organization.name),
         logo: safeGet(() => $organization.logo),
     };
     $: carouselTop = safeGet(() => $organization.photos.map(p => ({ src: p, alt: 'Фото організації' })));
     $: descriptionShort = {
-        name: safeGet(() => $organization.name) || null,
-        description: safeGet(() => $organization.description) || null,
-        content: safeGet(() => $organization.content) || null,
+        description: safeGet(() => $organization.description),
     };
+    $: contentShort = {  
+        content: safeGet(() => $organization.content),
+    }
     $: animalFunds = safeGet(() => $funds.map(f => ({
         id: f._id,
         title: f.title,
@@ -93,10 +95,6 @@
         likes: safeGet(() => $organization.likes),
         isLiked: safeGet(() => $organization.is_liked),
         views: safeGet(() => $organization.views),
-    };
-    $: descriptionBlock = {
-        title: safeGet(() => $organization.description),
-        text: safeGet(() => $organization.content),
     };
     $: contacts = safeGet(() => ['phone', 'email', 'telegram', 'facebook', 'viber'].map(k => ({
         title: k,
@@ -161,9 +159,14 @@
         isEdit[section] = false
     }
 
+    function onChange(e) {
+        allValues = { ...allValues, ...e.detail.values }
+    }
+
     function onToggleMode() {
         isEditMode = !isEditMode
         if (!isEditMode) {
+            console.log(allValues)
             isEdit = {
                 topInfo: false,
                 description: false,
@@ -203,7 +206,9 @@
     <LazyToggle active={isEdit.topInfo}>
         <OrganizationButtonEdit 
             data={organizationBlock}
-            submit={onSubmit.bind(null, 'topInfo')} 
+            submit={onSubmit.bind(null, 'topInfo')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'topInfo')} 
         />
     </LazyToggle>
@@ -223,7 +228,9 @@
     <LazyToggle active={isEdit.description}>
         <DescriptionEdit 
             data={{ ...descriptionShort, photos: carouselTop }}
-            submit={onSubmit.bind(null, 'description')} 
+            submit={onSubmit.bind(null, 'description')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'description')} 
         />
     </LazyToggle>
@@ -260,9 +267,11 @@
     
     <!-- About -->
     <LazyToggle active={isEdit.about}>
-        <AboutEdit 
-            data={descriptionShort}
-            submit={onSubmit.bind(null, 'about')} 
+        <AboutEdit
+            data={contentShort}
+            submit={onSubmit.bind(null, 'about')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'about')} 
         />
     </LazyToggle>
@@ -299,7 +308,9 @@
     <LazyToggle active={isEdit.documents}>
         <DocumentsEdit 
             data={{ documents }}
-            submit={onSubmit.bind(null, 'documents')} 
+            submit={onSubmit.bind(null, 'documents')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'documents')} 
         />
     </LazyToggle>
@@ -321,6 +332,8 @@
         <VideosEdit 
             data={{ videos: media }}
             submit={onSubmit.bind(null, 'videos')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'videos')} 
         />
     </LazyToggle>
@@ -342,6 +355,8 @@
         <ContactsEdit 
             data={{ ...organizationBlock, ...$organization }}
             submit={onSubmit.bind(null, 'contacts')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'contacts')}
         />
     </LazyToggle>
@@ -363,7 +378,9 @@
     <LazyToggle active={isEdit.map}>
         <MapEdit 
             data={{ location }}
-            submit={onSubmit.bind(null, 'map')} 
+            submit={onSubmit.bind(null, 'map')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'map')} 
         />
     </LazyToggle>

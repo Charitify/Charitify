@@ -3,21 +3,12 @@
     import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
+    export let withButtons = undefined
     export let submit = async () => {}
 
     const dispatch = createEventDispatcher()
 
     let formFields = [
-        {
-            label: 'Ціль фонду:',
-            type: 'text',
-            name: 'title',
-            meta: {
-                disabled: true,
-                placeholder: 'Тільки спільними силами...',
-                maxlength: 25,
-            },
-        },
         {
             label: 'Опис фонду:',
             type: 'textarea',
@@ -43,7 +34,7 @@
     }
 </script>
 
-<EditCard form="description-form" on:cancel={onCancel}>
+<EditCard {withButtons} form="description-form" on:cancel={onCancel}>
     <FormBuilder 
         id="description-form"
         items={formFields}

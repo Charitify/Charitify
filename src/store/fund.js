@@ -1,4 +1,4 @@
-import { writable } from 'svelte-persistent-store/dist/local';
+import { writable } from 'svelte/store' // 'svelte-persistent-store/dist/local';
 
-export const fund = writable('fund', null);
-export const funds = writable('funds', null);
+export const fund = writable(null);
+export const funds = writable(null);

@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
     import { API } from '@services'
-    import { root, organization } from '../store';
+    import { root, rootOrganization } from '../store';
 	import { Header, OfflineMessage } from '@components';
 	import { Storages } from '@services'
 	import { safeGet, disableDoubleTapZoom, classnames } from '@utils'
@@ -16,7 +16,7 @@
 		disableDoubleTapZoom([document])
 
 		root.set(await API.getUser('me').catch(() => null))
-		organization.set(await API.getOrganization($root.organization_id).catch(() => null))
+		rootOrganization.set(await API.getOrganization($root.organization_id).catch(() => null))
 	})
 </script>
 

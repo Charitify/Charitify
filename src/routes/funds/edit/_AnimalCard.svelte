@@ -4,6 +4,7 @@
     import { Br, Square, RadioRect, StoryList, EditCard, FormBuilder } from '@components'
 
     export let data = undefined
+    export let withButtons = undefined
     export let submit = async () => {}
 
     const dispatch = createEventDispatcher()
@@ -151,7 +152,7 @@
     }
 </script>
 
-<EditCard form="animal-form" on:cancel={onCancel}>
+<EditCard {withButtons} form="animal-form" on:cancel={onCancel}>
     <FormBuilder 
         id="animal-form"
         items={formFields}

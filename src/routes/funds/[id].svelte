@@ -47,14 +47,16 @@
 
     $: if (!isNew && mounted) fetchData(fund_id)
 
+    let allValues = {}
+
     $: isEditMode = isNew
-    let isEdit = {
-        topInfo: false,
-        description: false,
-        videos: false,
-        documents: false,
-        howToHelp: false,
-        animalCard: false,
+    $: isEdit = {
+        topInfo: isNew,
+        description: isNew,
+        videos: isNew,
+        documents: isNew,
+        howToHelp: isNew,
+        animalCard: isNew,
     }
 
     $: carouselTop = safeGet(() => $fund.photos.map(p => ({ src: p, alt: 'Фото фонду' })));
@@ -73,7 +75,6 @@
         isLiked: safeGet(() => $fund.is_liked),
     };
     $: descriptionBlock = {
-        title: safeGet(() => $fund.name),
         description: safeGet(() => $fund.content),
     };
     $: animalData = {
@@ -138,9 +139,14 @@
         isEdit[section] = false
     }
 
+    function onChange(e) {
+        allValues = { ...allValues, ...e.detail.values }
+    }
+
     function onToggleMode() {
         isEditMode = !isEditMode
         if (!isEditMode) {
+            console.log(allValues)
             isEdit = {
                 topInfo: false,
                 description: false,
@@ -182,7 +188,9 @@
         <Br size="30"/>
         <TopInfoEdit 
             data={{ ...cardTop, organization: organizationData, photos: carouselTop }}
-            submit={onSubmit.bind(null, 'topInfo')} 
+            submit={onSubmit.bind(null, 'topInfo')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'topInfo')} 
         />
     </LazyToggle>
@@ -204,6 +212,8 @@
         <DescriptionEdit 
             data={descriptionBlock}
             submit={onSubmit.bind(null, 'description')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'description')} 
         />
     </LazyToggle>
@@ -228,6 +238,8 @@
         <AnimalCardEdit
             data={animalData}
             submit={onSubmit.bind(null, 'animalCard')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'animalCard')} 
         />
     </LazyToggle>
@@ -250,6 +262,8 @@
         <DocumentsEdit
             data={{ documents }}
             submit={onSubmit.bind(null, 'documents')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'documents')} 
         />
     </LazyToggle>
@@ -268,6 +282,8 @@
         <VideosEdit 
             data={{ videos: media }}
             submit={onSubmit.bind(null, 'videos')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'videos')} 
         />
     </LazyToggle>
@@ -286,6 +302,8 @@
         <HowToHelpEdit 
             data={howToHelp}
             submit={onSubmit.bind(null, 'howToHelp')}
+            withButtons={!isNew}
+            on:change={onChange}
             on:cancel={onCancel.bind(null, 'howToHelp')} 
         />
     </LazyToggle>

@@ -92,7 +92,6 @@
                     value={getValue(values, item.name)}
                     errors={errors[item.name]}
                     on:input={onChange}
-                    on:change={getOnChange(item)}
                 />
             {:else}
                 <div>

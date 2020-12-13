@@ -4,6 +4,7 @@
     import { EditCard, FormBuilder } from '@components'
 
     export let data = undefined
+    export let withButtons = undefined
     export let submit = async () => {}
 
     const dispatch = createEventDispatcher()
@@ -62,7 +63,7 @@
     }
 </script>
 
-<EditCard form="contacts-form" on:cancel={onCancel}>
+<EditCard {withButtons} form="contacts-form" on:cancel={onCancel}>
     <FormBuilder 
         id="contacts-form"
         items={formFields}
