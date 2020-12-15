@@ -2,7 +2,6 @@
     import { onMount } from 'svelte'
     import { API } from '@services'
     import { safeGet } from '@utils'
-    import { user as userMock } from '@mock'
     import { Br, ListItems, StatusCard, Button, Loader, SearchLine } from '@components'
 
     let users = []
@@ -13,7 +12,6 @@
     async function loadEntity() {
         loading = true
         await new Promise(r => setTimeout(r, 1000))
-        users = await API.getUsers().catch(() => new Array(10).fill(userMock))
         loading = false
     }
 

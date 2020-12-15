@@ -10,8 +10,6 @@ const donatorSchema = new Schema(
     avatar: { type: String, trim: true },
     amount: { type: Number },
     checked: { type: Boolean },
-    created_at: { type: Date },
-    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "donators",

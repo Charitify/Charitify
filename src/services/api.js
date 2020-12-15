@@ -50,18 +50,19 @@ class APIService {
     const methods = ['get', 'put', 'post', 'delete', 'patch']
 
     return methods.reduce((acc, method) => {
-      acc[method] = this.withInterceptors.bind(this, this._adapter[method])
+      acc[method] = this.withInterceptors.bind(this, this._adapter[method], method)
       return acc
     }, {})
   }
 
-  async withInterceptors(caller, ...args) {
+  async withInterceptors(caller, method, ...args) {
     const newArgs1 = await this.requestInterceptor(...args)
     const newArgs2 = await this._requestInterceptor(...newArgs1)
 
     const path = newArgs2[0]
-    const queries = newArgs2[1]
-    const config = { ...newArgs2[2], queries }
+    const body = method !== 'get' ? newArgs2[1] : null
+    const queries = method === 'get' ? newArgs2[1] : null
+    const config = { ...newArgs2[2], body, queries }
 
     return caller(path, config)
       .then(async (response) => {
@@ -119,8 +120,8 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.USERS(), params, config)
   }
 
-  postUser(id, body, config) {
-    return this.newRequest.post(endpoints.USER(id), body, config)
+  postUser(body, config) {
+    return this.newRequest.post(endpoints.USERS(), body, config)
   }
 
   putUser(id, body, config) {
@@ -151,8 +152,8 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.ARTICLES(), { ...params, organization_id }, config)
   }
 
-  postArticle(id, body, config) {
-    return this.newRequest.post(endpoints.ARTICLE(id), body, config)
+  postArticle(body, config) {
+    return this.newRequest.post(endpoints.ARTICLES(), body, config)
   }
 
   putArticle(id, body, config) {
@@ -179,16 +180,16 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.PETS(), { ...params, organization_id }, config)
   }
 
-  postPet(id, body, config) {
-    return this.newRequest.post(endpoints.PETS(id), body, config)
+  postPet(body, config) {
+    return this.newRequest.post(endpoints.PETS(), body, config)
   }
 
   putPet(id, body, config) {
-    return this.newRequest.put(endpoints.PETS(id), body, config)
+    return this.newRequest.put(endpoints.PET(id), body, config)
   }
 
   deletePet(id, config) {
-    return this.newRequest.delete(endpoints.PETS(id), config)
+    return this.newRequest.delete(endpoints.PET(id), config)
   }
 
   /**
@@ -219,8 +220,8 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.COMMENTS(), { ...params, organization_id }, config)
   }
 
-  postComment(id, body, config) {
-    return this.newRequest.post(endpoints.COMMENT(id), body, config)
+  postComment(body, config) {
+    return this.newRequest.post(endpoints.COMMENTS(), body, config)
   }
 
   putComment(id, body, config) {
@@ -247,8 +248,8 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.FUNDS(), { ...params, organization_id }, config)
   }
 
-  postFund(id, body, config) {
-    return this.newRequest.post(endpoints.FUND(id), body, config)
+  postFund(body, config) {
+    return this.newRequest.post(endpoints.FUNDS(), body, config)
   }
 
   putFund(id, body, config) {
@@ -279,8 +280,8 @@ export class ApiClass extends APIService {
     return this.newRequest.get(endpoints.ORGANIZATIONS(), params, config)
   }
 
-  postOrganization(id, body, config) {
-    return this.newRequest.post(endpoints.ORGANIZATION(id), body, config)
+  postOrganization(body, config) {
+    return this.newRequest.post(endpoints.ORGANIZATIONS(), body, config)
   }
 
   putOrganization(id, body, config) {

@@ -18,8 +18,6 @@ const petSchema = new Schema(
       title: String,
     }],
     vaccines: [String],
-    created_at: { type: Date },
-    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "pets",

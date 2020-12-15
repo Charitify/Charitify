@@ -4,7 +4,7 @@ import { isAuthed } from "../middlewares/auth"
 
 const router = Router()
 
-router.get("/:id", isAuthed, async (req, res) => {
+router.get("/:id", isAuthed, async (req, res, next) => {
   try {
     const { id } = req.params
     const data = await OrganizationController.getOrganization(id)
@@ -12,7 +12,7 @@ router.get("/:id", isAuthed, async (req, res) => {
   } catch (err) { next(err) }
 })
 
-router.put("/:id", isAuthed, async (req, res) => {
+router.put("/:id", isAuthed, async (req, res, next) => {
   try {
     const { body, params: { id } } = req
     const data = await OrganizationController.updateOrganization(id, body)
@@ -20,7 +20,7 @@ router.put("/:id", isAuthed, async (req, res) => {
   } catch (err) { next(err) }
 })
 
-router.delete("/:id", isAuthed, async (req, res) => {
+router.delete("/:id", isAuthed, async (req, res, next) => {
   try {
     const { params: { id } } = req
     const data = await OrganizationController.removeOrganization(id)
@@ -28,7 +28,7 @@ router.delete("/:id", isAuthed, async (req, res) => {
   } catch (err) { next(err) }
 })
 
-router.get("/", isAuthed, async (req, res) => {
+router.get("/", isAuthed, async (req, res, next) => {
   try {
     const { query } = req
     const data = await OrganizationController.getOrganizations({ query })
@@ -36,7 +36,7 @@ router.get("/", isAuthed, async (req, res) => {
   } catch (err) { next(err) }
 })
 
-router.post("/", isAuthed, async (req, res) => {
+router.post("/", isAuthed, async (req, res, next) => {
   try {
     const { body } = req
     const data = await OrganizationController.createOrganization(body)

@@ -3,6 +3,7 @@
     import { waitUntil, classnames } from '@utils'
     import Picture from '@components/Picture.svelte'
     import FancyBox from '@components/FancyBox.svelte'
+import About from '../routes/organizations/view/_About.svelte';
 
     const dispatch = createEventDispatcher()
 
@@ -85,7 +86,7 @@
         use:carousel
         class="carousel-inner scroll-x-center"
     >
-        {#if items !== null}
+        {#if items !== null && Array.isArray(items)}
             {#each items as item, index}
                 <li class="fluid" role="button" on:click={onClick.bind(null, item, index)}>
                     <slot {item} {index}>

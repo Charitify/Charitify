@@ -3,15 +3,14 @@
     import { stores } from '@sapper/app'
     import { API } from '@services'
     import { organization, fund, pet, donators, comments } from '@store'
-    import { safeGet, _ } from '@utils'
+    import { safeGet, setToFormValues, _ } from '@utils'
     import { 
         Br, 
         Icon, 
         Footer, 
-        Button, 
         EditArea, 
         LazyToggle,
-        DonationButton,
+        MainButton,
     } from '@components'
     import {
         Trust,
@@ -140,12 +139,13 @@
     }
 
     function onChange(e) {
-        allValues = { ...allValues, ...e.detail.values }
+        allValues = setToFormValues(allValues, e.detail.values)
     }
 
     function onToggleMode() {
         isEditMode = !isEditMode
         if (!isEditMode) {
+            API.postFund(allValues)
             console.log(allValues)
             isEdit = {
                 topInfo: false,
@@ -163,25 +163,22 @@
     <title>Charitify - Charity page and donate.</title>
 </svelte:head>
 
-<DonationButton/>
+<MainButton/>
 
 <section class="container theme-bg-color-secondary">
     <Br size="var(--header-height)"/>
+    <Br size="30"/>
 
-    <div class="overflow-hidden">
-        <Br size="30"/>
-        <Button size="small" is="info" on:click={onToggleMode}>
-            <span class="h3 font-secondary font-w-500 flex flex-align-center">
-                {isEditMode ? 'Зберегти' : 'Редагувати'}
-                <s></s>
-                <s></s>
-                {#if !isEditMode}
-                    <Icon type="edit" size="small" is="light"/>
-                {/if}
-            </span>
-        </Button>
-        <Br size="30"/>
-    </div>
+    <MainButton is="info" on:click={onToggleMode}>
+        <span class="h3 font-secondary font-w-500 flex flex-align-center">
+            {isEditMode ? 'Зберегти' : 'Редагувати'}
+            <s></s>
+            <s></s>
+            {#if !isEditMode}
+                <Icon type="edit" size="smabigll" is="light"/>
+            {/if}
+        </span>
+    </MainButton>
 
     <!-- Top info -->
     <LazyToggle active={isEdit.topInfo}>

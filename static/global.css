@@ -129,6 +129,7 @@
     --border-radius-big: 10px;
 }
 
+/*
 @media screen and (prefers-color-scheme: dark) {
     :root {
         --theme-color-primary: var(--color-dark-second);
@@ -152,7 +153,7 @@
         --shadow-field-inset: inset 3px 3px 10px rgba(var(--color-black), 0.3);
     }
 }
-
+*/
 
 /* ---------------------===================( Reset/Normalize )===================--------------------- */
 

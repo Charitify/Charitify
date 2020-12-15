@@ -26,8 +26,6 @@ const userSchema = new Schema(
     },
     hash: { type: String, select: false },
     salt: { type: String, select: false },
-    created_at: { type: Date },
-    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "users",

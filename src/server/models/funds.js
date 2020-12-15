@@ -32,10 +32,6 @@ const fundSchema = new Schema(
     facebook: { type: String, trim: true },
     viber: { type: String, trim: true },
     how_to_help: { type: String, trim: true },
-    current_sum: { type: Number },
-    needed_sum: { type: Number },
-    created_at: { type: Date },
-    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "funds",

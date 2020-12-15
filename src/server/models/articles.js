@@ -9,8 +9,6 @@ const articleSchema = new Schema(
     description: { type: String, trim: true },
     likes: { type: Number },
     is_liked: { type: Boolean },
-    created_at: { type: Date },
-    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "articles",

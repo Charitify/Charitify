@@ -10,8 +10,6 @@ const commentSchema = new Schema(
     likes: { type: Number },
     is_liked: { type: Boolean },
     content: { type: String, trim: true },
-    created_at: { type: Date },
-    updated_at: { type: Date, default: Date.now },
   },
   {
     collection: "comments",

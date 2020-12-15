@@ -3,14 +3,14 @@
     import { stores } from "@sapper/app";
     import { API } from "@services";
     import { organization, funds, donators, comments, articles } from '@store'
-    import { safeGet } from "@utils";
+    import { safeGet, setToFormValues } from "@utils";
     import { 
         Br, 
         Icon, 
         Footer, 
-        Button, 
         EditArea, 
         LazyToggle,
+        MainButton,
     } from '@components'
     import {
         Share,
@@ -160,12 +160,13 @@
     }
 
     function onChange(e) {
-        allValues = { ...allValues, ...e.detail.values }
+        allValues = setToFormValues(allValues, e.detail.values)
     }
 
     function onToggleMode() {
         isEditMode = !isEditMode
         if (!isEditMode) {
+            API.postOrganization(allValues)
             console.log(allValues)
             isEdit = {
                 topInfo: false,
@@ -186,21 +187,18 @@
 
 <section class="container theme-bg-color-secondary">
     <Br size="var(--header-height)"/>
+    <Br size="30"/>
 
-    <div class="overflow-hidden">
-        <Br size="30"/>
-        <Button size="small" is="info" on:click={onToggleMode}>
-            <span class="h3 font-secondary font-w-500 flex flex-align-center">
-                {isEditMode ? 'Зберегти' : 'Редагувати'}
-                <s></s>
-                <s></s>
-                {#if !isEditMode}
-                    <Icon type="edit" size="small" is="light"/>
-                {/if}
-            </span>
-        </Button>
-        <Br size="30"/>
-    </div>
+    <MainButton is="info" on:click={onToggleMode}>
+        <span class="h3 font-secondary font-w-500 flex flex-align-center">
+            {isEditMode ? 'Зберегти' : 'Редагувати'}
+            <s></s>
+            <s></s>
+            {#if !isEditMode}
+                <Icon type="edit" size="big" is="light"/>
+            {/if}
+        </span>
+    </MainButton>
 
     <!-- Top organization info -->
     <LazyToggle active={isEdit.topInfo}>
