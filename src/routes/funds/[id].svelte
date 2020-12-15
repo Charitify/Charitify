@@ -163,7 +163,9 @@
     <title>Charitify - Charity page and donate.</title>
 </svelte:head>
 
-<MainButton/>
+{#if !isEditMode}
+    <MainButton/>
+{/if}
 
 <section class="container theme-bg-color-secondary">
     <Br size="var(--header-height)"/>
@@ -175,7 +177,7 @@
             <s></s>
             <s></s>
             {#if !isEditMode}
-                <Icon type="edit" size="smabigll" is="light"/>
+                <Icon type="edit" size="big" is="light"/>
             {/if}
         </span>
     </MainButton>
