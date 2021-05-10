@@ -29,7 +29,7 @@
     "js-cookie": "^2.2.1",
     "js-storage": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "lodash-es": "^4.17.15",
     "moment": "^2.27.0",
     "mongoose": "^5.9.25",
